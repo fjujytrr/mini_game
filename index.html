@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Hide & Seek — Premium Emoji</title>
+<title>Hide & Seek — Premium</title>
 <style>
 html, body {
   margin:0;
@@ -163,58 +163,47 @@ button.secondary {
   margin:0 4px;
   font-size:22px;
 }
-/* Banner Image */
-.banner {
-  max-width:340px;
-  margin:10px 0;
-  display:flex;
-  justify-content:center;
-}
-.banner img {
-  width:100%;
-  border-radius:16px;
-}
-/* Modal */
-.modal {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.85);
-  justify-content:center;
-  align-items:center;
-  z-index:100;
-}
-.modal-content {
-  background:#1a1a1a;
-  padding:14px;
-  border-radius:16px;
-  width:90%;
-  max-width:460px;
-  text-align:center;
-  max-height:80%;
-  overflow-y:auto;
-  color:#FFD700;
-  box-shadow:0 0 20px rgba(255,215,0,0.4);
-}
-.modal-content h2 {
-  margin-top:0;
-  font-size:20px;
-  font-weight:800;
-}
-.modal-content .item {
+/* Powerups panel */
+.powerups {
+  width: 95%;
+  max-width: 480px;
+  overflow: hidden;
+  margin: 10px 0;
+  border-radius: 16px;
   background:#222;
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
-  font-size:14px;
-  box-shadow:0 2px 6px rgba(255,215,0,0.2);
+  padding: 10px 0;
 }
-.modal-content button.close {
-  margin-top:10px;
-  background:linear-gradient(90deg,#FFD700,#FFC107);
-  color:#000;
-  font-weight:700;
+.powerup-track {
+  display: flex;
+  gap: 12px;
+  transition: transform 0.3s ease;
+}
+.powerup-card {
+  flex: 0 0 70%;
+  background: linear-gradient(145deg,#333,#111);
+  border-radius: 14px;
+  padding: 16px;
+  color: #FFD700;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+.buy-btn {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#FFD700,#FFC107);
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+}
+.buy-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 </style>
 </head>
@@ -252,9 +241,22 @@ button.secondary {
   <button class="secondary" id="resetBtn">🔍</button>
 </div>
 
-<!-- Баннер / картинка между кнопками и меню -->
+<!-- Powerups Panel -->
 <div class="banner">
-  <img src="banner.png" alt="Banner">
+  <div class="powerups">
+    <div class="powerup-track" id="powerupTrack">
+      <div class="powerup-card" data-effect="x2Prize_x2Loss" data-base-price="20000">
+        🔥 Reward ×2 / Loss ×2 <br>
+        Price: <span class="price-text">20,000</span> 💰
+        <button class="buy-btn">Buy</button>
+      </div>
+      <div class="powerup-card" data-effect="oneRoom_1min" data-base-price="20000">
+        ⏱ Hunter checks only 1 room for 1 min <br>
+        Price: <span class="price-text">20,000</span> 💰
+        <button class="buy-btn">Buy</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="bottom-menu">
@@ -262,16 +264,6 @@ button.secondary {
   <button id="shopBtn" class="secondary">🛒</button>
   <button id="settingsBtn" class="secondary">⚙</button>
   <button id="profileBtn" class="secondary">👤</button>
-</div>
-
-<div class="modal" id="shopModal">
-  <div class="modal-content">
-    <h2>Shop</h2>
-    <div class="item">Item 1 +</div>
-    <div class="item">Item 2 +</div>
-    <div class="item">Item 3 +</div>
-    <button class="close" id="closeShop">Close</button>
-  </div>
 </div>
 
 <script>
@@ -302,9 +294,55 @@ document.getElementById('startBtn').addEventListener('click', () => {
   rooms[selectedRoom].classList.add('selected');
 });
 
+let activePowerups = {};
+let purchaseCounts = {};
+
+function updatePrice(card) {
+  const basePrice = parseInt(card.dataset.basePrice);
+  const effect = card.dataset.effect;
+  const count = purchaseCounts[effect] || 0;
+  const price = basePrice * (2 ** count);
+  card.querySelector('.price-text').textContent = price.toLocaleString();
+  return price;
+}
+
+document.querySelectorAll('.buy-btn').forEach(btn => {
+  btn.addEventListener('click', (e)=>{
+    const card = e.target.closest('.powerup-card');
+    const effect = card.dataset.effect;
+    const price = updatePrice(card);
+
+    if(coins >= price){
+      updateCoins(-price);
+      activePowerups[effect] = true;
+      purchaseCounts[effect] = (purchaseCounts[effect] || 0) + 1;
+      alert(Upgrade "${effect}" purchased! Next purchase will be more expensive.);
+      updatePrice(card);
+    } else {
+      alert('Not enough coins!');
+    }
+  });
+});
+
+function updateLevels() {
+  const levels = document.querySelectorAll('.level');
+  levels.forEach(l => l.classList.remove('active'));
+  for (let i = 0; i < levels.length; i++) {
+    if (coins >= parseInt(levels[i].dataset.val)) {
+      levels[i].classList.add('active');
+    }
+  }
+}
+updateLevels();
+
 document.getElementById('resetBtn').addEventListener('click', () => {
   if (selectedRoom === null) { alert('Pick a room first'); return; }
-  const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, 2);
+
+  let numChecks = 2;
+  if(activePowerups['x2Prize_x2Loss']) numChecks = 4;
+  if(activePowerups['oneRoom_1min']) numChecks = 1;
+
+  const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, numChecks);
   rooms.forEach(r => r.classList.remove('found','safe','highlight'));
 
   let delay = 0;
@@ -317,38 +355,38 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
   setTimeout(() => {
     if (picks.includes(selectedRoom)) {
+      let loss = -2000;
+      if(activePowerups['x2Prize_x2Loss']) loss *= 2;
       rooms[selectedRoom].classList.add('found');
-      updateCoins(-2000);
+      updateCoins(loss);
       selectedRoom = null;
       rooms.forEach(r => r.classList.remove('selected'));
     } else {
+      let reward = 1000;
+      if(activePowerups['x2Prize_x2Loss']) reward *= 2;
       rooms[selectedRoom].classList.add('safe');
       rooms[selectedRoom].classList.add('selected');
-      updateCoins(1000);
+      updateCoins(reward);
     }
   }, delay + 700);
 });
 
-// Шкала прогресса
-function updateLevels() {
-  const levels = document.querySelectorAll('.level');
-  levels.forEach(l => l.classList.remove('active'));
-  for (let i = 0; i < levels.length; i++) {
-    if (coins >= parseInt(levels[i].dataset.val)) {
-      levels[i].classList.add('active');
-    }
-  }
-}
-updateLevels();
+// Swipe for powerups
+const track = document.getElementById('powerupTrack');
+let startX = 0;
+let currentTranslate = 0;
+let prevTranslate = 0;
+let maxTranslate = -(track.scrollWidth - track.clientWidth);
 
-// Модальные окна
-const shopModal = document.getElementById('shopModal');
-document.getElementById('shopBtn').addEventListener('click', () => shopModal.style.display='flex');
-document.getElementById('closeShop').addEventListener('click', () => shopModal.style.display='none');
-
-document.getElementById('infoBtn').addEventListener('click',()=>{});
-document.getElementById('settingsBtn').addEventListener('click',()=>{});
-document.getElementById('profileBtn').addEventListener('click',()=>{});
+track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+track.addEventListener('touchmove', e => {
+  let deltaX = e.touches[0].clientX - startX;
+  currentTranslate = prevTranslate + deltaX;
+  if(currentTranslate > 0) currentTranslate = 0;
+  if(currentTranslate < maxTranslate) currentTranslate = maxTranslate;
+  track.style.transform = translateX(${currentTranslate}px);
+});
+track.addEventListener('touchend', e => { prevTranslate = currentTranslate; });
 </script>
 
 </body>
