@@ -1,38 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hide & Seek — Дом</title>
 <style>
-  body{margin:0;font-family:sans-serif;background:#0f1724;color:white;text-align:center;}
-  h1{margin:20px 0 5px;}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(180deg,#041025,#072033);
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100vh;
+  }
+  header{
+    width:100%;
+    max-width:960px;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  header h1{
+    font-size:24px;
+    margin:0;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+  .coin-panel{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:linear-gradient(180deg,#0f1724,#142b42);
+    padding:10px 15px;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.5);
+  }
+  .coin-panel img{
+    width:28px;
+    height:28px;
+  }
+  .coin-panel .val{
+    font-weight:700;
+    font-size:18px;
+  }
+
   .house{
     position:relative;
-    width:640px; /* ширина твоей картинки */
-    height:360px; /* высота твоей картинки */
-    margin:20px auto;
-    background:url('house.png') no-repeat center/cover; /* <-- твоя картинка */
-    border:3px solid #333;
+    width:640px;
+    height:360px;
+    background:url('house.png') no-repeat center/cover;
+    margin-top:10px;
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    overflow:hidden;
   }
+
   .room{
     position:absolute;
     border:2px solid transparent;
     cursor:pointer;
+    transition:all 0.2s ease;
+    border-radius:8px;
   }
-  .room.selected{ border:2px solid cyan; }
-  .room.found{ border:2px solid red; }
-  .room.safe{ border:2px solid lime; }
-  button{margin-top:15px;padding:10px 15px;font-size:16px;cursor:pointer;border:none;border-radius:8px;background:linear-gradient(180deg,#7dd3fc,#17b4df);}
-  #log{margin-top:15px;font-size:16px;}
+  .room.selected{ border:2px solid #7dd3fc; box-shadow:0 0 12px #7dd3fc;}
+  .room.found{ border:3px solid #ef4444; box-shadow:0 0 20px #ef4444;}
+  .room.safe{ border:3px solid #16a34a; box-shadow:0 0 20px #16a34a;}
+
+  .controls{
+    width:100%;
+    max-width:960px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-top:15px;
+    flex-wrap:wrap;
+  }
+  button{
+    padding:12px 20px;
+    font-size:16px;
+    font-weight:700;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:linear-gradient(180deg,#7dd3fc,#17b4df);
+    color:#012;
+    box-shadow:0 6px 18px rgba(18,80,100,0.2);
+    transition:transform 0.15s ease;
+  }
+  button:active{transform:scale(0.95);}
+  button.secondary{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.15);
+    color:#94a3b8;
+    box-shadow:none;
+  }
+
+  #log{
+    margin-top:12px;
+    padding:12px;
+    border-radius:10px;
+    background:rgba(0,0,0,0.3);
+    min-height:46px;
+    font-size:16px;
+    width:100%;
+    max-width:960px;
+    text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  @media(max-width:720px){
+    .house{ width:90%; height:auto; aspect-ratio:16/9;}
+  }
 </style>
 </head>
 <body>
-<h1>Прятки в доме</h1>
-<p>Выбери комнату и нажми «Начать раунд»</p>
+<header>
+  <h1>Hide & Seek</h1>
+  <div class="coin-panel">
+    <img src="coin.png" alt="Монета">
+    <div class="val" id="coinsVal">5000</div>
+  </div>
+</header>
 
 <div class="house">
-  <!-- 8 комнат: укажи top/left/width/height под свою картинку -->
+  <!-- 8 комнат -->
   <div class="room" data-idx="0" style="top:20px; left:20px; width:100px; height:100px;"></div>
   <div class="room" data-idx="1" style="top:20px; left:140px; width:100px; height:100px;"></div>
   <div class="room" data-idx="2" style="top:20px; left:260px; width:100px; height:100px;"></div>
@@ -43,41 +137,57 @@
   <div class="room" data-idx="7" style="top:180px; left:380px; width:100px; height:100px;"></div>
 </div>
 
-<button id="startBtn">Начать раунд</button>
-<div id="log">Готов к игре</div>
+<div class="controls">
+  <button id="startBtn">Начать раунд</button>
+  <button class="secondary" id="resetBtn">Сбросить баланс</button>
+</div>
+
+<div id="log">Выбери комнату и начни игру</div>
 
 <script>
-  const PENALTY=2000, REWARD=1000;
-  let selectedRoom=null;
-  let coins=5000;
-  
-  const rooms=document.querySelectorAll('.room');
-  rooms.forEach(r=>{
-    r.addEventListener('click',()=>{
-      rooms.forEach(x=>x.classList.remove('selected'));
-      r.classList.add('selected');
-      selectedRoom=parseInt(r.dataset.idx);
-      log('Ты выбрал комнату '+(selectedRoom+1));
-    });
-  });
+const PENALTY=2000, REWARD=1000;
+let selectedRoom=null;
+let coins=5000;
 
-  document.getElementById('startBtn').addEventListener('click',()=>{
-    if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
-    log('Охотник ищет...');
-    let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
-    rooms.forEach(r=>r.classList.remove('found','safe'));
-    if(picks.includes(selectedRoom)){
-      rooms[selectedRoom].classList.add('found');
-      coins-=PENALTY;
-      log('Нашли тебя! -'+PENALTY+' монет. Баланс: '+coins);
-    } else {
-      picks.forEach(i=>rooms[i].classList.add('safe'));
-      coins+=REWARD;
-      log('Охотник не нашёл! +'+REWARD+' монет. Баланс: '+coins);
-    }
-  });
+const rooms=document.querySelectorAll('.room');
+const coinsVal=document.getElementById('coinsVal');
+const logEl=document.getElementById('log');
 
-  function log(t){ document.getElementById('log').textContent=t; }
+rooms.forEach(r=>{
+  r.addEventListener('click',()=>{
+    rooms.forEach(x=>x.classList.remove('selected'));
+    r.classList.add('selected');
+    selectedRoom=parseInt(r.dataset.idx);
+    log('Ты выбрал комнату '+(selectedRoom+1));
+  });
+});
+
+document.getElementById('startBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
+  log('Охотник ищет...');
+  let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
+  rooms.forEach(r=>r.classList.remove('found','safe'));
+  if(picks.includes(selectedRoom)){
+    rooms[selectedRoom].classList.add('found');
+    coins-=PENALTY;
+    log('Нашли тебя! -'+PENALTY+' монет. Баланс: '+coins);
+  } else {
+    picks.forEach(i=>rooms[i].classList.add('safe'));
+    coins+=REWARD;
+    log('Охотник не нашёл! +'+REWARD+' монет. Баланс: '+coins);
+  }
+  coinsVal.textContent=coins;
+});
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('Сбросить баланс до 5000 монет?')){
+    coins=5000;
+    coinsVal.textContent=coins;
+    log('Баланс сброшен.');
+  }
+});
+
+function log(t){ logEl.textContent=t; }
 </script>
 </body>
 </html>
