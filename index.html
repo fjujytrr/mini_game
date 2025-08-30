@@ -35,11 +35,16 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
 .upgrade .price { margin-top:6px; font-weight:700; color:#FFD700; }
 .upgrade .timer { margin-top:4px; font-size:12px; color:#FFD700; }
 
+/* Mining Info */
+.mining-info { margin:10px 0; padding:10px 12px; background:#222; border-radius:14px; width:95%; text-align:center; box-shadow:0 2px 6px rgba(255,215,0,0.2); }
+
 /* Mining Shop */
 #miningShop { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:500px; background:#222; border-radius:16px; padding:16px; box-shadow:0 0 20px rgba(255,215,0,0.5); z-index:200; overflow-y:auto; max-height:80vh; }
 .miners-container { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
-.miner-card { background:#333; color:#FFD700; border-radius:12px; padding:10px; width:45%; display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 2px 6px rgba(255,215,0,0.2); cursor:pointer; transition:transform 0.2s; }
-.miner-card:hover { transform:scale(1.05); }
+.miner-card { background:linear-gradient(145deg,#333,#111); color:#FFD700; border-radius:12px; padding:10px; width:45%; display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(255,215,0,0.2); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; }
+.miner-card:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(255,215,0,0.5);}
+.miner-card h3 { margin:0; font-size:16px; text-align:center; }
+.miner-card p { margin:0; font-size:14px; text-align:center; }
 </style>
 </head>
 <body>
@@ -91,6 +96,11 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
   </div>
 </div>
 
+<!-- Mining Income Display -->
+<div class="mining-info">
+  <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span> / hr
+</div>
+
 <!-- Mining Shop -->
 <div id="miningShop">
   <h2 style="color:#FFD700; text-align:center; margin-bottom:12px;">Mining Shop</h2>
@@ -116,7 +126,6 @@ coinsVal.textContent = coins;
 // апгрейды
 let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize:0, check1:0 };
 let check1Expire = parseInt(localStorage.getItem('check1Expire')) || 0;
-
 const upgradeElements = document.querySelectorAll('.upgrade');
 const check1TimerEl = document.getElementById("check1Timer");
 
@@ -127,16 +136,18 @@ const minersData = [
   {name:"Miner 1", baseIncome:500, basePrice:7000},
   {name:"Miner 2", baseIncome:1788, basePrice:12000},
   {name:"Miner 3", baseIncome:2358, basePrice:15000},
-  {name:"Miner 4", baseIncome:3000, basePrice:18000},
-  {name:"Miner 5", baseIncome:4200, basePrice:25000},
-  {name:"Miner 6", baseIncome:5500, basePrice:35000},
-  {name:"Miner 7", baseIncome:7000, basePrice:45000},
-  {name:"Miner 8", baseIncome:9000, basePrice:60000},
-  {name:"Miner 9", baseIncome:12000, basePrice:80000},
+  {name:"Miner 4", baseIncome:3000, basePrice:20000},
+  {name:"Miner 5", baseIncome:4500, basePrice:25000},
+  {name:"Miner 6", baseIncome:5200, basePrice:30000},
+  {name:"Miner 7", baseIncome:6100, basePrice:35000},
+  {name:"Miner 8", baseIncome:7200, basePrice:40000},
+  {name:"Miner 9", baseIncome:8500, basePrice:45000}
 ];
-let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(m => ({count:0, upgrades:0}));
+let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(m=>({count:0, upgrades:0}));
 
+const miningIncomeValEl = document.getElementById('miningIncomeVal');
 const minersContainer = document.querySelector('.miners-container');
+const miningShop = document.getElementById('miningShop');
 
 function saveGameState() {
   localStorage.setItem('coins', coins);
@@ -144,168 +155,175 @@ function saveGameState() {
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
   localStorage.setItem('check1Expire', check1Expire);
   localStorage.setItem('minersState', JSON.stringify(minersState));
+  localStorage.setItem('lastTime', Date.now());
 }
 
 function updateCoins(val) {
   coins += val;
   if (coins < 0) coins = 0;
   if (coins > maxCoins) maxCoins = coins;
-
   coinsVal.textContent = coins;
   updateLevels();
   updateUpgradePrices();
-  renderMiners();
+  updateMiningIncomeDisplay();
   saveGameState();
 }
 
-function updateUpgradePrices() {
-  upgradeElements.forEach(u => {
+// Mining income
+function getTotalMiningIncome() {
+  return minersState.reduce((sum, m, idx) => sum + m.count * minersData[idx].baseIncome * Math.pow(1.5,m.upgrades),0);
+}
+function updateMiningIncomeDisplay() {
+  miningIncomeValEl.textContent = getTotalMiningIncome().toLocaleString();
+}
+
+// offline coins
+function addOfflineCoins() {
+  const lastTime = parseInt(localStorage.getItem('lastTime')) || Date.now();
+  const now = Date.now();
+  const diffMinutes = Math.floor((now-lastTime)/60000);
+  if(diffMinutes>0){
+    const incomePerMin = getTotalMiningIncome()/60;
+    const offlineCoins = Math.floor(incomePerMin*diffMinutes);
+    if(offlineCoins>0) updateCoins(offlineCoins);
+  }
+  localStorage.setItem('lastTime', now);
+}
+addOfflineCoins();
+
+// каждую минуту добавляем монеты
+setInterval(()=>{
+  const incomePerMin = getTotalMiningIncome()/60;
+  updateCoins(Math.floor(incomePerMin));
+},60000);
+
+// уровни
+function updateLevels(){
+  const levels = document.querySelectorAll('.level');
+  levels.forEach(l=>l.classList.remove('active'));
+  for(let i=0;i<levels.length;i++){
+    if(maxCoins >= parseInt(levels[i].dataset.val)) levels[i].classList.add('active');
+  }
+}
+
+// апгрейды
+function updateUpgradePrices(){
+  upgradeElements.forEach(u=>{
     const key = u.dataset.key;
     const base = parseInt(u.dataset.basePrice);
-    const count = upgrades[key] || 0;
-    const price = base * Math.pow(2, count);
+    const count = upgrades[key]||0;
+    const price = base*Math.pow(2,count);
     u.querySelector('.price').textContent = price.toLocaleString();
   });
 }
+upgradeElements.forEach(u=>{
+  u.addEventListener('click',()=>{
+    const key = u.dataset.key;
+    const base = parseInt(u.dataset.basePrice);
+    const count = upgrades[key]||0;
+    const price = base*Math.pow(2,count);
+    if(coins>=price){
+      upgrades[key]=count+1;
+      updateCoins(-price);
+      if(key==="check1") check1Expire=Date.now()+60000;
+      saveGameState();
+    }else{alert("Not enough coins!")}
+  });
+});
+updateUpgradePrices();
 
-function updateCheck1Timer() {
-  if (check1Expire > Date.now()) {
-    const remaining = Math.floor((check1Expire - Date.now())/1000);
-    check1TimerEl.textContent = "⏳ " + remaining + "s";
-  } else {
-    check1TimerEl.textContent = "";
-  }
+// таймер check1
+function updateCheck1Timer(){
+  if(check1Expire > Date.now()){
+    const remaining = Math.floor((check1Expire-Date.now())/1000);
+    check1TimerEl.textContent="⏳ "+remaining+"s";
+  } else check1TimerEl.textContent="";
 }
-setInterval(updateCheck1Timer, 1000);
+setInterval(updateCheck1Timer,1000);
 
-rooms.forEach(r => {
-  r.addEventListener('click', () => {
-    if (roundInProgress) return;
-    rooms.forEach(x => x.classList.remove('selected'));
+// комнаты
+rooms.forEach(r=>{
+  r.addEventListener('click',()=>{
+    if(roundInProgress) return;
+    rooms.forEach(x=>x.classList.remove('selected'));
     r.classList.add('selected');
-    selectedRoom = parseInt(r.dataset.idx);
+    selectedRoom=parseInt(r.dataset.idx);
   });
 });
 
-document.getElementById('startBtn').addEventListener('click', () => {
-  if (selectedRoom === null) { alert('Pick a room first'); return; }
-  rooms.forEach(r => r.classList.remove('found','safe'));
+document.getElementById('startBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){alert('Pick a room first');return;}
+  rooms.forEach(r=>r.classList.remove('found','safe'));
   rooms[selectedRoom].classList.add('selected');
 });
 
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if (selectedRoom === null) { alert('Pick a room first'); return; }
-
-  roundInProgress = true;
-  const numCheck = (check1Expire > Date.now()) ? 1 : 2;
-  const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, numCheck);
-  rooms.forEach(r => r.classList.remove('found','safe','highlight'));
-
-  let delay = 0;
-  picks.forEach(idx => {
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){alert('Pick a room first');return;}
+  roundInProgress=true;
+  const numCheck=(check1Expire>Date.now())?1:2;
+  const picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numCheck);
+  rooms.forEach(r=>r.classList.remove('found','safe','highlight'));
+  let delay=0;
+  picks.forEach(idx=>{
     const room = rooms[idx];
-    setTimeout(() => { room.classList.add('highlight'); }, delay);
-    setTimeout(() => { room.classList.remove('highlight'); }, delay + 600);
-    delay += 700;
+    setTimeout(()=>{room.classList.add('highlight');}, delay);
+    setTimeout(()=>{room.classList.remove('highlight');}, delay+600);
+    delay+=700;
   });
-
-  setTimeout(() => {
-    let currentPrize = 1000;
-    let currentLoss = -2000;
-
-    if (upgrades.x2Prize > 0) {
-      currentPrize *= Math.pow(2, upgrades.x2Prize);
-      currentLoss *= Math.pow(2, upgrades.x2Prize);
-    }
-
-    if (picks.includes(selectedRoom)) {
+  setTimeout(()=>{
+    let currentPrize=1000, currentLoss=-2000;
+    if(upgrades.x2Prize>0){currentPrize*=Math.pow(2,upgrades.x2Prize);currentLoss*=Math.pow(2,upgrades.x2Prize);}
+    if(picks.includes(selectedRoom)){
       rooms[selectedRoom].classList.add('found');
       updateCoins(currentLoss);
     } else {
       rooms[selectedRoom].classList.add('safe');
       updateCoins(currentPrize);
     }
-
-    selectedRoom = null;
-    rooms.forEach(r => r.classList.remove('selected'));
-    roundInProgress = false;
-  }, delay + 700);
+    selectedRoom=null;
+    rooms.forEach(r=>r.classList.remove('selected'));
+    roundInProgress=false;
+  }, delay+700);
 });
 
-function updateLevels() {
-  const levels = document.querySelectorAll('.level');
-  levels.forEach(l => l.classList.remove('active'));
-  for (let i = 0; i < levels.length; i++) {
-    if (maxCoins >= parseInt(levels[i].dataset.val)) {
-      levels[i].classList.add('active');
-    }
-  }
-}
-updateLevels();
-
-upgradeElements.forEach(u => {
-  u.addEventListener('click', () => {
-    const key = u.dataset.key;
-    const base = parseInt(u.dataset.basePrice);
-    const count = upgrades[key] || 0;
-    const price = base * Math.pow(2, count);
-    if (coins >= price) {
-      upgrades[key] = count + 1;
-      updateCoins(-price);
-
-      if (key === "check1") {
-        check1Expire = Date.now() + 60000;
-      }
-
-      saveGameState();
-    } else {
-      alert("Not enough coins!");
-    }
-  });
-});
-
-function renderMiners() {
-  minersContainer.innerHTML = "";
-  minersData.forEach((m, idx) => {
+// Mining Shop
+function renderMiners(){
+  minersContainer.innerHTML="";
+  minersData.forEach((m,idx)=>{
     const state = minersState[idx];
-    const price = m.basePrice * Math.pow(2, state.count);
-    const income = state.count * m.baseIncome * Math.pow(1.5, state.upgrades);
-
+    const price = m.basePrice*Math.pow(2,state.count);
+    const income = state.count*m.baseIncome*Math.pow(1.5,state.upgrades);
     const minerEl = document.createElement('div');
     minerEl.classList.add('miner-card');
-    minerEl.innerHTML = `
+    minerEl.innerHTML=`
       <h3>${m.name}</h3>
       <p>Income: ${income.toLocaleString()}/hr</p>
       <p>Owned: ${state.count}</p>
       <p>Price: ${price.toLocaleString()}</p>
     `;
-
-    minerEl.addEventListener('click', () => {
-      if (coins >= price) {
-        coins -= price;
-        state.count += 1;
+    minerEl.addEventListener('click',()=>{
+      if(coins>=price){
+        coins-=price;
+        state.count+=1;
         updateCoins(0);
-      } else {
-        alert("Not enough coins!");
-      }
+      } else alert("Not enough coins!");
     });
-
     minersContainer.appendChild(minerEl);
   });
 }
 
-document.getElementById('miningBtn').addEventListener('click', () => {
-  document.getElementById('miningShop').style.display = 'block';
+// кнопки Mining Shop
+document.getElementById('miningBtn').addEventListener('click',()=>{
+  miningShop.style.display='block';
   renderMiners();
 });
-
-document.getElementById('closeMiningShop').addEventListener('click', () => {
-  document.getElementById('miningShop').style.display = 'none';
+document.getElementById('closeMiningShop').addEventListener('click',()=>{
+  miningShop.style.display='none';
 });
 
-updateUpgradePrices();
+updateLevels();
+updateMiningIncomeDisplay();
 updateCheck1Timer();
-renderMiners();
 </script>
 
 </body>
