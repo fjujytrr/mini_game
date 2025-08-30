@@ -14,14 +14,12 @@ html, body {
   overflow:hidden;
   touch-action:none;
 }
-
 body {
   display:flex;
   flex-direction:column;
   align-items:center;
   min-height:100vh;
 }
-
 header {
   width:95%;
   margin:15px 0;
@@ -56,7 +54,6 @@ header h1 {
   object-fit:cover;
   border:1px solid #FFD700;
 }
-
 .house {
   position:relative;
   width:95%;
@@ -88,7 +85,10 @@ header h1 {
 }
 .room.found { border:3px solid #FF4500; box-shadow:0 0 12px #FF4500; }
 .room.safe { border:3px solid #10B981; box-shadow:0 0 12px #10B981; }
-
+.room.highlight {
+  box-shadow: 0 0 20px 4px #FFD700;
+  transition: box-shadow 0.3s ease;
+}
 .controls {
   width:90%;
   display:flex;
@@ -118,7 +118,6 @@ button.secondary {
   box-shadow:0 3px 6px rgba(255,215,0,0.2);
   transition: box-shadow 0.2s ease;
 }
-
 #log {
   margin:6px 0;
   padding:8px;
@@ -131,7 +130,6 @@ button.secondary {
   color:#FFD700;
   box-shadow:0 2px 6px rgba(255,215,0,0.2);
 }
-
 .bottom-menu {
   position:fixed;
   bottom:15px;
@@ -152,7 +150,6 @@ button.secondary {
   margin:0 4px;
   font-size:22px;
 }
-
 .modal {
   display:none;
   position:fixed;
@@ -279,13 +276,13 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   log('Охотник ищет...');
 
   const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, 2);
-  rooms.forEach(r => r.classList.remove('found','safe'));
+  rooms.forEach(r => r.classList.remove('found','safe','highlight'));
 
   let delay = 0;
   picks.forEach(idx => {
     const room = rooms[idx];
-    setTimeout(() => { room.classList.add('selected'); }, delay);
-    setTimeout(() => { room.classList.remove('selected'); }, delay + 600);
+    setTimeout(() => { room.classList.add('highlight'); }, delay);
+    setTimeout(() => { room.classList.remove('highlight'); }, delay + 600);
     delay += 700;
   });
 
@@ -294,15 +291,17 @@ document.getElementById('resetBtn').addEventListener('click', () => {
       rooms[selectedRoom].classList.add('found');
       log('Нашли тебя! -2000 монет');
       updateCoins(-2000);
+
+      selectedRoom = null;
+      rooms.forEach(r => r.classList.remove('selected'));
+      log('Выбери комнату заново');
     } else {
       rooms[selectedRoom].classList.add('safe');
+      rooms[selectedRoom].classList.add('selected'); // сохраняем выбор
       log('Охотник не нашёл! +1000 монет');
       updateCoins(1000);
     }
 
-    selectedRoom = null;
-    rooms.forEach(r => r.classList.remove('selected'));
-    log('Выбери комнату заново');
   }, delay + 700);
 });
 
