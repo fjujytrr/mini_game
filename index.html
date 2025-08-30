@@ -286,10 +286,13 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, 2);
   rooms.forEach(r => r.classList.remove('found','safe'));
 
-  // Охотник ищет — без увеличения комнат
   let delay = 0;
+  // Подсвечиваем комнаты охотника жёлтой рамкой
   picks.forEach(idx => {
-    delay += 700; // просто таймер для последовательности
+    const room = rooms[idx];
+    setTimeout(() => { room.classList.add('selected'); }, delay);
+    setTimeout(() => { room.classList.remove('selected'); }, delay + 600);
+    delay += 700;
   });
 
   setTimeout(() => {
