@@ -39,18 +39,18 @@ header h1{
 .coin-panel .val{
   font-weight:700;
   font-size:18px;
+  transition:all 0.3s ease;
 }
 .house{
   position:relative;
   width:95%;
-  max-width:640px;
-  aspect-ratio:16/9;
+  max-width:400px;
   margin:15px 0;
   border-radius:12px;
   background:linear-gradient(135deg,#1e293b,#334155);
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  grid-template-rows:repeat(2,1fr);
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:repeat(4,1fr);
   gap:8px;
   padding:8px;
   box-shadow:0 6px 20px rgba(0,0,0,0.6);
@@ -63,17 +63,26 @@ header h1{
   align-items:center;
   justify-content:center;
   font-weight:700;
-  font-size:24px;
+  font-size:28px;
   cursor:pointer;
   transition:all 0.2s ease;
+  position:relative;
 }
 .room.selected{ border:2px solid #7dd3fc; box-shadow:0 0 10px #7dd3fc;}
-.room.found{ border:3px solid #ef4444; box-shadow:0 0 16px #ef4444;}
-.room.safe{ border:3px solid #16a34a; box-shadow:0 0 16px #16a34a;}
+.room.found{ border:3px solid #ef4444; box-shadow:0 0 16px #ef4444; animation:blinkRed 0.5s 3;}
+.room.safe{ border:3px solid #16a34a; box-shadow:0 0 16px #16a34a; animation:blinkGreen 0.5s 3;}
+
+@keyframes blinkRed{
+  0%,100%{ background:#475569; }
+  50%{ background:#ef4444; }
+}
+@keyframes blinkGreen{
+  0%,100%{ background:#475569; }
+  50%{ background:#16a34a; }
+}
 
 .controls{
   width:95%;
-  max-width:960px;
   display:flex;
   justify-content:center;
   gap:10px;
@@ -108,13 +117,11 @@ button.secondary{
   min-height:40px;
   font-size:14px;
   width:95%;
-  max-width:960px;
   text-align:center;
   box-shadow:0 3px 15px rgba(0,0,0,0.5);
 }
 .bottom-menu{
   width:95%;
-  max-width:960px;
   display:flex;
   justify-content:space-around;
   margin-top:10px;
@@ -185,9 +192,9 @@ button.secondary{
   <div class="room" data-idx="7">+</div>
 </div>
 
-<div class="controls">
-  <button id="startBtn">Начать раунд</button>
-  <button class="secondary" id="resetBtn">Сбросить комнаты</button>
+<div class="coin-panel">
+  <div class="val" id="coinsVal">5000</div>
+  <img src="logo.png" alt="Монета" id="coinLogo">
 </div>
 
 <div id="log">Выбери комнату и начни игру</div>
@@ -212,6 +219,15 @@ button.secondary{
 <script>
 const rooms=document.querySelectorAll('.room');
 let selectedRoom=null;
+let coins=5000;
+const coinsVal=document.getElementById('coinsVal');
+
+function updateCoins(val){
+  coins+=val;
+  coinsVal.textContent=coins;
+  coinsVal.style.transform='scale(1.3)';
+  setTimeout(()=>{ coinsVal.style.transform='scale(1)'; },300);
+}
 
 rooms.forEach(r=>{
   r.addEventListener('click',()=>{
@@ -227,13 +243,25 @@ document.getElementById('startBtn').addEventListener('click',()=>{
   log('Охотник ищет...');
   let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
   rooms.forEach(r=>r.classList.remove('found','safe'));
-  if(picks.includes(selectedRoom)){
-    rooms[selectedRoom].classList.add('found');
-    log('Нашли тебя! Баланс монет не изменяется');
-  } else {
-    picks.forEach(i=>rooms[i].classList.add('safe'));
-    log('Охотник не нашёл! Баланс монет не изменяется');
-  }
+  
+  let delay=0;
+  picks.forEach(idx=>{
+    setTimeout(()=>{ rooms[idx].classList.add('selected'); }, delay);
+    setTimeout(()=>{ rooms[idx].classList.remove('selected'); }, delay+500);
+    delay+=600;
+  });
+
+  setTimeout(()=>{
+    if(picks.includes(selectedRoom)){
+      rooms[selectedRoom].classList.add('found');
+      log('Нашли тебя! -2000 монет');
+      updateCoins(-2000);
+    } else {
+      rooms[selectedRoom].classList.add('safe');
+      log('Охотник не нашёл! +1000 монет');
+      updateCoins(1000);
+    }
+  }, delay);
 });
 
 document.getElementById('resetBtn').addEventListener('click',()=>{
