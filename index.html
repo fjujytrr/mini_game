@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hide & Seek — Дом</title>
 <style>
-body{
+html, body {
   margin:0;
+  padding:0;
+  overflow:hidden; /* Запрет прокрутки */
   font-family:'Inter',sans-serif;
   background:linear-gradient(180deg,#041025,#072033);
   color:white;
@@ -14,64 +16,67 @@ body{
   flex-direction:column;
   align-items:center;
   min-height:100vh;
-  padding-bottom:70px;
+  padding-bottom:60px;
 }
+
 header{
-  width:100%;
-  padding:10px;
+  width:95%;
+  margin-top:5px;
+  padding:6px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 header h1{
-  font-size:24px;
+  font-size:20px;
   margin:0;
   text-shadow:0 2px 8px rgba(0,0,0,0.6);
 }
 .coin-panel{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:6px;
   background:linear-gradient(180deg,#0f1724,#142b42);
-  padding:6px 12px;
-  border-radius:10px;
+  padding:4px 10px;
+  border-radius:8px;
   box-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
 .coin-panel .val{
   font-weight:700;
-  font-size:18px;
+  font-size:16px;
   transition:all 0.3s ease;
 }
 #coinLogo{
-  width:24px;
-  height:24px;
+  width:20px;
+  height:20px;
   border-radius:50%;
   object-fit:cover;
   border:1px solid #fff;
 }
+
 .house{
   position:relative;
-  width:95%;
-  max-width:400px;
-  margin:15px 0;
-  border-radius:12px;
+  width:90%;
+  max-width:360px;
+  margin:10px 0;
+  border-radius:10px;
   background:linear-gradient(135deg,#1e293b,#334155);
   display:grid;
   grid-template-columns:repeat(2,1fr);
   grid-template-rows:repeat(4,1fr);
-  gap:8px;
-  padding:8px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.6);
+  gap:6px;
+  padding:6px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.6);
 }
 .room{
   background:#475569;
   border:2px solid transparent;
-  border-radius:8px;
+  border-radius:6px;
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:700;
-  font-size:28px;
+  font-size:24px;
   cursor:pointer;
   transition:all 0.2s ease;
   position:relative;
@@ -80,34 +85,28 @@ header h1{
 .room.found{ border:3px solid #ef4444; box-shadow:0 0 16px #ef4444; animation:blinkRed 0.5s 3;}
 .room.safe{ border:3px solid #16a34a; box-shadow:0 0 16px #16a34a; animation:blinkGreen 0.5s 3;}
 
-@keyframes blinkRed{
-  0%,100%{ background:#475569; }
-  50%{ background:#ef4444; }
-}
-@keyframes blinkGreen{
-  0%,100%{ background:#475569; }
-  50%{ background:#16a34a; }
-}
+@keyframes blinkRed{ 0%,100%{ background:#475569; } 50%{ background:#ef4444; } }
+@keyframes blinkGreen{ 0%,100%{ background:#475569; } 50%{ background:#16a34a; } }
 
 .controls{
-  width:95%;
+  width:90%;
   display:flex;
   justify-content:center;
-  gap:10px;
-  margin-bottom:10px;
+  gap:8px;
+  margin-bottom:8px;
   flex-wrap:wrap;
 }
 button{
   flex:1;
-  padding:10px;
-  font-size:16px;
+  padding:8px;
+  font-size:14px;
   font-weight:700;
   border:none;
-  border-radius:10px;
+  border-radius:8px;
   cursor:pointer;
   background:linear-gradient(180deg,#7dd3fc,#17b4df);
   color:#012;
-  box-shadow:0 4px 12px rgba(18,80,100,0.2);
+  box-shadow:0 3px 10px rgba(18,80,100,0.2);
   transition:transform 0.15s ease;
 }
 button:active{transform:scale(0.95);}
@@ -115,19 +114,20 @@ button.secondary{
   background:linear-gradient(180deg,#334155,#1e293b);
   border:1px solid rgba(255,255,255,0.15);
   color:#94a3b8;
-  box-shadow:0 3px 10px rgba(0,0,0,0.4);
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
 }
 #log{
-  margin-top:10px;
-  padding:10px;
-  border-radius:10px;
+  margin-top:6px;
+  padding:6px;
+  border-radius:8px;
   background:rgba(0,0,0,0.3);
-  min-height:40px;
-  font-size:14px;
-  width:95%;
+  min-height:35px;
+  font-size:12px;
+  width:90%;
   text-align:center;
-  box-shadow:0 3px 15px rgba(0,0,0,0.5);
+  box-shadow:0 2px 12px rgba(0,0,0,0.5);
 }
+
 .bottom-menu{
   position:fixed;
   bottom:0;
@@ -135,15 +135,15 @@ button.secondary{
   width:100%;
   display:flex;
   justify-content:space-around;
-  padding:8px 0;
+  padding:6px 0;
   background:linear-gradient(180deg,#1e293b,#334155);
-  gap:5px;
+  gap:4px;
   z-index:100;
   box-shadow:0 -3px 10px rgba(0,0,0,0.5);
 }
 .bottom-menu button{
   flex:1;
-  margin:0 3px;
+  margin:0 2px;
 }
 
 .modal{
@@ -158,27 +158,24 @@ button.secondary{
 }
 .modal-content{
   background:#1e293b;
-  padding:15px;
-  border-radius:12px;
+  padding:12px;
+  border-radius:10px;
   width:90%;
-  max-width:400px;
+  max-width:360px;
   text-align:center;
   max-height:80%;
   overflow-y:auto;
 }
-.modal-content h2{
-  margin-top:0;
-  font-size:20px;
-}
+.modal-content h2{ margin-top:0; font-size:18px; }
 .modal-content .item{
   background:#334155;
-  padding:10px;
-  margin:8px 0;
-  border-radius:8px;
-  font-size:16px;
+  padding:8px;
+  margin:6px 0;
+  border-radius:6px;
+  font-size:14px;
 }
 .modal-content button.close{
-  margin-top:10px;
+  margin-top:8px;
   background:#ef4444;
   color:white;
 }
@@ -190,7 +187,7 @@ button.secondary{
   <h1>Hide & Seek</h1>
   <div class="coin-panel">
     <img src="logo.png" alt="Монета" id="coinLogo">
-    <div class="val" id="coinsVal">5000</div>
+    <div class="val" id="coinsVal">0</div>
   </div>
 </header>
 
@@ -232,11 +229,16 @@ button.secondary{
 <script>
 const rooms=document.querySelectorAll('.room');
 let selectedRoom=null;
-let coins=5000;
-const coinsVal=document.getElementById('coinsVal');
+let coins=0;
+
+// Загружаем монеты из localStorage
+if(localStorage.getItem('coins')) coins=parseInt(localStorage.getItem('coins'));
+document.getElementById('coinsVal').textContent=coins;
 
 function updateCoins(val){
   coins+=val;
+  localStorage.setItem('coins', coins); // сохраняем
+  const coinsVal=document.getElementById('coinsVal');
   coinsVal.textContent=coins;
   coinsVal.style.transform='scale(1.3)';
   setTimeout(()=>{ coinsVal.style.transform='scale(1)'; },300);
@@ -267,7 +269,7 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
   log('Охотник ищет...');
   let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
   rooms.forEach(r=>r.classList.remove('found','safe'));
-
+  
   let delay=0;
   picks.forEach(idx=>{
     setTimeout(()=>{ rooms[idx].classList.add('selected'); }, delay);
