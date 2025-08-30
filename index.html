@@ -30,9 +30,9 @@ header h1{
 .coin-panel{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
   background:linear-gradient(180deg,#0f1724,#142b42);
-  padding:8px 12px;
+  padding:6px 12px;
   border-radius:10px;
   box-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
@@ -40,6 +40,13 @@ header h1{
   font-weight:700;
   font-size:18px;
   transition:all 0.3s ease;
+}
+#coinLogo{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid #fff;
 }
 .house{
   position:relative;
@@ -133,7 +140,6 @@ button.secondary{
   margin:0 3px;
 }
 
-/* Модальное окно магазина */
 .modal{
   display:none;
   position:fixed;
@@ -177,6 +183,7 @@ button.secondary{
 <header>
   <h1>Hide & Seek</h1>
   <div class="coin-panel">
+    <img src="logo.png" alt="Монета" id="coinLogo">
     <div class="val" id="coinsVal">5000</div>
   </div>
 </header>
@@ -192,9 +199,9 @@ button.secondary{
   <div class="room" data-idx="7">+</div>
 </div>
 
-<div class="coin-panel">
-  <div class="val" id="coinsVal">5000</div>
-  <img src="logo.png" alt="Монета" id="coinLogo">
+<div class="controls">
+  <button id="startBtn">Начать раунд</button>
+  <button class="secondary" id="resetBtn">Сбросить комнаты</button>
 </div>
 
 <div id="log">Выбери комнату и начни игру</div>
