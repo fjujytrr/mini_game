@@ -2,150 +2,166 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hide & Seek — Yellow/Black/White</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Hide & Seek — Premium Style</title>
 <style>
 html, body {
   margin:0;
   padding:0;
   font-family:'Inter',sans-serif;
-  background:#404040; /* чёрный фон */
-  color:#FFF; /* белый текст */
+  background:#1a1a1a;
+  color:#fff;
+  overflow:hidden; /* запрещаем скролл */
+  touch-action:none; /* запрещаем свайпы */
+}
+
+body {
   display:flex;
   flex-direction:column;
   align-items:center;
+  justify-content:flex-start;
   min-height:100vh;
-  padding-bottom:90px;
 }
 
 header {
   width:95%;
-  margin-top:10px;
+  margin:15px 0;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 header h1 {
-  font-size:22px;
-  font-weight:700;
-  margin:0;
-  color:#FFD700; /* жёлтый заголовок */
+  font-size:24px;
+  font-weight:800;
+  color:#FFD700;
+  text-shadow:0 0 6px rgba(255,215,0,0.6);
 }
 .coin-panel {
   display:flex;
   align-items:center;
-  gap:6px;
-  background:#222; /* тёмный блок под монеты */
-  padding:6px 12px;
-  border-radius:12px;
+  gap:8px;
+  background:#222;
+  padding:8px 16px;
+  border-radius:16px;
+  box-shadow:0 0 10px rgba(255,215,0,0.4);
 }
 .coin-panel .val {
   font-weight:700;
-  font-size:16px;
-  color:#FFD700; /* жёлтый цвет для монет */
+  font-size:18px;
+  color:#FFD700;
 }
 #coinLogo {
-  width:24px;
-  height:24px;
+  width:28px;
+  height:28px;
   border-radius:50%;
   object-fit:cover;
   border:1px solid #FFD700;
 }
 
+/* Анимация монет */
+@keyframes coinPop {
+  0% { transform: scale(1); opacity:1; }
+  50% { transform: scale(1.5); opacity:0.8; }
+  100% { transform: scale(1); opacity:1; }
+}
+
 .house {
   position:relative;
   width:95%;
-  max-width:460px;
+  max-width:480px;
   margin:20px 0;
-  border-radius:12px;
-  background:#111; /* чёрный блок комнат */
   display:grid;
   grid-template-columns:repeat(2,1fr);
   grid-template-rows:repeat(4,1fr);
-  gap:10px;
-  padding:10px;
-  box-shadow:0 4px 10px rgba(255,215,0,0.2);
+  gap:12px;
 }
 .room {
-  background:#222; /* тёмная комната */
-  border:2px solid transparent;
-  border-radius:10px;
+  background:linear-gradient(145deg,#2a2a2a,#111);
+  border-radius:14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:600;
+  font-weight:700;
   font-size:28px;
   cursor:pointer;
-  transition:all 0.2s ease;
-  color:#FFD700; /* жёлтые + */
+  transition:all 0.25s ease;
+  color:#FFD700;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
-.room.selected { border:2px solid #FFD700; }
-.room.found { border:2px solid #FF4500; } /* можно оставить красный для "пойман" */
-.room.safe { border:2px solid #10B981; }  /* можно оставить зелёный для "счастлив" */
+.room:hover { transform:scale(1.05); box-shadow:0 6px 16px rgba(255,215,0,0.4); }
+.room.selected { border:3px solid #FFD700; animation: glowRoom 0.6s ease-in-out; }
+.room.found { border:3px solid #FF4500; box-shadow:0 0 12px #FF4500; }
+.room.safe { border:3px solid #10B981; box-shadow:0 0 12px #10B981; }
+
+@keyframes glowRoom {
+  0% { box-shadow:0 0 6px rgba(255,215,0,0.2); }
+  50% { box-shadow:0 0 20px rgba(255,215,0,0.6); }
+  100% { box-shadow:0 0 6px rgba(255,215,0,0.2); }
+}
 
 .controls {
   width:90%;
   display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:8px;
+  justify-content:space-between;
+  margin-bottom:15px;
 }
 button {
   flex:1;
+  margin:0 5px;
   padding:14px;
   font-size:16px;
-  font-weight:600;
+  font-weight:700;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  background:#FFD700; /* жёлтая кнопка */
-  color:#000; /* чёрный текст */
-  transition:transform 0.15s ease, background 0.2s ease;
+  color:#000;
+  background:linear-gradient(90deg,#FFD700,#FFC107);
+  box-shadow:0 4px 8px rgba(255,215,0,0.4);
+  transition:transform 0.15s ease, box-shadow 0.2s ease, opacity 0.3s ease, transform 0.3s ease;
+  opacity:0;
+  transform:translateY(20px);
 }
-button:active { transform:scale(0.95); }
+button:active { transform:scale(0.95); box-shadow:0 2px 4px rgba(255,215,0,0.3); }
 button.secondary {
-  background:#2e2e2e; /* чёрная второстепенная */
+  background:#2e2e2e;
   color:#FFD700;
   border:1px solid #FFD700;
+  box-shadow:0 3px 6px rgba(255,215,0,0.2);
 }
 
+body.loaded button { opacity:1; transform:translateY(0); }
+
 #log {
-  margin-top:6px;
-  padding:6px;
-  border-radius:8px;
+  margin:6px 0;
+  padding:8px;
+  border-radius:10px;
   background:#111;
-  min-height:35px;
-  font-size:12px;
+  min-height:40px;
+  font-size:13px;
   width:90%;
   text-align:center;
   color:#FFD700;
+  box-shadow:0 2px 6px rgba(255,215,0,0.2);
 }
 
 .bottom-menu {
   position:fixed;
-  bottom:25px;
-  left:0;
-  width:100%;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:95%;
   display:flex;
   justify-content:space-around;
+  gap:8px;
+  background:#111;
   padding:6px 0;
-  background:#111;
-  gap:4px;
+  border-radius:16px;
+  box-shadow:0 0 12px rgba(255,215,0,0.3);
   z-index:100;
-  box-shadow:0 -2px 8px rgba(255,215,0,0.3);
-}
-.bottom-menu::after {
-  content:'';
-  position:absolute;
-  bottom:-25px;
-  left:0;
-  width:100%;
-  height:25px;
-  background:#111;
 }
 .bottom-menu button {
   flex:1;
-  margin:0 2px;
+  margin:0 4px;
 }
 
 .modal {
@@ -153,38 +169,41 @@ button.secondary {
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background:rgba(0,0,0,0.8);
+  background:rgba(0,0,0,0.85);
   justify-content:center;
   align-items:center;
   z-index:100;
 }
 .modal-content {
-  background:#111;
-  padding:12px;
-  border-radius:12px;
+  background:#1a1a1a;
+  padding:14px;
+  border-radius:16px;
   width:90%;
   max-width:460px;
   text-align:center;
   max-height:80%;
   overflow-y:auto;
   color:#FFD700;
+  box-shadow:0 0 20px rgba(255,215,0,0.4);
 }
 .modal-content h2 {
   margin-top:0;
-  font-size:18px;
-  font-weight:700;
+  font-size:20px;
+  font-weight:800;
 }
 .modal-content .item {
   background:#222;
-  padding:8px;
+  padding:10px;
   margin:6px 0;
-  border-radius:8px;
+  border-radius:10px;
   font-size:14px;
+  box-shadow:0 2px 6px rgba(255,215,0,0.2);
 }
 .modal-content button.close {
-  margin-top:8px;
-  background:#FFD700;
+  margin-top:10px;
+  background:linear-gradient(90deg,#FFD700,#FFC107);
   color:#000;
+  font-weight:700;
 }
 </style>
 </head>
@@ -234,20 +253,22 @@ button.secondary {
 </div>
 
 <script>
+document.body.classList.add('loaded'); // плавное появление кнопок
+
 const rooms=document.querySelectorAll('.room');
 let selectedRoom=null;
 let coins=0;
 
 if(localStorage.getItem('coins')) coins=parseInt(localStorage.getItem('coins'));
-document.getElementById('coinsVal').textContent=coins;
+const coinsVal=document.getElementById('coinsVal');
+coinsVal.textContent=coins;
 
 function updateCoins(val){
   coins+=val;
   localStorage.setItem('coins', coins);
-  const coinsVal=document.getElementById('coinsVal');
   coinsVal.textContent=coins;
-  coinsVal.style.transform='scale(1.2)';
-  setTimeout(()=>{ coinsVal.style.transform='scale(1)'; },300);
+  coinsVal.style.animation='coinPop 0.5s';
+  setTimeout(()=>{ coinsVal.style.animation=''; },500);
 }
 
 function log(t){ document.getElementById('log').textContent=t; }
