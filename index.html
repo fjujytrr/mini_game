@@ -33,6 +33,7 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
 .upgrade h3 { margin:0 0 6px 0; font-size:16px; color:#FFD700; }
 .upgrade p { margin:0; font-size:14px; color:#fff; }
 .upgrade .price { margin-top:6px; font-weight:700; color:#FFD700; }
+.upgrade .timer { margin-top:4px; font-size:12px; color:#FFD700; }
 </style>
 </head>
 <body>
@@ -78,8 +79,9 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
   </div>
   <div class="upgrade" data-key="check1" data-base-price="20000">
     <h3>Check 1 Room Only</h3>
-    <p>Hunter checks 1 room only</p>
+    <p>Hunter checks 1 room only (1 min)</p>
     <div class="price">20,000</div>
+    <div class="timer" id="check1Timer"></div>
   </div>
 </div>
 
@@ -97,12 +99,21 @@ let coins = parseInt(localStorage.getItem('coins')) || 0;
 const coinsVal = document.getElementById('coinsVal');
 coinsVal.textContent = coins;
 
-// Upgrade tracking
-const upgrades = { x2Prize:0, check1:0 };
+// Загружаем апгрейды
+let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize:0, check1:0 };
+let check1Expire = parseInt(localStorage.getItem('check1Expire')) || 0;
+
 const upgradeElements = document.querySelectorAll('.upgrade');
+const check1TimerEl = document.getElementById("check1Timer");
+
+function saveUpgrades() {
+  localStorage.setItem("upgrades", JSON.stringify(upgrades));
+  localStorage.setItem("check1Expire", check1Expire);
+}
 
 function updateCoins(val) {
   coins += val;
+  if (coins < 0) coins = 0;
   localStorage.setItem('coins', coins);
   coinsVal.textContent = coins;
   updateLevels();
@@ -114,11 +125,22 @@ function updateUpgradePrices() {
   upgradeElements.forEach(u => {
     const key = u.dataset.key;
     const base = parseInt(u.dataset.basePrice);
-    const count = upgrades[key];
+    const count = upgrades[key] || 0;
     const price = base * Math.pow(2, count);
     u.querySelector('.price').textContent = price.toLocaleString();
   });
 }
+
+// таймер для check1
+function updateCheck1Timer() {
+  if (check1Expire > Date.now()) {
+    const remaining = Math.floor((check1Expire - Date.now())/1000);
+    check1TimerEl.textContent = "⏳ " + remaining + "s";
+  } else {
+    check1TimerEl.textContent = "";
+  }
+}
+setInterval(updateCheck1Timer, 1000);
 
 rooms.forEach(r => {
   r.addEventListener('click', () => {
@@ -138,7 +160,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   if (selectedRoom === null) { alert('Pick a room first'); return; }
 
   // How many rooms hunter checks
-  const numCheck = upgrades.check1 ? 1 : 2;
+  const numCheck = (check1Expire > Date.now()) ? 1 : 2;
   const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, numCheck);
   rooms.forEach(r => r.classList.remove('found','safe','highlight'));
 
@@ -185,15 +207,26 @@ upgradeElements.forEach(u => {
   u.addEventListener('click', () => {
     const key = u.dataset.key;
     const base = parseInt(u.dataset.basePrice);
-    const price = base * Math.pow(2, upgrades[key]);
+    const count = upgrades[key] || 0;
+    const price = base * Math.pow(2, count);
     if (coins >= price) {
-      upgrades[key]++;
+      upgrades[key] = count + 1;
       updateCoins(-price);
+
+      // если купили check1 — включаем на 1 минуту
+      if (key === "check1") {
+        check1Expire = Date.now() + 60000; // 1 минута
+      }
+
+      saveUpgrades();
     } else {
       alert("Not enough coins!");
     }
   });
 });
+
+updateUpgradePrices();
+updateCheck1Timer();
 </script>
 
 </body>
