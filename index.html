@@ -11,15 +11,14 @@ html, body {
   font-family:'Inter',sans-serif;
   background:#1a1a1a;
   color:#fff;
-  overflow:hidden; 
-  touch-action:none; 
+  overflow:hidden;
+  touch-action:none;
 }
 
 body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:flex-start;
   min-height:100vh;
 }
 
@@ -58,7 +57,6 @@ header h1 {
   border:1px solid #FFD700;
 }
 
-/* анимация выбора комнаты */
 @keyframes roomSelect {
   0% { transform: scale(1); }
   50% { transform: scale(1.2); }
@@ -84,12 +82,15 @@ header h1 {
   font-weight:700;
   font-size:28px;
   cursor:pointer;
-  transition:all 0.25s ease;
+  transition: transform 0.3s ease, box-shadow 0.25s ease;
   color:#FFD700;
   box-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
 .room:hover { transform:scale(1.05); box-shadow:0 6px 16px rgba(255,215,0,0.4); }
-.room.selected { border:3px solid #FFD700; animation:roomSelect 1s ease; }
+.room.selected { 
+  border:3px solid #FFD700; 
+  animation: roomSelect 1s ease; 
+}
 .room.found { border:3px solid #FF4500; box-shadow:0 0 12px #FF4500; }
 .room.safe { border:3px solid #10B981; box-shadow:0 0 12px #10B981; }
 
@@ -110,9 +111,7 @@ button {
   color:#000;
   background:linear-gradient(90deg,#FFD700,#FFC107);
   box-shadow:0 4px 8px rgba(255,215,0,0.4);
-  transition:transform 0.15s ease, box-shadow 0.2s ease, opacity 0.3s ease, transform 0.3s ease;
-  opacity:0;
-  transform:translateY(20px);
+  transition:transform 0.15s ease, box-shadow 0.2s ease;
 }
 button:active { transform:scale(0.95); box-shadow:0 2px 4px rgba(255,215,0,0.3); }
 button.secondary {
@@ -121,8 +120,6 @@ button.secondary {
   border:1px solid #FFD700;
   box-shadow:0 3px 6px rgba(255,215,0,0.2);
 }
-
-body.loaded button { opacity:1; transform:translateY(0); }
 
 #log {
   margin:6px 0;
@@ -247,57 +244,57 @@ body.loaded button { opacity:1; transform:translateY(0); }
 </div>
 
 <script>
-document.body.classList.add('loaded'); 
+const rooms = document.querySelectorAll('.room');
+let selectedRoom = null;
+let coins = parseInt(localStorage.getItem('coins')) || 0;
+const coinsVal = document.getElementById('coinsVal');
+coinsVal.textContent = coins;
 
-const rooms=document.querySelectorAll('.room');
-let selectedRoom=null;
-let coins=0;
-
-if(localStorage.getItem('coins')) coins=parseInt(localStorage.getItem('coins'));
-const coinsVal=document.getElementById('coinsVal');
-coinsVal.textContent=coins;
-
-function updateCoins(val){
-  coins+=val;
+function updateCoins(val) {
+  coins += val;
   localStorage.setItem('coins', coins);
-  coinsVal.textContent=coins;
-  coinsVal.style.animation='coinPop 0.5s';
-  setTimeout(()=>{ coinsVal.style.animation=''; },500);
+  coinsVal.textContent = coins;
 }
 
-function log(t){ document.getElementById('log').textContent=t; }
+function log(t) {
+  document.getElementById('log').textContent = t;
+}
 
-rooms.forEach(r=>{
-  r.addEventListener('click',()=>{
-    rooms.forEach(x=>x.classList.remove('selected'));
+// Выбор комнаты
+rooms.forEach(r => {
+  r.addEventListener('click', () => {
+    rooms.forEach(x => x.classList.remove('selected'));
     r.classList.add('selected');
-    selectedRoom=parseInt(r.dataset.idx);
-    log('Ты выбрал комнату '+(selectedRoom+1));
+    selectedRoom = parseInt(r.dataset.idx);
+    log('Ты выбрал комнату ' + (selectedRoom + 1));
   });
 });
 
-document.getElementById('startBtn').addEventListener('click',()=>{
-  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
-  rooms.forEach(r=>r.classList.remove('selected','found','safe'));
+// Кнопка "Выбрать комнату"
+document.getElementById('startBtn').addEventListener('click', () => {
+  if (selectedRoom === null) { alert('Сначала выбери комнату'); return; }
+  rooms.forEach(r => r.classList.remove('found','safe'));
   rooms[selectedRoom].classList.add('selected');
-  log('Ты выбрал комнату '+(selectedRoom+1));
+  log('Ты выбрал комнату ' + (selectedRoom + 1));
 });
 
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
+// Кнопка "Вызвать охотника"
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (selectedRoom === null) { alert('Сначала выбери комнату'); return; }
   log('Охотник ищет...');
-  let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
-  rooms.forEach(r=>r.classList.remove('found','safe'));
   
-  let delay=0;
-  picks.forEach(idx=>{
-    setTimeout(()=>{ rooms[idx].classList.add('selected'); }, delay);
-    setTimeout(()=>{ rooms[idx].classList.remove('selected'); }, delay+500);
-    delay+=600;
+  const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, 2);
+  rooms.forEach(r => r.classList.remove('found','safe'));
+
+  // Показываем выбор охотника без дергания остальных комнат
+  picks.forEach(idx => {
+    const room = rooms[idx];
+    room.classList.add('selected');
+    setTimeout(() => room.classList.remove('selected'), 500);
   });
 
-  setTimeout(()=>{
-    if(picks.includes(selectedRoom)){
+  setTimeout(() => {
+    if (picks.includes(selectedRoom)) {
       rooms[selectedRoom].classList.add('found');
       log('Нашли тебя! -2000 монет');
       updateCoins(-2000);
@@ -306,12 +303,13 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
       log('Охотник не нашёл! +1000 монет');
       updateCoins(1000);
     }
-  }, delay);
+  }, 600);
 });
 
-const shopModal=document.getElementById('shopModal');
-document.getElementById('shopBtn').addEventListener('click',()=>{ shopModal.style.display='flex'; });
-document.getElementById('closeShop').addEventListener('click',()=>{ shopModal.style.display='none'; });
+// Модальные окна
+const shopModal = document.getElementById('shopModal');
+document.getElementById('shopBtn').addEventListener('click', () => shopModal.style.display='flex');
+document.getElementById('closeShop').addEventListener('click', () => shopModal.style.display='none');
 
 document.getElementById('infoBtn').addEventListener('click',()=>{ log('Информация о игре'); });
 document.getElementById('settingsBtn').addEventListener('click',()=>{ log('Настройки игры'); });
