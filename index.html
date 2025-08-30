@@ -14,6 +14,7 @@ body{
   flex-direction:column;
   align-items:center;
   min-height:100vh;
+  padding-bottom:70px;
 }
 header{
   width:100%;
@@ -128,12 +129,17 @@ button.secondary{
   box-shadow:0 3px 15px rgba(0,0,0,0.5);
 }
 .bottom-menu{
-  width:95%;
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
   display:flex;
   justify-content:space-around;
-  margin-top:10px;
-  margin-bottom:15px;
+  padding:8px 0;
+  background:linear-gradient(180deg,#1e293b,#334155);
   gap:5px;
+  z-index:100;
+  box-shadow:0 -3px 10px rgba(0,0,0,0.5);
 }
 .bottom-menu button{
   flex:1;
@@ -200,8 +206,8 @@ button.secondary{
 </div>
 
 <div class="controls">
-  <button id="startBtn">Начать раунд</button>
-  <button class="secondary" id="resetBtn">Сбросить комнаты</button>
+  <button id="startBtn">Выбрать комнату</button>
+  <button class="secondary" id="resetBtn">Вызвать охотника</button>
 </div>
 
 <div id="log">Выбери комнату и начни игру</div>
@@ -245,7 +251,7 @@ rooms.forEach(r=>{
   });
 });
 
-document.getElementById('startBtn').addEventListener('click',()=>{
+document.getElementById('resetBtn').addEventListener('click',()=>{
   if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
   log('Охотник ищет...');
   let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
@@ -271,22 +277,13 @@ document.getElementById('startBtn').addEventListener('click',()=>{
   }, delay);
 });
 
-document.getElementById('resetBtn').addEventListener('click',()=>{
+document.getElementById('startBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
   rooms.forEach(r=>r.classList.remove('selected','found','safe'));
-  selectedRoom=null;
-  log('Комнаты сброшены');
+  rooms[selectedRoom].classList.add('selected');
+  log('Ты выбрал комнату '+(selectedRoom+1));
 });
 
 function log(t){ document.getElementById('log').textContent=t; }
 
-const shopModal=document.getElementById('shopModal');
-document.getElementById('shopBtn').addEventListener('click',()=>{ shopModal.style.display='flex'; });
-document.getElementById('closeShop').addEventListener('click',()=>{ shopModal.style.display='none'; });
-
-document.getElementById('infoBtn').addEventListener('click',()=>{ log('Информация о игре') });
-document.getElementById('settingsBtn').addEventListener('click',()=>{ log('Настройки игры') });
-document.getElementById('profileBtn').addEventListener('click',()=>{ log('Профиль игрока') });
-</script>
-
-</body>
-</html>
+const shopModal=document.getElement
