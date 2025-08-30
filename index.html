@@ -116,7 +116,6 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
 </div>
 
 <script>
-// ======== Основные переменные ========
 const rooms = document.querySelectorAll('.room');
 let selectedRoom = null;
 let coins = parseInt(localStorage.getItem('coins')) || 0;
@@ -132,10 +131,10 @@ const check1TimerEl = document.getElementById("check1Timer");
 
 let roundInProgress = false;
 
-// ======== Майнеры ========
+// майнеры
 const minersData = [
   {name:"Miner 1", baseIncome:500, basePrice:7000},
-  {name:"Miner 2", baseIncome:1788, basePrice:10000},
+  {name:"Miner 2", baseIncome:1788, basePrice:12000},
   {name:"Miner 3", baseIncome:2358, basePrice:15000},
   {name:"Miner 4", baseIncome:3000, basePrice:20000},
   {name:"Miner 5", baseIncome:4500, basePrice:25000},
@@ -150,7 +149,6 @@ const miningIncomeValEl = document.getElementById('miningIncomeVal');
 const minersContainer = document.querySelector('.miners-container');
 const miningShop = document.getElementById('miningShop');
 
-// ======== Сохранение ========
 function saveGameState() {
   localStorage.setItem('coins', coins);
   localStorage.setItem('maxCoins', maxCoins);
@@ -160,7 +158,6 @@ function saveGameState() {
   localStorage.setItem('lastTime', Date.now());
 }
 
-// ======== Обновление монет ========
 function updateCoins(val) {
   coins += val;
   if (coins < 0) coins = 0;
@@ -172,7 +169,7 @@ function updateCoins(val) {
   saveGameState();
 }
 
-// ======== Доход от майнеров ========
+// Mining income
 function getTotalMiningIncome() {
   return minersState.reduce((sum, m, idx) => sum + m.count * minersData[idx].baseIncome * Math.pow(1.5,m.upgrades),0);
 }
@@ -180,31 +177,27 @@ function updateMiningIncomeDisplay() {
   miningIncomeValEl.textContent = getTotalMiningIncome().toLocaleString();
 }
 
-// ======== Оффлайн-доход (макс 3 часа) ========
+// offline coins
 function addOfflineCoins() {
   const lastTime = parseInt(localStorage.getItem('lastTime')) || Date.now();
   const now = Date.now();
-  let diffMinutes = Math.floor((now-lastTime)/60000);
-  if(diffMinutes > 180) diffMinutes = 180; // максимум 3 часа
+  const diffMinutes = Math.floor((now-lastTime)/60000);
   if(diffMinutes>0){
     const incomePerMin = getTotalMiningIncome()/60;
     const offlineCoins = Math.floor(incomePerMin*diffMinutes);
-    if(offlineCoins>0) {
-      updateCoins(offlineCoins);
-      alert(💰 Your miners earned ${offlineCoins.toLocaleString()} coins while you were away (${diffMinutes} min)!);
-    }
+    if(offlineCoins>0) updateCoins(offlineCoins);
   }
   localStorage.setItem('lastTime', now);
 }
 addOfflineCoins();
 
-// ======== Постоянное начисление ========
+// каждую минуту добавляем монеты
 setInterval(()=>{
   const incomePerMin = getTotalMiningIncome()/60;
   updateCoins(Math.floor(incomePerMin));
 },60000);
 
-// ======== Уровни ========
+// уровни
 function updateLevels(){
   const levels = document.querySelectorAll('.level');
   levels.forEach(l=>l.classList.remove('active'));
@@ -213,7 +206,7 @@ function updateLevels(){
   }
 }
 
-// ======== Апгрейды ========
+// апгрейды
 function updateUpgradePrices(){
   upgradeElements.forEach(u=>{
     const key = u.dataset.key;
@@ -239,7 +232,7 @@ upgradeElements.forEach(u=>{
 });
 updateUpgradePrices();
 
-// ======== Таймер check1 ========
+// таймер check1
 function updateCheck1Timer(){
   if(check1Expire > Date.now()){
     const remaining = Math.floor((check1Expire-Date.now())/1000);
@@ -248,7 +241,7 @@ function updateCheck1Timer(){
 }
 setInterval(updateCheck1Timer,1000);
 
-// ======== Комнаты ========
+// комнаты
 rooms.forEach(r=>{
   r.addEventListener('click',()=>{
     if(roundInProgress) return;
@@ -257,11 +250,13 @@ rooms.forEach(r=>{
     selectedRoom=parseInt(r.dataset.idx);
   });
 });
+
 document.getElementById('startBtn').addEventListener('click',()=>{
   if(selectedRoom===null){alert('Pick a room first');return;}
   rooms.forEach(r=>r.classList.remove('found','safe'));
   rooms[selectedRoom].classList.add('selected');
 });
+
 document.getElementById('resetBtn').addEventListener('click',()=>{
   if(selectedRoom===null){alert('Pick a room first');return;}
   roundInProgress=true;
@@ -291,7 +286,7 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
   }, delay+700);
 });
 
-// ======== Mining Shop ========
+// Mining Shop
 function renderMiners(){
   minersContainer.innerHTML="";
   minersData.forEach((m,idx)=>{
