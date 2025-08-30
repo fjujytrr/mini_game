@@ -278,4 +278,26 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
   setTimeout(()=>{
     if(picks.includes(selectedRoom)){
       rooms[selectedRoom].classList.add('found');
-      log('Нашли тебя!
+      log('Нашли тебя! -2000 монет');
+      updateCoins(-2000);
+    } else {
+      rooms[selectedRoom].classList.add('safe');
+      log('Охотник не нашёл! +1000 монет');
+      updateCoins(1000);
+    }
+  }, delay);
+});
+
+// Магазин
+const shopModal=document.getElementById('shopModal');
+document.getElementById('shopBtn').addEventListener('click',()=>{ shopModal.style.display='flex'; });
+document.getElementById('closeShop').addEventListener('click',()=>{ shopModal.style.display='none'; });
+
+// Нижнее меню
+document.getElementById('infoBtn').addEventListener('click',()=>{ log('Информация о игре'); });
+document.getElementById('settingsBtn').addEventListener('click',()=>{ log('Настройки игры'); });
+document.getElementById('profileBtn').addEventListener('click',()=>{ log('Профиль игрока'); });
+</script>
+
+</body>
+</html>
