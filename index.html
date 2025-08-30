@@ -5,44 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Hide & Seek — Premium Emoji</title>
 <style>
-html,body{margin:0;padding:0;font-family:'Inter',sans-serif;background:#1a1a1a;color:#fff;overflow:hidden;touch-action:none;}
-body{display:flex;flex-direction:column;align-items:center;min-height:100vh;}
-header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;}
-.level-bar{display:flex;gap:6px;background:#222;padding:6px 10px;border-radius:12px;flex:1;justify-content:space-between;}
-.level{flex:1;text-align:center;padding:6px 0;font-size:14px;font-weight:700;color:#555;border-radius:8px;background:#333;transition: all 0.5s ease;cursor:pointer;}
-.level.active{background:#FFD700;color:#000;box-shadow:0 0 12px rgba(255,215,0,0.7);}
-.coin-panel{display:flex;align-items:center;gap:8px;background:#222;padding:8px 16px;border-radius:16px;box-shadow:0 0 10px rgba(255,215,0,0.4);}
-.coin-panel .val{font-weight:700;font-size:18px;color:#FFD700;}
-#coinLogo{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid #FFD700;}
-.house{position:relative;width:95%;max-width:480px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px;}
-.room{background:linear-gradient(145deg,#2a2a2a,#111);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;cursor:pointer;transition: box-shadow 0.25s ease;color:#FFD700;box-shadow:0 4px 12px rgba(0,0,0,0.5);}
-.room:hover{box-shadow:0 6px 16px rgba(255,215,0,0.4);}
-.room.selected{border:3px solid #FFD700;}
-.room.found{border:3px solid #FF4500;box-shadow:0 0 12px #FF4500;}
-.room.safe{border:3px solid #10B981;box-shadow:0 0 12px #10B981;}
-.room.highlight{box-shadow:0 0 20px 4px #FFD700;transition: box-shadow 0.3s ease;}
-.controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px;}
-button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:linear-gradient(90deg,#FFD700,#FFC107);box-shadow:0 4px 8px rgba(255,215,0,0.4);transition: box-shadow 0.2s ease;}
-button:active{box-shadow:0 2px 4px rgba(255,215,0,0.3);}
-button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-shadow:0 3px 6px rgba(255,215,0,0.2);transition: box-shadow 0.2s ease;}
-.bottom-menu{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);width:95%;display:flex;justify-content:space-around;gap:8px;background:#111;padding:6px 0;border-radius:16px;box-shadow:0 0 12px rgba(255,215,0,0.3);z-index:100;}
-.bottom-menu button{flex:1;margin:0 4px;font-size:22px;}
-.upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:10px;width:95%;}
-.upgrade{flex:0 0 auto;background:#222;padding:12px;border-radius:14px;text-align:center;min-width:150px;cursor:pointer;box-shadow:0 2px 6px rgba(255,215,0,0.2);}
-.upgrade h3{margin:0 0 6px 0;font-size:16px;color:#FFD700;}
-.upgrade p{margin:0;font-size:14px;color:#fff;}
-.upgrade .price{margin-top:6px;font-weight:700;color:#FFD700;}
-.upgrade .timer{margin-top:4px;font-size:12px;color:#FFD700;}
-#incomePerHour{margin:6px 0;font-size:16px;color:#10B981;font-weight:700;text-align:center;}
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:200;padding:20px;overflow-y:auto;}
-#minersContainer{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
-.miner-card{background:#222;padding:12px;border-radius:12px;width:150px;text-align:center;cursor:pointer;box-shadow:0 2px 6px rgba(255,215,0,0.3);transition:0.3s;}
-.miner-card:hover{transform:scale(1.05);box-shadow:0 4px 10px rgba(255,215,0,0.6);}
-#profilePanel{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:300;padding:20px;overflow-y:auto;}
-.profile-section{margin-bottom:20px;}
+html, body { margin:0; padding:0; font-family:'Inter',sans-serif; background:#1a1a1a; color:#fff; overflow:hidden; touch-action:none;}
+body { display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+header { width:95%; margin:15px 0; display:flex; justify-content:space-between; align-items:center; }
+.level-bar { display:flex; gap:6px; background:#222; padding:6px 10px; border-radius:12px; flex:1; justify-content:space-between; }
+.level { flex:1; text-align:center; padding:6px 0; font-size:14px; font-weight:700; color:#555; border-radius:8px; background:#333; transition: all 0.5s ease; cursor:pointer; }
+.level.active { background:#FFD700; color:#000; box-shadow:0 0 12px rgba(255,215,0,0.7); }
+.coin-panel { display:flex; align-items:center; gap:8px; background:#222; padding:8px 16px; border-radius:16px; box-shadow:0 0 10px rgba(255,215,0,0.4); }
+.coin-panel .val { font-weight:700; font-size:18px; color:#FFD700; }
+#coinLogo { width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid #FFD700; }
+.house { position:relative; width:95%; max-width:480px; margin:20px 0; display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(4,1fr); gap:12px; }
+.room { background:linear-gradient(145deg,#2a2a2a,#111); border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:28px; cursor:pointer; transition: box-shadow 0.25s ease; color:#FFD700; box-shadow:0 4px 12px rgba(0,0,0,0.5); }
+.room:hover { box-shadow:0 6px 16px rgba(255,215,0,0.4); }
+.room.selected { border:3px solid #FFD700; }
+.room.found { border:3px solid #FF4500; box-shadow:0 0 12px #FF4500; }
+.room.safe { border:3px solid #10B981; box-shadow:0 0 12px #10B981; }
+.room.highlight { box-shadow:0 0 20px 4px #FFD700; transition: box-shadow 0.3s ease; }
+.controls { width:90%; display:flex; justify-content:space-between; margin-bottom:15px; }
+button { flex:1; margin:0 5px; padding:14px; font-size:20px; border:none; border-radius:12px; cursor:pointer; color:#000; background:linear-gradient(90deg,#FFD700,#FFC107); box-shadow:0 4px 8px rgba(255,215,0,0.4); transition: box-shadow 0.2s ease; }
+button:active { box-shadow:0 2px 4px rgba(255,215,0,0.3); }
+button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; box-shadow:0 3px 6px rgba(255,215,0,0.2); transition: box-shadow 0.2s ease; }
+.bottom-menu { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); width:95%; display:flex; justify-content:space-around; gap:8px; background:#111; padding:6px 0; border-radius:16px; box-shadow:0 0 12px rgba(255,215,0,0.3); z-index:100; }
+.bottom-menu button { flex:1; margin:0 4px; font-size:22px; }
+/* Upgrade panel */
+.upgrade-panel { display:flex; gap:12px; margin:10px 0; overflow-x:auto; padding:10px; width:95%; }
+.upgrade { flex:0 0 auto; background:#222; padding:12px; border-radius:14px; text-align:center; min-width:150px; cursor:pointer; box-shadow:0 2px 6px rgba(255,215,0,0.2); }
+.upgrade h3 { margin:0 0 6px 0; font-size:16px; color:#FFD700; }
+.upgrade p { margin:0; font-size:14px; color:#fff; }
+.upgrade .price { margin-top:6px; font-weight:700; color:#FFD700; }
+.upgrade .timer { margin-top:4px; font-size:12px; color:#FFD700; }
+
+/* Mining Info */
+.mining-info { margin:10px 0; padding:10px 12px; background:#222; border-radius:14px; width:95%; text-align:center; box-shadow:0 2px 6px rgba(255,215,0,0.2); }
+
+/* Mining Shop */
+#miningShop { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:500px; background:#222; border-radius:16px; padding:16px; box-shadow:0 0 20px rgba(255,215,0,0.5); z-index:200; overflow-y:auto; max-height:80vh; }
+.miners-container { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+.miner-card { background:linear-gradient(145deg,#333,#111); color:#FFD700; border-radius:12px; padding:10px; width:45%; display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(255,215,0,0.2); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; }
+.miner-card:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(255,215,0,0.5);}
+.miner-card h3 { margin:0; font-size:16px; text-align:center; }
+.miner-card p { margin:0; font-size:14px; text-align:center; }
+
+/* Info Modal */
+#infoModal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:90%; max-width:400px; background:#222; border-radius:16px; padding:16px; box-shadow:0 0 20px rgba(255,215,0,0.5); z-index:300; color:#FFD700; max-height:80vh; overflow-y:auto; }
+#infoModal h2 { text-align:center; margin-bottom:12px; }
+#infoModal button { margin-top:12px; width:100%; padding:12px; font-size:18px; border:none; border-radius:12px; background:#FFD700; color:#000; cursor:pointer; }
 </style>
 </head>
 <body>
+
 <header>
   <div class="level-bar">
     <div class="level" data-val="10000">10K</div>
@@ -89,29 +100,26 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   </div>
 </div>
 
-<div id="incomePerHour">Income: 0 coins/hr</div>
-
-<div id="miningShop">
-  <button id="closeMiningShop" class="secondary">Close</button>
-  <h2 style="color:#FFD700;">Mining Shop</h2>
-  <div id="minersContainer"></div>
+<div class="mining-info">
+  <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span> / hr
 </div>
 
-<div id="profilePanel">
-  <button id="closeProfileBtn" class="secondary">Close</button>
-  <h2 style="color:#FFD700;">Profile</h2>
-  <div class="profile-section">
-    <p id="dailyBonusText"></p>
-    <button id="collectDailyBtn">Collect Daily Bonus (5000)</button>
-  </div>
-  <div class="profile-section">
-    <p>Quest: Subscribe to <a href="https://youtube.com/@zexshadows?si=svpyMyUhhiPO8Yj-" target="_blank">YouTube</a></p>
-    <button id="quest1Btn">Claim 10,000 coins</button>
-  </div>
-  <div class="profile-section">
-    <input type="text" id="refLink" readonly style="width:80%;">
-    <button id="copyRefBtn">Copy Referral</button>
-  </div>
+<div id="miningShop">
+  <h2 style="color:#FFD700; text-align:center; margin-bottom:12px;">Mining Shop</h2>
+  <div class="miners-container"></div>
+  <button id="closeMiningShop">Close</button>
+</div>
+
+<div id="infoModal">
+  <h2>Game Rules</h2>
+  <p>🎯 Pick safe rooms in the house. Avoid being found!</p>
+  <p>💰 Earn coins via playing and miners in Mining Shop.</p>
+  <p>⛏ Miners generate coins per hour, even offline (max 3h).</p>
+  <p>💎 Upgrade miners to increase income.</p>
+  <p>📈 Total mining income per hour is shown under upgrades.</p>
+  <p>🛒 Mining Shop contains all miners. Buy, upgrade, combine them to maximize income.</p>
+  <p>⚡ Each purchase doubles the price!</p>
+  <button id="closeInfoModal">Close</button>
 </div>
 
 <div class="bottom-menu">
@@ -122,32 +130,152 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', () => {
 
-// ====== GAME STATE ======
-const rooms=document.querySelectorAll('.room');
-let selectedRoom=null;
-let coins=parseInt(localStorage.getItem('coins'))||0;
-let maxCoins=parseInt(localStorage.getItem('maxCoins'))||coins;
-let upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0,check1:0};
-let check1Expire=parseInt(localStorage.getItem('check1Expire'))||0;
-let lastOffline=parseInt(localStorage.getItem('lastOffline'))||Date.now();
+const rooms = document.querySelectorAll('.room');
+let selectedRoom = null;
+let coins = parseInt(localStorage.getItem('coins'))||0;
+let maxCoins = parseInt(localStorage.getItem('maxCoins'))||coins;
+const coinsVal = document.getElementById('coinsVal');
+coinsVal.textContent = coins;
 
-const coinsVal=document.getElementById('coinsVal');
-coinsVal.textContent=coins;
+let upgrades = JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0, check1:0};
+let check1Expire = parseInt(localStorage.getItem('check1Expire'))||0;
 
+const upgradeElements = document.querySelectorAll('.upgrade');
+const check1TimerEl = document.getElementById("check1Timer");
+
+let roundInProgress=false;
+
+// ======== Майнеры ========
+const minersData=[
+  {name:"Miner 1", baseIncome:500, basePrice:7000},
+  {name:"Miner 2", baseIncome:1788, basePrice:10000},
+  {name:"Miner 3", baseIncome:2358, basePrice:15000},
+  {name:"Miner 4", baseIncome:3000, basePrice:20000},
+  {name:"Miner 5", baseIncome:4500, basePrice:25000},
+  {name:"Miner 6", baseIncome:5200, basePrice:30000},
+  {name:"Miner 7", baseIncome:6100, basePrice:35000},
+  {name:"Miner 8", baseIncome:7200, basePrice:40000},
+  {name:"Miner 9", baseIncome:8500, basePrice:45000}
+];
+let minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(m=>({count:0, upgrades:0}));
+const miningIncomeValEl=document.getElementById('miningIncomeVal');
+const minersContainer=document.querySelector('.miners-container');
+const miningShop=document.getElementById('miningShop');
+
+// ======== Сохранение ========
 function saveGameState(){
-  localStorage.setItem('coins',coins);
-  localStorage.setItem('maxCoins',maxCoins);
-  localStorage.setItem('upgrades',JSON.stringify(upgrades));
-  localStorage.setItem('check1Expire',check1Expire);
-  localStorage.setItem('lastOffline',lastOffline);
+  localStorage.setItem('coins', coins);
+  localStorage.setItem('maxCoins', maxCoins);
+  localStorage.setItem('upgrades', JSON.stringify(upgrades));
+  localStorage.setItem('check1Expire', check1Expire);
+  localStorage.setItem('minersState', JSON.stringify(minersState));
+  localStorage.setItem('lastTime', Date.now());
 }
 
-// ====== ROOMS ======
-let roundInProgress=false;
-rooms.forEach(r=>{r.addEventListener('click',()=>{if(roundInProgress)return;rooms.forEach(x=>x.classList.remove('selected'));r.classList.add('selected');selectedRoom=parseInt(r.dataset.idx);});});
-document.getElementById('startBtn').addEventListener('click',()=>{if(selectedRoom===null){alert('Pick a room first');return;}rooms.forEach(r=>r.classList.remove('found','safe'));rooms[selectedRoom].classList.add('selected');});
+// ======== Обновление монет ========
+function updateCoins(val){
+  coins+=val;
+  if(coins<0) coins=0;
+  if(coins>maxCoins) maxCoins=coins;
+  coinsVal.textContent=coins;
+  updateLevels();
+  updateUpgradePrices();
+  updateMiningIncomeDisplay();
+  saveGameState();
+}
+
+// ======== Доход от майнеров ========
+function getTotalMiningIncome(){
+  return minersState.reduce((sum,m,idx)=>sum+m.count*minersData[idx].baseIncome*Math.pow(1.5,m.upgrades),0);
+}
+function updateMiningIncomeDisplay(){
+  miningIncomeValEl.textContent=getTotalMiningIncome().toLocaleString();
+}
+
+// ======== Оффлайн-доход (макс 3 часа) ========
+function addOfflineCoins(){
+  const lastTime=parseInt(localStorage.getItem('lastTime'))||Date.now();
+  const now=Date.now();
+  let diffMinutes=Math.floor((now-lastTime)/60000);
+  if(diffMinutes>180) diffMinutes=180;
+  if(diffMinutes>0){
+    const incomePerMin=getTotalMiningIncome()/60;
+    const offlineCoins=Math.floor(incomePerMin*diffMinutes);
+    if(offlineCoins>0){
+      updateCoins(offlineCoins);
+      alert(💰 Your miners earned ${offlineCoins.toLocaleString()} coins while you were away (${diffMinutes} min)!);
+    }
+  }
+  localStorage.setItem('lastTime', now);
+}
+addOfflineCoins();
+
+// ======== Постоянное начисление ========
+setInterval(()=>{
+  const incomePerMin=getTotalMiningIncome()/60;
+  updateCoins(Math.floor(incomePerMin));
+},60000);
+
+// ======== Уровни ========
+function updateLevels(){
+  const levels=document.querySelectorAll('.level');
+  levels.forEach(l=>l.classList.remove('active'));
+  for(let i=0;i<levels.length;i++){
+    if(maxCoins>=parseInt(levels[i].dataset.val)) levels[i].classList.add('active');
+  }
+}
+
+// ======== Апгрейды ========
+function updateUpgradePrices(){
+  upgradeElements.forEach(u=>{
+    const key=u.dataset.key;
+    const base=parseInt(u.dataset.basePrice);
+    const count=upgrades[key]||0;
+    const price=base*Math.pow(2,count);
+    u.querySelector('.price').textContent=price.toLocaleString();
+  });
+}
+upgradeElements.forEach(u=>{
+  u.addEventListener('click',()=>{
+    const key=u.dataset.key;
+    const base=parseInt(u.dataset.basePrice);
+    const count=upgrades[key]||0;
+    const price=base*Math.pow(2,count);
+    if(coins>=price){
+      upgrades[key]=count+1;
+      updateCoins(-price);
+      if(key==="check1") check1Expire=Date.now()+60000;
+      saveGameState();
+    }else{alert("Not enough coins!")}
+  });
+});
+updateUpgradePrices();
+
+// ======== Таймер check1 ========
+function updateCheck1Timer(){
+  if(check1Expire>Date.now()){
+    const remaining=Math.floor((check1Expire-Date.now())/1000);
+    check1TimerEl.textContent="⏳ "+remaining+"s";
+  } else check1TimerEl.textContent="";
+}
+setInterval(updateCheck1Timer,1000);
+
+// ======== Комнаты ========
+rooms.forEach(r=>{
+  r.addEventListener('click',()=>{
+    if(roundInProgress) return;
+    rooms.forEach(x=>x.classList.remove('selected'));
+    r.classList.add('selected');
+    selectedRoom=parseInt(r.dataset.idx);
+  });
+});
+document.getElementById('startBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){alert('Pick a room first');return;}
+  rooms.forEach(r=>r.classList.remove('found','safe'));
+  rooms[selectedRoom].classList.add('selected');
+});
 document.getElementById('resetBtn').addEventListener('click',()=>{
   if(selectedRoom===null){alert('Pick a room first');return;}
   roundInProgress=true;
@@ -162,177 +290,71 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
     delay+=700;
   });
   setTimeout(()=>{
-    let currentPrize=1000;
-    let currentLoss=-2000;
+    let currentPrize=1000, currentLoss=-2000;
     if(upgrades.x2Prize>0){currentPrize*=Math.pow(2,upgrades.x2Prize);currentLoss*=Math.pow(2,upgrades.x2Prize);}
-    if(picks.includes(selectedRoom)){rooms[selectedRoom].classList.add('found');updateCoins(currentLoss);}
-    else{rooms[selectedRoom].classList.add('safe');updateCoins(currentPrize);}
+    if(picks.includes(selectedRoom)){
+      rooms[selectedRoom].classList.add('found');
+      updateCoins(currentLoss);
+    } else {
+      rooms[selectedRoom].classList.add('safe');
+      updateCoins(currentPrize);
+    }
     selectedRoom=null;
     rooms.forEach(r=>r.classList.remove('selected'));
     roundInProgress=false;
   },delay+700);
 });
 
-// ====== LEVEL BAR ======
-function updateLevels(){
-  const levels=document.querySelectorAll('.level');
-  levels.forEach(l=>l.classList.remove('active'));
-  for(let i=0;i<levels.length;i++){if(maxCoins>=parseInt(levels[i].dataset.val)){levels[i].classList.add('active');}}
-}
-updateLevels();
-
-// ====== UPGRADES ======
-const upgradeElements=document.querySelectorAll('.upgrade');
-const check1TimerEl=document.getElementById("check1Timer");
-function updateUpgradePrices(){
-  upgradeElements.forEach(u=>{
-    const key=u.dataset.key;
-    const base=parseInt(u.dataset.basePrice);
-    const count=upgrades[key]||0;
-    const price=base*Math.pow(2,count);
-    u.querySelector('.price').textContent=price.toLocaleString();
-  });
-}
-function updateCheck1Timer(){if(check1Expire>Date.now()){check1TimerEl.textContent="⏳ "+Math.floor((check1Expire-Date.now())/1000)+"s";}else{check1TimerEl.textContent="";}}
-setInterval(updateCheck1Timer,1000);
-
-upgradeElements.forEach(u=>{
-  u.addEventListener('click',()=>{
-    const key=u.dataset.key;
-    const base=parseInt(u.dataset.basePrice);
-    const count=upgrades[key]||0;
-    const price=base*Math.pow(2,count);
-    if(coins>=price){
-      upgrades[key]=count+1;
-      updateCoins(-price);
-      if(key==="check1"){check1Expire=Date.now()+60000;}
-      saveGameState();
-    }else{alert("Not enough coins!");}
-  });
-});
-updateUpgradePrices();
-updateCheck1Timer();
-
-// ====== COINS ======
-function updateCoins(val){
-  coins+=val;
-  if(coins<0)coins=0;
-  if(coins>maxCoins)maxCoins=coins;
-  coinsVal.textContent=coins;
-  updateLevels();
-  updateUpgradePrices();
-  updateIncomePerHour();
-  saveGameState();
-}
-
-// ====== MINERS ======
-const miners=[
-  {name:"Miner A",base:500,count:0,price:7000},
-  {name:"Miner B",base:1788,count:0,price:10000},
-  {name:"Miner C",base:2358,count:0,price:12000},
-  {name:"Miner D",base:4500,count:0,price:25000},
-  {name:"Miner E",base:5000,count:0,price:30000},
-  {name:"Miner F",base:6000,count:0,price:40000},
-  {name:"Miner G",base:7000,count:0,price:50000},
-  {name:"Miner H",base:8500,count:0,price:70000},
-  {name:"Miner I",base:10000,count:0,price:90000}
-];
-const minersContainer=document.getElementById('minersContainer');
+// ======== Mining Shop ========
 function renderMiners(){
-  minersContainer.innerHTML='';
-  miners.forEach((m,i)=>{
-    const div=document.createElement('div');
-    div.className='miner-card';
-    div.innerHTML=<h3>${m.name}</h3><p>Income: ${m.base} coins/hr</p><p>Owned: ${m.count}</p><p>Price: ${m.price}</p>;
-    div.addEventListener('click',()=>{
-      if(coins>=m.price){
-        updateCoins(-m.price);
-        m.count++;
-        m.price*=2;
-        renderMiners();
-      }else alert('Not enough coins!');
+  minersContainer.innerHTML="";
+  minersData.forEach((m,idx)=>{
+    const state=minersState[idx];
+    const price=m.basePrice*Math.pow(2,state.count);
+    const income=state.count*m.baseIncome*Math.pow(1.5,state.upgrades);
+    const minerEl=document.createElement('div');
+    minerEl.classList.add('miner-card');
+    minerEl.innerHTML=`
+      <h3>${m.name}</h3>
+      <p>Income: ${income.toLocaleString()}/hr</p>
+      <p>Owned: ${state.count}</p>
+      <p>Price: ${price.toLocaleString()}</p>
+    `;
+    minerEl.addEventListener('click',()=>{
+      if(coins>=price){
+        coins-=price;
+        state.count+=1;
+        updateCoins(0);
+      } else alert("Not enough coins!");
     });
-    minersContainer.appendChild(div);
+    minersContainer.appendChild(minerEl);
   });
 }
-renderMiners();
 
-function calculateIncomePerHour(){
-  let total=0;
-  miners.forEach(m=>{total+=m.base*m.count;});
-  return total;
-}
-
-function updateIncomePerHour(){
-  const incomePerHour=document.getElementById('incomePerHour');
-  incomePerHour.textContent='Income: '+calculateIncomePerHour()+' coins/hr';
-}
-
-// ====== OFFLINE INCOME ======
-function addOfflineIncome(){
-  const now=Date.now();
-  let diff=now-lastOffline;
-  if(diff>3*60*60*1000)diff=3*60*60*1000; // max 3 hours
-  const income=Math.floor(calculateIncomePerHour()*(diff/3600000));
-  if(income>0)alert(You earned ${income} coins while offline!);
-  updateCoins(income);
-  lastOffline=now;
-  saveGameState();
-}
-addOfflineIncome();
-
-setInterval(()=>{const income=Math.floor(calculateIncomePerHour()/60);updateCoins(income);},60000);
-
-// ====== PROFILE ======
-const profilePanel=document.getElementById('profilePanel');
-const profileBtn=document.getElementById('profileBtn');
-const closeProfileBtn=document.getElementById('closeProfileBtn');
-const dailyBonusText=document.getElementById('dailyBonusText');
-const collectDailyBtn=document.getElementById('collectDailyBtn');
-const quest1Btn=document.getElementById('quest1Btn');
-const refLink=document.getElementById('refLink');
-const copyRefBtn=document.getElementById('copyRefBtn');
-
-profileBtn.addEventListener('click',()=>{profilePanel.style.display='block';});
-closeProfileBtn.addEventListener('click',()=>{profilePanel.style.display='none';});
-
-function updateDailyBonus(){
-  const lastDaily=parseInt(localStorage.getItem('lastDaily'))||0;
-  const now=Date.now();
-  if(now-lastDaily>24*60*60*1000) collectDailyBtn.disabled=false;
-  else collectDailyBtn.disabled=true;
-}
-updateDailyBonus();
-
-collectDailyBtn.addEventListener('click',()=>{
-  updateCoins(5000);
-  localStorage.setItem('lastDaily',Date.now());
-  updateDailyBonus();
+document.getElementById('miningBtn').addEventListener('click',()=>{
+  miningShop.style.display='block';
+  renderMiners();
+});
+document.getElementById('closeMiningShop').addEventListener('click',()=>{
+  miningShop.style.display='none';
 });
 
-quest1Btn.addEventListener('click',()=>{
-  updateCoins(10000);
-  alert('Quest completed! 10,000 coins awarded.');
+// ======== Info Modal ========
+const infoModal=document.getElementById('infoModal');
+document.getElementById('infoBtn').addEventListener('click',()=>{
+  infoModal.style.display='block';
+});
+document.getElementById('closeInfoModal').addEventListener('click',()=>{
+  infoModal.style.display='none';
 });
 
-refLink.value=https://example.com/referral?user=player1;
-copyRefBtn.addEventListener('click',()=>{navigator.clipboard.writeText(refLink.value); alert('Copied!');});
-
-// ====== SHOP ======
-const miningShop=document.getElementById('miningShop');
-const miningBtn=document.getElementById('miningBtn');
-const closeMiningShop=document.getElementById('closeMiningShop');
-miningBtn.addEventListener('click',()=>{miningShop.style.display='block';});
-closeMiningShop.addEventListener('click',()=>{miningShop.style.display='none';});
-
-// ====== INFO ======
-const infoBtn=document.getElementById('infoBtn');
-infoBtn.addEventListener('click',()=>{alert('Rules: Pick a room, avoid being found. Upgrade miners and collect coins.');});
-
-updateIncomePerHour();
+updateLevels();
+updateMiningIncomeDisplay();
+updateCheck1Timer();
 
 });
 </script>
+
 </body>
 </html>
 
