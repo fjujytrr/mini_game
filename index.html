@@ -260,11 +260,11 @@ function log(t) {
   document.getElementById('log').textContent = t;
 }
 
-// Выбор комнаты
+// Игрок выбирает комнату
 rooms.forEach(r => {
   r.addEventListener('click', () => {
     rooms.forEach(x => x.classList.remove('selected'));
-    r.classList.add('selected');
+    r.classList.add('selected'); // только игрок увеличивается
     selectedRoom = parseInt(r.dataset.idx);
     log('Ты выбрал комнату ' + (selectedRoom + 1));
   });
@@ -282,15 +282,14 @@ document.getElementById('startBtn').addEventListener('click', () => {
 document.getElementById('resetBtn').addEventListener('click', () => {
   if (selectedRoom === null) { alert('Сначала выбери комнату'); return; }
   log('Охотник ищет...');
-  
+
   const picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, 2);
   rooms.forEach(r => r.classList.remove('found','safe'));
 
-  // Показываем выбор охотника без дергания остальных комнат
+  // Охотник ищет — без увеличения комнат
+  let delay = 0;
   picks.forEach(idx => {
-    const room = rooms[idx];
-    room.classList.add('selected');
-    setTimeout(() => room.classList.remove('selected'), 500);
+    delay += 700; // просто таймер для последовательности
   });
 
   setTimeout(() => {
@@ -303,7 +302,12 @@ document.getElementById('resetBtn').addEventListener('click', () => {
       log('Охотник не нашёл! +1000 монет');
       updateCoins(1000);
     }
-  }, 600);
+
+    // Сбрасываем выбор игрока
+    selectedRoom = null;
+    rooms.forEach(r => r.classList.remove('selected'));
+    log('Выбери комнату заново');
+  }, delay + 700);
 });
 
 // Модальные окна
