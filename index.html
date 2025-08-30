@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Hide & Seek — Дом</title>
 <style>
-  html, body {
+html, body {
   margin:0;
   padding:0;
-  overflow:hidden; /* запрет прокрутки */
+  overflow:hidden;
   font-family:'Inter',sans-serif;
   background:linear-gradient(180deg,#041025,#072033);
   color:white;
@@ -16,7 +16,7 @@
   flex-direction:column;
   align-items:center;
   min-height:100vh;
-  padding-bottom:90px;
+  padding-bottom:90px; /* увеличили, чтобы место под меню закрыло пустоту */
 }
 
 header{
@@ -57,7 +57,7 @@ header h1{
 .house{
   position:relative;
   width:95%;
-  max-width:420px;
+  max-width:460px;
   margin:12px 0;
   border-radius:12px;
   background:linear-gradient(135deg,#1e293b,#334155);
@@ -76,7 +76,7 @@ header h1{
   align-items:center;
   justify-content:center;
   font-weight:700;
-  font-size:26px;
+  font-size:28px;
   cursor:pointer;
   transition:all 0.2s ease;
   position:relative;
@@ -98,7 +98,7 @@ header h1{
 }
 button{
   flex:1;
-  padding:12px;
+  padding:14px;
   font-size:16px;
   font-weight:700;
   border:none;
@@ -130,7 +130,7 @@ button.secondary{
 
 .bottom-menu{
   position:fixed;
-  bottom:30px; /* подняли на 5px */
+  bottom:25px; /* подняли на 20px */
   left:0;
   width:100%;
   display:flex;
@@ -140,6 +140,15 @@ button.secondary{
   gap:4px;
   z-index:100;
   box-shadow:0 -3px 10px rgba(0,0,0,0.5);
+}
+.bottom-menu::after{
+  content:'';
+  position:absolute;
+  bottom:-25px; /* закрашиваем пустое место под меню */
+  left:0;
+  width:100%;
+  height:25px;
+  background:linear-gradient(180deg,#1e293b,#334155);
 }
 .bottom-menu button{
   flex:1;
@@ -161,7 +170,7 @@ button.secondary{
   padding:12px;
   border-radius:10px;
   width:90%;
-  max-width:420px;
+  max-width:460px;
   text-align:center;
   max-height:80%;
   overflow-y:auto;
@@ -237,7 +246,7 @@ document.getElementById('coinsVal').textContent=coins;
 
 function updateCoins(val){
   coins+=val;
-  localStorage.setItem('coins', coins); // сохраняем
+  localStorage.setItem('coins', coins);
   const coinsVal=document.getElementById('coinsVal');
   coinsVal.textContent=coins;
   coinsVal.style.transform='scale(1.3)';
