@@ -17,14 +17,13 @@ body{
 }
 header{
   width:100%;
-  max-width:960px;
-  padding:15px;
+  padding:10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 header h1{
-  font-size:28px;
+  font-size:24px;
   margin:0;
   text-shadow:0 2px 8px rgba(0,0,0,0.6);
 }
@@ -33,27 +32,28 @@ header h1{
   align-items:center;
   gap:10px;
   background:linear-gradient(180deg,#0f1724,#142b42);
-  padding:10px 15px;
-  border-radius:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.5);
+  padding:8px 12px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
 }
 .coin-panel .val{
   font-weight:700;
-  font-size:20px;
+  font-size:18px;
 }
 .house{
   position:relative;
-  width:640px;
-  height:360px;
-  margin:20px 0;
+  width:95%;
+  max-width:640px;
+  aspect-ratio:16/9;
+  margin:15px 0;
   border-radius:12px;
   background:linear-gradient(135deg,#1e293b,#334155);
   display:grid;
   grid-template-columns:repeat(4,1fr);
   grid-template-rows:repeat(2,1fr);
-  gap:10px;
-  padding:10px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+  gap:8px;
+  padding:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.6);
 }
 .room{
   background:#475569;
@@ -63,25 +63,26 @@ header h1{
   align-items:center;
   justify-content:center;
   font-weight:700;
-  font-size:28px;
+  font-size:24px;
   cursor:pointer;
   transition:all 0.2s ease;
 }
-.room.selected{ border:2px solid #7dd3fc; box-shadow:0 0 12px #7dd3fc;}
-.room.found{ border:3px solid #ef4444; box-shadow:0 0 20px #ef4444;}
-.room.safe{ border:3px solid #16a34a; box-shadow:0 0 20px #16a34a;}
+.room.selected{ border:2px solid #7dd3fc; box-shadow:0 0 10px #7dd3fc;}
+.room.found{ border:3px solid #ef4444; box-shadow:0 0 16px #ef4444;}
+.room.safe{ border:3px solid #16a34a; box-shadow:0 0 16px #16a34a;}
 
 .controls{
-  width:100%;
+  width:95%;
   max-width:960px;
   display:flex;
   justify-content:center;
-  gap:15px;
+  gap:10px;
   margin-bottom:10px;
   flex-wrap:wrap;
 }
 button{
-  padding:12px 20px;
+  flex:1;
+  padding:10px;
   font-size:16px;
   font-weight:700;
   border:none;
@@ -89,7 +90,7 @@ button{
   cursor:pointer;
   background:linear-gradient(180deg,#7dd3fc,#17b4df);
   color:#012;
-  box-shadow:0 6px 18px rgba(18,80,100,0.2);
+  box-shadow:0 4px 12px rgba(18,80,100,0.2);
   transition:transform 0.15s ease;
 }
 button:active{transform:scale(0.95);}
@@ -97,31 +98,32 @@ button.secondary{
   background:linear-gradient(180deg,#334155,#1e293b);
   border:1px solid rgba(255,255,255,0.15);
   color:#94a3b8;
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  box-shadow:0 3px 10px rgba(0,0,0,0.4);
 }
 #log{
-  margin-top:12px;
-  padding:12px;
+  margin-top:10px;
+  padding:10px;
   border-radius:10px;
   background:rgba(0,0,0,0.3);
-  min-height:46px;
-  font-size:16px;
-  width:100%;
+  min-height:40px;
+  font-size:14px;
+  width:95%;
   max-width:960px;
   text-align:center;
-  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+  box-shadow:0 3px 15px rgba(0,0,0,0.5);
 }
 .bottom-menu{
-  width:100%;
+  width:95%;
   max-width:960px;
   display:flex;
   justify-content:space-around;
-  margin-top:15px;
-  margin-bottom:20px;
+  margin-top:10px;
+  margin-bottom:15px;
+  gap:5px;
 }
 .bottom-menu button{
   flex:1;
-  margin:0 5px;
+  margin:0 3px;
 }
 
 /* Модальное окно магазина */
@@ -130,27 +132,31 @@ button.secondary{
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background:rgba(0,0,0,0.6);
+  background:rgba(0,0,0,0.7);
   justify-content:center;
   align-items:center;
   z-index:100;
 }
 .modal-content{
   background:#1e293b;
-  padding:20px;
+  padding:15px;
   border-radius:12px;
   width:90%;
-  max-width:500px;
+  max-width:400px;
   text-align:center;
+  max-height:80%;
+  overflow-y:auto;
 }
 .modal-content h2{
   margin-top:0;
+  font-size:20px;
 }
 .modal-content .item{
   background:#334155;
   padding:10px;
-  margin:10px 0;
+  margin:8px 0;
   border-radius:8px;
+  font-size:16px;
 }
 .modal-content button.close{
   margin-top:10px;
@@ -169,7 +175,6 @@ button.secondary{
 </header>
 
 <div class="house">
-  <!-- 8 комнат с + вместо картинки -->
   <div class="room" data-idx="0">+</div>
   <div class="room" data-idx="1">+</div>
   <div class="room" data-idx="2">+</div>
@@ -194,7 +199,6 @@ button.secondary{
   <button id="profileBtn" class="secondary">Профиль</button>
 </div>
 
-<!-- Модальное окно магазина -->
 <div class="modal" id="shopModal">
   <div class="modal-content">
     <h2>Магазин</h2>
@@ -240,12 +244,10 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
 
 function log(t){ document.getElementById('log').textContent=t; }
 
-// Магазин
 const shopModal=document.getElementById('shopModal');
 document.getElementById('shopBtn').addEventListener('click',()=>{ shopModal.style.display='flex'; });
 document.getElementById('closeShop').addEventListener('click',()=>{ shopModal.style.display='none'; });
 
-// Остальные кнопки просто лог
 document.getElementById('infoBtn').addEventListener('click',()=>{ log('Информация о игре') });
 document.getElementById('settingsBtn').addEventListener('click',()=>{ log('Настройки игры') });
 document.getElementById('profileBtn').addEventListener('click',()=>{ log('Профиль игрока') });
