@@ -130,15 +130,15 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+
 const rooms = document.querySelectorAll('.room');
 let selectedRoom = null;
 let coins = parseInt(localStorage.getItem('coins'))||0;
 let maxCoins = parseInt(localStorage.getItem('maxCoins'))||coins;
 const coinsVal = document.getElementById('coinsVal');
-
 coinsVal.textContent = coins;
 
-// апгрейды
 let upgrades = JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0, check1:0};
 let check1Expire = parseInt(localStorage.getItem('check1Expire'))||0;
 
@@ -351,6 +351,8 @@ document.getElementById('closeInfoModal').addEventListener('click',()=>{
 updateLevels();
 updateMiningIncomeDisplay();
 updateCheck1Timer();
+
+});
 </script>
 
 </body>
