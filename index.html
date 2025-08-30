@@ -123,6 +123,40 @@ button.secondary{
   flex:1;
   margin:0 5px;
 }
+
+/* Модальное окно магазина */
+.modal{
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+}
+.modal-content{
+  background:#1e293b;
+  padding:20px;
+  border-radius:12px;
+  width:90%;
+  max-width:500px;
+  text-align:center;
+}
+.modal-content h2{
+  margin-top:0;
+}
+.modal-content .item{
+  background:#334155;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+}
+.modal-content button.close{
+  margin-top:10px;
+  background:#ef4444;
+  color:white;
+}
 </style>
 </head>
 <body>
@@ -148,26 +182,32 @@ button.secondary{
 
 <div class="controls">
   <button id="startBtn">Начать раунд</button>
-  <button class="secondary" id="resetBtn">Сбросить баланс</button>
+  <button class="secondary" id="resetBtn">Сбросить комнаты</button>
 </div>
 
 <div id="log">Выбери комнату и начни игру</div>
 
 <div class="bottom-menu">
-  <button class="secondary">Инфо</button>
-  <button class="secondary">Магазин</button>
-  <button class="secondary">Настройки</button>
-  <button class="secondary">Профиль</button>
+  <button id="infoBtn" class="secondary">Инфо</button>
+  <button id="shopBtn" class="secondary">Магазин</button>
+  <button id="settingsBtn" class="secondary">Настройки</button>
+  <button id="profileBtn" class="secondary">Профиль</button>
+</div>
+
+<!-- Модальное окно магазина -->
+<div class="modal" id="shopModal">
+  <div class="modal-content">
+    <h2>Магазин</h2>
+    <div class="item">Товар 1 +</div>
+    <div class="item">Товар 2 +</div>
+    <div class="item">Товар 3 +</div>
+    <button class="close" id="closeShop">Закрыть</button>
+  </div>
 </div>
 
 <script>
-const PENALTY=2000, REWARD=1000;
-let selectedRoom=null;
-let coins=5000;
-
 const rooms=document.querySelectorAll('.room');
-const coinsVal=document.getElementById('coinsVal');
-const logEl=document.getElementById('log');
+let selectedRoom=null;
 
 rooms.forEach(r=>{
   r.addEventListener('click',()=>{
@@ -185,25 +225,30 @@ document.getElementById('startBtn').addEventListener('click',()=>{
   rooms.forEach(r=>r.classList.remove('found','safe'));
   if(picks.includes(selectedRoom)){
     rooms[selectedRoom].classList.add('found');
-    coins-=PENALTY;
-    log('Нашли тебя! -'+PENALTY+' монет. Баланс: '+coins);
+    log('Нашли тебя! Баланс монет не изменяется');
   } else {
     picks.forEach(i=>rooms[i].classList.add('safe'));
-    coins+=REWARD;
-    log('Охотник не нашёл! +'+REWARD+' монет. Баланс: '+coins);
+    log('Охотник не нашёл! Баланс монет не изменяется');
   }
-  coinsVal.textContent=coins;
 });
 
 document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(confirm('Сбросить баланс до 5000 монет?')){
-    coins=5000;
-    coinsVal.textContent=coins;
-    log('Баланс сброшен.');
-  }
+  rooms.forEach(r=>r.classList.remove('selected','found','safe'));
+  selectedRoom=null;
+  log('Комнаты сброшены');
 });
 
-function log(t){ logEl.textContent=t; }
+function log(t){ document.getElementById('log').textContent=t; }
+
+// Магазин
+const shopModal=document.getElementById('shopModal');
+document.getElementById('shopBtn').addEventListener('click',()=>{ shopModal.style.display='flex'; });
+document.getElementById('closeShop').addEventListener('click',()=>{ shopModal.style.display='none'; });
+
+// Остальные кнопки просто лог
+document.getElementById('infoBtn').addEventListener('click',()=>{ log('Информация о игре') });
+document.getElementById('settingsBtn').addEventListener('click',()=>{ log('Настройки игры') });
+document.getElementById('profileBtn').addEventListener('click',()=>{ log('Профиль игрока') });
 </script>
 
 </body>
