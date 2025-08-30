@@ -242,6 +242,8 @@ function updateCoins(val){
   setTimeout(()=>{ coinsVal.style.transform='scale(1)'; },300);
 }
 
+function log(t){ document.getElementById('log').textContent=t; }
+
 rooms.forEach(r=>{
   r.addEventListener('click',()=>{
     rooms.forEach(x=>x.classList.remove('selected'));
@@ -251,12 +253,21 @@ rooms.forEach(r=>{
   });
 });
 
+// Выбрать комнату
+document.getElementById('startBtn').addEventListener('click',()=>{
+  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
+  rooms.forEach(r=>r.classList.remove('selected','found','safe'));
+  rooms[selectedRoom].classList.add('selected');
+  log('Ты выбрал комнату '+(selectedRoom+1));
+});
+
+// Вызвать охотника
 document.getElementById('resetBtn').addEventListener('click',()=>{
   if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
   log('Охотник ищет...');
   let picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,2);
   rooms.forEach(r=>r.classList.remove('found','safe'));
-  
+
   let delay=0;
   picks.forEach(idx=>{
     setTimeout(()=>{ rooms[idx].classList.add('selected'); }, delay);
@@ -267,23 +278,4 @@ document.getElementById('resetBtn').addEventListener('click',()=>{
   setTimeout(()=>{
     if(picks.includes(selectedRoom)){
       rooms[selectedRoom].classList.add('found');
-      log('Нашли тебя! -2000 монет');
-      updateCoins(-2000);
-    } else {
-      rooms[selectedRoom].classList.add('safe');
-      log('Охотник не нашёл! +1000 монет');
-      updateCoins(1000);
-    }
-  }, delay);
-});
-
-document.getElementById('startBtn').addEventListener('click',()=>{
-  if(selectedRoom===null){ alert('Сначала выбери комнату'); return; }
-  rooms.forEach(r=>r.classList.remove('selected','found','safe'));
-  rooms[selectedRoom].classList.add('selected');
-  log('Ты выбрал комнату '+(selectedRoom+1));
-});
-
-function log(t){ document.getElementById('log').textContent=t; }
-
-const shopModal=document.getElement
+      log('Нашли тебя!
