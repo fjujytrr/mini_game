@@ -27,6 +27,7 @@ button:active { box-shadow:0 2px 4px rgba(255,215,0,0.3); }
 button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; box-shadow:0 3px 6px rgba(255,215,0,0.2); transition: box-shadow 0.2s ease; }
 .bottom-menu { position:fixed; bottom:50px; left:50%; transform:translateX(-50%); width:95%; display:flex; justify-content:space-around; gap:8px; background:#111; padding:6px 0; border-radius:16px; box-shadow:0 0 12px rgba(255,215,0,0.3); z-index:100; }
 .bottom-menu button { flex:1; margin:0 4px; font-size:22px; }
+
 /* Upgrade panel */
 .upgrade-panel { display:flex; gap:12px; margin:10px 0; overflow-x:auto; padding:10px; width:95%; }
 .upgrade { flex:0 0 auto; background:#222; padding:12px; border-radius:14px; text-align:center; min-width:150px; cursor:pointer; box-shadow:0 2px 6px rgba(255,215,0,0.2); }
@@ -34,15 +35,16 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
 .upgrade p { margin:0; font-size:14px; color:#fff; }
 .upgrade .price { margin-top:6px; font-weight:700; color:#FFD700; }
 .upgrade .timer { margin-top:4px; font-size:12px; color:#FFD700; }
-/* Miners shop */
-#miningShop {display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:90%; max-width:500px; background:#222; border-radius:16px; padding:16px; box-shadow:0 0 20px rgba(255,215,0,0.5); z-index:200; max-height:80vh; overflow-y:auto; color:#FFD700;}
-.miners-container{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
-.miner-card{background:#333; padding:12px; border-radius:12px; width:140px; cursor:pointer; text-align:center; box-shadow:0 2px 6px rgba(255,215,0,0.2);}
-.miner-card h3{margin:0 0 6px 0;font-size:16px;}
-.miner-card p{margin:2px 0;font-size:14px;}
+
+/* Mining shop */
+#miningShop { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:200; padding:20px; overflow-y:auto; }
+#minersContainer { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+.miner-card { background:#222; padding:12px; border-radius:12px; width:150px; text-align:center; cursor:pointer; box-shadow:0 2px 6px rgba(255,215,0,0.3); transition:0.3s; }
+.miner-card:hover { transform:scale(1.05); box-shadow:0 4px 10px rgba(255,215,0,0.6); }
+
 /* Profile panel */
-#profilePanel{display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:90%; max-width:400px; background:#222; border-radius:16px; padding:16px; box-shadow:0 0 20px rgba(255,215,0,0.5); z-index:200; color:#FFD700; max-height:80vh; overflow-y:auto;}
-#profilePanel h2{text-align:center;margin-bottom:12px;}
+#profilePanel { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:300; padding:20px; overflow-y:auto; }
+.profile-section { margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -79,7 +81,6 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
   <button class="secondary" id="resetBtn">🔍</button>
 </div>
 
-<!-- Upgrades -->
 <div class="upgrade-panel">
   <div class="upgrade" data-key="x2Prize" data-base-price="20000">
     <h3>x2 Prize / x2 Loss</h3>
@@ -94,6 +95,30 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
   </div>
 </div>
 
+<div id="miningShop">
+  <button id="closeMiningShop" class="secondary">Close</button>
+  <h2 style="color:#FFD700;">Mining Shop</h2>
+  <div id="minersContainer"></div>
+</div>
+
+<div id="profilePanel">
+  <button id="closeProfileBtn" class="secondary">Close</button>
+  <h2 style="color:#FFD700;">Profile</h2>
+  <div class="profile-section">
+    <p id="dailyBonusText"></p>
+    <button id="collectDailyBtn">Collect Daily Bonus (5000)</button>
+  </div>
+  <div class="profile-section">
+    <p>Quest: Subscribe to <a href="https://youtube.com/@zexshadows?si=svpyMyUhhiPO8Yj-" target="_blank">YouTube</a></p>
+    <button id="quest1Btn">Claim 10,000 coins</button>
+  </div>
+  <div class="profile-section">
+    <p>Referral Link:</p>
+    <input type="text" id="refLink" readonly style="width:80%; padding:6px;">
+    <button id="copyRefBtn">Copy Link</button>
+  </div>
+</div>
+
 <div class="bottom-menu">
   <button id="infoBtn" class="secondary">ℹ</button>
   <button id="shopBtn" class="secondary">🛒</button>
@@ -101,79 +126,29 @@ button.secondary { background:#2e2e2e; color:#FFD700; border:1px solid #FFD700; 
   <button id="profileBtn" class="secondary">👤</button>
 </div>
 
-<!-- Mining Shop -->
-<div id="miningShop">
-  <h2>⛏ Mining Shop</h2>
-  <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;padding:12px;width:100%;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
-</div>
-
-<!-- Profile Panel -->
-<div id="profilePanel">
-  <h2>Profile</h2>
-  <div style="margin-bottom:16px; padding:10px; background:#333; border-radius:12px; text-align:center;">
-    <h3>🎁 Daily Bonus</h3>
-    <p id="dailyBonusText">You can collect your daily coins!</p>
-    <button id="collectDailyBtn">Collect 5,000 Coins</button>
-  </div>
-  <div style="margin-bottom:16px; padding:10px; background:#333; border-radius:12px; text-align:center;">
-    <h3>📝 Quests</h3>
-    <p>Subscribe to <a href="https://youtube.com/@zexshadows?si=svpyMyUhhiPO8Yj-" target="_blank" style="color:#FFD700;">YouTube Channel</a></p>
-    <button id="quest1Btn">Claim 10,000 Coins</button>
-  </div>
-  <div style="margin-bottom:16px; padding:10px; background:#333; border-radius:12px; text-align:center;">
-    <h3>🤝 Referral Program</h3>
-    <p>Share your link and get bonus coins when someone joins!</p>
-    <input type="text" id="refLink" readonly style="width:90%; text-align:center; margin-bottom:6px; border-radius:8px; border:none; padding:6px;" />
-    <button id="copyRefBtn">Copy Referral Link</button>
-  </div>
-  <button id="closeProfileBtn">Close</button>
-</div>
-
 <script>
-// ====== ИГРА + МАЙНИНГ + ПРОФИЛЬ ======
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
+
+  // ======= Комнаты и апгрейды =======
   const rooms=document.querySelectorAll('.room');
   let selectedRoom=null;
   let coins=parseInt(localStorage.getItem('coins'))||0;
   let maxCoins=parseInt(localStorage.getItem('maxCoins'))||coins;
   const coinsVal=document.getElementById('coinsVal');
   coinsVal.textContent=coins;
-
-  let upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0, check1:0};
+  let upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0,check1:0};
   let check1Expire=parseInt(localStorage.getItem('check1Expire'))||0;
   const upgradeElements=document.querySelectorAll('.upgrade');
   const check1TimerEl=document.getElementById("check1Timer");
   let roundInProgress=false;
 
-  // ======= Майнеры =======
-  const minersData=[
-    {name:"Miner 1", baseIncome:500, basePrice:7000},
-    {name:"Miner 2", baseIncome:1788, basePrice:10000},
-    {name:"Miner 3", baseIncome:2358, basePrice:15000},
-    {name:"Miner 4", baseIncome:3000, basePrice:20000},
-    {name:"Miner 5", baseIncome:4500, basePrice:25000},
-    {name:"Miner 6", baseIncome:5200, basePrice:30000},
-    {name:"Miner 7", baseIncome:6100, basePrice:35000},
-    {name:"Miner 8", baseIncome:7200, basePrice:40000},
-    {name:"Miner 9", baseIncome:8500, basePrice:45000}
-  ];
-  let minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(m=>({count:0, upgrades:0}));
-  const miningIncomeValEl=document.getElementById('miningIncomeVal');
-  const minersContainer=document.querySelector('.miners-container');
-  const miningShop=document.getElementById('miningShop');
-
-  // ======= Сохранение =======
   function saveGameState(){
-    localStorage.setItem('coins', coins);
-    localStorage.setItem('maxCoins', maxCoins);
-    localStorage.setItem('upgrades', JSON.stringify(upgrades));
-    localStorage.setItem('check1Expire', check1Expire);
-    localStorage.setItem('minersState', JSON.stringify(minersState));
-    localStorage.setItem('lastTime', Date.now());
+    localStorage.setItem('coins',coins);
+    localStorage.setItem('maxCoins',maxCoins);
+    localStorage.setItem('upgrades',JSON.stringify(upgrades));
+    localStorage.setItem('check1Expire',check1Expire);
   }
 
-  // ======= Обновление монет =======
   function updateCoins(val){
     coins+=val;
     if(coins<0) coins=0;
@@ -181,43 +156,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     coinsVal.textContent=coins;
     updateLevels();
     updateUpgradePrices();
-    updateMiningIncomeDisplay();
     saveGameState();
   }
 
-  function getTotalMiningIncome(){
-    return minersState.reduce((sum,m,idx)=>sum+m.count*minersData[idx].baseIncome*Math.pow(1.5,m.upgrades),0);
-  }
-  function updateMiningIncomeDisplay(){
-    if(miningIncomeValEl) miningIncomeValEl.textContent=getTotalMiningIncome().toLocaleString();
-  }
-
-  function addOfflineCoins(){
-    const lastTime=parseInt(localStorage.getItem('lastTime'))||Date.now();
-    const now=Date.now();
-    let diffMinutes=Math.floor((now-lastTime)/60000);
-    if(diffMinutes>180) diffMinutes=180;
-    if(diffMinutes>0){
-      const incomePerMin=getTotalMiningIncome()/60;
-      const offlineCoins=Math.floor(incomePerMin*diffMinutes);
-      if(offlineCoins>0) alert(💰 Your miners earned ${offlineCoins.toLocaleString()} coins while you were away (${diffMinutes} min)!);
-      updateCoins(offlineCoins);
-    }
-    localStorage.setItem('lastTime', now);
-  }
-  addOfflineCoins();
-  setInterval(()=>{updateCoins(Math.floor(getTotalMiningIncome()/60))},60000);
-
-  // ======= Уровни =======
-  function updateLevels(){
-    const levels=document.querySelectorAll('.level');
-    levels.forEach(l=>l.classList.remove('active'));
-    for(let i=0;i<levels.length;i++){
-      if(maxCoins>=parseInt(levels[i].dataset.val)) levels[i].classList.add('active');
-    }
-  }
-
-  // ======= Апгрейды =======
   function updateUpgradePrices(){
     upgradeElements.forEach(u=>{
       const key=u.dataset.key;
@@ -227,21 +168,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       u.querySelector('.price').textContent=price.toLocaleString();
     });
   }
-  upgradeElements.forEach(u=>{
-    u.addEventListener('click',()=>{
-      const key=u.dataset.key;
-      const base=parseInt(u.dataset.basePrice);
-      const count=upgrades[key]||0;
-      const price=base*Math.pow(2,count);
-      if(coins>=price){
-        upgrades[key]=count+1;
-        updateCoins(-price);
-        if(key==="check1") check1Expire=Date.now()+60000;
-        saveGameState();
-      } else alert("Not enough coins!");
-    });
-  });
-  updateUpgradePrices();
+
   function updateCheck1Timer(){
     if(check1Expire>Date.now()){
       const remaining=Math.floor((check1Expire-Date.now())/1000);
@@ -250,7 +177,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
   setInterval(updateCheck1Timer,1000);
 
-  // ======= Комнаты =======
   rooms.forEach(r=>{
     r.addEventListener('click',()=>{
       if(roundInProgress) return;
@@ -259,11 +185,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
       selectedRoom=parseInt(r.dataset.idx);
     });
   });
+
   document.getElementById('startBtn').addEventListener('click',()=>{
     if(selectedRoom===null){alert('Pick a room first'); return;}
     rooms.forEach(r=>r.classList.remove('found','safe'));
     rooms[selectedRoom].classList.add('selected');
   });
+
   document.getElementById('resetBtn').addEventListener('click',()=>{
     if(selectedRoom===null){alert('Pick a room first'); return;}
     roundInProgress=true;
@@ -297,13 +225,51 @@ document.addEventListener('DOMContentLoaded', ()=>{
     },delay+700);
   });
 
-  // ======= Майнинг магазин =======
+  function updateLevels(){
+    const levels=document.querySelectorAll('.level');
+    levels.forEach(l=>l.classList.remove('active'));
+    for(let i=0;i<levels.length;i++){
+      if(maxCoins>=parseInt(levels[i].dataset.val)) levels[i].classList.add('active');
+    }
+  }
+  updateLevels();
+
+  upgradeElements.forEach(u=>{
+    u.addEventListener('click',()=>{
+      const key=u.dataset.key;
+      const base=parseInt(u.dataset.basePrice);
+      const count=upgrades[key]||0;
+      const price=base*Math.pow(2,count);
+      if(coins>=price){
+        upgrades[key]=count+1;
+        updateCoins(-price);
+        if(key==="check1") check1Expire=Date.now()+60000;
+        saveGameState();
+      } else alert("Not enough coins!");
+    });
+  });
+
+  updateUpgradePrices();
+  updateCheck1Timer();
+
+  // ======= Майнеры =======
+  const minersData=[
+    {name:'Miner 1', baseIncome:500, basePrice:7000},
+    {name:'Miner 2', baseIncome:1788, basePrice:14000},
+    {name:'Miner 3', baseIncome:2358, basePrice:20000},
+    {name:'Miner 4', baseIncome:3000, basePrice:25000},
+    {name:'Miner 5', baseIncome:4200, basePrice:35000},
+    {name:'Miner 6', baseIncome:5200, basePrice:45000},
+    {name:'Miner 7', baseIncome:6700, basePrice:55000},
+    {name:'Miner 8', baseIncome:8000, basePrice:65000},
+    {name:'Miner 9', baseIncome:10000, basePrice:70000},
+  ];
+  let minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(m=>({count:0}));
+  const miningShop=document.getElementById('miningShop');
+  const minersContainer=document.getElementById('minersContainer');
   const shopBtn=document.getElementById('shopBtn');
   const miningBtn=document.getElementById('miningBtn');
   const closeMiningShop=document.getElementById('closeMiningShop');
-  shopBtn.addEventListener('click',()=>{miningShop.style.display='block'; renderMiners();});
-  miningBtn.addEventListener('click',()=>{miningShop.style.display='block'; renderMiners();});
-  closeMiningShop.addEventListener('click',()=>{miningShop.style.display='none';});
 
   function renderMiners(){
     minersContainer.innerHTML='';
@@ -318,6 +284,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           coins-=price;
           state.count+=1;
           updateCoins(0);
+          localStorage.setItem('minersState',JSON.stringify(minersState));
           renderMiners();
         } else alert('Not enough coins!');
       });
@@ -325,68 +292,77 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   }
 
+  shopBtn.addEventListener('click',()=>{miningShop.style.display='block'; renderMiners();});
+  miningBtn.addEventListener('click',()=>{miningShop.style.display='block'; renderMiners();});
+  closeMiningShop.addEventListener('click',()=>{miningShop.style.display='none';});
+
+  // ======= Майнинг доход =======
+  function calculateIncomePerHour(){
+    let total=0;
+    minersData.forEach((m,idx)=>{total+=m.baseIncome*minersState[idx].count;});
+    return total;
+  }
+
+  function addOfflineIncome(){
+    const lastTime=parseInt(localStorage.getItem('lastOffline'))||Date.now();
+    const now=Date.now();
+    let diff=Math.min(now-lastTime,3*60*60*1000); // максимум 3 часа
+    const incomePerHour=calculateIncomePerHour();
+    const income=Math.floor(incomePerHour*(diff/3600000));
+    if(income>0){
+      updateCoins(income);
+      alert(You earned ${income} coins while offline!);
+    }
+    localStorage.setItem('lastOffline',now);
+  }
+  addOfflineIncome();
+
+  setInterval(()=>{
+    const incomePerHour=calculateIncomePerHour();
+    const income=Math.floor(incomePerHour/60);
+    if(income>0) updateCoins(income);
+  },60000);
+
   // ======= Профиль =======
   const profilePanel=document.getElementById('profilePanel');
-  const profileBtnEl=document.getElementById('profileBtn');
+  const profileBtn=document.getElementById('profileBtn');
   const closeProfileBtn=document.getElementById('closeProfileBtn');
-  profileBtnEl.addEventListener('click',()=>{
-    profilePanel.style.display='block';
-    renderProfile();
-  });
-  closeProfileBtn.addEventListener('click',()=>{profilePanel.style.display='none';});
-
-  // Daily Bonus
-  const dailyBonusKey='lastDailyBonus';
   const dailyBonusText=document.getElementById('dailyBonusText');
   const collectDailyBtn=document.getElementById('collectDailyBtn');
-  function renderProfile(){
-    const lastDaily=parseInt(localStorage.getItem(dailyBonusKey))||0;
-    const now=Date.now();
-    if(now-lastDaily>=24*60*60*1000){
-      dailyBonusText.textContent="You can collect your daily coins!";
-      collectDailyBtn.disabled=false;
-    } else{
-      const remaining=Math.ceil((24*60*60*1000-(now-lastDaily))/1000/60);
-      dailyBonusText.textContent=Daily bonus available in ${remaining} minutes;
-      collectDailyBtn.disabled=true;
-    }
-    const refInput=document.getElementById('refLink');
-    const userId=localStorage.getItem('userId')||Math.floor(Math.random()*1000000);
-    localStorage.setItem('userId',userId);
-    refInput.value=${window.location.href}?ref=${userId};
-  }
-  collectDailyBtn.addEventListener('click',()=>{
-    coins+=5000;
-    updateCoins(0);
-    localStorage.setItem(dailyBonusKey,Date.now());
-    renderProfile();
-  });
-
-  // Quest
   const quest1Btn=document.getElementById('quest1Btn');
-  const quest1Key='quest1Done';
-  quest1Btn.addEventListener('click',()=>{
-    const done=localStorage.getItem(quest1Key);
-    if(done){alert("You already claimed this quest!"); return;}
-    coins+=10000;
-    updateCoins(0);
-    localStorage.setItem(quest1Key,1);
-    alert("🎉 Quest complete! 10,000 coins added!");
-    renderProfile();
+  const refLink=document.getElementById('refLink');
+  const copyRefBtn=document.getElementById('copyRefBtn');
+
+  profileBtn.addEventListener('click',()=>{profilePanel.style.display='block';});
+  closeProfileBtn.addEventListener('click',()=>{profilePanel.style.display='none';});
+
+  function updateDailyBonus(){
+    const lastDaily=parseInt(localStorage.getItem('lastDaily'))||0;
+    const now=Date.now();
+    if(now-lastDaily>24*60*60*1000) collectDailyBtn.disabled=false;
+    else collectDailyBtn.disabled=true;
+  }
+  updateDailyBonus();
+
+  collectDailyBtn.addEventListener('click',()=>{
+    updateCoins(5000);
+    localStorage.setItem('lastDaily',Date.now());
+    updateDailyBonus();
   });
 
-  // Referral
-  const copyRefBtn=document.getElementById('copyRefBtn');
-  copyRefBtn.addEventListener('click',()=>{
-    const refInput=document.getElementById('refLink');
-    refInput.select();
-    refInput.setSelectionRange(0,99999);
-    navigator.clipboard.writeText(refInput.value);
-    alert("Referral link copied!");
+  quest1Btn.addEventListener('click',()=>{
+    updateCoins(10000);
+    alert('Quest completed! 10,000 coins awarded.');
   });
+
+  refLink.value=https://example.com/referral?user=player1;
+  copyRefBtn.addEventListener('click',()=>{navigator.clipboard.writeText(refLink.value); alert('Copied!');});
+
+  // ======= Info Button =======
+  const infoBtn=document.getElementById('infoBtn');
+  infoBtn.addEventListener('click',()=>{alert('Rules: Pick a room, avoid being found. Upgrade miners and collect coins.');});
 
 });
 </script>
-
 </body>
 </html>
