@@ -79,7 +79,15 @@ const miningIncomeValEl=document.getElementById('miningIncomeVal'),minersContain
 function format(n){if(n>=1e9)return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';if(n>=1e6)return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1e3)return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';return n;}
 function save(){localStorage.setItem('coins',coins);localStorage.setItem('maxCoins',maxCoins);localStorage.setItem('upgrades',JSON.stringify(upgrades));localStorage.setItem('check1Expire',check1Expire);localStorage.setItem('minersState',JSON.stringify(minersState));localStorage.setItem('lastTime',Date.now());}
 function updCoins(v){coins+=v;if(coins<0)coins=0;if(coins>maxCoins)maxCoins=coins;coinsVal.textContent=format(coins);updLv();updUpg();updIncome();save();}
-function getIncome(){return minersState.reduce((s,m,i)=>{let inc=0;if(m.count>0){inc=minersData[i].i*Math.pow(2,m.count-1);}return s+inc*m.count;},0);}
+function getIncome(){
+  return minersState.reduce((s, m, i) => {
+    if (m.count > 0) {
+      let inc = minersData[i].i * Math.pow(2, m.count); // доход растёт с каждой покупкой
+      return s + inc;
+    }
+    return s;
+  }, 0);
+}
 function updIncome(){miningIncomeValEl.textContent=format(getIncome());}
 function addOff(){const last=+localStorage.getItem('lastTime')||Date.now(),now=Date.now(),diff=(now-last)/60000;if(diff>0){let inc=getIncome()/60;updCoins(Math.floor(inc*diff));}localStorage.setItem('lastTime',now);}addOff();
 setInterval(()=>updCoins(Math.floor(getIncome()/60)),60000);
@@ -89,9 +97,43 @@ document.querySelectorAll('.upgrade').forEach(u=>u.onclick=()=>{let k=u.dataset.
 function updCheck(){if(check1Expire>Date.now()){check1TimerEl.textContent="⏳ "+Math.floor((check1Expire-Date.now())/1000)+"s";}else check1TimerEl.textContent="";}setInterval(updCheck,1000);
 document.querySelectorAll('.room').forEach(r=>r.onclick=()=>{if(roundInProgress)return;document.querySelectorAll('.room').forEach(x=>x.classList.remove('selected'));r.classList.add('selected');selectedRoom=+r.dataset.idx;});
 document.getElementById('startBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));};
-document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(`.room[data-idx="${i}"]`);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('found');updCoins(l);}else{document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
-function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i],price=m.p*Math.pow(2,st.count),inc=st.count>0?m.i*Math.pow(2,st.count-1)*st.count:0,d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!")};minersContainer.appendChild(d);});}
-document.getElementById('confirmBuy').onclick=()=>{if(pendingMiner==null)return;let i=pendingMiner,m=minersData[i],st=minersState[i],price=m.p*Math.pow(2,st.count);coins-=price;st.count++;updCoins(0);pendingMiner=null;buyConfirm.classList.remove('show');render();};
+document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(.room[data-idx="${i}"]);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(.room[data-idx="${selectedRoom}"]).classList.add('found');updCoins(l);}else{document.querySelector(.room[data-idx="${selectedRoom}"]).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
+function render() {
+  minersContainer.innerHTML = "";
+  minersData.forEach((m, i) => {
+    let st = minersState[i];
+    let price = m.p * Math.pow(2, st.count);          // цена растёт экспоненциально
+    let inc = st.count > 0 ? m.i * Math.pow(2, st.count) : 0; // доход растёт так же
+    let d = document.createElement('div');
+    d.className = 'miner-card';
+    d.innerHTML = `
+      <h3>${m.n}</h3>
+      <p>Income: ${format(inc)}/hr</p>
+      <p>Owned: ${st.count}</p>
+      <p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>
+    `;
+    d.onclick = () => {
+      if (coins >= price) {
+        pendingMiner = i;
+        buyText.textContent = Buy ${m.n} for ${format(price)}?;
+        buyConfirm.classList.add('show');
+      } else {
+        alert("Not enough coins!");
+      }
+    };
+    minersContainer.appendChild(d);
+  });
+}
+document.getElementById('confirmBuy').onclick=()=>{
+  if(pendingMiner==null)return;
+  let i=pendingMiner,m=minersData[i],st=minersState[i],price=m.p*Math.pow(2,st.count);
+  coins-=price;
+  st.count++;
+  updCoins(0);
+  pendingMiner=null;
+  buyConfirm.classList.remove('show');
+  render();
+};
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');};
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();};
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
@@ -99,9 +141,3 @@ updLv();updUpg();updIncome();updCheck();
 </script>
 </body>
 </html>
-
-
-
-
-
-
