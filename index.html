@@ -132,6 +132,78 @@ document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display=
 const profileWindow=document.getElementById('profileWindow');
 document.getElementById('profileBtn').onclick=()=>profileWindow.style.display='block';
 document.getElementById('closeProfile').onclick=()=>profileWindow.style.display='none';
+  updLv();updUpg();updIncome();updCheck();
+
+// --- START: рефералы, квест и ежедневная награда ---
+let referrals = JSON.parse(localStorage.getItem('referrals'))||0;
+let referralClaimed = localStorage.getItem('referralClaimed')==='true';
+const referralStatus = document.getElementById('referralStatus');
+
+function updateReferralStatus(){
+    referralStatus.textContent = referralClaimed ? "✅ Claimed" : `Invited: ${referrals} friend(s)`;
+}
+document.getElementById('claimReferral').onclick = ()=>{
+    if(referralClaimed){
+        alert("Already claimed!");
+        return;
+    }
+    if(referrals>=5){
+        addCoins(500000);
+    } else if(referrals>=2){
+        addCoins(100000);
+    } else {
+        alert("Not enough referrals!");
+        return;
+    }
+    referralClaimed = true;
+    localStorage.setItem('referralClaimed', 'true');
+    updateReferralStatus();
+};
+updateReferralStatus();
+
+// --- Daily Reward ---
+let lastDaily = +localStorage.getItem('lastDaily')||0;
+const dailyStatus = document.getElementById('dailyStatus');
+
+function updateDailyStatus(){
+    let now = Date.now();
+    if(now - lastDaily >= 24*60*60*1000){
+        dailyStatus.textContent = "💰 Available!";
+    } else {
+        let remaining = 24*60*60*1000 - (now-lastDaily);
+        let hrs = Math.floor(remaining/3600000);
+        let mins = Math.floor((remaining%3600000)/60000);
+        dailyStatus.textContent = `Next in ${hrs}h ${mins}m`;
+    }
+}
+document.getElementById('claimDaily').onclick = ()=>{
+    let now = Date.now();
+    if(now - lastDaily < 24*60*60*1000){
+        alert("Daily reward already claimed!");
+        return;
+    }
+    addCoins(30000);
+    lastDaily = now;
+    localStorage.setItem('lastDaily', lastDaily);
+    updateDailyStatus();
+};
+updateDailyStatus();
+
+// --- Quest ---
+let questClaimed = localStorage.getItem('questClaimed')==='true';
+const questStatus = document.getElementById('questStatus');
+function updateQuestStatus(){ questStatus.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; }
+document.getElementById('claimQuest').onclick = ()=>{
+    if(questClaimed){
+        alert("Quest already claimed!");
+        return;
+    }
+    addCoins(50000);
+    questClaimed = true;
+    localStorage.setItem('questClaimed','true');
+    updateQuestStatus();
+};
+updateQuestStatus();
 updLv();updUpg();updIncome();updCheck();
 </script>
 </body>
