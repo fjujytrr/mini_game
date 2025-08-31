@@ -34,90 +34,76 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 .upgrade .price{margin-top:6px;font-weight:700;color:#FFD700;}
 .upgrade .timer{margin-top:4px;font-size:12px;color:#FFD700;}
 .mining-info{margin:10px 0;padding:10px 12px;background:#222;border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(255,215,0,.2);}
-#miningShop {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 500px;
-  background: linear-gradient(145deg, #2a2a2a, #111);
-  border: 2px solid #FFD700;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 25px rgba(255, 215, 0, .6);
-  z-index: 200;
-  overflow-y: auto;
-  max-height: 80vh;
-  animation: fadeIn .3s ease;
-}
 .miners-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
   justify-content: center;
 }
+
 .miner-card {
-  background: linear-gradient(160deg, #333, #111);
-  color: #FFD700;
-  border-radius: 14px;
-  padding: 12px;
-  width: 45%;
+  background: #1a1a1a;
+  border: 2px solid #FFD700;
+  border-radius: 16px;
+  width: 45%; /* 2 карточки в ряд */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 3px 10px rgba(255, 215, 0, .3);
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
   cursor: pointer;
-  transition: .25s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .miner-card:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 6px 14px rgba(255, 215, 0, .6);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
 }
-.miner-card h3 {
-  margin: 0;
-  font-size: 17px;
-  text-align: center;
-}
-.miner-card p {
-  margin: 0;
-  font-size: 14px;
-  text-align: center;
-  opacity: .9;
-}
-.coin-img {
-  width: 20px;
-  height: 20px;
+
+.miner-card img {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-#buyConfirm {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #1a1a1a;
   border: 2px solid #FFD700;
-  border-radius: 18px;
-  padding: 22px;
+  margin-bottom: 8px;
+}
+
+.miner-card h3 {
+  margin: 6px 0;
+  font-size: 16px;
+  color: #fff;
   text-align: center;
-  box-shadow: 0 0 25px rgba(255, 215, 0, .6);
-  z-index: 300;
-  opacity: 0;
-  transition: .3s;
 }
-#buyConfirm.show {
-  display: block;
-  opacity: 1;
+
+.miner-card .income {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-#buyConfirm button {
-  margin: 12px 10px;
-  flex: 1;
+
+.miner-card .income img {
+  width: 14px;
+  height: 14px;
 }
+
+.miner-card .bottom {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 14px;
+  color: #FFD700;
+  margin-top: auto;
+}
+
+.miner-card .bottom span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 #profileWindow {
   display: none;
   position: fixed;
@@ -266,11 +252,42 @@ setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades
 }
 
 // -------------------- Майнеры --------------------
-function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i];let price=m.p*Math.pow(2,st.count);let inc=st.count>0?m.i*Math.pow(2,st.count-1):0;let d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!");};minersContainer.appendChild(d);});}
-document.getElementById('confirmBuy').onclick = ()=>{
-    if(pendingMiner==null) return;
-    let i = pendingMiner,m = minersData[i],st = minersState[i],price = m.p * Math.pow(2, st.count);
-    coins -= price; st.count++; updCoins(0); pendingMiner = null; buyConfirm.classList.remove('show'); render();
+function render() {
+    minersContainer.innerHTML = ""; // очищаем контейнер
+
+    minersData.forEach((m, i) => {
+        let st = minersState[i];
+        let price = m.p * Math.pow(2, st.count);
+        let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
+
+        let card = document.createElement('div');
+        card.className = 'miner-card';
+        card.innerHTML = `
+            <img src="logo.png" alt="Logo">
+            <h3>${m.n}</h3>
+            <div class="income"><img src="logo.png" alt="coin"> Profit/hr: ${format(income)}</div>
+            <div class="bottom">
+                <span>Lvl ${st.count}</span>
+                <span>💰 ${format(price)}</span>
+            </div>
+        `;
+
+        card.onclick = () => {
+            if (coins >= price) {
+                pendingMiner = i;
+                buyText.textContent = `Buy ${m.n} for ${format(price)}?`;
+                buyConfirm.classList.add('show');
+            } else {
+                alert("Not enough coins!");
+            }
+        };
+
+        minersContainer.appendChild(card);
+    });
+}
+document.getElementById('miningBtn').onclick = () => {
+    miningShop.style.display = 'block';
+    render();
 };
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');}
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();}
