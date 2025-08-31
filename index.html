@@ -58,36 +58,6 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 </header>
 <div class="house"></div>
 <div class="controls"><button id="startBtn">🏠</button><button class="secondary" id="resetBtn">🔍</button></div>
-  <!-- Вставьте прямо перед закрывающим </body> -->
-<div id="profileModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:400;color:#FFD700;">
-  <h2 style="text-align:center;margin-bottom:12px;">Профиль</h2>
-  <div style="display:flex;justify-content:space-around;margin-bottom:12px;">
-    <button class="tabBtn" data-tab="ref">Рефералы</button>
-    <button class="tabBtn" data-tab="daily">Ежедневно</button>
-    <button class="tabBtn" data-tab="quest">Квест</button>
-  </div>
-  <div id="profileContent">
-    <div class="tab" data-tab="ref" style="display:none;">
-      <p>Пригласите друзей и получите награды:</p>
-      <ul>
-        <li>2 друга → 100,000 монет</li>
-        <li>5 друзей → 500,000 монет</li>
-      </ul>
-      <button id="claimRef">Забрать награду</button>
-    </div>
-    <div class="tab" data-tab="daily" style="display:none;">
-      <p>Ежедневная награда: 30,000 монет</p>
-      <button id="claimDaily">Забрать</button>
-    </div>
-    <div class="tab" data-tab="quest" style="display:none;">
-      <p>Подпишитесь на мой YouTube канал, чтобы получить 50,000 монет:</p>
-      <a href="https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq" target="_blank" style="color:#FFD700;text-decoration:underline;">Перейти на YouTube</a>
-      <br><br>
-      <button id="claimQuest">Забрать награду</button>
-    </div>
-  </div>
-  <button id="closeProfile" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Закрыть</button>
-</div>
 <div class="upgrade-panel">
   <div class="upgrade" data-key="x2Prize" data-base-price="20000"><h3>x2 Prize / x2 Loss</h3><p>Double rewards & penalties</p><div class="price">20,000</div></div>
   <div class="upgrade" data-key="check1" data-base-price="20000"><h3>Check 1 Room Only</h3><p>Hunter checks 1 room only (1 min)</p><div class="price">20,000</div><div class="timer" id="check1Timer"></div></div>
@@ -128,7 +98,7 @@ document.querySelectorAll('.upgrade').forEach(u=>u.onclick=()=>{let k=u.dataset.
 function updCheck(){if(check1Expire>Date.now()){check1TimerEl.textContent="⏳ "+Math.floor((check1Expire-Date.now())/1000)+"s";}else check1TimerEl.textContent="";}setInterval(updCheck,1000);
 document.querySelectorAll('.room').forEach(r=>r.onclick=()=>{if(roundInProgress)return;document.querySelectorAll('.room').forEach(x=>x.classList.remove('selected'));r.classList.add('selected');selectedRoom=+r.dataset.idx;});
 document.getElementById('startBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));};
-document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(`.room[data-idx="${i}"]`);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('found');updCoins(l);}else{document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
+document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(.room[data-idx="${i}"]);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(.room[data-idx="${selectedRoom}"]).classList.add('found');updCoins(l);}else{document.querySelector(.room[data-idx="${selectedRoom}"]).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
 function render(){
   minersContainer.innerHTML="";
   minersData.forEach((m,i)=>{
@@ -147,7 +117,7 @@ function render(){
     d.onclick=()=>{
       if(coins>=price){
         pendingMiner=i;
-        buyText.textContent=`Buy ${m.n} for ${format(price)}?`;
+        buyText.textContent=Buy ${m.n} for ${format(price)}?;
         buyConfirm.classList.add('show');
       }else alert("Not enough coins!");
     };
@@ -159,55 +129,7 @@ document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.c
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();};
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
 updLv();updUpg();updIncome();updCheck();
-
-const profileModal = document.getElementById('profileModal');
-const tabBtns = document.querySelectorAll('.tabBtn');
-const tabs = document.querySelectorAll('.tab');
-
-document.getElementById('profileBtn').onclick = () => {
-  profileModal.style.display = 'block';
-  showTab('ref'); 
-};
-
-document.getElementById('closeProfile').onclick = () => profileModal.style.display = 'none';
-
-tabBtns.forEach(btn => btn.onclick = () => showTab(btn.dataset.tab));
-
-function showTab(tabKey) {
-  tabs.forEach(t => t.style.display = (t.dataset.tab === tabKey) ? 'block' : 'none');
-}
-
-const claimRef = document.getElementById('claimRef');
-const claimDaily = document.getElementById('claimDaily');
-const claimQuest = document.getElementById('claimQuest');
-
-let claimed = JSON.parse(localStorage.getItem('profileClaimed')) || {ref:0,daily:0,quest:0};
-
-claimRef.onclick = () => {
-  if(claimed.ref>=5){alert("Вы уже получили все реферальные награды!"); return;}
-  let reward = (claimed.ref>=2)?500000:100000;
-  updCoins(reward);
-  claimed.ref = 5;
-  localStorage.setItem('profileClaimed',JSON.stringify(claimed));
-  alert(`Вы получили ${format(reward)} монет!`);
-};
-
-claimDaily.onclick = () => {
-  const today = new Date().toDateString();
-  if(claimed.daily===today){alert("Ежедневная награда уже получена!"); return;}
-  updCoins(30000);
-  claimed.daily = today;
-  localStorage.setItem('profileClaimed',JSON.stringify(claimed));
-  alert("Вы получили 30,000 монет!");
-};
-
-claimQuest.onclick = () => {
-  if(claimed.quest){alert("Квест уже выполнен!"); return;}
-  updCoins(50000);
-  claimed.quest = 1;
-  localStorage.setItem('profileClaimed',JSON.stringify(claimed));
-  alert("Вы получили 50,000 монет!");
 </script>
 </body>
-</html> 
+</html>
 
