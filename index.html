@@ -67,6 +67,31 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
 </div>
 <div id="buyConfirm"><p id="buyText"></p><div style="display:flex;justify-content:center;"><button id="confirmBuy">Buy</button><button id="cancelBuy">Cancel</button></div></div>
+  <div id="profileWindow">
+  <h2 style="text-align:center;margin-bottom:12px;">Profile</h2>
+  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
+    <h3>Referral Program</h3>
+    <p>Invite friends and get rewards:</p>
+    <p>2 friends → 100,000 coins</p>
+    <p>5 friends → 500,000 coins</p>
+    <button id="claimReferral">Claim Referral</button>
+    <p id="referralStatus"></p>
+  </div>
+  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
+    <h3>Daily Reward</h3>
+    <p>Get 30,000 coins once a day!</p>
+    <button id="claimDaily">Claim Daily</button>
+    <p id="dailyStatus"></p>
+  </div>
+  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
+    <h3>Quest</h3>
+    <p>Subscribe to my YouTube channel to complete the quest and get 50,000 coins!</p>
+    <a href="https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq" target="_blank" style="display:block;text-align:center;margin:8px 0;padding:10px;background:#FFD700;color:#000;border-radius:12px;text-decoration:none;">Go to YouTube</a>
+    <button id="claimQuest">Claim Quest</button>
+    <p id="questStatus"></p>
+  </div>
+  <button id="closeProfile">Close</button>
+</div>
 <div class="bottom-menu"><button id="infoBtn" class="secondary">ℹ</button><button id="shopBtn" class="secondary">🛒</button><button id="miningBtn" class="secondary">⛏</button><button id="profileBtn" class="secondary">👤</button></div>
 <script>
 const rooms=document.querySelector('.house');for(let i=0;i<8;i++){let d=document.createElement('div');d.className='room';d.dataset.idx=i;d.textContent='+';rooms.appendChild(d);}
@@ -129,6 +154,10 @@ document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.c
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();};
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
 updLv();updUpg();updIncome();updCheck();
+
+const profileWindow = document.getElementById('profileWindow');
+document.getElementById('profileBtn').onclick = () => profileWindow.style.display = 'block';
+document.getElementById('closeProfile').onclick = () => profileWindow.style.display = 'none';
 </script>
 </body>
 </html>
