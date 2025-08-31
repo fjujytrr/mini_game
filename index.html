@@ -131,11 +131,40 @@ setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades
 }
 
 // -------------------- Майнеры --------------------
-function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i];let price=m.p*Math.pow(2,st.count);let inc=st.count>0?m.i*Math.pow(2,st.count-1):0;let d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!");};minersContainer.appendChild(d);});}
-document.getElementById('confirmBuy').onclick = ()=>{
-    if(pendingMiner==null) return;
-    let i = pendingMiner,m = minersData[i],st = minersState[i],price = m.p * Math.pow(2, st.count);
-    coins -= price; st.count++; updCoins(0); pendingMiner = null; buyConfirm.classList.remove('show'); render();
+function render() {
+    minersContainer.innerHTML = ""; // очищаем контейнер
+
+    minersData.forEach((m, i) => {
+        let st = minersState[i];
+        let price = m.p * Math.pow(2, st.count);
+        let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
+
+        let card = document.createElement('div');
+        card.className = 'miner-card';
+        card.innerHTML = `
+            <img src="logo.png" alt="Logo">
+            <h3>${m.n}</h3>
+            <div class="income"><img src="logo.png" alt="coin"> Profit/hr: ${format(income)}</div>
+            <div class="bottom">
+                <span>Lvl ${st.count}</span>
+                <span>💰 ${format(price)}</span>
+            </div>
+        `;
+
+        card.onclick = () => {
+            if (coins >= price) {
+                pendingMiner = i;
+                buyText.textContent = `Buy ${m.n} for ${format(price)}?`;
+                buyConfirm.classList.add('show');
+            } else {
+                alert("Not enough coins!");
+            }
+        };
+
+        minersContainer.appendChild(card);
+    });
+}
+
 };
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');}
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();}
