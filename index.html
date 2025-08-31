@@ -40,278 +40,63 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 .miner-card:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(255,215,0,.5);}
 .miner-card h3{margin:0;font-size:16px;text-align:center;}
 .miner-card p{margin:0;font-size:14px;text-align:center;}
+.coin-img{width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:4px;}
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
 #buyConfirm.show{display:block;opacity:1;}
 #buyConfirm button{margin:10px 8px;flex:1;}
 </style>
 </head>
 <body>
-
 <header>
   <div class="level-bar">
-    <div class="level" data-val="10000">10K</div>
-    <div class="level" data-val="50000">50K</div>
-    <div class="level" data-val="100000">100K</div>
-    <div class="level" data-val="250000">250K</div>
-    <div class="level" data-val="500000">500K</div>
-    <div class="level" data-val="1000000">1M</div>
+    <div class="level" data-val="10000">10K</div><div class="level" data-val="50000">50K</div>
+    <div class="level" data-val="100000">100K</div><div class="level" data-val="250000">250K</div>
+    <div class="level" data-val="500000">500K</div><div class="level" data-val="1000000">1M</div>
     <div class="level" data-val="5000000">5M</div>
   </div>
-  <div class="coin-panel">
-    <img src="logo.png" id="coinLogo">
-    <div class="val" id="coinsVal">0</div>
-  </div>
+  <div class="coin-panel"><img src="logo.png" id="coinLogo"><div class="val" id="coinsVal">0</div></div>
 </header>
-
 <div class="house"></div>
-
-<div class="controls">
-  <button id="startBtn">🏠</button>
-  <button class="secondary" id="resetBtn">🔍</button>
-</div>
-
+<div class="controls"><button id="startBtn">🏠</button><button class="secondary" id="resetBtn">🔍</button></div>
 <div class="upgrade-panel">
-  <div class="upgrade" data-key="x2Prize" data-base-price="20000">
-    <h3>x2 Prize / x2 Loss</h3>
-    <p>Double rewards & penalties</p>
-    <div class="price">20,000</div>
-  </div>
-  <div class="upgrade" data-key="check1" data-base-price="20000">
-    <h3>Check 1 Room Only</h3>
-    <p>Hunter checks 1 room only (1 min)</p>
-    <div class="price">20,000</div>
-    <div class="timer" id="check1Timer"></div>
-  </div>
+  <div class="upgrade" data-key="x2Prize" data-base-price="20000"><h3>x2 Prize / x2 Loss</h3><p>Double rewards & penalties</p><div class="price">20,000</div></div>
+  <div class="upgrade" data-key="check1" data-base-price="20000"><h3>Check 1 Room Only</h3><p>Hunter checks 1 room only (1 min)</p><div class="price">20,000</div><div class="timer" id="check1Timer"></div></div>
 </div>
-
-<div class="mining-info">
-  <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
-</div>
-
-<div id="miningShop">
-  <h2 style="color:#FFD700;text-align:center;margin-bottom:12px;">Mining Shop</h2>
-  <div class="miners-container"></div>
+<div class="mining-info"><strong>Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr</div>
+<div id="miningShop"><h2 style="color:#FFD700;text-align:center;margin-bottom:12px;">Mining Shop</h2><div class="miners-container"></div>
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
 </div>
-
-<div id="buyConfirm">
-  <p id="buyText"></p>
-  <div style="display:flex;justify-content:center;">
-    <button id="confirmBuy">Buy</button>
-    <button id="cancelBuy">Cancel</button>
-  </div>
-</div>
-
-<div class="bottom-menu">
-  <button id="infoBtn" class="secondary">ℹ</button>
-  <button id="shopBtn" class="secondary">🛒</button>
-  <button id="miningBtn" class="secondary">⛏</button>
-  <button id="profileBtn" class="secondary">👤</button>
-</div>
-
+<div id="buyConfirm"><p id="buyText"></p><div style="display:flex;justify-content:center;"><button id="confirmBuy">Buy</button><button id="cancelBuy">Cancel</button></div></div>
+<div class="bottom-menu"><button id="infoBtn" class="secondary">ℹ</button><button id="shopBtn" class="secondary">🛒</button><button id="miningBtn" class="secondary">⛏</button><button id="profileBtn" class="secondary">👤</button></div>
 <script>
-const roomsContainer = document.querySelector('.house');
-for(let i=0;i<8;i++){
-  const d=document.createElement('div');
-  d.className='room';
-  d.dataset.idx=i;
-  d.textContent='+';
-  roomsContainer.appendChild(d);
-}
-const rooms = document.querySelectorAll('.room');
-
-let selectedRoom=null;
-let coins = +localStorage.getItem('coins')||0;
-let maxCoins = +localStorage.getItem('maxCoins')||coins;
-const coinsVal = document.getElementById('coinsVal');
-coinsVal.textContent = coins;
-
-let upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0,check1:0};
-let check1Expire = +localStorage.getItem('check1Expire')||0;
-const check1TimerEl = document.getElementById('check1Timer');
-
-let roundInProgress=false;
-
-// майнеры
-const minersData=[
-  {n:"Miner 1",i:500,p:7000},
-  {n:"Miner 2",i:1788,p:12000},
-  {n:"Miner 3",i:2358,p:15000},
-  {n:"Miner 4",i:3000,p:20000},
-  {n:"Miner 5",i:4500,p:25000},
-  {n:"Miner 6",i:5200,p:30000},
-  {n:"Miner 7",i:6100,p:35000},
-  {n:"Miner 8",i:7200,p:40000},
-  {n:"Miner 9",i:8500,p:45000},
-  {n:"Miner 10",i:9500,p:50000}
-];
-let minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(_=>({count:0,upgrades:0}));
-
-const miningIncomeValEl=document.getElementById('miningIncomeVal');
-const minersContainer=document.querySelector('.miners-container');
-const miningShop=document.getElementById('miningShop');
-
-function saveGameState(){
-  localStorage.setItem('coins',coins);
-  localStorage.setItem('maxCoins',maxCoins);
-  localStorage.setItem('upgrades',JSON.stringify(upgrades));
-  localStorage.setItem('check1Expire',check1Expire);
-  localStorage.setItem('minersState',JSON.stringify(minersState));
-  localStorage.setItem('lastTime',Date.now());
-}
-
-function updateCoins(v){
-  coins+=v;
-  if(coins<0)coins=0;
-  if(coins>maxCoins)maxCoins=coins;
-  coinsVal.textContent=coins;
-  updateLevels();
-  updateUpgradePrices();
-  updateMiningIncome();
-  saveGameState();
-}
-
-// Mining income
-function getMiningIncome(){
-  return minersState.reduce((s,m,i)=>s+m.count*minersData[i].i*Math.pow(1.5,m.upgrades),0);
-}
-function updateMiningIncome(){miningIncomeValEl.textContent=getMiningIncome().toLocaleString();}
-
-// offline income
-function addOfflineCoins(){
-  const last=+localStorage.getItem('lastTime')||Date.now();
-  const diffM=Math.floor((Date.now()-last)/60000);
-  if(diffM>0)updateCoins(Math.floor(getMiningIncome()/60*diffM));
-  localStorage.setItem('lastTime',Date.now());
-}
-addOfflineCoins();
-setInterval(()=>updateCoins(Math.floor(getMiningIncome()/60)),60000);
-
-// Levels
-function updateLevels(){
-  document.querySelectorAll('.level').forEach(l=>l.classList.remove('active'));
-  document.querySelectorAll('.level').forEach(l=>{
-    if(maxCoins>=+l.dataset.val)l.classList.add('active');
-  });
-}
-
-// Upgrades
-const upgradeElements=document.querySelectorAll('.upgrade');
-function updateUpgradePrices(){
-  upgradeElements.forEach(u=>{
-    const k=u.dataset.key;
-    const base=+u.dataset.basePrice;
-    const count=upgrades[k]||0;
-    u.querySelector('.price').textContent=(base*Math.pow(2,count)).toLocaleString();
-  });
-}
-upgradeElements.forEach(u=>{
-  u.addEventListener('click',()=>{
-    const k=u.dataset.key;
-    const base=+u.dataset.basePrice;
-    const count=upgrades[k]||0;
-    const price=base*Math.pow(2,count);
-    if(coins>=price){
-      upgrades[k]=count+1;
-      updateCoins(-price);
-      if(k==='check1')check1Expire=Date.now()+60000;
-      saveGameState();
-    } else alert("Not enough coins!");
-  });
-});
-updateUpgradePrices();
-function updateCheck1Timer(){
-  if(check1Expire>Date.now())check1TimerEl.textContent="⏳ "+Math.floor((check1Expire-Date.now())/1000)+"s";
-  else check1TimerEl.textContent="";
-}
-setInterval(updateCheck1Timer,1000);
-
-// Rooms
-rooms.forEach(r=>r.addEventListener('click',()=>{
-  if(roundInProgress)return;
-  rooms.forEach(x=>x.classList.remove('selected'));
-  r.classList.add('selected');
-  selectedRoom=+r.dataset.idx;
-}));
-
-document.getElementById('startBtn').addEventListener('click',()=>{
-  if(selectedRoom===null){alert('Pick a room first');return;}
-  rooms.forEach(r=>r.classList.remove('found','safe'));
-  rooms[selectedRoom].classList.add('selected');
-});
-
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  if(selectedRoom===null){alert('Pick a room first');return;}
-  roundInProgress=true;
-  const numCheck=(check1Expire>Date.now())?1:2;
-  const picks=[...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numCheck);
-  rooms.forEach(r=>r.classList.remove('found','safe','highlight'));
-  let delay=0;
-  picks.forEach(idx=>{
-    const room=rooms[idx];
-    setTimeout(()=>room.classList.add('highlight'),delay);
-    setTimeout(()=>room.classList.remove('highlight'),delay+600);
-    delay+=700;
-  });
-  setTimeout(()=>{
-    let prize=1000,loss=-2000;
-    if(upgrades.x2Prize>0){prize*=Math.pow(2,upgrades.x2Prize);loss*=Math.pow(2,upgrades.x2Prize);}
-    if(picks.includes(selectedRoom)){
-      rooms[selectedRoom].classList.add('found');
-      updateCoins(loss);
-    } else {
-      rooms[selectedRoom].classList.add('safe');
-      updateCoins(prize);
-    }
-    selectedRoom=null;
-    rooms.forEach(r=>r.classList.remove('selected'));
-    roundInProgress=false;
-  },delay+700);
-});
-
-// Mining shop
-function renderMiners(){
-  minersContainer.innerHTML='';
-  minersData.forEach((m,idx)=>{
-    const st=minersState[idx];
-    const price=m.p*Math.pow(2,st.count);
-    const income=st.count*m.i*Math.pow(1.5,st.upgrades);
-    const d=document.createElement('div');
-    d.className='miner-card';
-    d.innerHTML=<h3>${m.n}</h3><p>Income: ${income.toLocaleString()}/hr</p><p>Owned: ${st.count}</p><p>Price: ${price.toLocaleString()}</p>;
-    d.addEventListener('click',()=>{
-      showBuyConfirm(idx,price);
-    });
-    minersContainer.appendChild(d);
-  });
-}
-
-function showBuyConfirm(idx,price){
-  const conf=document.getElementById('buyConfirm');
-  const text=document.getElementById('buyText');
-  conf.classList.add('show');
-  text.textContent=Buy ${minersData[idx].n} for ${price.toLocaleString()} coins?;
-  document.getElementById('confirmBuy').onclick=()=>{
-    if(coins>=price){
-      coins-=price;
-      minersState[idx].count+=1;
-      updateCoins(0);
-      renderMiners();
-      conf.classList.remove('show');
-    } else alert("Not enough coins!");
-  };
-  document.getElementById('cancelBuy').onclick=()=>{conf.classList.remove('show');};
-}
-
-document.getElementById('miningBtn').addEventListener('click',()=>{
-  miningShop.style.display='block';
-  renderMiners();
-});
-document.getElementById('closeMiningShop').addEventListener('click',()=>miningShop.style.display='none');
-
-updateLevels();
-updateMiningIncome();
-updateCheck1Timer();
+const rooms=document.querySelector('.house');for(let i=0;i<8;i++){let d=document.createElement('div');d.className='room';d.dataset.idx=i;d.textContent='+';rooms.appendChild(d);}
+let selectedRoom=null,coins=+localStorage.getItem('coins')||0,maxCoins=+localStorage.getItem('maxCoins')||coins,coinsVal=document.getElementById('coinsVal');
+coinsVal.textContent=format(coins);
+let upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0,check1:0},check1Expire=+localStorage.getItem('check1Expire')||0,check1TimerEl=document.getElementById("check1Timer"),roundInProgress=false;
+const minersData=[{n:"Miner 1",i:500,p:7000},{n:"Miner 2",i:1788,p:12000},{n:"Miner 3",i:2358,p:15000},{n:"Miner 4",i:3000,p:20000},{n:"Miner 5",i:4500,p:25000},{n:"Miner 6",i:5200,p:30000},{n:"Miner 7",i:6100,p:35000},{n:"Miner 8",i:7200,p:40000},{n:"Miner 9",i:8500,p:45000},{n:"Miner 10",i:9500,p:50000}];
+let minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(_=>({count:0}));
+const miningIncomeValEl=document.getElementById('miningIncomeVal'),minersContainer=document.querySelector('.miners-container'),miningShop=document.getElementById('miningShop'),buyConfirm=document.getElementById('buyConfirm'),buyText=document.getElementById('buyText');let pendingMiner=null;
+function format(n){if(n>=1e9)return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';if(n>=1e6)return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1e3)return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';return n;}
+function save(){localStorage.setItem('coins',coins);localStorage.setItem('maxCoins',maxCoins);localStorage.setItem('upgrades',JSON.stringify(upgrades));localStorage.setItem('check1Expire',check1Expire);localStorage.setItem('minersState',JSON.stringify(minersState));localStorage.setItem('lastTime',Date.now());}
+function updCoins(v){coins+=v;if(coins<0)coins=0;if(coins>maxCoins)maxCoins=coins;coinsVal.textContent=format(coins);updLv();updUpg();updIncome();save();}
+function getIncome(){return minersState.reduce((s,m,i)=>{let inc=0;if(m.count>0){inc=minersData[i].i*Math.pow(2,m.count-1);}return s+inc*m.count;},0);}
+function updIncome(){miningIncomeValEl.textContent=format(getIncome());}
+function addOff(){const last=+localStorage.getItem('lastTime')||Date.now(),now=Date.now(),diff=(now-last)/60000;if(diff>0){let inc=getIncome()/60;updCoins(Math.floor(inc*diff));}localStorage.setItem('lastTime',now);}addOff();
+setInterval(()=>updCoins(Math.floor(getIncome()/60)),60000);
+function updLv(){document.querySelectorAll('.level').forEach(l=>{l.classList.toggle('active',maxCoins>=+l.dataset.val);});}
+function updUpg(){document.querySelectorAll('.upgrade').forEach(u=>{let k=u.dataset.key,base=+u.dataset.basePrice,c=upgrades[k]||0,price=base*Math.pow(2,c);u.querySelector('.price').textContent=format(price);});}
+document.querySelectorAll('.upgrade').forEach(u=>u.onclick=()=>{let k=u.dataset.key,base=+u.dataset.basePrice,c=upgrades[k]||0,price=base*Math.pow(2,c);if(coins>=price){upgrades[k]=c+1;updCoins(-price);if(k==="check1")check1Expire=Date.now()+60000;save();}else alert("Not enough coins!")});
+function updCheck(){if(check1Expire>Date.now()){check1TimerEl.textContent="⏳ "+Math.floor((check1Expire-Date.now())/1000)+"s";}else check1TimerEl.textContent="";}setInterval(updCheck,1000);
+document.querySelectorAll('.room').forEach(r=>r.onclick=()=>{if(roundInProgress)return;document.querySelectorAll('.room').forEach(x=>x.classList.remove('selected'));r.classList.add('selected');selectedRoom=+r.dataset.idx;});
+document.getElementById('startBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));};
+document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(`.room[data-idx="${i}"]`);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('found');updCoins(l);}else{document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
+function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i],price=m.p*Math.pow(2,st.count),inc=st.count>0?m.i*Math.pow(2,st.count-1)*st.count:0,d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!")};minersContainer.appendChild(d);});}
+document.getElementById('confirmBuy').onclick=()=>{if(pendingMiner==null)return;let i=pendingMiner,m=minersData[i],st=minersState[i],price=m.p*Math.pow(2,st.count);coins-=price;st.count++;updCoins(0);pendingMiner=null;buyConfirm.classList.remove('show');render();};
+document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');};
+document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();};
+document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
+updLv();updUpg();updIncome();updCheck();
 </script>
 </body>
 </html>
+
