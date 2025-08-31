@@ -5,7 +5,45 @@
 <meta name="viewport" content="width=device-width, user-scalable=no">
 <title>Hide & Seek — Premium Emoji</title>
 <style>
-/* ... твои стили без изменений ... */
+html,body{margin:0;padding:0;font-family:Inter,sans-serif;background:#1a1a1a;color:#fff;overflow:hidden;touch-action:none;}
+body{display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;}
+.level-bar{display:flex;gap:6px;background:#222;padding:6px 10px;border-radius:12px;flex:1;justify-content:space-between;}
+.level{flex:1;text-align:center;padding:6px 0;font-size:14px;font-weight:700;color:#555;border-radius:8px;background:#333;transition:.5s;cursor:pointer;}
+.level.active{background:#FFD700;color:#000;box-shadow:0 0 12px rgba(255,215,0,.7);}
+.coin-panel{display:flex;align-items:center;gap:8px;background:#222;padding:8px 16px;border-radius:16px;box-shadow:0 0 10px rgba(255,215,0,.4);}
+.coin-panel .val{font-weight:700;font-size:18px;color:#FFD700;}
+#coinLogo{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid #FFD700;}
+.house{position:relative;width:95%;max-width:480px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px;}
+.room{background:linear-gradient(145deg,#2a2a2a,#111);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;cursor:pointer;transition:.25s;color:#FFD700;box-shadow:0 4px 12px rgba(0,0,0,.5);}
+.room:hover{box-shadow:0 6px 16px rgba(255,215,0,.4);}
+.room.selected{border:3px solid #FFD700;}
+.room.found{border:3px solid #FF4500;box-shadow:0 0 12px #FF4500;}
+.room.safe{border:3px solid #10B981;box-shadow:0 0 12px #10B981;}
+.room.highlight{box-shadow:0 0 20px 4px #FFD700;transition:.3s;}
+.controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px;}
+button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:linear-gradient(90deg,#FFD700,#FFC107);box-shadow:0 4px 8px rgba(255,215,0,.4);}
+button:active{box-shadow:0 2px 4px rgba(255,215,0,.3);}
+button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-shadow:0 3px 6px rgba(255,215,0,.2);}
+.bottom-menu{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);width:95%;display:flex;justify-content:space-around;gap:8px;background:#111;padding:6px 0;border-radius:16px;box-shadow:0 0 12px rgba(255,215,0,.3);}
+.bottom-menu button{flex:1;margin:0 4px;font-size:22px;}
+.upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:10px;width:95%;}
+.upgrade{flex:0 0 auto;background:#222;padding:12px;border-radius:14px;text-align:center;min-width:150px;cursor:pointer;box-shadow:0 2px 6px rgba(255,215,0,.2);}
+.upgrade h3{margin:0 0 6px;font-size:16px;color:#FFD700;}
+.upgrade p{margin:0;font-size:14px;}
+.upgrade .price{margin-top:6px;font-weight:700;color:#FFD700;}
+.upgrade .timer{margin-top:4px;font-size:12px;color:#FFD700;}
+.mining-info{margin:10px 0;padding:10px 12px;background:#222;border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(255,215,0,.2);}
+#miningShop{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:200;overflow-y:auto;max-height:80vh;}
+.miners-container{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.miner-card{background:linear-gradient(145deg,#333,#111);color:#FFD700;border-radius:12px;padding:10px;width:45%;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(255,215,0,.2);cursor:pointer;transition:.2s;}
+.miner-card:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(255,215,0,.5);}
+.miner-card h3{margin:0;font-size:16px;text-align:center;}
+.miner-card p{margin:0;font-size:14px;text-align:center;}
+.coin-img{width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:4px;}
+#buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
+#buyConfirm.show{display:block;opacity:1;}
+#buyConfirm button{margin:10px 8px;flex:1;}
 </style>
 </head>
 <body>
@@ -41,19 +79,7 @@ const miningIncomeValEl=document.getElementById('miningIncomeVal'),minersContain
 function format(n){if(n>=1e9)return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';if(n>=1e6)return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(n>=1e3)return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';return n;}
 function save(){localStorage.setItem('coins',coins);localStorage.setItem('maxCoins',maxCoins);localStorage.setItem('upgrades',JSON.stringify(upgrades));localStorage.setItem('check1Expire',check1Expire);localStorage.setItem('minersState',JSON.stringify(minersState));localStorage.setItem('lastTime',Date.now());}
 function updCoins(v){coins+=v;if(coins<0)coins=0;if(coins>maxCoins)maxCoins=coins;coinsVal.textContent=format(coins);updLv();updUpg();updIncome();save();}
-
-// 🔥 новая логика дохода
-function getIncome(){
-  return minersState.reduce((s,m,i)=>{
-    if(m.count>0){
-      // геометрическая прогрессия: base * (2^count - 1)
-      let total = minersData[i].i * (Math.pow(2, m.count) - 1);
-      return s + total;
-    }
-    return s;
-  },0);
-}
-
+function getIncome(){return minersState.reduce((s,m,i)=>{let inc=0;if(m.count>0){inc=minersData[i].i*Math.pow(2,m.count-1);}return s+inc*m.count;},0);}
 function updIncome(){miningIncomeValEl.textContent=format(getIncome());}
 function addOff(){const last=+localStorage.getItem('lastTime')||Date.now(),now=Date.now(),diff=(now-last)/60000;if(diff>0){let inc=getIncome()/60;updCoins(Math.floor(inc*diff));}localStorage.setItem('lastTime',now);}addOff();
 setInterval(()=>updCoins(Math.floor(getIncome()/60)),60000);
@@ -64,7 +90,7 @@ function updCheck(){if(check1Expire>Date.now()){check1TimerEl.textContent="⏳ "
 document.querySelectorAll('.room').forEach(r=>r.onclick=()=>{if(roundInProgress)return;document.querySelectorAll('.room').forEach(x=>x.classList.remove('selected'));r.classList.add('selected');selectedRoom=+r.dataset.idx;});
 document.getElementById('startBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));};
 document.getElementById('resetBtn').onclick=()=>{if(selectedRoom==null)return alert('Pick a room first');roundInProgress=true;let num=(check1Expire>Date.now())?1:2,picks=[...Array(8).keys()].sort(()=>.5-Math.random()).slice(0,num);document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));let d=0;picks.forEach(i=>{let rm=document.querySelector(`.room[data-idx="${i}"]`);setTimeout(()=>rm.classList.add('highlight'),d);setTimeout(()=>rm.classList.remove('highlight'),d+600);d+=700;});setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades.x2Prize);l*=Math.pow(2,upgrades.x2Prize);}if(picks.includes(selectedRoom)){document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('found');updCoins(l);}else{document.querySelector(`.room[data-idx="${selectedRoom}"]`).classList.add('safe');updCoins(p);}selectedRoom=null;document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));roundInProgress=false;},d+700);}
-function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i],price=m.p*Math.pow(2,st.count);let inc=0;if(st.count>0){inc=m.i*(Math.pow(2,st.count)-1);}let d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!")};minersContainer.appendChild(d);});}
+function render(){minersContainer.innerHTML="";minersData.forEach((m,i)=>{let st=minersState[i],price=m.p*Math.pow(2,st.count),inc=st.count>0?m.i*Math.pow(2,st.count-1)*st.count:0,d=document.createElement('div');d.className='miner-card';d.innerHTML=`<h3>${m.n}</h3><p>Income: ${format(inc)}/hr</p><p>Owned: ${st.count}</p><p><img src="logo.png" class="coin-img"/> Price: ${format(price)}</p>`;d.onclick=()=>{if(coins>=price){pendingMiner=i;buyText.textContent=`Buy ${m.n} for ${format(price)}?`;buyConfirm.classList.add('show');}else alert("Not enough coins!")};minersContainer.appendChild(d);});}
 document.getElementById('confirmBuy').onclick=()=>{if(pendingMiner==null)return;let i=pendingMiner,m=minersData[i],st=minersState[i],price=m.p*Math.pow(2,st.count);coins-=price;st.count++;updCoins(0);pendingMiner=null;buyConfirm.classList.remove('show');render();};
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');};
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();};
@@ -73,6 +99,4 @@ updLv();updUpg();updIncome();updCheck();
 </script>
 </body>
 </html>
-
-
 
