@@ -142,10 +142,14 @@ document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='bloc
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
 
 // -------------------- Профиль --------------------
-const profileWindow=document.getElementById('profileWindow');
-document.getElementById('profileBtn').onclick=()=>profileWindow.style.display='block';
-document.getElementById('closeProfile').onclick=()=>profileWindow.style.display='none';
+window.addEventListener('DOMContentLoaded', () => {
+    const profileWindow = document.getElementById('profileWindow');
+    const profileBtn = document.getElementById('profileBtn');
+    const closeProfile = document.getElementById('closeProfile');
 
+    profileBtn.onclick = () => profileWindow.style.display = 'block';
+    closeProfile.onclick = () => profileWindow.style.display = 'none';
+});
 // -------------------- Инициализация --------------------
 updLv();updUpg();updIncome();updCheck();
 </script>
