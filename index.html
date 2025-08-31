@@ -39,7 +39,6 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 .miner-card{background:linear-gradient(145deg,#333,#111);color:#FFD700;border-radius:12px;padding:10px;width:45%;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(255,215,0,.2);cursor:pointer;transition:.2s;}
 .miner-card:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(255,215,0,.5);}
 .miner-card h3{margin:0;font-size:16px;text-align:center;}
-.miner-card p{margin:0;font-size:14px;text-align:center;}
 .coin-img{width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:4px;}
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
 #buyConfirm.show{display:block;opacity:1;}
@@ -68,31 +67,6 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
 </div>
 <div id="buyConfirm"><p id="buyText"></p><div style="display:flex;justify-content:center;"><button id="confirmBuy">Buy</button><button id="cancelBuy">Cancel</button></div></div>
-<div id="profileWindow">
-  <h2 style="text-align:center;margin-bottom:12px;">Profile</h2>
-  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
-    <h3>Referral Program</h3>
-    <p>Invite friends and get rewards:</p>
-    <p>2 friends → 100,000 coins</p>
-    <p>5 friends → 500,000 coins</p>
-    <button id="claimReferral">Claim Referral</button>
-    <p id="referralStatus"></p>
-  </div>
-  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
-    <h3>Daily Reward</h3>
-    <p>Get 30,000 coins once a day!</p>
-    <button id="claimDaily">Claim Daily</button>
-    <p id="dailyStatus"></p>
-  </div>
-  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
-    <h3>Quest</h3>
-    <p>Subscribe to my YouTube channel to complete the quest and get 50,000 coins!</p>
-    <a href="https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq" target="_blank" style="display:block;text-align:center;margin:8px 0;padding:10px;background:#FFD700;color:#000;border-radius:12px;text-decoration:none;">Go to YouTube</a>
-    <button id="claimQuest">Claim Quest</button>
-    <p id="questStatus"></p>
-  </div>
-  <button id="closeProfile">Close</button>
-</div>
 <div class="bottom-menu">
   <button id="infoBtn" class="secondary">ℹ</button>
   <button id="shopBtn" class="secondary">🛒</button>
@@ -100,12 +74,10 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="profileBtn" class="secondary">👤</button>
 </div>
 <script>
-// -------------------- ЛОГИКА ----------------------
 const rooms=document.querySelector('.house');
 for(let i=0;i<8;i++){let d=document.createElement('div');d.className='room';d.dataset.idx=i;d.textContent='+';rooms.appendChild(d);}
 let selectedRoom=null,coins=+localStorage.getItem('coins')||0,maxCoins=+localStorage.getItem('maxCoins')||coins,coinsVal=document.getElementById('coinsVal'),upgrades=JSON.parse(localStorage.getItem('upgrades'))||{x2Prize:0,check1:0},check1Expire=+localStorage.getItem('check1Expire')||0,roundInProgress=false;
 const minersData=[{n:"Miner 1",i:500,p:7000},{n:"Miner 2",i:1788,p:12000},{n:"Miner 3",i:2358,p:15000},{n:"Miner 4",i:3000,p:20000},{n:"Miner 5",i:4500,p:25000},{n:"Miner 6",i:5200,p:30000},{n:"Miner 7",i:6100,p:35000},{n:"Miner 8",i:7200,p:40000},{n:"Miner 9",i:8500,p:45000},{n:"Miner 10",i:9500,p:50000}],minersState=JSON.parse(localStorage.getItem('minersState'))||minersData.map(_=>({count:0})),miningIncomeValEl=document.getElementById('miningIncomeVal'),minersContainer=document.querySelector('.miners-container'),miningShop=document.getElementById('miningShop'),buyConfirm=document.getElementById('buyConfirm'),buyText=document.getElementById('buyText');let pendingMiner=null;
-
 function format(n){return n>=1e9?(n/1e9).toFixed(1).replace(/\.0$/,'')+'B':n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':n;}
 function save(){localStorage.setItem('coins',coins);localStorage.setItem('maxCoins',maxCoins);localStorage.setItem('upgrades',JSON.stringify(upgrades));localStorage.setItem('check1Expire',check1Expire);localStorage.setItem('minersState',JSON.stringify(minersState));localStorage.setItem('lastTime',Date.now());}
 function addCoins(v){coins+=v;if(coins>maxCoins)maxCoins=coins;updCoins(0);}
@@ -132,41 +104,40 @@ setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades
 
 // -------------------- Майнеры --------------------
 function render() {
-    minersContainer.innerHTML = ""; // очищаем контейнер
-
+    minersContainer.innerHTML = "";
     minersData.forEach((m, i) => {
         let st = minersState[i];
         let price = m.p * Math.pow(2, st.count);
-        let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
+        let income = st.count > 0 ? m.i * Math.pow(2, st.count-1) : 0;
 
         let card = document.createElement('div');
         card.className = 'miner-card';
-        card.innerHTML = `
-            <img src="logo.png" alt="Logo">
-            <h3>${m.n}</h3>
-            <div class="income"><img src="logo.png" alt="coin"> Profit/hr: ${format(income)}</div>
-            <div class="bottom">
-                <span>Lvl ${st.count}</span>
-                <span>💰 ${format(price)}</span>
-            </div>
-        `;
-
+        card.innerHTML = `<h3>${m.n}</h3><div>Profit/hr: ${format(income)}</div><div>Lvl ${st.count} | 💰 ${format(price)}</div>`;
         card.onclick = () => {
             if (coins >= price) {
                 pendingMiner = i;
                 buyText.textContent = `Buy ${m.n} for ${format(price)}?`;
                 buyConfirm.classList.add('show');
-            } else {
-                alert("Not enough coins!");
-            }
+            } else alert("Not enough coins!");
         };
-
         minersContainer.appendChild(card);
     });
 }
 
-};
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');}
+document.getElementById('confirmBuy').onclick=()=>{
+    if(pendingMiner!=null){
+        let m=minersData[pendingMiner],st=minersState[pendingMiner],price=m.p*Math.pow(2,st.count);
+        if(coins>=price){
+            updCoins(-price);
+            st.count++;
+            save();
+            render();
+        }
+        pendingMiner=null;
+        buyConfirm.classList.remove('show');
+    }
+}
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();}
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
 
@@ -175,31 +146,12 @@ const profileWindow=document.getElementById('profileWindow');
 document.getElementById('profileBtn').onclick=()=>profileWindow.style.display='block';
 document.getElementById('closeProfile').onclick=()=>profileWindow.style.display='none';
 
-// -------------------- Квест, рефералы, ежедневка --------------------
-let questClaimed = localStorage.getItem('questClaimed')==='true';
-let referrals = JSON.parse(localStorage.getItem('referrals'))||0;
-let referralClaimed = localStorage.getItem('referralClaimed')==='true';
-let lastDaily = +localStorage.getItem('lastDaily')||0;
-
-const questStatus=document.getElementById('questStatus');
-const referralStatus=document.getElementById('referralStatus');
-const dailyStatus=document.getElementById('dailyStatus');
-
-function updateQuestStatus(){questStatus.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed";}
-function updateReferralStatus(){referralStatus.textContent = referralClaimed ? "✅ Claimed" : `Invited: ${referrals} friend(s)`;}
-function updateDailyStatus(){ 
-    let now=Date.now();
-    if(now-lastDaily>=24*60*60*1000) dailyStatus.textContent="💰 Available!";
-    else {let r=24*60*60*1000-(now-lastDaily),h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000); dailyStatus.textContent=`Next in ${h}h ${m}m`;}
-}
-document.getElementById('claimQuest').onclick=()=>{if(questClaimed)alert("Quest already claimed!"); else{addCoins(50000); questClaimed=true;localStorage.setItem('questClaimed','true');updateQuestStatus();}}
-document.getElementById('claimReferral').onclick=()=>{if(referralClaimed)alert("Already claimed!");else{if(referrals>=5)addCoins(500000);else if(referrals>=2)addCoins(100000);else {alert("Not enough referrals!"); return;} referralClaimed=true;localStorage.setItem('referralClaimed','true');updateReferralStatus();}}
-document.getElementById('claimDaily').onclick=()=>{let now=Date.now();if(now-lastDaily<24*60*60*1000)alert("Daily reward already claimed!"); else{addCoins(30000); lastDaily=now; localStorage.setItem('lastDaily',lastDaily); updateDailyStatus();}}
-
-updLv();updUpg();updIncome();updCheck();updateQuestStatus();updateReferralStatus();updateDailyStatus();
+// -------------------- Инициализация --------------------
+updLv();updUpg();updIncome();updCheck();
 </script>
 </body>
-</html>  
+</html>
+
 
 
 
