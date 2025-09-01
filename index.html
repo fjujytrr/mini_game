@@ -244,6 +244,7 @@ function updateQuestStatus(){questStatus.textContent = questClaimed ? "✅ Compl
 function updateDailyStatus(){ 
     let now = Date.now();
     let nextAvailable = lastDaily + 24*60*60*1000; // время следующей доступной награды
+   dailyStatus.style.color = "#FFFFFF"; // <- цвет таймера
     if(now >= nextAvailable) {
         dailyStatus.textContent = "💰 Available!";
     } else {
