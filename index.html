@@ -6,153 +6,421 @@
 <title>Hide & Seek — Premium Emoji</title>
 <style>
 html, body {
-  margin: 0; padding: 0; font-family: Inter, sans-serif; background: #1a1a1a; color: #fff; overflow: hidden; touch-action: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(120deg, #2b1055, #7597de);
+  background-size: 200% 200%;
+  animation: gradientBG 15s ease infinite;
+  overflow: hidden;
+  color: #ffffff;
+}
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 body {
-  display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 header {
-  width: 95%; margin: 15px 0; display: flex; justify-content: space-between; align-items: center;
+  width: 95%;
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 10px;
+  backdrop-filter: blur(5px);
 }
 .level-bar {
-  display: flex; gap: 6px; background: #222; padding: 6px 10px; border-radius: 12px; flex: 1; justify-content: space-between;
+  display: flex;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 10px;
+  border-radius: 12px;
+  flex: 1;
+  justify-content: space-between;
 }
 .level {
-  flex: 1; text-align: center; padding: 6px 0; font-size: 14px; font-weight: 700; color: #555; border-radius: 8px; background: #333; transition: 0.5s; cursor: pointer;
+  flex: 1;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #aaa;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.5s;
+  cursor: pointer;
 }
 .level.active {
-  background: #FFD700; color: #000; box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+  background: #00D8FF;
+  color: #000;
+  box-shadow: 0 0 8px #00D8FF;
 }
 .coin-panel {
-  display: flex; align-items: center; gap: 8px; background: #222; padding: 8px 16px; border-radius: 16px; box-shadow: 0 0 10px rgba(255,215,0,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 16px;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0,216,255,0.4);
 }
 .coin-panel .val {
-  font-weight: 700; font-size: 18px; color: #FFD700;
+  font-weight: 700;
+  font-size: 18px;
+  color: #00D8FF;
 }
 .house {
-  position: relative; width: 95%; max-width: 480px; margin: 20px 0; display: grid; grid-template-columns: repeat(2,1fr); grid-template-rows: repeat(4,1fr); gap: 12px;
+  position: relative;
+  width: 95%;
+  max-width: 500px;
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 12px;
 }
 .room {
-  background: linear-gradient(145deg, #2a2a2a, #111); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 28px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; color: #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 28px;
+  color: #ddd;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 .room:hover {
-  transform: scale(1.05); box-shadow: 0 6px 16px rgba(255,215,0,0.4);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00D8FF;
 }
 .room.selected {
-  border: 3px solid #FFD700;
+  border-color: #00D8FF;
+  box-shadow: 0 0 10px #00D8FF;
 }
 .room.found {
-  border: 3px solid #FF4500; box-shadow: 0 0 12px #FF4500; animation: foundAnim 1s ease;
+  border-color: #FF0054;
+  box-shadow: 0 0 12px #FF0054;
+  animation: foundAnim 1s ease;
 }
 .room.safe {
-  border: 3px solid #10B981; box-shadow: 0 0 12px #10B981; animation: safeAnim 0.8s ease;
+  border-color: #39FF14;
+  box-shadow: 0 0 12px #39FF14;
+  animation: safeAnim 0.8s ease;
 }
 .room.highlight {
-  box-shadow: 0 0 20px 4px #FFD700; transition: box-shadow 0.3s;
+  box-shadow: 0 0 20px 4px #00D8FF;
+  transition: box-shadow 0.3s;
 }
 @keyframes foundAnim {
   0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  50% { transform: rotate(10deg) scale(1.15); }
   100% { transform: scale(1); }
 }
 @keyframes safeAnim {
   0% { transform: scale(1); }
-  50% { transform: scale(0.9); }
+  50% { transform: rotate(-10deg) scale(0.9); }
   100% { transform: scale(1); }
 }
 .controls {
-  width: 90%; display: flex; justify-content: space-between; margin-bottom: 15px;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 button {
-  flex: 1; margin: 0 5px; padding: 14px; font-size: 20px; border: none; border-radius: 12px; cursor: pointer; color: #000; background: linear-gradient(90deg, #FFD700, #FFC107); box-shadow: 0 4px 8px rgba(255,215,0,0.4);
+  flex: 1;
+  margin: 0 5px;
+  padding: 14px;
+  font-size: 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #000;
+  background: #00D8FF;
+  box-shadow: 0 4px 12px rgba(0,216,255,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 button:active {
-  box-shadow: 0 2px 4px rgba(255,215,0,0.3);
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.3);
 }
 button.secondary {
-  background: #2e2e2e; color: #FFD700; border: 1px solid #FFD700; box-shadow: 0 3px 6px rgba(255,215,0,0.2);
+  background: #222;
+  color: #fff;
+  border: 1px solid #00D8FF;
+  box-shadow: 0 3px 8px rgba(0,216,255,0.2);
 }
 .bottom-menu {
-  position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); width: 95%; display: flex; justify-content: space-around; gap: 8px; background: #111; padding: 6px 0; border-radius: 16px; box-shadow: 0 0 12px rgba(255,215,0,0.3);
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 0;
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 12px rgba(0,216,255,0.3);
 }
 .bottom-menu button {
-  flex: 1; margin: 0 4px; font-size: 22px;
+  background: transparent;
+  color: #fff;
+  font-size: 22px;
+  transition: transform 0.2s;
+}
+.bottom-menu button:hover {
+  transform: scale(1.2);
+  color: #00D8FF;
 }
 .upgrade-panel {
-  display: none; /* скрыта по умолчанию, открывается кнопкой Shop */
-  gap: 12px; margin: 10px 0; overflow-x: auto; padding: 10px; width: 95%;
+  display: none;
+  gap: 12px;
+  margin: 10px 0;
+  overflow-x: auto;
+  padding: 10px;
+  width: 95%;
 }
 .upgrade {
-  flex: 0 0 auto; background: #222; padding: 12px; border-radius: 14px; text-align: center; min-width: 150px; cursor: pointer; box-shadow: 0 2px 6px rgba(255,215,0,0.2);
+  flex: 0 0 auto;
+  background: rgba(0,0,0,0.4);
+  padding: 12px;
+  border-radius: 14px;
+  text-align: center;
+  min-width: 150px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,216,255,0.2);
 }
 .upgrade h3 {
-  margin: 0 0 6px; font-size: 16px; color: #FFD700;
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: #00D8FF;
 }
 .upgrade p {
-  margin: 0; font-size: 14px; color: #ccc;
+  margin: 0;
+  font-size: 14px;
+  color: #ccc;
 }
 .upgrade .price {
-  margin-top: 6px; font-weight: 700; color: #FFD700;
+  margin-top: 6px;
+  font-weight: 700;
+  color: #00D8FF;
 }
 .upgrade .timer {
-  margin-top: 4px; font-size: 12px; color: #FFD700;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #00D8FF;
 }
 .mining-info {
-  margin: 10px 0; padding: 10px 12px; background: #222; border-radius: 14px; width: 95%; text-align: center; box-shadow: 0 2px 6px rgba(255,215,0,0.2);
+  margin: 10px 0;
+  padding: 10px 12px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 14px;
+  width: 95%;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,216,255,0.2);
 }
 #miningShop {
-  display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: #222; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px rgba(255,215,0,0.5); z-index: 200; overflow-y: auto; max-height: 80vh;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #00D8FF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 0 20px #00D8FF;
+  z-index: 200;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+#miningShop h2 {
+  color: #00D8FF;
+  text-align: center;
+  margin-bottom: 12px;
 }
 .miners-container {
-  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 .miner-card {
-  background: linear-gradient(160deg, #2a2a2a, #111); color: #fff; border-radius: 14px; padding: 14px; width: 45%; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.5); cursor: pointer; transition: 0.3s;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 .miner-card:hover {
-  transform: translateY(-5px) scale(1.05); box-shadow: 0 6px 18px rgba(255,215,0,0.4);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 18px #00D8FF;
 }
 .miner-card h3 {
-  margin: 0; font-size: 16px; color: #fff; text-align: center;
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
 }
 .miner-card .income {
-  font-size: 14px; color: #aaa;
+  font-size: 14px;
+  color: #ccc;
 }
 .miner-card .income-val {
-  color: #10B981; font-weight: 700;
+  color: #39FF14;
+  font-weight: 700;
 }
 .miner-card .bottom {
-  display: flex; justify-content: space-between; width: 100%; font-weight: 700; font-size: 14px; margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 6px;
 }
 .miner-card .lvl {
-  color: #3B82F6;
+  color: #00D8FF;
 }
 .miner-card .price {
-  color: #FFD700;
+  color: #00D8FF;
 }
 #buyConfirm {
-  display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #222; border: 2px solid #FFD700; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 0 20px rgba(255,215,0,0.5); z-index: 300; opacity: 0; transition: 0.3s;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #00D8FF;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 0 20px #00D8FF;
+  z-index: 300;
+  opacity: 0;
+  transition: 0.3s;
 }
 #buyConfirm.show {
-  display: block; opacity: 1;
+  display: block;
+  opacity: 1;
 }
 #buyConfirm button {
-  margin: 10px 8px; flex: 1; padding: 8px; font-weight: 700; background: #FFD700; color: #000; border: none; border-radius: 8px;
+  margin: 10px 8px;
+  flex: 1;
+  padding: 8px;
+  font-weight: 700;
+  background: #00D8FF;
+  color: #000;
+  border: none;
+  border-radius: 8px;
 }
 #infoWindow {
-  display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #222; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px rgba(255,215,0,0.5); z-index: 200; overflow-y: auto;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #00D8FF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 0 20px #00D8FF;
+  z-index: 200;
+  overflow-y: auto;
 }
 #infoWindow h2 {
-  color: #FFD700; margin-bottom: 10px;
+  color: #00D8FF;
+  margin-bottom: 10px;
 }
 #infoWindow ul {
-  color: #ccc; padding-left: 20px;
+  color: #ccc;
+  padding-left: 20px;
+}
+#infoWindow ul li::before {
+  content: "• ";
+  color: #00D8FF;
+  font-weight: 600;
 }
 #infoWindow button {
-  width: 100%; margin-top: 12px; padding: 12px; font-size: 18px; border: none; border-radius: 12px; background: #FFD700; color: #000; cursor: pointer; font-weight: 700;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: #00D8FF;
+  color: #000;
+  cursor: pointer;
+  font-weight: 700;
 }
 #profileWindow {
-  display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #222; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px rgba(255,215,0,0.5); z-index: 200; overflow-y: auto;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #00D8FF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 0 20px #00D8FF;
+  z-index: 200;
+  overflow-y: auto;
+}
+#profileWindow h2 {
+  color: #00D8FF;
+  margin-bottom: 12px;
+  text-align: center;
+}
+#profileWindow h3 {
+  color: #00D8FF;
+}
+#profileWindow p {
+  color: #ccc;
+}
+#profileWindow button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: #00D8FF;
+  color: #000;
+  cursor: pointer;
+  font-weight: 700;
 }
 </style>
 </head>
@@ -197,9 +465,9 @@ button.secondary {
 </div>
 
 <div id="miningShop">
-  <h2 style="color:#FFD700;text-align:center;margin-bottom:12px;">Mining Shop</h2>
+  <h2>Mining Shop</h2>
   <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
+  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;">Close</button>
 </div>
 
 <div id="buyConfirm">
@@ -224,23 +492,23 @@ button.secondary {
 </div>
 
 <div id="profileWindow">
-  <h2 style="text-align:center;margin-bottom:20px;color:#FFD700;font-size:22px;font-weight:700;">Profile</h2>
+  <h2>Profile</h2>
   <!-- Ежедневный бонус -->
-  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(255,215,0,0.2);">
-    <h3 style="color:#FFD700;margin-bottom:8px;font-size:18px;">Daily Reward</h3>
-    <p style="color:#ccc;margin-bottom:12px;">Get 30,000 coins once a day!</p>
-    <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#FFD700,#FFC107);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
-    <p id="dailyStatus" style="margin-top:8px;color:#FFD700;font-weight:600;text-align:center;"></p>
+  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(0,216,255,0.2);">
+    <h3 style="margin-bottom:8px;font-size:18px;">Daily Reward</h3>
+    <p style="margin-bottom:12px;">Get 30,000 coins once a day!</p>
+    <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
+    <p id="dailyStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
   </div>
   <!-- Квест -->
-  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(255,215,0,0.2);">
-    <h3 style="color:#FFD700;margin-bottom:8px;font-size:18px;">Quest</h3>
-    <p style="color:#ccc;margin-bottom:12px;">Subscribe to get bonus coins!</p>
-    <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#FFD700,#FFC107);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
-    <p id="questStatus" style="margin-top:8px;color:#FFD700;font-weight:600;text-align:center;"></p>
+  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(0,216,255,0.2);">
+    <h3 style="margin-bottom:8px;font-size:18px;">Quest</h3>
+    <p style="margin-bottom:12px;">Subscribe to get bonus coins!</p>
+    <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
+    <p id="questStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
   </div>
   <!-- Закрыть -->
-  <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;font-weight:700;">Close</button>
+  <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
 </div>
 
 <div class="bottom-menu">
@@ -291,9 +559,9 @@ let pendingMiner = null;
 
 // Утилита для форматирования чисел
 function format(n) {
-  return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B' :
-         n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M' :
-         n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : n;
+  return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\\.0$/, '') + 'B' :
+         n >= 1e6 ? (n/1e6).toFixed(1).replace(/\\.0$/, '') + 'M' :
+         n >= 1e3 ? (n/1e3).toFixed(1).replace(/\\.0$/, '') + 'K' : n;
 }
 
 // Сохранение прогресса
@@ -589,6 +857,7 @@ updCheck();
 </script>
 </body>
 </html>
+
 
 
 
