@@ -172,7 +172,9 @@ function updCoins(v){coins+=v;if(coins<0)coins=0;coinsVal.textContent=format(coi
 function getIncome(){return minersState.reduce((s,m,i)=>s+(m.count>0?minersData[i].i*Math.pow(2,m.count-1):0),0);}
 function updIncome(){miningIncomeValEl.textContent=format(getIncome());}
 function addOff(){const last=+localStorage.getItem('lastTime')||Date.now(),now=Date.now(),diff=(now-last)/60000;if(diff>0){updCoins(Math.floor(getIncome()/60*diff));}localStorage.setItem('lastTime',now);}
-addOff();setInterval(()=>updCoins(Math.floor(getIncome()/60)),60000);
+addOff();setInterval(() => {
+    updCoins(Math.floor(getIncome() / 3600));
+}, 1000);
 function updLv(){document.querySelectorAll('.level').forEach(l=>l.classList.toggle('active',maxCoins>=+l.dataset.val));}
 function updUpg(){document.querySelectorAll('.upgrade').forEach(u=>{let k=u.dataset.key,base=+u.dataset.basePrice,c=upgrades[k]||0;u.querySelector('.price').textContent=format(base*Math.pow(2,c));});}
 document.querySelectorAll('.upgrade').forEach(u=>u.onclick=()=>{let k=u.dataset.key,base=+u.dataset.basePrice,c=upgrades[k]||0,price=base*Math.pow(2,c);if(coins>=price){upgrades[k]=c+1;updCoins(-price);if(k==="check1")check1Expire=Date.now()+60000;save();}else alert("Not enough coins!");});
