@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
 <title>Hide & Seek — Premium Emoji</title>
 <style>
 html, body {
@@ -35,7 +35,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.35);
   border-radius: 12px;
   padding: 10px;
   backdrop-filter: blur(5px);
@@ -43,7 +43,7 @@ header {
 .level-bar {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.28);
   padding: 6px 10px;
   border-radius: 12px;
   flex: 1;
@@ -57,7 +57,7 @@ header {
   font-weight: 700;
   color: #aaa;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   transition: 0.5s;
   cursor: pointer;
 }
@@ -70,10 +70,10 @@ header {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.35);
   padding: 8px 16px;
   border-radius: 16px;
-  box-shadow: 0 0 12px rgba(0,216,255,0.4);
+  box-shadow: 0 0 12px rgba(0,216,255,0.25);
 }
 .coin-panel .val {
   font-weight: 700;
@@ -104,7 +104,7 @@ header {
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.18);
 }
 .room:hover {
   transform: scale(1.05);
@@ -156,18 +156,18 @@ button {
   cursor: pointer;
   color: #000;
   background: #00D8FF;
-  box-shadow: 0 4px 12px rgba(0,216,255,0.4);
+  box-shadow: 0 4px 12px rgba(0,216,255,0.35);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 button:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0,216,255,0.3);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.25);
 }
 button.secondary {
   background: #222;
   color: #fff;
   border: 1px solid #00D8FF;
-  box-shadow: 0 3px 8px rgba(0,216,255,0.2);
+  box-shadow: 0 3px 8px rgba(0,216,255,0.18);
 }
 
 /* Bottom menu */
@@ -181,11 +181,11 @@ button.secondary {
   display: flex;
   justify-content: space-around;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   padding: 6px 0;
   border-radius: 16px;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0 12px rgba(0,216,255,0.3);
+  box-shadow: 0 0 12px rgba(0,216,255,0.25);
 }
 .bottom-menu button {
   background: transparent;
@@ -198,24 +198,26 @@ button.secondary {
   color: #00D8FF;
 }
 
-/* Upgrade panel - now visible by default */
+/* Upgrade panel - hidden by default */
 .upgrade-panel {
-  display: flex; /* changed to visible by default */
+  display: none; /* hidden initially as requested */
   gap: 12px;
   margin: 10px 0;
   overflow-x: auto;
   padding: 10px;
   width: 95%;
+  justify-content: center;
+  align-items: stretch;
 }
 .upgrade {
   flex: 0 0 auto;
-  background: #000;
+  background: rgba(255,255,255,0.06);
   padding: 12px;
   border-radius: 14px;
   text-align: center;
   min-width: 220px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.2);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.12);
 }
 .upgrade h3 {
   margin: 0 0 6px;
@@ -242,14 +244,14 @@ button.secondary {
 .mining-info {
   margin: 10px 0;
   padding: 10px 12px;
-  background: #000;
+  background: rgba(0,0,0,0.12);
   border-radius: 14px;
   width: 95%;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.2);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.12);
 }
 
-/* Visible miners panel (now always visible for easier access) */
+/* Visible miners panel (cards always visible on main screen) */
 .miners-panel {
   width: 95%;
   max-width: 900px;
@@ -259,9 +261,9 @@ button.secondary {
   overflow-x: auto;
   align-items: flex-start;
   margin-bottom: 12px;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.18);
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.12);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.08);
 }
 .miners-panel .miner-card {
   background: rgba(255,255,255,0.03);
@@ -273,35 +275,65 @@ button.secondary {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.45);
   cursor: pointer;
   transition: transform 0.25s, box-shadow 0.25s;
 }
 .miners-panel .miner-card:hover {
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0,216,255,0.14);
+  box-shadow: 0 8px 20px rgba(0,216,255,0.10);
 }
 
-/* Modal mining shop (optional) */
+/* Mining shop modal - changed to light/beautiful design (NOT black) */
 #miningShop {
   display: none;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 500px;
-  background: #000;
-  border: 2px solid #00D8FF;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 0 20px #00D8FF;
-  z-index: 200;
+  width: 92%;
+  max-width: 680px;
+  background: linear-gradient(180deg, #f7fbff 0%, #e6f3ff 100%);
+  color: #001;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 18px 40px rgba(10,30,60,0.35);
+  z-index: 700;
   overflow-y: auto;
-  max-height: 80vh;
+  max-height: 84vh;
+  border: 1px solid rgba(0,136,255,0.15);
 }
-#miningShop h2 { color: #00D8FF; text-align: center; margin-bottom: 12px; }
-.miners-container { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+#miningShop h2 {
+  color: #064a8b;
+  text-align: center;
+  margin-bottom: 10px;
+}
+#miningShop .miners-container {
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  justify-content:center;
+  padding:8px 6px;
+}
+#miningShop .miner-card {
+  background: #ffffff;
+  color: #002;
+  border-radius: 12px;
+  padding: 12px;
+  width: 180px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  box-shadow: 0 6px 18px rgba(5,30,70,0.08);
+  cursor:pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(6,74,139,0.06);
+}
+#miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(6,74,139,0.08); }
+#miningShop .miner-card h3 { margin:0; color:#013a6b; }
+#miningShop .miner-card .income { color:#1a6b1a; }
+#miningShop .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
 
 /* Buy confirm modal */
 #buyConfirm {
@@ -310,27 +342,28 @@ button.secondary {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #000;
+  background: #00121a;
   border: 2px solid #00D8FF;
   border-radius: 16px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 0 20px #00D8FF;
-  z-index: 300;
+  z-index: 800;
   opacity: 0;
-  transition: 0.3s;
+  transition: 0.25s;
 }
 #buyConfirm.show { display:block; opacity:1; }
+#buyConfirm p { color: #fff; margin: 8px 0; }
 #buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:#00D8FF; color:#000; border:none; border-radius:8px; }
 
 /* Info & profile windows hidden by default (do not show on load) */
-#infoWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 200; overflow-y: auto; }
+#infoWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 520px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
 #infoWindow h2 { color: #00D8FF; margin-bottom: 10px; }
 #infoWindow ul { color: #ccc; padding-left: 20px; }
 #infoWindow ul li::before { content: "• "; color: #00D8FF; font-weight:600; }
 #infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
 
-#profileWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 200; overflow-y: auto; }
+#profileWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
 #profileWindow h2 { color:#00D8FF; margin-bottom:12px; text-align:center; }
 #profileWindow h3 { color:#00D8FF; }
 #profileWindow p { color:#ccc; }
@@ -360,8 +393,8 @@ button.secondary {
   <button class="secondary" id="resetBtn">🔍</button>
 </div>
 
-<!-- Upgrade panel: now visible by default and contains only the two requested upgrades -->
-<div class="upgrade-panel">
+<!-- Upgrade panel: hidden initially -->
+<div class="upgrade-panel" id="upgradePanel">
   <div class="upgrade" data-key="x2Prize" data-base-price="20000">
     <h3>x2 Prize / x2 Loss</h3>
     <p>Double rewards & penalties</p>
@@ -379,16 +412,14 @@ button.secondary {
   <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
 </div>
 
-<!-- Visible miners panel (cards always visible so user sees them without opening modal) -->
-<div class="miners-panel" id="minersPanelVisible">
-  <!-- miner cards rendered here by JS -->
-</div>
+<!-- Visible miners panel - shown on main screen by default -->
+<div class="miners-panel" id="minersPanelVisible"></div>
 
-<!-- Modal mining shop (kept, but not required to see miners) -->
+<!-- Modal mining shop (beautiful light design) -->
 <div id="miningShop">
   <h2>Mining Shop</h2>
   <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;">Close</button>
+  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#064a8b,#00a3ff);color:#fff;cursor:pointer;">Close</button>
 </div>
 
 <div id="buyConfirm">
@@ -437,7 +468,7 @@ button.secondary {
 </div>
 
 <script>
-// Инициализация
+// Инициализация комнат
 const rooms = document.querySelector('.house');
 for (let i = 0; i < 8; i++) {
   let d = document.createElement('div');
@@ -471,8 +502,8 @@ const minersData = [
 let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_ => ({ count: 0 }));
 
 const miningIncomeValEl = document.getElementById('miningIncomeVal');
-const minersContainer = document.querySelector('.miners-container'); // for modal shop
-const minersPanelVisible = document.getElementById('minersPanelVisible'); // visible panel
+const minersContainer = document.querySelector('.miners-container'); // for modal
+const minersPanelVisible = document.getElementById('minersPanelVisible'); // visible main screen
 const miningShop = document.getElementById('miningShop');
 const buyConfirm = document.getElementById('buyConfirm');
 const buyText = document.getElementById('buyText');
@@ -657,10 +688,16 @@ function renderMiners() {
     let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
 
     // create a function to build card element
-    function buildCard() {
+    function buildCard(forModal) {
       let card = document.createElement('div');
       card.className = 'miner-card';
-      card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom" style="display:flex;justify-content:space-between;width:100%;font-weight:700;font-size:14px;margin-top:6px;"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
+      if (forModal) {
+        // modal card style uses same class but appearance controlled by CSS in modal
+        card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
+      } else {
+        // visible panel card
+        card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom" style="display:flex;justify-content:space-between;width:100%;font-weight:700;font-size:14px;margin-top:6px;"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
+      }
       card.onclick = () => {
         if (coins >= price) {
           pendingMiner = i;
@@ -673,20 +710,16 @@ function renderMiners() {
       return card;
     }
 
-    let cardVisible = buildCard();
-    if (minersPanelVisible) minersPanelVisible.appendChild(cardVisible);
-
-    if (minersContainer) {
-      let cardModal = buildCard();
-      minersContainer.appendChild(cardModal);
-    }
+    if (minersPanelVisible) minersPanelVisible.appendChild(buildCard(false));
+    if (minersContainer) minersContainer.appendChild(buildCard(true));
   });
 }
 
-// Открыть/закрыть майнинг-шоп (modal) - все еще доступно по кнопке
+// Открыть/закрыть майнинг-шоп (modal) - теперь открывается красивое окно по кнопке кирки
 document.getElementById('miningBtn').onclick = () => {
+  // show modal with stylish design (not black)
   miningShop.style.display = 'block';
-  renderMiners(); // ensure modal is filled when opened
+  renderMiners(); // fill modal
 };
 document.getElementById('closeMiningShop').onclick = () => {
   miningShop.style.display = 'none';
@@ -775,9 +808,28 @@ document.getElementById('infoBtn').onclick = () => {
 document.getElementById('closeInfo').onclick = () => {
   document.getElementById('infoWindow').style.display = 'none';
 };
-document.getElementById('shopBtn').onclick = () => {
-  let panel = document.querySelector('.upgrade-panel');
-  panel.style.display = (panel.style.display === 'none' ? 'flex' : 'none');
+
+// Shop button behavior:
+// при нажатии: майнеры пропадают и появляются те 2 улучшения.
+// если нажать снова — обратно (toggle).
+const shopBtn = document.getElementById('shopBtn');
+const upgradePanel = document.getElementById('upgradePanel');
+
+shopBtn.onclick = () => {
+  const minersVisible = getComputedStyle(minersPanelVisible).display !== 'none';
+  if (minersVisible) {
+    // hide miners on main screen, show upgrades
+    minersPanelVisible.style.display = 'none';
+    upgradePanel.style.display = 'flex';
+    // render upgrades prices
+    updUpg();
+  } else {
+    // show miners, hide upgrades
+    minersPanelVisible.style.display = 'flex';
+    upgradePanel.style.display = 'none';
+    // ensure miners are rendered
+    renderMiners();
+  }
 };
 
 // Инициализация UI
@@ -795,6 +847,7 @@ document.getElementById('infoWindow').style.display = 'none';
 </script>
 </body>
 </html>
+
 
 
 
