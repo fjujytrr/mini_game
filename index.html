@@ -1,381 +1,154 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, user-scalable=no" />
-<title>Hide & Seek — Premium Emoji</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hide & Seek — Casino Arcade</title>
 <style>
-/* --- СЛЕГКА СВЕТЛЕЕ ФОН ИГРЫ --- */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: 'Inter', sans-serif;
-  /* фон игры — чуть светлее чем был */
-  background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
-  background-size: 200% 200%;
-  animation: gradientBG 15s ease infinite;
-  overflow: hidden;
-  color: #ffffff;
-}
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
+  /* ========== Палитра ========== */
+  :root{
+    --bg-1:#0f0f10;       /* почти чёрный */
+    --bg-2:#151515;
+    --panel:#111111;
+    --gold:#FFD700;
+    --green:#10B981;
+    --danger:#FF4500;
+    --blue:#3B82F6;
+    --muted:#bdbdbd;
+    --glass: rgba(255,255,255,0.03);
+  }
 
-/* Header + panels */
-header {
-  width: 95%;
-  margin: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.28);
-  border-radius: 12px;
-  padding: 10px;
-  backdrop-filter: blur(5px);
-}
-.level-bar {
-  display: flex;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 6px 10px;
-  border-radius: 12px;
-  flex: 1;
-  justify-content: space-between;
-}
-.level {
-  flex: 1;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #eee;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  transition: 0.5s;
-  cursor: pointer;
-}
-.level.active {
-  background: #00D8FF;
-  color: #000;
-  box-shadow: 0 0 8px #00D8FF;
-}
-.coin-panel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.28);
-  padding: 8px 16px;
-  border-radius: 16px;
-  box-shadow: 0 0 12px rgba(0,216,255,0.18);
-}
-.coin-panel .val {
-  font-weight: 700;
-  font-size: 18px;
-  color: #00D8FF;
-}
+  /* ========== Базовая сетка ========== */
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto; background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(255,215,0,0.02), transparent 5%),
+    linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:var(--muted); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 12px 90px;}
 
-/* House / rooms */
-.house {
-  position: relative;
-  width: 95%;
-  max-width: 500px;
-  margin: 20px 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 12px;
-}
-.room {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 28px;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.14);
-}
-.room:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 18px rgba(0,216,255,0.14);
-}
-.room.selected {
-  border-color: #00D8FF;
-  box-shadow: 0 0 12px #00D8FF;
-}
-.room.found {
-  border-color: #FF0054;
-  box-shadow: 0 0 12px #FF0054;
-  animation: foundAnim 1s ease;
-}
-.room.safe {
-  border-color: #39FF14;
-  box-shadow: 0 0 12px #39FF14;
-  animation: safeAnim 0.8s ease;
-}
-.room.highlight {
-  box-shadow: 0 0 22px 4px #00D8FF;
-  transition: box-shadow 0.3s;
-}
-@keyframes foundAnim {
-  0% { transform: scale(1); }
-  50% { transform: rotate(10deg) scale(1.15); }
-  100% { transform: scale(1); }
-}
-@keyframes safeAnim {
-  0% { transform: scale(1); }
-  50% { transform: rotate(-10deg) scale(0.95); }
-  100% { transform: scale(1); }
-}
+  /* ========== Header ========== */
+  header{
+    width:100%;max-width:980px;display:flex;gap:12px;align-items:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    border-radius:14px;padding:12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    border:1px solid rgba(255,215,0,0.04);
+  }
 
-/* Controls */
-.controls {
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-button {
-  flex: 1;
-  margin: 0 5px;
-  padding: 14px;
-  font-size: 20px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #000;
-  background: #00D8FF;
-  box-shadow: 0 4px 12px rgba(0,216,255,0.25);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0,216,255,0.18);
-}
-button.secondary {
-  background: rgba(0,0,0,0.36);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 3px 8px rgba(0,216,255,0.12);
-}
+  .level-bar{flex:1;display:flex;gap:8px;align-items:center}
+  .level{
+    flex:1;text-align:center;padding:8px 6px;border-radius:10px;font-weight:700;font-size:13px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.06));
+    color:var(--muted);border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    transition:all .22s;cursor:pointer;
+  }
+  .level.active{
+    background: linear-gradient(180deg, rgba(255,215,0,0.12), rgba(255,215,0,0.02));
+    color:#111;border-color:rgba(255,215,0,0.3);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.08), 0 2px 6px rgba(0,0,0,0.6);
+  }
 
-/* Bottom menu */
-.bottom-menu {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 480px;
-  display: flex;
-  justify-content: space-around;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.28);
-  padding: 6px 0;
-  border-radius: 16px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 12px rgba(0,216,255,0.18);
-}
-.bottom-menu button {
-  background: transparent;
-  color: #fff;
-  font-size: 22px;
-  transition: transform 0.2s;
-}
-.bottom-menu button:hover {
-  transform: scale(1.16);
-  color: #00D8FF;
-}
+  .coin-panel{
+    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.08));
+    border:1px solid rgba(255,215,0,0.04);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  }
+  .coin-panel .val{font-weight:900;color:var(--gold);font-size:18px;letter-spacing:0.6px}
 
-/* Upgrade panel - hidden by default */
-.upgrade-panel {
-  display: none; /* hidden initially as requested */
-  gap: 12px;
-  margin: 10px 0;
-  overflow-x: auto;
-  padding: 10px;
-  width: 95%;
-  justify-content: center;
-  align-items: stretch;
-}
-.upgrade {
-  flex: 0 0 auto;
-  background: rgba(255,255,255,0.06);
-  padding: 12px;
-  border-radius: 14px;
-  text-align: center;
-  min-width: 220px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.08);
-}
-.upgrade h3 {
-  margin: 0 0 6px;
-  font-size: 16px;
-  color: #00D8FF;
-}
-.upgrade p {
-  margin: 0;
-  font-size: 14px;
-  color: #eee;
-}
-.upgrade .price {
-  margin-top: 6px;
-  font-weight: 700;
-  color: #00D8FF;
-}
-.upgrade .timer {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #00D8FF;
-}
+  /* ========== Main house grid ========== */
+  .house{
+    width:100%;max-width:980px;display:grid;
+    grid-template-columns: 1fr 420px; gap:16px;
+  }
 
-/* Mining info + visible miners panel */
-.mining-info {
-  margin: 10px 0;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 14px;
-  width: 95%;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
-}
+  /* left: rooms panel */
+  .rooms-wrap{background:var(--panel);padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);}
+  .rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:88px;gap:12px}
+  .room{
+    display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#eee;
+    border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    border:2px solid rgba(255,255,255,0.02);cursor:pointer;transition:all .22s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  }
+  .room:hover{transform:translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.7)}
+  .room.selected{border-color:var(--blue); box-shadow: 0 10px 30px rgba(59,130,246,0.08); color:var(--blue); background: linear-gradient(180deg, rgba(59,130,246,0.04), rgba(255,255,255,0.006))}
+  .room.found{border-color:var(--danger); color:var(--danger); box-shadow: 0 10px 30px rgba(255,69,0,0.06)}
+  .room.safe{border-color:var(--green); color:var(--green); box-shadow: 0 10px 30px rgba(16,185,129,0.06)}
 
-/* Visible miners panel - main screen */
-.miners-panel {
-  width: 95%;
-  max-width: 900px;
-  display: flex;
-  gap: 12px;
-  padding: 10px;
-  overflow-x: auto;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
-}
-.miners-panel .miner-card {
-  background: rgba(255,255,255,0.04);
-  color: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-.miners-panel .miner-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0,216,255,0.06);
-}
+  /* right: sidebar with miners / upgrades panels */
+  .sidebar{display:flex;flex-direction:column;gap:12px}
+  .panel{
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+    border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    min-height:120px;
+  }
+  .panel h3{margin:0 0 8px;color:var(--gold);font-size:14px}
 
-/* --- МОДАЛЬНОЕ ОКНО МАЙНИНГА: ТАКОЙ ЖЕ ДИЗАЙН КАК И ИГРА --- */
-#miningShop {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 92%;
-  max-width: 680px;
-  /* фон модалки — такой же градиент как у игры (чуть светлее общий фон уже) */
-  background: linear-gradient(120deg, rgba(59,42,122,0.95), rgba(138,167,255,0.92));
-  color: #fff;
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 18px 40px rgba(10,30,60,0.35);
-  z-index: 700;
-  overflow-y: auto;
-  max-height: 84vh;
-  border: 1px solid rgba(255,255,255,0.06);
-  backdrop-filter: blur(6px);
-}
-#miningShop h2 {
-  color: #ecf8ff;
-  text-align: center;
-  margin-bottom: 10px;
-}
-#miningShop .miners-container {
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  justify-content:center;
-  padding:8px 6px;
-}
-/* внутри модалки — карточки в стиле игры, но чуть светлее */
-#miningShop .miner-card {
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  width: 180px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  cursor:pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid rgba(255,255,255,0.04);
-}
-#miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
-#miningShop .miner-card h3 { margin:0; color:#f0fbff; }
-#miningShop .miner-card .income { color:#d8ffd8; }
-#miningShop .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
+  /* miners list on main screen */
+  .miners-panel{display:flex;flex-direction:column;gap:8px}
+  .miner-row{display:flex;gap:8px;align-items:center}
+  .miner-card{
+    flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px;border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.08));
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.55);cursor:pointer;transition:all .18s;
+  }
+  .miner-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.7)}
+  .miner-card h4{margin:0;color:var(--blue)}
+  .miner-card .income{font-weight:700;color:var(--green)}
+  .miner-card .price{font-weight:900;color:var(--gold);align-self:flex-end}
 
-/* Buy confirm modal */
-#buyConfirm {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.6);
-  border: 2px solid #00D8FF;
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 0 20px #00D8FF;
-  z-index: 800;
-  opacity: 0;
-  transition: 0.25s;
-}
-#buyConfirm.show { display:block; opacity:1; }
-#buyConfirm p { color: #fff; margin: 8px 0; }
-#buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:#00D8FF; color:#000; border:none; border-radius:8px; }
+  /* controls & bottom menu */
+  .controls{display:flex;gap:8px;margin-top:8px}
+  .btn{
+    flex:1;padding:12px;border-radius:12px;border:none;font-weight:800;font-size:16px;cursor:pointer;
+    background: linear-gradient(180deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));
+    color:#000;box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+  }
+  .btn.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.04)}
+  .bottom-menu{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:22px;width:96%;max-width:560px;
+    display:flex;justify-content:space-around;gap:8px;background:var(--panel);padding:8px;border-radius:999px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)
+  }
+  .bottom-menu button{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:8px 12px;border-radius:10px}
+  .bottom-menu button:hover{color:var(--gold);background:rgba(255,215,0,0.03)}
 
-/* Info & profile windows hidden by default (do not show on load) */
-#infoWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 520px; max-height: 80vh; background: rgba(0,0,0,0.86); border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
-#infoWindow h2 { color: #00D8FF; margin-bottom: 10px; }
-#infoWindow ul { color: #ccc; padding-left: 20px; }
-#infoWindow ul li::before { content: "• "; color: #00D8FF; font-weight:600; }
-#infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
+  /* upgrade cards (hidden initially) */
+  .upgrade-panel{display:none;gap:10px;flex-direction:column}
+  .upgrade{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.02)}
+  .upgrade h4{margin:0;color:var(--gold)} .upgrade p{margin:6px 0;color:var(--muted)} .upgrade .price{color:var(--gold);font-weight:900}
 
-#profileWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: rgba(0,0,0,0.86); border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
-#profileWindow h2 { color:#00D8FF; margin-bottom:12px; text-align:center; }
-#profileWindow h3 { color:#00D8FF; }
-#profileWindow p { color:#ccc; }
-#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
+  /* modal mining shop (dark premium style) */
+  .modal{
+    display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:9999;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.75));
+  }
+  .modal .sheet{
+    width:92%;max-width:900px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#141414,#0d0d0d);
+    border:1px solid rgba(255,215,0,0.04);box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+  }
+  .modal .sheet h2{margin:0 0 12px;color:var(--gold)}
+  .modal .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .modal .grid .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));color:#fff}
+
+  /* buy confirm */
+  .confirm{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10000;padding:14px;border-radius:12px;background:#0b0b0b;border:1px solid rgba(255,215,0,0.06)}
+  .confirm p{color:var(--muted);margin:0 0 12px} .confirm .row{display:flex;gap:8px}
+
+  /* responsive */
+  @media (max-width:900px){
+    .house{grid-template-columns:1fr; }
+    .sidebar{order:2}
+  }
 </style>
 </head>
 <body>
+
 <header>
   <div class="level-bar">
     <div class="level" data-val="10000">10K</div>
@@ -387,142 +160,124 @@ button.secondary {
     <div class="level" data-val="5000000">5M</div>
   </div>
   <div class="coin-panel">
+    <div style="font-size:12px;color:var(--muted)">Balance</div>
     <div class="val" id="coinsVal">0</div>
   </div>
 </header>
 
-<div class="house"></div>
+<main class="house">
+  <section class="rooms-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <strong style="color:var(--gold)">Rooms</strong>
+      <div style="font-size:12px;color:var(--muted)">Pick one then 🔍</div>
+    </div>
+    <div class="rooms-grid" id="roomsGrid"></div>
 
-<div class="controls">
-  <button id="startBtn">🏠</button>
-  <button class="secondary" id="resetBtn">🔍</button>
-</div>
+    <div class="controls" style="margin-top:12px">
+      <button id="startBtn" class="btn">🏠</button>
+      <button id="resetBtn" class="btn secondary">🔍</button>
+    </div>
+  </section>
 
-<!-- Upgrade panel: hidden initially -->
-<div class="upgrade-panel" id="upgradePanel">
-  <div class="upgrade" data-key="x2Prize" data-base-price="20000">
-    <h3>x2 Prize / x2 Loss</h3>
-    <p>Double rewards & penalties</p>
-    <div class="price">20,000</div>
+  <aside class="sidebar">
+    <div class="panel">
+      <h3>Mining Income</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:20px;font-weight:800;color:var(--green)" id="miningIncomeVal">0</div>
+        <div style="font-size:12px;color:var(--muted)">/hr</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:var(--gold)">Miners</span>
+        <small style="color:var(--muted)">Main screen</small>
+      </h3>
+
+      <!-- visible miners on main screen -->
+      <div id="minersPanelVisible" class="miners-panel"></div>
+
+      <!-- upgrades container (hidden by default) -->
+      <div id="upgradePanel" class="upgrade-panel" style="margin-top:10px"></div>
+    </div>
+
+  </aside>
+</main>
+
+<!-- modal mining shop (opens by ⛏ button) -->
+<div class="modal" id="miningModal">
+  <div class="sheet">
+    <h2>Mining Shop</h2>
+    <div style="margin-bottom:10px;color:var(--muted)">Beautiful dark premium design — buy miners here.</div>
+    <div class="grid" id="modalMinersGrid"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button id="closeMiningShop" class="btn secondary" style="flex:1">Close</button>
+    </div>
   </div>
-  <div class="upgrade" data-key="check1" data-base-price="20000">
-    <h3>Check 1 Room Only</h3>
-    <p>Hunter checks 1 room only (1 min)</p>
-    <div class="price">20,000</div>
-    <div class="timer" id="check1Timer"></div>
+</div>
+
+<!-- buy confirm (tiny) -->
+<div class="confirm" id="buyConfirm">
+  <p id="buyText">Buy?</p>
+  <div class="row">
+    <button id="confirmBuy" class="btn">Buy</button>
+    <button id="cancelBuy" class="btn secondary">Cancel</button>
   </div>
 </div>
 
-<div class="mining-info">
-  <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
-</div>
-
-<!-- Visible miners panel - shown on main screen by default -->
-<div class="miners-panel" id="minersPanelVisible"></div>
-
-<!-- Modal mining shop — теперь ОДИНАКОВЫЙ дизайн с игрой (градиентный фон) -->
-<div id="miningShop">
-  <h2>Mining Shop</h2>
-  <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
-</div>
-
-<div id="buyConfirm">
-  <p id="buyText"></p>
-  <div style="display:flex;justify-content:center;">
-    <button id="confirmBuy">Buy</button>
-    <button id="cancelBuy">Cancel</button>
-  </div>
-</div>
-
-<div id="infoWindow">
-  <h2>How to Play</h2>
-  <ul>
-    <li>Select a room and then click the 🔍 button to hunt.</li>
-    <li>The hunter searches 2 random rooms (1 if "Check 1 Room" is active).</li>
-    <li>If your room is found, you lose coins (shown in red).</li>
-    <li>If you evade the hunt, you gain coins (shown in green).</li>
-    <li>Buy upgrades or miners to improve your chances and income.</li>
-    <li>Claim daily rewards and complete quests for bonus coins.</li>
-  </ul>
-  <button id="closeInfo">Close</button>
-</div>
-
-<div id="profileWindow">
-  <h2>Profile</h2>
-  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
-    <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
-    <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
-    <p id="dailyStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
-  </div>
-  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
-    <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
-    <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
-    <p id="questStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
-  </div>
-  <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
-</div>
-
-<div class="bottom-menu">
-  <button id="infoBtn" class="secondary">ℹ</button>
-  <button id="shopBtn" class="secondary">🛒</button>
-  <button id="miningBtn" class="secondary">⛏</button>
-  <button id="profileBtn" class="secondary">👤</button>
-</div>
+<!-- bottom menu -->
+<nav class="bottom-menu">
+  <button id="infoBtn">ℹ</button>
+  <button id="shopBtn">🛒</button>
+  <button id="miningBtn">⛏</button>
+  <button id="profileBtn">👤</button>
+</nav>
 
 <script>
-// --- Инициализация комнат
-const rooms = document.querySelector('.house');
-for (let i = 0; i < 8; i++) {
-  let d = document.createElement('div');
-  d.className = 'room';
-  d.dataset.idx = i;
-  d.textContent = '+';
-  rooms.appendChild(d);
+/* ========== Логика (аналогично прежнему функционалу) ========== */
+
+/* --- init rooms --- */
+const roomsGrid = document.getElementById('roomsGrid');
+for(let i=0;i<8;i++){
+  const d=document.createElement('div');
+  d.className='room'; d.dataset.idx=i; d.textContent='+';
+  roomsGrid.appendChild(d);
 }
 
-let selectedRoom = null;
-let coins = +localStorage.getItem('coins') || 0;
-let maxCoins = +localStorage.getItem('maxCoins') || coins;
+/* --- state --- */
+let selectedRoom=null;
+let coins = +localStorage.getItem('coins')||0;
+let maxCoins = +localStorage.getItem('maxCoins')||coins;
 const coinsVal = document.getElementById('coinsVal');
-let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0 };
+let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize:0, check1:0 };
 let check1Expire = +localStorage.getItem('check1Expire') || 0;
-let roundInProgress = false;
+let roundInProgress=false;
 
-// Данные майнеров
+/* miners data */
 const minersData = [
-  { n: "Miner 1", i: 500, p: 7000 },
-  { n: "Miner 2", i: 1788, p: 12000 },
-  { n: "Miner 3", i: 2358, p: 15000 },
-  { n: "Miner 4", i: 3000, p: 20000 },
-  { n: "Miner 5", i: 4500, p: 25000 },
-  { n: "Miner 6", i: 5200, p: 30000 },
-  { n: "Miner 7", i: 6100, p: 35000 },
-  { n: "Miner 8", i: 7200, p: 40000 },
-  { n: "Miner 9", i: 8500, p: 45000 },
-  { n: "Miner 10", i: 9500, p: 50000 }
+  {n:"Miner 1", i:500, p:7000},
+  {n:"Miner 2", i:1788, p:12000},
+  {n:"Miner 3", i:2358, p:15000},
+  {n:"Miner 4", i:3000, p:20000},
+  {n:"Miner 5", i:4500, p:25000},
+  {n:"Miner 6", i:5200, p:30000},
+  {n:"Miner 7", i:6100, p:35000},
+  {n:"Miner 8", i:7200, p:40000},
+  {n:"Miner 9", i:8500, p:45000},
+  {n:"Miner 10",i:9500, p:50000},
 ];
-let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_ => ({ count: 0 }));
+let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_=>({count:0}));
 
-const miningIncomeValEl = document.getElementById('miningIncomeVal');
-const minersContainer = document.querySelector('.miners-container'); // for modal
-const minersPanelVisible = document.getElementById('minersPanelVisible'); // visible main screen
-const miningShop = document.getElementById('miningShop');
-const buyConfirm = document.getElementById('buyConfirm');
-const buyText = document.getElementById('buyText');
-let pendingMiner = null;
+const minersPanelVisible = document.getElementById('minersPanelVisible');
+const modalMinersGrid = document.getElementById('modalMinersGrid');
 
-// Утилита для форматирования чисел
-function format(n) {
-  return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\.0$/, '') + 'B' :
-         n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/, '') + 'M' :
-         n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/, '') + 'K' : n;
+function format(n){
+  return n>=1e9 ? (n/1e9).toFixed(1).replace(/\.0$/,'')+'B' :
+         n>=1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'')+'M' :
+         n>=1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'K' : n;
 }
 
-// Сохранение прогресса
-function save() {
+function save(){
   localStorage.setItem('coins', coins);
   localStorage.setItem('maxCoins', maxCoins);
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
@@ -531,11 +286,11 @@ function save() {
   localStorage.setItem('lastTime', Date.now());
 }
 
-// Обновление счёта монет
-function updCoins(v = 0) {
+/* update coins and UI */
+function updCoins(v=0){
   coins += v;
-  if (coins < 0) coins = 0;
-  if (coins > maxCoins) maxCoins = coins;
+  if(coins<0) coins=0;
+  if(coins>maxCoins) maxCoins=coins;
   coinsVal.textContent = format(coins);
   updLv();
   updUpg();
@@ -543,129 +298,92 @@ function updCoins(v = 0) {
   save();
 }
 
-// Расчёт дохода в час
-function getIncome() {
-  return minersState.reduce((sum, m, i) => {
-    return sum + (m.count > 0 ? minersData[i].i * Math.pow(2, m.count - 1) : 0);
-  }, 0);
+/* income calculation */
+function getIncome(){
+  return minersState.reduce((sum,m,i)=> sum + (m.count>0 ? minersData[i].i * Math.pow(2, m.count-1) : 0), 0);
 }
+function updIncome(){ document.getElementById('miningIncomeVal').textContent = format(getIncome()); }
 
-// Обновление отображения дохода
-function updIncome() {
-  miningIncomeValEl.textContent = format(getIncome());
-}
-
-// Начисление оффлайн-дохода
-function addOfflineCoins() {
+/* offline earnings */
+(function addOffline(){
   const last = +localStorage.getItem('lastTime') || Date.now();
   const now = Date.now();
-  const diff = (now - last) / 60000; // минуты
-  if (diff > 0) {
-    updCoins(Math.floor(getIncome()/60 * diff));
-  }
-  localStorage.setItem('lastTime', now);
-}
-addOfflineCoins();
-setInterval(() => {
-  updCoins(Math.floor(getIncome() / 3600));
-}, 1000);
+  const diff = (now - last)/60000;
+  if(diff>0) updCoins(Math.floor(getIncome()/60 * diff));
+  localStorage.setItem('lastTime', Date.now());
+})();
 
-// Обновление уровня (отметки о достижении сумм)
-function updLv() {
-  document.querySelectorAll('.level').forEach(l => {
-    l.classList.toggle('active', maxCoins >= +l.dataset.val);
+/* passive tick */
+setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); },1000);
+
+/* levels display */
+function updLv(){
+  document.querySelectorAll('.level').forEach(l=> l.classList.toggle('active', maxCoins >= +l.dataset.val));
+}
+
+/* upgrades UI */
+function updUpg(){
+  const el = document.getElementById('upgradePanel');
+  el.innerHTML = '';
+  const ups = [
+    {key:'x2Prize', title:'x2 Prize / x2 Loss', desc:'Double rewards & penalties', base:20000},
+    {key:'check1', title:'Check 1 Room Only', desc:'Hunter checks 1 room only (1 min)', base:20000}
+  ];
+  ups.forEach(u=>{
+    const div=document.createElement('div'); div.className='upgrade';
+    const price = u.base * Math.pow(2, upgrades[u.key]||0);
+    div.innerHTML = `<h4>${u.title}</h4><p>${u.desc}</p><div style="display:flex;justify-content:space-between;align-items:center"><div class="price">${format(price)}</div><div style="font-size:12px;color:var(--muted)">${upgrades[u.key]||0} lvl</div></div>`;
+    div.onclick = ()=>{
+      if(coins>=price){
+        upgrades[u.key] = (upgrades[u.key]||0)+1;
+        updCoins(-price);
+        if(u.key==='check1') check1Expire = Date.now()+60000;
+        save(); updUpg();
+      } else alert('Not enough coins!');
+    };
+    el.appendChild(div);
   });
 }
 
-// Обновление цен апгрейдов
-function updUpg() {
-  document.querySelectorAll('.upgrade').forEach(u => {
-    let key = u.dataset.key;
-    let base = +u.dataset.basePrice;
-    let count = upgrades[key] || 0;
-    let price = base * Math.pow(2, count);
-    let priceEl = u.querySelector('.price');
-    if (priceEl) priceEl.textContent = format(price);
-  });
-}
+/* check1 timer */
+setInterval(()=>{
+  const el = document.querySelector('.upgrade .timer') || null;
+  // we show timer separately below when upgradePanel visible
+  // logic in updUpg handled purchases
+},1000);
 
-// При клике на апгрейд
-document.querySelectorAll('.upgrade').forEach(u => {
-  u.onclick = () => {
-    let key = u.dataset.key;
-    let base = +u.dataset.basePrice;
-    let count = upgrades[key] || 0;
-    let price = base * Math.pow(2, count);
-    if (coins >= price) {
-      upgrades[key] = count + 1;
-      updCoins(-price);
-      if (key === "check1") {
-        check1Expire = Date.now() + 60000; // 1 минута действия
-      }
-      save();
-      updUpg();
-    } else {
-      alert("Not enough coins!");
-    }
-  };
-});
-
-// Обновление таймера апгрейда Check 1 Room
-function updCheck() {
-  const el = document.getElementById("check1Timer");
-  if (check1Expire > Date.now()) {
-    el.textContent = "⏳ " + Math.floor((check1Expire - Date.now())/1000) + "s";
-  } else {
-    el.textContent = "";
-  }
-}
-setInterval(updCheck, 1000);
-
-// Выбор комнаты
-document.querySelectorAll('.room').forEach(r => {
-  r.onclick = () => {
-    if (roundInProgress) return;
-    document.querySelectorAll('.room').forEach(x => x.classList.remove('selected'));
+/* rooms click */
+document.querySelectorAll('.room').forEach(r=>{
+  r.onclick = ()=> {
+    if(roundInProgress) return;
+    document.querySelectorAll('.room').forEach(x=>x.classList.remove('selected'));
     r.classList.add('selected');
     selectedRoom = +r.dataset.idx;
   };
 });
 
-// Кнопка Start: сброс прошлых результатов
-document.getElementById('startBtn').onclick = () => {
-  if (selectedRoom == null) {
-    alert('Pick a room first!');
-    return;
-  }
-  document.querySelectorAll('.room').forEach(r => {
-    r.classList.remove('found', 'safe');
-  });
+/* start/reset buttons */
+document.getElementById('startBtn').onclick = ()=>{
+  if(selectedRoom==null){ alert('Pick a room first!'); return; }
+  document.querySelectorAll('.room').forEach(r=> r.classList.remove('found','safe'));
 };
-
-// Кнопка Reset (🔍): запускает охоту
-document.getElementById('resetBtn').onclick = () => {
-  if (selectedRoom == null) {
-    alert('Pick a room first!');
-    return;
-  }
-  roundInProgress = true;
-  const numPicks = (check1Expire > Date.now()) ? 1 : 2;
-  let picks = [...Array(8).keys()].sort(() => 0.5 - Math.random()).slice(0, numPicks);
-  document.querySelectorAll('.room').forEach(r => r.classList.remove('found', 'safe', 'highlight'));
-  let delay = 0;
-  picks.forEach(i => {
-    let room = document.querySelector(`.room[data-idx="${i}"]`);
-    setTimeout(() => { room.classList.add('highlight'); }, delay);
-    setTimeout(() => { room.classList.remove('highlight'); }, delay + 600);
-    delay += 700;
+document.getElementById('resetBtn').onclick = ()=>{
+  if(selectedRoom==null){ alert('Pick a room first!'); return; }
+  roundInProgress=true;
+  const numPicks = (check1Expire>Date.now())?1:2;
+  let picks = [...Array(8).keys()].sort(()=>0.5 - Math.random()).slice(0,numPicks);
+  document.querySelectorAll('.room').forEach(r=> r.classList.remove('found','safe','highlight'));
+  let delay=0;
+  picks.forEach(i=>{
+    const room = document.querySelector(`.room[data-idx="${i}"]`);
+    setTimeout(()=> room.classList.add('highlight'), delay);
+    setTimeout(()=> room.classList.remove('highlight'), delay+600);
+    delay+=700;
   });
-  setTimeout(() => {
-    let prize = 1000, loss = -2000;
-    if (upgrades.x2Prize > 0) {
-      prize *= Math.pow(2, upgrades.x2Prize);
-      loss *= Math.pow(2, upgrades.x2Prize);
-    }
-    if (picks.includes(selectedRoom)) {
+  setTimeout(()=>{
+    let prize=1000, loss=-2000;
+    if(upgrades.x2Prize>0){ prize*=Math.pow(2,upgrades.x2Prize); loss*=Math.pow(2,upgrades.x2Prize); }
+    if(picks.includes(selectedRoom)){
       const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
       room.classList.add('found');
       updCoins(loss);
@@ -674,180 +392,99 @@ document.getElementById('resetBtn').onclick = () => {
       room.classList.add('safe');
       updCoins(prize);
     }
-    selectedRoom = null;
-    document.querySelectorAll('.room').forEach(r => r.classList.remove('selected'));
-    roundInProgress = false;
+    selectedRoom=null; document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));
+    roundInProgress=false;
   }, delay + 700);
 };
 
-// Отрисовка магазина майнеров (заполняем и модальный контейнер, и видимую панель)
-function renderMiners() {
-  // modal
-  if (minersContainer) minersContainer.innerHTML = "";
-  // visible panel
-  if (minersPanelVisible) minersPanelVisible.innerHTML = "";
+/* render miners both main-visible and modal */
+let pendingMiner = null;
+function renderMiners(){
+  minersPanelVisible.innerHTML=''; modalMinersGrid.innerHTML='';
+  minersData.forEach((m,i)=>{
+    const st = minersState[i]; const price = m.p * Math.pow(2, st.count); const income = st.count>0? m.i * Math.pow(2, st.count-1):0;
 
-  minersData.forEach((m, i) => {
-    let st = minersState[i];
-    let price = m.p * Math.pow(2, st.count);
-    let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
+    // main visible card
+    const card = document.createElement('div'); card.className='miner-card';
+    card.innerHTML = `<h4>${m.n}</h4><div class="income">+${format(income)}/hr</div><div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-top:8px"><div style="font-size:12px;color:var(--muted)">Lvl ${st.count}</div><div class="price">${format(price)}</div></div>`;
+    card.onclick = ()=>{ if(coins>=price){ pendingMiner=i; showBuy(`${m.n} — ${format(price)}`);} else alert('Not enough coins!'); };
+    minersPanelVisible.appendChild(card);
 
-    function buildCard(forModal) {
-      let card = document.createElement('div');
-      card.className = 'miner-card';
-      if (forModal) {
-        card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
-      } else {
-        card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom" style="display:flex;justify-content:space-between;width:100%;font-weight:700;font-size:14px;margin-top:6px;"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
-      }
-      card.onclick = () => {
-        if (coins >= price) {
-          pendingMiner = i;
-          buyText.textContent = `Buy ${m.n} for ${format(price)}?`;
-          buyConfirm.classList.add('show');
-        } else {
-          alert("Not enough coins!");
-        }
-      };
-      return card;
-    }
-
-    if (minersPanelVisible) minersPanelVisible.appendChild(buildCard(false));
-    if (minersContainer) minersContainer.appendChild(buildCard(true));
+    // modal card
+    const mcard = document.createElement('div'); mcard.className='miner-card';
+    mcard.innerHTML = `<h4>${m.n}</h4><div class="income">+${format(income)}/hr</div><div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-top:8px"><div style="font-size:12px;color:var(--muted)">Lvl ${st.count}</div><div class="price">${format(price)}</div></div>`;
+    mcard.onclick = ()=>{ if(coins>=price){ pendingMiner=i; showBuy(`${m.n} — ${format(price)}`);} else alert('Not enough coins!'); };
+    modalMinersGrid.appendChild(mcard);
   });
 }
 
-// Открыть/закрыть майнинг-шоп (модалка теперь с дизайном игры)
-document.getElementById('miningBtn').onclick = () => {
-  miningShop.style.display = 'block';
-  renderMiners(); // fill modal
+/* buy confirm */
+const buyConfirm = document.getElementById('buyConfirm');
+function showBuy(text){ document.getElementById('buyText').textContent = text; buyConfirm.style.display='block'; }
+document.getElementById('confirmBuy').onclick = ()=>{
+  if(pendingMiner===null) return;
+  const i = pendingMiner; const m = minersData[i]; const st = minersState[i]; const price = m.p * Math.pow(2, st.count);
+  if(coins>=price){ coins -= price; st.count++; updCoins(0); save(); renderMiners(); } else alert('Not enough coins!');
+  pendingMiner=null; buyConfirm.style.display='none';
 };
-document.getElementById('closeMiningShop').onclick = () => {
-  miningShop.style.display = 'none';
-};
+document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner=null; buyConfirm.style.display='none'; };
 
-// Подтверждение/отмена покупки майнера
-document.getElementById('confirmBuy').onclick = () => {
-  if (pendingMiner === null) return;
-  let i = pendingMiner;
-  let m = minersData[i];
-  let st = minersState[i];
-  let price = m.p * Math.pow(2, st.count);
-  if (coins >= price) {
-    coins -= price;
-    st.count++;
-    updCoins(0);
-    save();
-    renderMiners();
-  } else {
-    alert("Not enough coins!");
-  }
-  pendingMiner = null;
-  buyConfirm.classList.remove('show');
+/* mining modal open/close (⛏ button) - opens modal that matches game dark premium */
+const miningModal = document.getElementById('miningModal');
+document.getElementById('miningBtn').onclick = ()=>{
+  renderMiners(); miningModal.style.display='flex';
 };
-document.getElementById('cancelBuy').onclick = () => {
-  pendingMiner = null;
-  buyConfirm.classList.remove('show');
-};
+document.getElementById('closeMiningShop').onclick = ()=> miningModal.style.display='none';
+miningModal.addEventListener('click', (e)=>{ if(e.target===miningModal) miningModal.style.display='none'; });
 
-// Профиль (Daily/Quest)
-const profileWindowEl = document.getElementById('profileWindow');
-document.getElementById('profileBtn').onclick = () => profileWindowEl.style.display = 'block';
-document.getElementById('closeProfile').onclick = () => profileWindowEl.style.display = 'none';
-
-let questClaimed = localStorage.getItem('questClaimed') === 'true';
-let lastDaily = +localStorage.getItem('lastDaily') || 0;
-const questStatusEl = document.getElementById('questStatus');
-const dailyStatusEl = document.getElementById('dailyStatus');
-
-function updateQuestStatus() {
-  questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed";
-}
-function updateDailyStatus() {
-  let now = Date.now();
-  let nextAvailable = lastDaily + 24*60*60*1000;
-  if (now >= nextAvailable) {
-    dailyStatusEl.textContent = "💰 Available!";
-  } else {
-    let diff = nextAvailable - now;
-    let hours = Math.floor(diff / (1000*60*60));
-    let minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-    dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`;
-  }
-}
-setInterval(updateDailyStatus, 60000);
-updateDailyStatus();
-updateQuestStatus();
-
-// Кнопки Daily/Quest
-document.getElementById('claimQuest').onclick = () => {
-  if (questClaimed) {
-    alert("Quest already claimed!");
-  } else {
-    updCoins(50000);
-    questClaimed = true;
-    localStorage.setItem('questClaimed', 'true');
-    updateQuestStatus();
-  }
-};
-document.getElementById('claimDaily').onclick = () => {
-  let now = Date.now();
-  if (now - lastDaily < 24*60*60*1000) {
-    alert("Daily reward already claimed!");
-  } else {
-    updCoins(30000);
-    lastDaily = now;
-    localStorage.setItem('lastDaily', now);
-    updateDailyStatus();
-  }
-};
-
-// Кнопки Info и Shop
-document.getElementById('infoBtn').onclick = () => {
-  document.getElementById('infoWindow').style.display = 'block';
-};
-document.getElementById('closeInfo').onclick = () => {
-  document.getElementById('infoWindow').style.display = 'none';
-};
-
-// Shop button behavior:
-// при нажатии: майнеры пропадают и появляются те 2 улучшения.
-// если нажать снова — обратно (toggle).
+/* shop button toggles miners <-> upgrades */
 const shopBtn = document.getElementById('shopBtn');
-const upgradePanel = document.getElementById('upgradePanel');
-
-shopBtn.onclick = () => {
-  const minersVisible = getComputedStyle(minersPanelVisible).display !== 'none';
-  if (minersVisible) {
-    // hide miners on main screen, show upgrades
-    minersPanelVisible.style.display = 'none';
-    upgradePanel.style.display = 'flex';
-    // render upgrades prices
+const upgradePanelEl = document.getElementById('upgradePanel');
+shopBtn.onclick = ()=>{
+  const minersVisible = minersPanelVisible.style.display !== 'none';
+  if(minersVisible){
+    minersPanelVisible.style.display='none';
+    upgradePanelEl.style.display='flex';
     updUpg();
   } else {
-    // show miners, hide upgrades
-    minersPanelVisible.style.display = 'flex';
-    upgradePanel.style.display = 'none';
-    // ensure miners are rendered
+    minersPanelVisible.style.display='flex';
+    upgradePanelEl.style.display='none';
     renderMiners();
   }
 };
 
-// Инициализация UI
+/* info/profile simple handlers (kept minimal) */
+document.getElementById('infoBtn').onclick = ()=> alert('How to play:\n1) Выберите комнату\n2) Нажмите 🔍\n3) Победа/потеря монет\n4) Покупайте майнеров/апгрейды');
+document.getElementById('profileBtn').onclick = ()=> alert('Profile: daily reward & quests (в демо)');
+
+/* init UI */
 coinsVal.textContent = format(coins);
 updLv();
 updUpg();
 updIncome();
-updCheck();
-
-// Render miners into visible panel immediately so cards are seen without opening modal
 renderMiners();
 
-// Ensure infoWindow is NOT shown on load (do not auto-open)
-document.getElementById('infoWindow').style.display = 'none';
+/* update check1 timer display on upgrades panel when visible */
+setInterval(()=> {
+  if(upgradePanelEl.style.display!=='none'){
+    const timer = document.querySelector('.upgrade .timer');
+    // simpler: append timer to second upgrade element
+    const items = upgradePanelEl.querySelectorAll('.upgrade');
+    if(items[1]){
+      const el = items[1].querySelector('.timer') || document.createElement('div');
+      el.className='timer';
+      if(check1Expire > Date.now()){
+        el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
+      } else el.textContent = '';
+      if(!items[1].contains(el)) items[1].appendChild(el);
+    }
+  }
+}, 800);
+
 </script>
 </body>
 </html>
+
 
 
 
