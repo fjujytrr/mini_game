@@ -5,146 +5,259 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hide & Seek — Casino Arcade</title>
 <style>
-  /* ========== Палитра ========== */
+  /* ====== Стиль: Dark Casino / Arcade (только CSS изменён) ====== */
+
   :root{
-    --bg-1:#0f0f10;       /* почти чёрный */
-    --bg-2:#151515;
-    --panel:#111111;
-    --gold:#FFD700;
-    --green:#10B981;
-    --danger:#FF4500;
-    --blue:#3B82F6;
-    --muted:#bdbdbd;
+    --bg-1: #0f0f10;       /* почти чёрный */
+    --bg-2: #111214;
+    --panel: #141414;
+    --gold: #FFD700;       /* золотой акцент */
+    --green: #10B981;      /* доход */
+    --danger: #FF4500;     /* проигрыш */
+    --blue: #3B82F6;       /* уровни майнеров */
+    --muted: #bdbdbd;
     --glass: rgba(255,255,255,0.03);
+    --card-grad: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.12));
   }
 
-  /* ========== Базовая сетка ========== */
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto; background:
-    radial-gradient(1200px 600px at 10% 10%, rgba(255,215,0,0.02), transparent 5%),
-    linear-gradient(180deg,var(--bg-1),var(--bg-2));
-    color:var(--muted); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:
+      radial-gradient(800px 400px at 10% 10%, rgba(255,215,0,0.02), transparent 6%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    color:var(--muted);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
-  body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 12px 90px;}
 
-  /* ========== Header ========== */
+  body{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    padding:18px 12px 90px;
+  }
+
+  /* Header */
   header{
-    width:100%;max-width:980px;display:flex;gap:12px;align-items:center;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
-    border-radius:14px;padding:12px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    width:100%;
+    max-width:980px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));
+    border-radius:14px;
+    padding:12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
     border:1px solid rgba(255,215,0,0.04);
   }
 
   .level-bar{flex:1;display:flex;gap:8px;align-items:center}
   .level{
-    flex:1;text-align:center;padding:8px 6px;border-radius:10px;font-weight:700;font-size:13px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.06));
-    color:var(--muted);border:1px solid rgba(255,255,255,0.02);
+    flex:1;
+    text-align:center;
+    padding:8px 6px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:13px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.06));
+    color:var(--muted);
+    border:1px solid rgba(255,255,255,0.02);
     box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-    transition:all .22s;cursor:pointer;
+    transition: transform .18s, box-shadow .18s, color .18s;
+    cursor:pointer;
   }
+  .level:hover { transform: translateY(-4px); }
   .level.active{
     background: linear-gradient(180deg, rgba(255,215,0,0.12), rgba(255,215,0,0.02));
-    color:#111;border-color:rgba(255,215,0,0.3);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.08), 0 2px 6px rgba(0,0,0,0.6);
+    color:#091018;
+    border-color: rgba(255,215,0,0.26);
+    box-shadow: 0 14px 36px rgba(255,215,0,0.06), 0 6px 18px rgba(0,0,0,0.6);
   }
 
   .coin-panel{
-    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 12px;
+    border-radius:12px;
     background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.08));
     border:1px solid rgba(255,215,0,0.04);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.7);
   }
   .coin-panel .val{font-weight:900;color:var(--gold);font-size:18px;letter-spacing:0.6px}
 
-  /* ========== Main house grid ========== */
-  .house{
-    width:100%;max-width:980px;display:grid;
-    grid-template-columns: 1fr 420px; gap:16px;
-  }
+  /* Main layout */
+  .house{width:100%;max-width:980px;display:grid;grid-template-columns:1fr 420px;gap:16px}
 
-  /* left: rooms panel */
-  .rooms-wrap{background:var(--panel);padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.02);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6);}
-  .rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:88px;gap:12px}
+  /* Rooms panel */
+  .rooms-wrap{
+    background: var(--panel);
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.8);
+  }
+  .rooms-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    grid-auto-rows:88px;
+    gap:12px;
+  }
   .room{
-    display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#eee;
-    border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
-    border:2px solid rgba(255,255,255,0.02);cursor:pointer;transition:all .22s;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:800;
+    color:#eee;
+    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+    border:2px solid rgba(255,255,255,0.02);
+    cursor:pointer;
+    transition: transform .18s, box-shadow .18s, border-color .18s, color .18s;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.65);
   }
-  .room:hover{transform:translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.7)}
-  .room.selected{border-color:var(--blue); box-shadow: 0 10px 30px rgba(59,130,246,0.08); color:var(--blue); background: linear-gradient(180deg, rgba(59,130,246,0.04), rgba(255,255,255,0.006))}
-  .room.found{border-color:var(--danger); color:var(--danger); box-shadow: 0 10px 30px rgba(255,69,0,0.06)}
-  .room.safe{border-color:var(--green); color:var(--green); box-shadow: 0 10px 30px rgba(16,185,129,0.06)}
+  .room:hover{ transform: translateY(-8px); box-shadow: 0 22px 46px rgba(0,0,0,0.8); }
+  .room.selected{
+    border-color: rgba(59,130,246,0.9);
+    color: var(--blue);
+    background: linear-gradient(180deg, rgba(59,130,246,0.04), rgba(255,255,255,0.006));
+    box-shadow: 0 14px 36px rgba(59,130,246,0.06);
+  }
+  .room.found{
+    border-color: rgba(255,69,0,0.95);
+    color: var(--danger);
+    box-shadow: 0 14px 36px rgba(255,69,0,0.06);
+    animation: foundFlash .9s ease;
+  }
+  .room.safe{
+    border-color: rgba(16,185,129,0.95);
+    color: var(--green);
+    box-shadow: 0 14px 36px rgba(16,185,129,0.06);
+    animation: safePulse .9s ease;
+  }
+  .room.highlight{
+    box-shadow: 0 0 34px 6px rgba(59,130,246,0.07) !important;
+    transition: box-shadow .18s;
+  }
 
-  /* right: sidebar with miners / upgrades panels */
+  @keyframes foundFlash {
+    0% { transform: scale(1); filter:brightness(1); }
+    40% { transform: scale(1.08) rotate(-4deg); filter:brightness(1.18); }
+    100% { transform: scale(1); filter:brightness(1); }
+  }
+  @keyframes safePulse {
+    0% { transform: scale(1); filter:brightness(1); }
+    40% { transform: scale(1.06) rotate(4deg); filter:brightness(1.08); }
+    100% { transform: scale(1); filter:brightness(1); }
+  }
+
+  /* Sidebar */
   .sidebar{display:flex;flex-direction:column;gap:12px}
   .panel{
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-    border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.02);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    background: var(--panel);
+    border-radius:12px;
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.7);
     min-height:120px;
   }
   .panel h3{margin:0 0 8px;color:var(--gold);font-size:14px}
 
-  /* miners list on main screen */
-  .miners-panel{display:flex;flex-direction:column;gap:8px}
+  /* miners main list */
+  .miners-panel{display:flex;flex-direction:column;gap:8px;margin-top:6px}
   .miner-row{display:flex;gap:8px;align-items:center}
   .miner-card{
-    flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px;border-radius:12px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    padding:10px;
+    border-radius:12px;
     background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.08));
     border:1px solid rgba(255,255,255,0.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.55);cursor:pointer;transition:all .18s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.65);
+    cursor:pointer;
+    transition: transform .16s, box-shadow .16s, border-color .16s;
   }
-  .miner-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.7)}
-  .miner-card h4{margin:0;color:var(--blue)}
-  .miner-card .income{font-weight:700;color:var(--green)}
+  .miner-card:hover{ transform: translateY(-8px); box-shadow: 0 26px 60px rgba(0,0,0,0.85); border-color: rgba(59,130,246,0.06); }
+  .miner-card h4{margin:0;color:var(--blue);font-weight:800}
+  .miner-card .income{font-weight:900;color:var(--green)}
   .miner-card .price{font-weight:900;color:var(--gold);align-self:flex-end}
 
-  /* controls & bottom menu */
-  .controls{display:flex;gap:8px;margin-top:8px}
+  /* Controls */
+  .controls{display:flex;gap:8px;margin-top:12px}
   .btn{
     flex:1;padding:12px;border-radius:12px;border:none;font-weight:800;font-size:16px;cursor:pointer;
     background: linear-gradient(180deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));
-    color:#000;box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+    color:#071018;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+    transition: transform .12s, box-shadow .12s;
   }
-  .btn.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.04)}
+  .btn:hover{ transform: translateY(-6px); }
+  .btn.secondary{
+    background: transparent;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  }
+
+  /* bottom menu */
   .bottom-menu{
     position:fixed;left:50%;transform:translateX(-50%);bottom:22px;width:96%;max-width:560px;
     display:flex;justify-content:space-around;gap:8px;background:var(--panel);padding:8px;border-radius:999px;
-    box-shadow:0 12px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)
+    box-shadow:0 18px 48px rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.02)
   }
-  .bottom-menu button{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:8px 12px;border-radius:10px}
-  .bottom-menu button:hover{color:var(--gold);background:rgba(255,215,0,0.03)}
+  .bottom-menu button{
+    background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:8px 12px;border-radius:10px;
+    transition: color .12s, transform .12s, box-shadow .12s;
+  }
+  .bottom-menu button:hover{ color:var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.03), transparent); transform: translateY(-4px); }
 
-  /* upgrade cards (hidden initially) */
-  .upgrade-panel{display:none;gap:10px;flex-direction:column}
-  .upgrade{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));border:1px solid rgba(255,255,255,0.02)}
+  /* upgrades */
+  .upgrade-panel{display:none;gap:10px;flex-direction:column;margin-top:10px}
+  .upgrade{
+    padding:12px;border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
   .upgrade h4{margin:0;color:var(--gold)} .upgrade p{margin:6px 0;color:var(--muted)} .upgrade .price{color:var(--gold);font-weight:900}
 
-  /* modal mining shop (dark premium style) */
+  /* modal */
   .modal{
     display:none;position:fixed;inset:0;align-items:center;justify-content:center;z-index:9999;
-    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.75));
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.82));
   }
   .modal .sheet{
-    width:92%;max-width:900px;border-radius:14px;padding:18px;background:linear-gradient(180deg,#141414,#0d0d0d);
-    border:1px solid rgba(255,215,0,0.04);box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    width:92%;max-width:900px;border-radius:14px;padding:18px;
+    background: linear-gradient(180deg, rgba(20,20,20,0.98), rgba(8,8,8,0.98));
+    border:1px solid rgba(255,215,0,0.04);box-shadow: 0 30px 80px rgba(0,0,0,0.9);
   }
   .modal .sheet h2{margin:0 0 12px;color:var(--gold)}
   .modal .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-  .modal .grid .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));color:#fff}
+  .modal .grid .miner-card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12)); color:#fff}
 
   /* buy confirm */
-  .confirm{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10000;padding:14px;border-radius:12px;background:#0b0b0b;border:1px solid rgba(255,215,0,0.06)}
+  .confirm{
+    display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10000;padding:14px;border-radius:12px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.96), rgba(4,4,4,0.96));
+    border:1px solid rgba(255,215,0,0.06);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+  }
   .confirm p{color:var(--muted);margin:0 0 12px} .confirm .row{display:flex;gap:8px}
 
   /* responsive */
   @media (max-width:900px){
-    .house{grid-template-columns:1fr; }
+    .house{grid-template-columns:1fr;}
     .sidebar{order:2}
+    .bottom-menu{bottom:12px}
   }
+
 </style>
 </head>
 <body>
@@ -234,7 +347,7 @@
 </nav>
 
 <script>
-/* ========== Логика (аналогично прежнему функционалу) ========== */
+/* ========== Логика (оставлена без изменений) ========== */
 
 /* --- init rooms --- */
 const roomsGrid = document.getElementById('roomsGrid');
@@ -348,8 +461,7 @@ function updUpg(){
 /* check1 timer */
 setInterval(()=>{
   const el = document.querySelector('.upgrade .timer') || null;
-  // we show timer separately below when upgradePanel visible
-  // logic in updUpg handled purchases
+  // logic handled in updUpg for purchases; timer appended when panel visible
 },1000);
 
 /* rooms click */
@@ -404,13 +516,11 @@ function renderMiners(){
   minersData.forEach((m,i)=>{
     const st = minersState[i]; const price = m.p * Math.pow(2, st.count); const income = st.count>0? m.i * Math.pow(2, st.count-1):0;
 
-    // main visible card
     const card = document.createElement('div'); card.className='miner-card';
     card.innerHTML = `<h4>${m.n}</h4><div class="income">+${format(income)}/hr</div><div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-top:8px"><div style="font-size:12px;color:var(--muted)">Lvl ${st.count}</div><div class="price">${format(price)}</div></div>`;
     card.onclick = ()=>{ if(coins>=price){ pendingMiner=i; showBuy(`${m.n} — ${format(price)}`);} else alert('Not enough coins!'); };
     minersPanelVisible.appendChild(card);
 
-    // modal card
     const mcard = document.createElement('div'); mcard.className='miner-card';
     mcard.innerHTML = `<h4>${m.n}</h4><div class="income">+${format(income)}/hr</div><div style="display:flex;justify-content:space-between;width:100%;align-items:center;margin-top:8px"><div style="font-size:12px;color:var(--muted)">Lvl ${st.count}</div><div class="price">${format(price)}</div></div>`;
     mcard.onclick = ()=>{ if(coins>=price){ pendingMiner=i; showBuy(`${m.n} — ${format(price)}`);} else alert('Not enough coins!'); };
@@ -429,7 +539,7 @@ document.getElementById('confirmBuy').onclick = ()=>{
 };
 document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner=null; buyConfirm.style.display='none'; };
 
-/* mining modal open/close (⛏ button) - opens modal that matches game dark premium */
+/* mining modal open/close (⛏ button) */
 const miningModal = document.getElementById('miningModal');
 document.getElementById('miningBtn').onclick = ()=>{
   renderMiners(); miningModal.style.display='flex';
@@ -453,7 +563,7 @@ shopBtn.onclick = ()=>{
   }
 };
 
-/* info/profile simple handlers (kept minimal) */
+/* info/profile simple handlers */
 document.getElementById('infoBtn').onclick = ()=> alert('How to play:\n1) Выберите комнату\n2) Нажмите 🔍\n3) Победа/потеря монет\n4) Покупайте майнеров/апгрейды');
 document.getElementById('profileBtn').onclick = ()=> alert('Profile: daily reward & quests (в демо)');
 
@@ -467,16 +577,13 @@ renderMiners();
 /* update check1 timer display on upgrades panel when visible */
 setInterval(()=> {
   if(upgradePanelEl.style.display!=='none'){
-    const timer = document.querySelector('.upgrade .timer');
-    // simpler: append timer to second upgrade element
     const items = upgradePanelEl.querySelectorAll('.upgrade');
     if(items[1]){
-      const el = items[1].querySelector('.timer') || document.createElement('div');
-      el.className='timer';
+      let el = items[1].querySelector('.timer');
+      if(!el){ el = document.createElement('div'); el.className='timer'; el.style.color='var(--muted)'; el.style.marginTop='6px'; items[1].appendChild(el); }
       if(check1Expire > Date.now()){
         el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
       } else el.textContent = '';
-      if(!items[1].contains(el)) items[1].appendChild(el);
     }
   }
 }, 800);
@@ -484,6 +591,7 @@ setInterval(()=> {
 </script>
 </body>
 </html>
+
 
 
 
