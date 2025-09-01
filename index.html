@@ -37,44 +37,49 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 #miningShop{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:200;overflow-y:auto;max-height:80vh;}
 .miners-container{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
 .miner-card {
-  background: linear-gradient(145deg,#333,#111);
-  color: #FFD700;
+  background: linear-gradient(160deg, #2a2a2a, #111);
+  color: #fff;
   border-radius: 14px;
-  padding: 12px;
+  padding: 14px;
   width: 45%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 8px rgba(255,215,0,.2);
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.5);
   cursor: pointer;
-  transition: 0.25s;
+  transition: 0.3s;
 }
 
 .miner-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(255,215,0,.5);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 18px rgba(255,215,0,.4);
 }
 
 .miner-card h3 {
   margin: 0;
   font-size: 16px;
+  color: #fff;
   text-align: center;
 }
 
 .miner-card .miner-img {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #FFD700;
+  background: #000;
 }
 
 .miner-card .income {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 14px;
+  color: #aaa;
+}
+
+.miner-card .income-val {
+  color: #10B981; /* зелёный для дохода */
+  font-weight: 700;
 }
 
 .miner-card .bottom {
@@ -83,8 +88,17 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   width: 100%;
   font-weight: 700;
   font-size: 14px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
+
+.miner-card .lvl {
+  color: #3B82F6; /* синий уровень */
+}
+
+.miner-card .price {
+  color: #FFD700; /* золотая цена */
+}
+
 
 .coin-img{width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:4px;}
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
@@ -178,7 +192,7 @@ setTimeout(()=>{let p=1000,l=-2000;if(upgrades.x2Prize>0){p*=Math.pow(2,upgrades
 
 // -------------------- Майнеры --------------------
 function render() {
-  minersContainer.innerHTML = ""; // очищаем контейнер
+  minersContainer.innerHTML = ""; 
   minersData.forEach((m, i) => {
     let st = minersState[i];
     let price = m.p * Math.pow(2, st.count);
@@ -190,13 +204,10 @@ function render() {
     card.innerHTML = `
       <img src="logo.png" alt="Logo" class="miner-img">
       <h3>${m.n}</h3>
-      <div class="income">
-        <img src="logo.png" alt="coin" class="coin-img"> 
-        Profit/hr: ${format(income)}
-      </div>
+      <div class="income">Profit/hr: <span class="income-val">+${format(income)}</span></div>
       <div class="bottom">
-        <span>Lvl ${st.count}</span>
-        <span>💰 ${format(price)}</span>
+        <span class="lvl">Lvl ${st.count}</span>
+        <span class="price">💰 ${format(price)}</span>
       </div>
     `;
 
@@ -213,6 +224,7 @@ function render() {
     minersContainer.appendChild(card);
   });
 }
+
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');}
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();}
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
