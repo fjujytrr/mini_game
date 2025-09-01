@@ -127,9 +127,7 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;">Close</button>
 </div>
 <div id="buyConfirm"><p id="buyText"></p><div style="display:flex;justify-content:center;"><button id="confirmBuy">Buy</button><button id="cancelBuy">Cancel</button></div></div>
-<div id="profileWindow">
-  <h2 style="text-align:center;margin-bottom:12px;">Profile</h2>
-  <div id="profileWindow" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;max-height:80vh;background:#1f1f1f;border-radius:16px;padding:20px;box-shadow:0 0 25px rgba(255,215,0,.6);z-index:200;overflow-y:auto;">
+<div id="profileWindow" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;max-height:80vh;background:#1f1f1f;border-radius:16px;padding:20px;box-shadow:0 0 25px rgba(255,215,0,.6);z-index:200;overflow-y:auto;">
   <h2 style="text-align:center;margin-bottom:20px;color:#FFD700;font-size:22px;font-weight:700;">Profile</h2>
 
   <!-- Ежедневный бонус -->
@@ -153,6 +151,15 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:#FFD700;color:#000;cursor:pointer;font-weight:700;">Close</button>
 </div>
 
+  <div style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
+    <h3>Quest</h3>
+    <p>Subscribe to my YouTube channel to complete the quest and get 50,000 coins!</p>
+    <a href="https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq" target="_blank" style="display:block;text-align:center;margin:8px 0;padding:10px;background:#FFD700;color:#000;border-radius:12px;text-decoration:none;">Go to YouTube</a>
+    <button id="claimQuest">Claim Quest</button>
+    <p id="questStatus"></p>
+  </div>
+  <button id="closeProfile">Close</button>
+</div>
 <div class="bottom-menu">
   <button id="infoBtn" class="secondary">ℹ</button>
   <button id="shopBtn" class="secondary">🛒</button>
