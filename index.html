@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, user-scalable=no" />
 <title>Hide & Seek — Premium Emoji</title>
 <style>
+/* --- СЛЕГКА СВЕТЛЕЕ ФОН ИГРЫ --- */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(120deg, #2b1055, #7597de);
+  /* фон игры — чуть светлее чем был */
+  background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
   background-size: 200% 200%;
   animation: gradientBG 15s ease infinite;
   overflow: hidden;
@@ -35,7 +37,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.28);
   border-radius: 12px;
   padding: 10px;
   backdrop-filter: blur(5px);
@@ -43,7 +45,7 @@ header {
 .level-bar {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.2);
   padding: 6px 10px;
   border-radius: 12px;
   flex: 1;
@@ -55,7 +57,7 @@ header {
   padding: 6px 0;
   font-size: 14px;
   font-weight: 700;
-  color: #aaa;
+  color: #eee;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
   transition: 0.5s;
@@ -70,10 +72,10 @@ header {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.28);
   padding: 8px 16px;
   border-radius: 16px;
-  box-shadow: 0 0 12px rgba(0,216,255,0.25);
+  box-shadow: 0 0 12px rgba(0,216,255,0.18);
 }
 .coin-panel .val {
   font-weight: 700;
@@ -93,26 +95,26 @@ header {
   gap: 12px;
 }
 .room {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 28px;
-  color: #ddd;
+  color: #fff;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.18);
+  border: 2px solid rgba(255, 255, 255, 0.14);
 }
 .room:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px #00D8FF;
+  box-shadow: 0 0 18px rgba(0,216,255,0.14);
 }
 .room.selected {
   border-color: #00D8FF;
-  box-shadow: 0 0 10px #00D8FF;
+  box-shadow: 0 0 12px #00D8FF;
 }
 .room.found {
   border-color: #FF0054;
@@ -125,7 +127,7 @@ header {
   animation: safeAnim 0.8s ease;
 }
 .room.highlight {
-  box-shadow: 0 0 20px 4px #00D8FF;
+  box-shadow: 0 0 22px 4px #00D8FF;
   transition: box-shadow 0.3s;
 }
 @keyframes foundAnim {
@@ -135,7 +137,7 @@ header {
 }
 @keyframes safeAnim {
   0% { transform: scale(1); }
-  50% { transform: rotate(-10deg) scale(0.9); }
+  50% { transform: rotate(-10deg) scale(0.95); }
   100% { transform: scale(1); }
 }
 
@@ -156,18 +158,18 @@ button {
   cursor: pointer;
   color: #000;
   background: #00D8FF;
-  box-shadow: 0 4px 12px rgba(0,216,255,0.35);
+  box-shadow: 0 4px 12px rgba(0,216,255,0.25);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 button:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0,216,255,0.25);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.18);
 }
 button.secondary {
-  background: #222;
+  background: rgba(0,0,0,0.36);
   color: #fff;
-  border: 1px solid #00D8FF;
-  box-shadow: 0 3px 8px rgba(0,216,255,0.18);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 3px 8px rgba(0,216,255,0.12);
 }
 
 /* Bottom menu */
@@ -181,11 +183,11 @@ button.secondary {
   display: flex;
   justify-content: space-around;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.28);
   padding: 6px 0;
   border-radius: 16px;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0 12px rgba(0,216,255,0.25);
+  box-shadow: 0 0 12px rgba(0,216,255,0.18);
 }
 .bottom-menu button {
   background: transparent;
@@ -194,7 +196,7 @@ button.secondary {
   transition: transform 0.2s;
 }
 .bottom-menu button:hover {
-  transform: scale(1.2);
+  transform: scale(1.16);
   color: #00D8FF;
 }
 
@@ -217,7 +219,7 @@ button.secondary {
   text-align: center;
   min-width: 220px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.12);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.08);
 }
 .upgrade h3 {
   margin: 0 0 6px;
@@ -227,7 +229,7 @@ button.secondary {
 .upgrade p {
   margin: 0;
   font-size: 14px;
-  color: #ccc;
+  color: #eee;
 }
 .upgrade .price {
   margin-top: 6px;
@@ -244,14 +246,14 @@ button.secondary {
 .mining-info {
   margin: 10px 0;
   padding: 10px 12px;
-  background: rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.04);
   border-radius: 14px;
   width: 95%;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.12);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
 }
 
-/* Visible miners panel (cards always visible on main screen) */
+/* Visible miners panel - main screen */
 .miners-panel {
   width: 95%;
   max-width: 900px;
@@ -261,30 +263,30 @@ button.secondary {
   overflow-x: auto;
   align-items: flex-start;
   margin-bottom: 12px;
-  background: rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.03);
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.08);
+  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
 }
 .miners-panel .miner-card {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.04);
   color: #fff;
   border-radius: 14px;
   padding: 12px;
-  min-width: 160px; /* fixed width so cards are visible */
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.45);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
   cursor: pointer;
   transition: transform 0.25s, box-shadow 0.25s;
 }
 .miners-panel .miner-card:hover {
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0,216,255,0.10);
+  box-shadow: 0 8px 20px rgba(0,216,255,0.06);
 }
 
-/* Mining shop modal - changed to light/beautiful design (NOT black) */
+/* --- МОДАЛЬНОЕ ОКНО МАЙНИНГА: ТАКОЙ ЖЕ ДИЗАЙН КАК И ИГРА --- */
 #miningShop {
   display: none;
   position: fixed;
@@ -293,18 +295,20 @@ button.secondary {
   transform: translate(-50%, -50%);
   width: 92%;
   max-width: 680px;
-  background: linear-gradient(180deg, #f7fbff 0%, #e6f3ff 100%);
-  color: #001;
+  /* фон модалки — такой же градиент как у игры (чуть светлее общий фон уже) */
+  background: linear-gradient(120deg, rgba(59,42,122,0.95), rgba(138,167,255,0.92));
+  color: #fff;
   border-radius: 18px;
   padding: 18px;
   box-shadow: 0 18px 40px rgba(10,30,60,0.35);
   z-index: 700;
   overflow-y: auto;
   max-height: 84vh;
-  border: 1px solid rgba(0,136,255,0.15);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
 }
 #miningShop h2 {
-  color: #064a8b;
+  color: #ecf8ff;
   text-align: center;
   margin-bottom: 10px;
 }
@@ -315,9 +319,10 @@ button.secondary {
   justify-content:center;
   padding:8px 6px;
 }
+/* внутри модалки — карточки в стиле игры, но чуть светлее */
 #miningShop .miner-card {
-  background: #ffffff;
-  color: #002;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
   border-radius: 12px;
   padding: 12px;
   width: 180px;
@@ -325,14 +330,14 @@ button.secondary {
   flex-direction:column;
   align-items:center;
   gap:8px;
-  box-shadow: 0 6px 18px rgba(5,30,70,0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
   cursor:pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid rgba(6,74,139,0.06);
+  border: 1px solid rgba(255,255,255,0.04);
 }
-#miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(6,74,139,0.08); }
-#miningShop .miner-card h3 { margin:0; color:#013a6b; }
-#miningShop .miner-card .income { color:#1a6b1a; }
+#miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
+#miningShop .miner-card h3 { margin:0; color:#f0fbff; }
+#miningShop .miner-card .income { color:#d8ffd8; }
 #miningShop .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
 
 /* Buy confirm modal */
@@ -342,7 +347,7 @@ button.secondary {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #00121a;
+  background: rgba(0,0,0,0.6);
   border: 2px solid #00D8FF;
   border-radius: 16px;
   padding: 20px;
@@ -357,13 +362,13 @@ button.secondary {
 #buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:#00D8FF; color:#000; border:none; border-radius:8px; }
 
 /* Info & profile windows hidden by default (do not show on load) */
-#infoWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 520px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
+#infoWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 520px; max-height: 80vh; background: rgba(0,0,0,0.86); border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
 #infoWindow h2 { color: #00D8FF; margin-bottom: 10px; }
 #infoWindow ul { color: #ccc; padding-left: 20px; }
 #infoWindow ul li::before { content: "• "; color: #00D8FF; font-weight:600; }
 #infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
 
-#profileWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: #000; border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
+#profileWindow { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; max-height: 80vh; background: rgba(0,0,0,0.86); border: 2px solid #00D8FF; border-radius: 16px; padding: 16px; box-shadow: 0 0 20px #00D8FF; z-index: 600; overflow-y: auto; }
 #profileWindow h2 { color:#00D8FF; margin-bottom:12px; text-align:center; }
 #profileWindow h3 { color:#00D8FF; }
 #profileWindow p { color:#ccc; }
@@ -415,11 +420,11 @@ button.secondary {
 <!-- Visible miners panel - shown on main screen by default -->
 <div class="miners-panel" id="minersPanelVisible"></div>
 
-<!-- Modal mining shop (beautiful light design) -->
+<!-- Modal mining shop — теперь ОДИНАКОВЫЙ дизайн с игрой (градиентный фон) -->
 <div id="miningShop">
   <h2>Mining Shop</h2>
   <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#064a8b,#00a3ff);color:#fff;cursor:pointer;">Close</button>
+  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
 </div>
 
 <div id="buyConfirm">
@@ -445,15 +450,15 @@ button.secondary {
 
 <div id="profileWindow">
   <h2>Profile</h2>
-  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(0,216,255,0.2);">
-    <h3 style="margin-bottom:8px;font-size:18px;">Daily Reward</h3>
-    <p style="margin-bottom:12px;">Get 30,000 coins once a day!</p>
+  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
+    <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
     <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
     <p id="dailyStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
   </div>
-  <div style="margin-bottom:16px;padding:16px;background:#2a2a2a;border-radius:12px;box-shadow:0 2px 6px rgba(0,216,255,0.2);">
-    <h3 style="margin-bottom:8px;font-size:18px;">Quest</h3>
-    <p style="margin-bottom:12px;">Subscribe to get bonus coins!</p>
+  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
+    <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
     <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
     <p id="questStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
   </div>
@@ -468,7 +473,7 @@ button.secondary {
 </div>
 
 <script>
-// Инициализация комнат
+// --- Инициализация комнат
 const rooms = document.querySelector('.house');
 for (let i = 0; i < 8; i++) {
   let d = document.createElement('div');
@@ -687,15 +692,12 @@ function renderMiners() {
     let price = m.p * Math.pow(2, st.count);
     let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
 
-    // create a function to build card element
     function buildCard(forModal) {
       let card = document.createElement('div');
       card.className = 'miner-card';
       if (forModal) {
-        // modal card style uses same class but appearance controlled by CSS in modal
         card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
       } else {
-        // visible panel card
         card.innerHTML = '<h3>' + m.n + '</h3><div class="income">Profit/hr: <span class="income-val">+' + format(income) + '</span></div><div class="bottom" style="display:flex;justify-content:space-between;width:100%;font-weight:700;font-size:14px;margin-top:6px;"><span class="lvl">Lvl ' + st.count + '</span><span class="price">' + format(price) + '</span></div>';
       }
       card.onclick = () => {
@@ -715,9 +717,8 @@ function renderMiners() {
   });
 }
 
-// Открыть/закрыть майнинг-шоп (modal) - теперь открывается красивое окно по кнопке кирки
+// Открыть/закрыть майнинг-шоп (модалка теперь с дизайном игры)
 document.getElementById('miningBtn').onclick = () => {
-  // show modal with stylish design (not black)
   miningShop.style.display = 'block';
   renderMiners(); // fill modal
 };
@@ -847,6 +848,7 @@ document.getElementById('infoWindow').style.display = 'none';
 </script>
 </body>
 </html>
+
 
 
 
