@@ -205,7 +205,7 @@ function render() {
       <div class="income">Profit/hr: <span class="income-val">+${format(income)}</span></div>
       <div class="bottom">
         <span class="lvl">Lvl ${st.count}</span>
-        <span class="price">💰 ${format(price)}</span>
+        <span class="price">${format(price)}</span>
       </div>
     `;
 
@@ -222,6 +222,21 @@ function render() {
     minersContainer.appendChild(card);
   });
 }
+document.getElementById('confirmBuy').onclick = () => {
+    if(pendingMiner === null) return;
+    let i = pendingMiner;
+    let m = minersData[i];
+    let st = minersState[i];
+    let price = m.p * Math.pow(2, st.count);
+    if(coins < price) return alert("Not enough coins!");
+    coins -= price;
+    st.count++;
+    pendingMiner = null;
+    buyConfirm.classList.remove('show');
+    updCoins(0); // обновим монеты
+    render(); // перерисуем карточки
+};
+
 document.getElementById('cancelBuy').onclick=()=>{pendingMiner=null;buyConfirm.classList.remove('show');}
 document.getElementById('miningBtn').onclick=()=>{miningShop.style.display='block';render();}
 document.getElementById('closeMiningShop').onclick=()=>miningShop.style.display='none';
