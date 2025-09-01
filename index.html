@@ -244,16 +244,12 @@ document.getElementById('closeProfile').onclick=()=>profileWindow.style.display=
 
 // -------------------- Квест, рефералы, ежедневка --------------------
 let questClaimed = localStorage.getItem('questClaimed')==='true';
-let referrals = JSON.parse(localStorage.getItem('referrals'))||0;
-let referralClaimed = localStorage.getItem('referralClaimed')==='true';
 let lastDaily = +localStorage.getItem('lastDaily')||0;
 
 const questStatus=document.getElementById('questStatus');
-const referralStatus=document.getElementById('referralStatus');
 const dailyStatus=document.getElementById('dailyStatus');
 
 function updateQuestStatus(){questStatus.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed";}
-function updateReferralStatus(){referralStatus.textContent = referralClaimed ? "✅ Claimed" : `Invited: ${referrals} friend(s)`;}
 function updateDailyStatus(){ 
     let now=Date.now();
     if(now-lastDaily>=24*60*60*1000) dailyStatus.textContent="💰 Available!";
