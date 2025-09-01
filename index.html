@@ -71,11 +71,21 @@ header {
 .coin-panel {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: rgba(0, 0, 0, 0.28);
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 16px;
   box-shadow: 0 0 12px rgba(0,216,255,0.18);
+}
+/* Логотип перед балансом */
+.coin-panel .coin-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #7a4bff; /* фиолетовая рамка */
+  box-shadow: 0 6px 18px rgba(122,75,255,0.18);
+  background: #ffffff; /* на случай прозрачного PNG */
 }
 .coin-panel .val {
   font-weight: 700;
@@ -286,28 +296,29 @@ button.secondary {
   box-shadow: 0 8px 20px rgba(0,216,255,0.06);
 }
 
-/* --- МОДАЛЬНОЕ ОКНО МАЙНИНГА: ТАКОЙ ЖЕ ДИЗАЙН КАК И ИГРА --- */
+/* -------------------------
+   ОКНА - НА ВЕСЬ ЭКРАН
+   ------------------------- */
+
+/* Майнинг-шоп — теперь открывается на весь экран, фон — градиент как главный */
 #miningShop {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 92%;
-  max-width: 680px;
-  /* фон модалки — такой же градиент как у игры, Непрозрачный */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  z-index: 900;
+  /* фон модалки — тот же градиент как у игры (НЕ полупрозрачный) */
   background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
   color: #fff;
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 18px 40px rgba(10,30,60,0.35);
-  z-index: 700;
+  padding: 28px;
+  box-sizing: border-box;
   overflow-y: auto;
-  max-height: 84vh;
-  border: 1px solid rgba(255,255,255,0.06);
-  /* backdrop-filter можно оставить (не делает фон полупрозрачным) */
-  backdrop-filter: blur(6px);
+  border: none;
 }
+/* Контент внутри майнинг-шопа */
 #miningShop h2 {
   color: #ecf8ff;
   text-align: center;
@@ -320,7 +331,7 @@ button.secondary {
   justify-content:center;
   padding:8px 6px;
 }
-/* внутри модалки — карточки в стиле игры, но чуть светлее */
+/* карточки майнеров внутри */
 #miningShop .miner-card {
   background: rgba(255,255,255,0.06);
   color: #fff;
@@ -341,72 +352,98 @@ button.secondary {
 #miningShop .miner-card .income { color:#d8ffd8; }
 #miningShop .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
 
-/* Buy confirm modal — теперь непрозрачный фон */
+/* Подтверждение покупки — тот же цвет что использовался ранее (чёрный), но на весь экран */
 #buyConfirm {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  z-index: 1000;
   background: #000000; /* полностью непрозрачный черный фон */
+  box-sizing: border-box;
+  padding: 40px;
+  overflow-y: auto;
+}
+#buyConfirm .confirm-box {
+  max-width: 520px;
+  margin: 40px auto;
+  background: linear-gradient(120deg, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
   border: 2px solid #00D8FF;
   border-radius: 16px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 0 20px #00D8FF;
-  z-index: 800;
-  opacity: 0;
-  transition: 0.25s;
 }
-#buyConfirm.show { display:block; opacity:1; }
+#buyConfirm.show { display:block; }
 #buyConfirm p { color: #fff; margin: 8px 0; }
 #buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:#00D8FF; color:#000; border:none; border-radius:8px; }
 
-/* Info & profile windows hidden by default (do not show on load) */
-/* Сделаны непрозрачными: тот же цвет, но без alpha */
+/* Инфо-окно — черный непрозрачный фон, полный экран */
 #infoWindow {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 520px;
-  max-height: 80vh;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  z-index: 800;
   background: #000000; /* непрозрачный черный фон */
-  border: 2px solid #00D8FF;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 0 20px #00D8FF;
-  z-index: 600;
+  box-sizing: border-box;
+  padding: 28px;
   overflow-y: auto;
+}
+#infoWindow .content {
+  max-width: 720px;
+  margin: 24px auto;
+  border: 2px solid #00D8FF;
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(0,0,0,0.86);
+  box-shadow: 0 0 20px #00D8FF;
 }
 #infoWindow h2 { color: #00D8FF; margin-bottom: 10px; }
 #infoWindow ul { color: #ccc; padding-left: 20px; }
 #infoWindow ul li::before { content: "• "; color: #00D8FF; font-weight:600; }
 #infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
 
+/* Профиль — черный непрозрачный фон, полный экран */
 #profileWindow {
   display: none;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  z-index: 800;
   background: #000000; /* непрозрачный черный фон */
-  border: 2px solid #00D8FF;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 0 20px #00D8FF;
-  z-index: 600;
+  box-sizing: border-box;
+  padding: 28px;
   overflow-y: auto;
+}
+#profileWindow .content {
+  max-width: 720px;
+  margin: 24px auto;
+  border: 2px solid #00D8FF;
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(0,0,0,0.86);
+  box-shadow: 0 0 20px #00D8FF;
 }
 #profileWindow h2 { color:#00D8FF; margin-bottom:12px; text-align:center; }
 #profileWindow h3 { color:#00D8FF; }
 #profileWindow p { color:#ccc; }
-#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer; font-weight:700; }
+#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:#00D8FF; color:#000; cursor:pointer;font-weight:700; }
+
+/* Мелкие адаптивные правки */
+@media (max-width: 520px) {
+  .coin-panel .coin-logo { width: 34px; height: 34px; border-width: 2px; }
+  button { font-size: 18px; padding: 12px; }
+}
 </style>
 </head>
 <body>
@@ -421,6 +458,8 @@ button.secondary {
     <div class="level" data-val="5000000">5M</div>
   </div>
   <div class="coin-panel">
+    <!-- Логотип перед балансом -->
+    <img class="coin-logo" src="logo.png" alt="Coin logo" />
     <div class="val" id="coinsVal">0</div>
   </div>
 </header>
@@ -454,49 +493,55 @@ button.secondary {
 <!-- Visible miners panel - shown on main screen by default -->
 <div class="miners-panel" id="minersPanelVisible"></div>
 
-<!-- Modal mining shop — теперь ОДИНАКОВЫЙ дизайн с игрой (градиентный фон, непрозрачный) -->
-<div id="miningShop">
+<!-- Modal mining shop — теперь ОДИНАКОВЫЙ дизайн с игрой (градиентный фон), полный экран -->
+<div id="miningShop" aria-hidden="true">
   <h2>Mining Shop</h2>
   <div class="miners-container"></div>
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
 </div>
 
-<div id="buyConfirm">
-  <p id="buyText"></p>
-  <div style="display:flex;justify-content:center;">
-    <button id="confirmBuy">Buy</button>
-    <button id="cancelBuy">Cancel</button>
+<div id="buyConfirm" aria-hidden="true">
+  <div class="confirm-box">
+    <p id="buyText"></p>
+    <div style="display:flex;justify-content:center;">
+      <button id="confirmBuy">Buy</button>
+      <button id="cancelBuy">Cancel</button>
+    </div>
   </div>
 </div>
 
-<div id="infoWindow">
-  <h2>How to Play</h2>
-  <ul>
-    <li>Select a room and then click the 🔍 button to hunt.</li>
-    <li>The hunter searches 2 random rooms (1 if "Check 1 Room" is active).</li>
-    <li>If your room is found, you lose coins (shown in red).</li>
-    <li>If you evade the hunt, you gain coins (shown in green).</li>
-    <li>Buy upgrades or miners to improve your chances and income.</li>
-    <li>Claim daily rewards and complete quests for bonus coins.</li>
-  </ul>
-  <button id="closeInfo">Close</button>
+<div id="infoWindow" aria-hidden="true">
+  <div class="content">
+    <h2>How to Play</h2>
+    <ul>
+      <li>Select a room and then click the 🔍 button to hunt.</li>
+      <li>The hunter searches 2 random rooms (1 if "Check 1 Room" is active).</li>
+      <li>If your room is found, you lose coins (shown in red).</li>
+      <li>If you evade the hunt, you gain coins (shown in green).</li>
+      <li>Buy upgrades or miners to improve your chances and income.</li>
+      <li>Claim daily rewards and complete quests for bonus coins.</li>
+    </ul>
+    <button id="closeInfo">Close</button>
+  </div>
 </div>
 
-<div id="profileWindow">
-  <h2>Profile</h2>
-  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
-    <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
-    <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
-    <p id="dailyStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
+<div id="profileWindow" aria-hidden="true">
+  <div class="content">
+    <h2>Profile</h2>
+    <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
+      <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
+      <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
+      <p id="dailyStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
+    </div>
+    <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
+      <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
+      <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
+      <p id="questStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
+    </div>
+    <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
   </div>
-  <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-    <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
-    <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
-    <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
-    <p id="questStatus" style="margin-top:8px;color:#00D8FF;font-weight:600;text-align:center;"></p>
-  </div>
-  <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,#00D8FF,#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
 </div>
 
 <div class="bottom-menu">
@@ -754,10 +799,12 @@ function renderMiners() {
 // Открыть/закрыть майнинг-шоп (модалка теперь с дизайном игры)
 document.getElementById('miningBtn').onclick = () => {
   miningShop.style.display = 'block';
+  miningShop.setAttribute('aria-hidden', 'false');
   renderMiners(); // fill modal
 };
 document.getElementById('closeMiningShop').onclick = () => {
   miningShop.style.display = 'none';
+  miningShop.setAttribute('aria-hidden', 'true');
 };
 
 // Подтверждение/отмена покупки майнера
@@ -778,16 +825,26 @@ document.getElementById('confirmBuy').onclick = () => {
   }
   pendingMiner = null;
   buyConfirm.classList.remove('show');
+  buyConfirm.style.display = 'none';
+  buyConfirm.setAttribute('aria-hidden', 'true');
 };
 document.getElementById('cancelBuy').onclick = () => {
   pendingMiner = null;
   buyConfirm.classList.remove('show');
+  buyConfirm.style.display = 'none';
+  buyConfirm.setAttribute('aria-hidden', 'true');
 };
 
 // Профиль (Daily/Quest)
 const profileWindowEl = document.getElementById('profileWindow');
-document.getElementById('profileBtn').onclick = () => profileWindowEl.style.display = 'block';
-document.getElementById('closeProfile').onclick = () => profileWindowEl.style.display = 'none';
+document.getElementById('profileBtn').onclick = () => {
+  profileWindowEl.style.display = 'block';
+  profileWindowEl.setAttribute('aria-hidden', 'false');
+};
+document.getElementById('closeProfile').onclick = () => {
+  profileWindowEl.style.display = 'none';
+  profileWindowEl.setAttribute('aria-hidden', 'true');
+};
 
 let questClaimed = localStorage.getItem('questClaimed') === 'true';
 let lastDaily = +localStorage.getItem('lastDaily') || 0;
@@ -839,9 +896,11 @@ document.getElementById('claimDaily').onclick = () => {
 // Кнопки Info и Shop
 document.getElementById('infoBtn').onclick = () => {
   document.getElementById('infoWindow').style.display = 'block';
+  document.getElementById('infoWindow').setAttribute('aria-hidden', 'false');
 };
 document.getElementById('closeInfo').onclick = () => {
   document.getElementById('infoWindow').style.display = 'none';
+  document.getElementById('infoWindow').setAttribute('aria-hidden', 'true');
 };
 
 // Shop button behavior:
@@ -867,6 +926,16 @@ shopBtn.onclick = () => {
   }
 };
 
+// Показать подтверждение покупки (обработчик создается в renderMiners), чтобы buyConfirm было видно
+// Когда buyConfirm.show добавляется, установим display:block
+const observer = new MutationObserver(() => {
+  if (buyConfirm.classList.contains('show')) {
+    buyConfirm.style.display = 'block';
+    buyConfirm.setAttribute('aria-hidden', 'false');
+  }
+});
+observer.observe(buyConfirm, { attributes: true, attributeFilter: ['class'] });
+
 // Инициализация UI
 coinsVal.textContent = format(coins);
 updLv();
@@ -879,9 +948,15 @@ renderMiners();
 
 // Ensure infoWindow is NOT shown on load (do not auto-open)
 document.getElementById('infoWindow').style.display = 'none';
+document.getElementById('infoWindow').setAttribute('aria-hidden', 'true');
+document.getElementById('profileWindow').style.display = 'none';
+document.getElementById('profileWindow').setAttribute('aria-hidden', 'true');
+buyConfirm.style.display = 'none';
+buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
+
 
 
 
