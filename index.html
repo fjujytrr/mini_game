@@ -237,15 +237,28 @@ document.getElementById('closeProfile').onclick=()=>profileWindow.style.display=
 let questClaimed = localStorage.getItem('questClaimed')==='true';
 let lastDaily = +localStorage.getItem('lastDaily')||0;
 
-const questStatus=document.getElementById('questStatus');
-const dailyStatus=document.getElementById('dailyStatus');
+const questStatus = document.getElementById('questStatus');
+const dailyStatus = document.getElementById('dailyStatus');
 
 function updateQuestStatus(){questStatus.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed";}
 function updateDailyStatus(){ 
-    let now=Date.now();
-    if(now-lastDaily>=24*60*60*1000) dailyStatus.textContent="💰 Available!";
-    else {let r=24*60*60*1000-(now-lastDaily),h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000); dailyStatus.textContent=`Next in ${h}h ${m}m`;}
+    let now = Date.now();
+    let nextAvailable = lastDaily + 24*60*60*1000; // время следующей доступной награды
+    if(now >= nextAvailable) {
+        dailyStatus.textContent = "💰 Available!";
+    } else {
+        let diff = nextAvailable - now;
+        let hours = Math.floor(diff / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        dailyStatus.textContent = `Next in ${hours}h ${minutes}m`;
+    }
 }
+
+// обновление таймера каждую минуту
+setInterval(updateDailyStatus, 60 * 1000);
+
+// вызов один раз при загрузке страницы
+updateDailyStatus();
 document.getElementById('confirmBuy').onclick = () => {
   if (pendingMiner === null) return;
   
