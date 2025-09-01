@@ -157,6 +157,14 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
   <button id="miningBtn" class="secondary">⛏</button>
   <button id="profileBtn" class="secondary">👤</button>
 </div>
+  <div id="questBlock" style="margin-bottom:16px;padding:12px;background:#333;border-radius:12px;">
+  <h3>Quest</h3>
+  <p>Subscribe to my YouTube channel to complete the quest and get 50,000 coins!</p>
+  <a href="https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq" target="_blank" style="display:block;text-align:center;margin:8px 0;padding:10px;background:#FFD700;color:#000;border-radius:12px;text-decoration:none;">Go to YouTube</a>
+  <button id="claimQuest">Claim Quest</button>
+  <p id="questStatus"></p>
+</div>
+
 <script>
 // -------------------- ЛОГИКА ----------------------
 const rooms=document.querySelector('.house');
@@ -264,19 +272,21 @@ function updateDailyStatus(){
     else {let r=24*60*60*1000-(now-lastDaily),h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000); dailyStatus.textContent=`Next in ${h}h ${m}m`;}
 }
 document.getElementById('claimQuest').onclick = () => {
-    if (questClaimed) return; // уже выполнено
+    if (questClaimed) return;
 
     // открываем YouTube
     window.open("https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq", "_blank");
 
-    // даём награду и помечаем квест как выполненный
+    // даём награду
     addCoins(50000);
     questClaimed = true;
     localStorage.setItem('questClaimed', 'true');
 
-    // удаляем квест из профиля
-    document.getElementById('claimQuest').parentElement.remove();
+    // удаляем весь блок квеста
+    document.getElementById('questBlock').remove();
 };
+
+
 
 document.getElementById('claimReferral').onclick=()=>{if(referralClaimed)alert("Already claimed!");else{if(referrals>=5)addCoins(500000);else if(referrals>=2)addCoins(100000);else {alert("Not enough referrals!"); return;} referralClaimed=true;localStorage.setItem('referralClaimed','true');updateReferralStatus();}}
 document.getElementById('claimDaily').onclick=()=>{let now=Date.now();if(now-lastDaily<24*60*60*1000)alert("Daily reward already claimed!"); else{addCoins(30000); lastDaily=now; localStorage.setItem('lastDaily',lastDaily); updateDailyStatus();}}
