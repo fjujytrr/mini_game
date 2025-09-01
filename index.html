@@ -102,7 +102,113 @@ button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-s
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
 #buyConfirm.show{display:block;opacity:1;}
 #buyConfirm button{margin:10px 8px;flex:1;}
-#profileWindow{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;max-height:80vh;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:200;overflow-y:auto;}
+#profileWindow {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  background: linear-gradient(145deg, #1e1e1e, #2c2c2c);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 0 40px rgba(16, 185, 129, 0.4);
+  z-index: 200;
+  overflow-y: auto;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+/* Заголовок */
+#profileWindow h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+}
+
+/* Секции */
+#profileWindow > div {
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25), 0 2px 6px rgba(16, 185, 129, 0.2);
+}
+
+/* Заголовки секций */
+#profileWindow h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #FFD700, #FF8C00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.7);
+}
+
+/* Текст секций */
+#profileWindow p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* Кнопки внутри профиля */
+#profileWindow button {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #000;
+  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.6);
+  transition: 0.3s;
+}
+
+#profileWindow button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.7), 0 0 12px rgba(16, 185, 129, 0.5);
+}
+
+/* Ссылка квеста */
+#profileWindow a {
+  display: block;
+  text-align: center;
+  margin: 8px 0;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #FFD700, #FF8C00);
+  color: #000;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
+  transition: 0.3s;
+}
+
+#profileWindow a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Статус текстов */
+#profileWindow p#questStatus, #referralStatus, #dailyStatus {
+  font-weight: 700;
+  color: #FFD700;
+  margin-top: 6px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
