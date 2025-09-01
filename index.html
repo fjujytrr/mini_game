@@ -263,7 +263,21 @@ function updateDailyStatus(){
     if(now-lastDaily>=24*60*60*1000) dailyStatus.textContent="💰 Available!";
     else {let r=24*60*60*1000-(now-lastDaily),h=Math.floor(r/3600000),m=Math.floor((r%3600000)/60000); dailyStatus.textContent=`Next in ${h}h ${m}m`;}
 }
-document.getElementById('claimQuest').onclick=()=>{if(questClaimed)alert("Quest already claimed!"); else{addCoins(50000); questClaimed=true;localStorage.setItem('questClaimed','true');updateQuestStatus();}}
+document.getElementById('claimQuest').onclick = () => {
+    if (questClaimed) return; // уже выполнено
+
+    // открываем YouTube
+    window.open("https://youtube.com/@zexshadows?si=T4RX7Wgg67ktfktq", "_blank");
+
+    // даём награду и помечаем квест как выполненный
+    addCoins(50000);
+    questClaimed = true;
+    localStorage.setItem('questClaimed', 'true');
+
+    // удаляем квест из профиля
+    document.getElementById('claimQuest').parentElement.remove();
+};
+
 document.getElementById('claimReferral').onclick=()=>{if(referralClaimed)alert("Already claimed!");else{if(referrals>=5)addCoins(500000);else if(referrals>=2)addCoins(100000);else {alert("Not enough referrals!"); return;} referralClaimed=true;localStorage.setItem('referralClaimed','true');updateReferralStatus();}}
 document.getElementById('claimDaily').onclick=()=>{let now=Date.now();if(now-lastDaily<24*60*60*1000)alert("Daily reward already claimed!"); else{addCoins(30000); lastDaily=now; localStorage.setItem('lastDaily',lastDaily); updateDailyStatus();}}
 
