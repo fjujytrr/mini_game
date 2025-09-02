@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hide & Seek — Premium Emoji (Updated)</title>
+  <title>Hide & Seek — Premium Emoji (Updated with Features)</title>
   <style>
 :root{
   --accent-cyan: #00D8FF;
@@ -24,6 +24,11 @@ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-
 .coin-panel{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.28);padding:8px 12px;border-radius:16px;box-shadow:0 0 12px rgba(0,216,255,0.18)}
 .coin-logo{width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff}
 .coin-panel .val{font-weight:700;font-size:18px;color:var(--accent-cyan)}
+/* Progress bar */
+.progress-wrap{width:220px;margin-left:12px;background:rgba(255,255,255,0.04);padding:6px;border-radius:10px}
+.progress{height:10px;background:rgba(255,255,255,0.06);border-radius:8px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);width:0%}
+.progress-label{font-size:12px;color:#eaf2ff;margin-top:6px;text-align:center}
 /* Дом: сетка комнат */
 .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px}
 .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)}
@@ -32,6 +37,7 @@ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-
 .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease}
 .room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease}
 .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s}
+.room .tooltip-ic{position:absolute;right:8px;top:8px;font-size:12px;opacity:.8}
 @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}}
 @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}}
 /* Контролы */
@@ -39,6 +45,9 @@ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-
 button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s}
 button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)}
 button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)}
+/* Auto-check control */
+.auto-controls{display:flex;gap:8px;align-items:center;margin-left:8px}
+.input-small{width:64px;padding:8px;border-radius:8px;border:none;font-weight:700}
 /* Нижнее меню */
 .bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)}
 .bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s}
@@ -51,12 +60,21 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .upgrade p{margin:0;font-size:14px;color:#eee}
 .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px}
 .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px}
-/* Mining info */
-.mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)}
-/* Видимая панель майнеров — убираем с главного экрана */
+/* Tooltips */
+.tooltip{position:fixed;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:13px;pointer-events:none;z-index:9999;display:none}
+/* Toasts */
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{min-width:160px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,0.7);color:#fff;box-shadow:0 6px 22px rgba(0,0,0,0.3);font-weight:700}
+.toast.success{border-left:6px solid #39FF14}
+.toast.warn{border-left:6px solid #00D8FF}
+.toast.error{border-left:6px solid #FF0054}
+/* Coin float */
+.coin-float{position:fixed;left:50%;transform:translateX(-50%);top:60px;pointer-events:none;z-index:1500}
+.coin-fx{position:absolute;top:0;left:0;font-weight:900;font-size:16px;animation:floatUp 1100ms ease forwards}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.8)}10%{opacity:1}100%{opacity: -0.2; transform:translateY(-60px) scale(1.2);} }
+/* Miners modal and cards */
 .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px}
 .miners-panel .miner-card{display:none}
-/* Модальный магазин майнеров (полноэкранный) */
 #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
@@ -67,13 +85,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 #miningShop .miner-card .income{color:var(--birch);font-weight:800}
 #miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px}
 #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800}
-/* Подтверждение покупки: центрированное */
+/* Buy confirm */
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box}
 #buyConfirm .confirm-box{max-width:520px;margin:0 auto;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)}
 #buyConfirm.show{display:block}
 #buyConfirm p{color:#fff;margin:8px 0}
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px}
-/* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */
+/* Info & Profile windows */
 #infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto}
 #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:rgba(0,0,0,0.22);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.04)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
@@ -84,49 +102,87 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
 .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .select-lang{padding:8px 10px;border-radius:8px;border:none;font-weight:700}
+/* Achievements modal */
+#achModal{display:none;position:fixed;top:8%;left:50%;transform:translateX(-50%);width:90%;max-width:720px;z-index:1200}
+.ach-list{display:flex;gap:10px;flex-wrap:wrap;background:rgba(0,0,0,0.22);padding:12px;border-radius:12px}
+.ach-item{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.02);min-width:180px}
+/* Event banner */
+.event-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:1100;padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,#FFD166,#FF8C66);color:#000;font-weight:800;display:none}
 /* Адаптив */
 @media (max-width:520px){
   .coin-logo{width:34px;height:34px;border-width:2px}
   button{font-size:18px;padding:12px}
   #miningShop .miner-card{width:46%}
   .upgrade{min-width:160px}
+  .progress-wrap{display:none}
 }
   </style>
 </head>
 <body>
   <header>
-    <div class="level-bar">    <div class="level" data-val="10000">10K</div>    <div class="level" data-val="100000">100K</div>    <div class="level" data-val="1000000">1M</div>    <div class="level" data-val="5000000">5M</div>  </div>  <div class="coin-panel">
+    <div class="level-bar">    <div class="level" data-val="10000">10K</div>    <div class="level" data-val="100000">100K</div>    <div class="level" data-val="1000000">1M</div>    <div class="level" data-val="5000000">5M</div>  </div>
+  <div class="coin-panel">
       <img class="coin-logo" src="logo.png" alt="Coin logo" />
-      <div class="val" id="coinsVal">0</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="val" id="coinsVal">0</div>
+        <div class="progress-wrap" title="Прогресс до следующего уровня">
+          <div class="progress"><i id="progressBar"></i></div>
+          <div class="progress-label" id="progressLabel">Level progress</div>
+        </div>
+      </div>
     </div>
   </header>
 
   <div class="house"></div>
 
   <div class="controls">
-    <button id="startBtn">🏠</button>
-    <button class="secondary" id="resetBtn">🔍</button>
+    <button id="startBtn">🏠 Start</button>
+    <button class="secondary" id="resetBtn">🔍 Hunt</button>
+    <div class="auto-controls">
+      <button id="autoToggle" class="secondary">Auto: OFF</button>
+      <input id="autoInterval" class="input-small" value="5" />
+    </div>
   </div>
 
-  <!-- Оставляем только панель апгрейдов на главном экране -->
+  <!-- Апгрейды -->
   <div class="upgrade-panel" id="upgradePanel">
-    <div class="upgrade" data-key="x2Prize" data-base-price="20000">
+    <div class="upgrade" data-key="x2Prize" data-base-price="20000" data-tip="Удваивает призы и штрафы">
       <h3>x2 Prize / x2 Loss</h3>
       <p>Double rewards & penalties</p>
       <div class="price">20,000</div>
       <div class="badge">Boost</div>
     </div>
-    <div class="upgrade" data-key="check1" data-base-price="20000">
+    <div class="upgrade" data-key="check1" data-base-price="20000" data-tip="Охотник проверяет 1 комнату (1 мин)">
       <h3>Check 1 Room Only</h3>
       <p>Hunter checks 1 room only (1 min)</p>
       <div class="price">20,000</div>
       <div class="timer" id="check1Timer"></div>
+    </div>
+    <div class="upgrade" data-key="survive" data-base-price="15000" data-tip="Снижает потери на 50%">
+      <h3>Survival</h3>
+      <p>Reduce loss by 50%</p>
+      <div class="price">15,000</div>
+      <div class="badge">New</div>
+    </div>
+    <div class="upgrade" data-key="income" data-base-price="18000" data-tip="Увеличивает доход майнеров на 20%">
+      <h3>Income Boost</h3>
+      <p>Miners produce more</p>
+      <div class="price">18,000</div>
+      <div class="badge">New</div>
+    </div>
+    <div class="upgrade" data-key="risk" data-base-price="12000" data-tip="Увеличивает призы, но и потери">
+      <h3>Risk Taker</h3>
+      <p>Higher risk, higher reward</p>
+      <div class="price">12,000</div>
+      <div class="badge">New</div>
     </div>
   </div>
 
   <div class="mining-info">
     <strong id="miningLabel">Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
   </div>
+
+  <div class="event-banner" id="eventBanner">DOUBLE EVENT ACTIVE — +100% income</div>
 
   <!-- Скрытая панель майнеров для совместимости (не показываем на главном) -->
   <div class="miners-panel" id="minersPanelVisible" aria-hidden="true"></div>
@@ -199,8 +255,20 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         </div>
       </div>
 
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+        <div style="flex:1">
+          <div style="font-weight:800;color:var(--birch);">Prestige Points: <span id="prestigePoints">0</span></div>
+          <div style="font-size:13px;color:#eaf2ff">Prestige multiplier applies to income and prizes.</div>
+        </div>
+        <button id="doPrestige" class="secondary">Prestige</button>
+      </div>
+
       <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
     </div>
+  </div>
+
+  <div id="achModal">
+    <div class="ach-list" id="achList"></div>
   </div>
 
   <div class="bottom-menu">
@@ -210,101 +278,18 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     <button id="profileBtn" class="secondary">👤</button>
   </div>
 
-  <script>
-// ========== Локализация ==========
-const i18n = {
-  ru: {
-    pickRoomFirst: 'Сначала выберите комнату!',
-    notEnough: 'Недостаточно монет!',
-    dailyAlready: 'Ежедневная награда уже получена!',
-    questAlready: 'Квест уже выполнен!',
-    miningIncome: 'Доход майнинга:',
-    miningShop: 'Магазин майнинга',
-    close: 'Закрыть',
-    howToPlay: 'Как играть',
-    infoList: [
-      'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
-      'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
-      'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
-      'Если вы избежали охоты, вы получаете монеты (показываются зеленым).',
-      'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
-      'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
-    ],
-    profile: 'Профиль',
-    dailyReward: 'Ежедневная награда',
-    dailyText: 'Получите 30 000 монет раз в день!',
-    claimDaily: 'Забрать',
-    quest: 'Квест',
-    claimQuest: 'Взять',
-    settings: 'Настройки',
-    settingsText: 'Смените язык и другие параметры.',
-    buyFor: 'Купить {name} за {price}?',
-    buy: 'Купить',
-    cancel: 'Отмена',
-    profitHr: 'Прибыль/ч:'
-  },
-  en: {
-    pickRoomFirst: 'Pick a room first!',
-    notEnough: 'Not enough coins!',
-    dailyAlready: 'Daily reward already claimed!',
-    questAlready: 'Quest already claimed!',
-    miningIncome: 'Mining Income:',
-    miningShop: 'Mining Shop',
-    close: 'Close',
-    howToPlay: 'How to Play',
-    infoList: [
-      'Select a room and then click the 🔍 button to hunt.',
-      'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
-      'If your room is found, you lose coins (shown in red).',
-      'If you evade the hunt, you gain coins (shown in green).',
-      'Buy upgrades or miners to improve your chances and income.',
-      'Claim daily rewards and complete quests for bonus coins.'
-    ],
-    profile: 'Profile',
-    dailyReward: 'Daily Reward',
-    dailyText: 'Get 30,000 coins once a day!',
-    claimDaily: 'Claim Daily',
-    quest: 'Quest',
-    claimQuest: 'Claim Quest',
-    settings: 'Settings',
-    settingsText: 'Change language and other preferences.',
-    buyFor: 'Buy {name} for {price}?',
-    buy: 'Buy',
-    cancel: 'Cancel',
-    profitHr: 'Profit/hr:'
-  }
-};
+  <div class="toast-wrap" id="toastWrap"></div>
+  <div class="tooltip" id="tooltipEl"></div>
+  <div class="coin-float" id="coinFloat"></div>
 
+  <script>
+// ========== Локализация (упрощённо оставляем)
+const i18n = {
+  ru: { pickRoomFirst: 'Сначала выберите комнату!', notEnough: 'Недостаточно монет!', dailyAlready: 'Ежедневная награда уже получена!', questAlready: 'Квест уже выполнен!', miningIncome: 'Доход майнинга:', miningShop: 'Магазин майнинга', close: 'Закрыть', howToPlay: 'Как играть', profile: 'Профиль', dailyReward: 'Ежедневная награда', dailyText: 'Получите 30 000 монет раз в день!', claimDaily: 'Забрать', quest: 'Квест', claimQuest: 'Взять', settings: 'Настройки', settingsText: 'Смените язык и другие параметры.', buyFor: 'Купить {name} за {price}?', buy: 'Купить', cancel: 'Отмена', profitHr: 'Прибыль/ч:' },
+  en: { pickRoomFirst: 'Pick a room first!', notEnough: 'Not enough coins!', dailyAlready: 'Daily reward already claimed!', questAlready: 'Quest already claimed!', miningIncome: 'Mining Income:', miningShop: 'Mining Shop', close: 'Close', howToPlay: 'How to Play', profile: 'Profile', dailyReward: 'Daily Reward', dailyText: 'Get 30,000 coins once a day!', claimDaily: 'Claim Daily', quest: 'Quest', claimQuest: 'Claim Quest', settings: 'Settings', settingsText: 'Change language and other preferences.', buyFor: 'Buy {name} for {price}?', buy: 'Buy', cancel: 'Cancel', profitHr: 'Profit/hr:' }
+};
 let lang = localStorage.getItem('lang') || 'ru';
-function t(key, vars = {}) {
-  const val = i18n[lang][key];
-  if (typeof val === 'string') {
-    return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
-  }
-  return val;
-}
-function applyLang() {
-  document.getElementById('miningLabel').textContent = t('miningIncome');
-  document.getElementById('shopTitle').textContent = t('miningShop');
-  document.getElementById('closeMiningShop').textContent = t('close');
-  document.getElementById('confirmBuy').textContent = t('buy');
-  document.getElementById('cancelBuy').textContent = t('cancel');
-  document.getElementById('infoTitle').textContent = t('howToPlay');
-  document.getElementById('profileTitle').textContent = t('profile');
-  document.getElementById('dailyTitle').textContent = t('dailyReward');
-  document.getElementById('dailyText').textContent = t('dailyText');
-  document.getElementById('claimDaily').textContent = t('claimDaily');
-  document.getElementById('questTitle').textContent = t('quest');
-  document.getElementById('claimQuest').textContent = t('claimQuest');
-  document.getElementById('settingsTitle').textContent = t('settings');
-  document.getElementById('settingsText').textContent = t('settingsText');
-  document.getElementById('closeInfo').textContent = t('close');
-  document.getElementById('closeProfile').textContent = t('close');
-  // info list
-  const infoListEl = document.getElementById('infoList');
-  infoListEl.innerHTML = '';
-  t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
-}
+function t(key, vars = {}) { const val = i18n[lang][key]; if (typeof val === 'string') return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || ''); return val; }
 
 // ========== Инициализация UI и состояния ==========
 const roomsContainer = document.querySelector('.house');
@@ -313,6 +298,7 @@ for (let i = 0; i < 8; i++) {
   d.className = 'room';
   d.dataset.idx = i;
   d.textContent = '+';
+  d.innerHTML += '<span class="tooltip-ic">?</span>';
   roomsContainer.appendChild(d);
 }
 
@@ -320,9 +306,11 @@ let selectedRoom = null;
 let coins = +localStorage.getItem('coins') || 0;
 let maxCoins = +localStorage.getItem('maxCoins') || coins;
 const coinsVal = document.getElementById('coinsVal');
-let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0 };
+let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0, survive:0, income:0, risk:0 };
 let check1Expire = +localStorage.getItem('check1Expire') || 0;
 let roundInProgress = false;
+let prestigePoints = +localStorage.getItem('prestigePoints') || 0;
+let prestigeMul = 1 + (prestigePoints * 0.05);
 
 // майнеры (только для магазина)
 const minersData = [
@@ -330,12 +318,7 @@ const minersData = [
   { n: "Miner 2", i: 1788, p: 12000 },
   { n: "Miner 3", i: 2358, p: 15000 },
   { n: "Miner 4", i: 3000, p: 20000 },
-  { n: "Miner 5", i: 4500, p: 25000 },
-  { n: "Miner 6", i: 5200, p: 30000 },
-  { n: "Miner 7", i: 6100, p: 35000 },
-  { n: "Miner 8", i: 7200, p: 40000 },
-  { n: "Miner 9", i: 8500, p: 45000 },
-  { n: "Miner 10", i: 9500, p: 50000 }
+  { n: "Miner 5", i: 4500, p: 25000 }
 ];
 let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_ => ({ count: 0 }));
 
@@ -347,95 +330,82 @@ const buyConfirm = document.getElementById('buyConfirm');
 const buyText = document.getElementById('buyText');
 let pendingMiner = null;
 
-// форматирование чисел
-function format(n) {
-  return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B' :
-         n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M' :
-         n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
+// achievements
+let stats = JSON.parse(localStorage.getItem('stats')) || { caught:0, escaped:0, minersBought:0 };
+const achievements = [
+  { id:'ach1', name:'First Escape', desc:'Avoid a hunt once', field:'escaped', goal:1, reward:5000 },
+  { id:'ach2', name:'Survivor 10', desc:'Avoid hunts 10 times', field:'escaped', goal:10, reward:25000 },
+  { id:'ach3', name:'Miner Collector', desc:'Buy 5 miners', field:'minersBought', goal:5, reward:30000 }
+];
+let achieved = JSON.parse(localStorage.getItem('achieved')) || {};
+
+// events
+let eventState = JSON.parse(localStorage.getItem('eventState')) || { active:false, expires:0 };
+
+// format
+function format(n){ return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B' : n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n); }
+
+// save
+function save(){ localStorage.setItem('coins', coins); localStorage.setItem('maxCoins', maxCoins); localStorage.setItem('upgrades', JSON.stringify(upgrades)); localStorage.setItem('check1Expire', check1Expire); localStorage.setItem('minersState', JSON.stringify(minersState)); localStorage.setItem('lastTime', Date.now()); localStorage.setItem('lang', lang); localStorage.setItem('prestigePoints', prestigePoints); localStorage.setItem('stats', JSON.stringify(stats)); localStorage.setItem('achieved', JSON.stringify(achieved)); localStorage.setItem('eventState', JSON.stringify(eventState)); }
+
+// Toasts
+const toastWrap = document.getElementById('toastWrap');
+function showToast(text, type='success', ttl=2500){ const el = document.createElement('div'); el.className = 'toast ' + (type||''); el.textContent = text; toastWrap.appendChild(el); setTimeout(()=>{ el.style.opacity=0; setTimeout(()=>el.remove(),300); }, ttl); }
+
+// Coin float
+const coinFloat = document.getElementById('coinFloat');
+function showCoinFx(text, color='#fff'){
+  const el = document.createElement('div'); el.className='coin-fx'; el.style.color = color; el.textContent = text; el.style.left = (coinsVal.getBoundingClientRect().left + 40) + 'px'; coinFloat.appendChild(el); setTimeout(()=>el.remove(),1100);
 }
 
-// сохранить состояние
-function save() {
-  localStorage.setItem('coins', coins);
-  localStorage.setItem('maxCoins', maxCoins);
-  localStorage.setItem('upgrades', JSON.stringify(upgrades));
-  localStorage.setItem('check1Expire', check1Expire);
-  localStorage.setItem('minersState', JSON.stringify(minersState));
-  localStorage.setItem('lastTime', Date.now());
-  localStorage.setItem('lang', lang);
+// income
+function getIncome(){
+  const base = minersState.reduce((sum, m, i) => { return sum + (m.count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, m.count - 1)) : 0); }, 0);
+  let inc = base * prestigeMul;
+  if (upgrades.income > 0) inc = Math.floor(inc * (1 + 0.2 * upgrades.income));
+  if (eventState.active && eventState.expires > Date.now()) inc = inc * 2;
+  return Math.floor(inc);
 }
+function updIncome(){ miningIncomeValEl.textContent = format(getIncome()); }
 
-// обновить монеты
-function updCoins(v = 0) {
-  coins += v;
-  if (coins < 0) coins = 0;
-  if (coins > maxCoins) maxCoins = coins;
-  coinsVal.textContent = format(coins);
-  updLv();
-  updUpg();
-  updIncome();
-  save();
-}
-
-// доход в час
-function getIncome() {
-  return minersState.reduce((sum, m, i) => {
-    return sum + (m.count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, m.count - 1)) : 0);
-  }, 0);
-}
-function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
-
-// оффлайн-доход
-function addOfflineCoins() {
-  const last = +localStorage.getItem('lastTime') || Date.now();
-  const now = Date.now();
-  const diffMinutes = (now - last) / 60000;
-  if (diffMinutes > 0) {
-    const minutesToAward = Math.min(diffMinutes, 180);
-    updCoins(Math.floor(getIncome()/60 * minutesToAward));
-  }
-  localStorage.setItem('lastTime', now);
-}
+// offline
+function addOfflineCoins(){ const last = +localStorage.getItem('lastTime') || Date.now(); const now = Date.now(); const diffMinutes = (now - last) / 60000; if (diffMinutes > 0) { const minutesToAward = Math.min(diffMinutes, 180); updCoins(Math.floor(getIncome()/60 * minutesToAward)); } localStorage.setItem('lastTime', now); }
 addOfflineCoins();
-
-// начисление в реальном времени
 setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
 
-// уровни
-function updLv() { document.querySelectorAll('.level').forEach(l => l.classList.toggle('active', maxCoins >= +l.dataset.val)); }
+// progress bar
+function updProgress(){ const levels = Array.from(document.querySelectorAll('.level')).map(l=>+l.dataset.val).sort((a,b)=>a-b); let next = levels.find(v=>maxCoins < v) || levels[levels.length-1]; let prev = 0; for (let v of levels){ if (v <= maxCoins) prev = v; else break; } const pct = Math.min(100, Math.floor((maxCoins - prev) / Math.max(1, (next - prev)) * 100)); document.getElementById('progressBar').style.width = pct + '%'; document.getElementById('progressLabel').textContent = `${format(maxCoins)} / ${format(next)}`; }
 
-// апдейты апгрейдов
-function updUpg() {
-  document.querySelectorAll('.upgrade').forEach(u => {
-    let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
-    let price = base * Math.pow(2,count);
-    let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price);
-    const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New';
-  });
-}
+// upd coins
+function updCoins(v = 0){ const old = coins; coins += v; if (coins < 0) coins = 0; if (coins > maxCoins) maxCoins = coins; coinsVal.textContent = format(coins);
+  // show fx & toast
+  if (v > 0){ showCoinFx('+' + format(v), '#39FF14'); showToast('+' + format(v), 'success'); }
+  else if (v < 0){ showCoinFx(format(v), '#FF0054'); showToast(format(v), 'error'); }
+  updLv(); updUpg(); updIncome(); updProgress(); save(); }
 
-// апгрейды клики
-document.querySelectorAll('.upgrade').forEach(u=>{
-  u.onclick = ()=>{
-    let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0;
-    let price = base * Math.pow(2,count);
-    if (coins >= price) {
-      upgrades[key] = count+1; updCoins(-price);
-      if (key === 'check1') check1Expire = Date.now()+60000;
-      save(); updUpg();
-    } else alert(t('notEnough'));
-  };
+// levels
+function updLv(){ document.querySelectorAll('.level').forEach(l => l.classList.toggle('active', maxCoins >= +l.dataset.val)); }
+
+// upgrades UI
+function updUpg(){ document.querySelectorAll('.upgrade').forEach(u => { let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0; let price = Math.floor(base * Math.pow(2,count)); let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price); const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New'; }); }
+
+// upgrade buy
+document.querySelectorAll('.upgrade').forEach(u=>{ u.onclick = (e)=>{ let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0; let price = Math.floor(base * Math.pow(2,count)); if (coins >= price) { upgrades[key] = count+1; updCoins(-price); if (key === 'check1') check1Expire = Date.now()+60000; if (key === 'survive') showToast('Survival bought — losses reduced', 'success'); save(); updUpg(); } else showToast(t('notEnough'), 'error'); }; // tooltip
+  u.onmouseenter = (ev)=>{ const tip = u.dataset.tip; if (tip) showTooltip(tip, ev); };
+  u.onmousemove = (ev)=>{ moveTooltip(ev); };
+  u.onmouseleave = hideTooltip;
 });
 
-// таймер check1
-function updCheck() {
-  const el = document.getElementById('check1Timer');
-  if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
-  else el.textContent = '';
-}
+// check1 timer
+function updCheck(){ const el = document.getElementById('check1Timer'); if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's'; else el.textContent = ''; }
 setInterval(updCheck, 1000);
 
-// выбор комнаты
+// tooltips for rooms
+const tooltipEl = document.getElementById('tooltipEl');
+function showTooltip(text, ev){ tooltipEl.style.display='block'; tooltipEl.textContent = text; moveTooltip(ev); }
+function moveTooltip(ev){ const pad = 10; let x = ev.clientX + pad; let y = ev.clientY + pad; tooltipEl.style.left = x + 'px'; tooltipEl.style.top = y + 'px'; }
+function hideTooltip(){ tooltipEl.style.display='none'; }
+
 document.querySelectorAll('.room').forEach(r => {
   r.onclick = () => {
     if (roundInProgress) return;
@@ -443,78 +413,44 @@ document.querySelectorAll('.room').forEach(r => {
     r.classList.add('selected');
     selectedRoom = +r.dataset.idx;
   };
+  r.onmouseenter = (ev)=> showTooltip('Комната ' + r.dataset.idx + ' — нажмите чтобы выбрать', ev);
+  r.onmousemove = moveTooltip;
+  r.onmouseleave = hideTooltip;
 });
 
 // start button
-document.getElementById('startBtn').onclick = ()=>{
-  if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
-  document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));
-};
+document.getElementById('startBtn').onclick = ()=>{ if (selectedRoom == null) { showToast(t('pickRoomFirst'), 'warn'); return; } document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe')); };
 
 // reset / hunt
-document.getElementById('resetBtn').onclick = ()=>{
-  if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
-  roundInProgress = true;
-  const numPicks = (check1Expire > Date.now()) ? 1 : 2;
-  let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks);
-  document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));
-  let delay = 0;
-  picks.forEach(i=>{
-    let room = document.querySelector(`.room[data-idx="${i}"]`);
-    setTimeout(()=>{ room.classList.add('highlight'); }, delay);
-    setTimeout(()=>{ room.classList.remove('highlight'); }, delay+600);
-    delay += 700;
-  });
-  setTimeout(()=>{
-    let prize = 1000, loss = -2000;
+function doHunt(){ if (selectedRoom == null) { showToast(t('pickRoomFirst'), 'warn'); return; } roundInProgress = true; const numPicks = (check1Expire > Date.now()) ? 1 : 2; let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks); document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight')); let delay = 0; picks.forEach(i=>{ let room = document.querySelector(`.room[data-idx="${i}"]`); setTimeout(()=>{ room.classList.add('highlight'); }, delay); setTimeout(()=>{ room.classList.remove('highlight'); }, delay+600); delay += 700; }); setTimeout(()=>{ let prize = 1000, loss = -2000; // apply upgrades
     if (upgrades.x2Prize > 0) { prize *= Math.pow(2, upgrades.x2Prize); loss *= Math.pow(2, upgrades.x2Prize); }
+    if (upgrades.survive > 0) { loss = Math.floor(loss * Math.pow(0.5, upgrades.survive)); }
+    if (upgrades.risk > 0) { prize = Math.floor(prize * (1 + 0.25 * upgrades.risk)); loss = Math.floor(loss * (1 + 0.25 * upgrades.risk)); }
+    // prestige multiplier and event
+    prize = Math.floor(prize * prestigeMul); loss = Math.floor(loss * prestigeMul);
+    if (eventState.active && eventState.expires > Date.now()) prize = prize * 2;
     if (picks.includes(selectedRoom)) {
       const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
       room.classList.add('found');
       updCoins(loss);
+      stats.caught++;
     } else {
       const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
       room.classList.add('safe');
       updCoins(prize);
+      stats.escaped++;
     }
-    selectedRoom = null;
-    document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected'));
-    roundInProgress = false;
-  }, delay+700);
-};
-
-// render miners cards (только в модальном окне)
-function renderMiners(){
-  if (!minersContainerEl) return;
-  minersContainerEl.innerHTML = '';
-  minersData.forEach((m,i)=>{
-    const st = minersState[i];
-    const price = m.p * Math.pow(2, st.count);
-    const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
-
-    const card = document.createElement('div'); card.className = 'miner-card';
-    card.innerHTML = `
-      <img class="card-logo" src="logo.png" alt="logo" />
-      <h3>${m.n}</h3>
-      <div class="income">+${format(income)} / hr</div>
-      <div class="bottom">
-        <span class="lvl">Lvl ${st.count}</span>
-        <span class="price-pill">${format(price)}</span>
-      </div>
-    `;
-    card.onclick = ()=>{
-      if (coins >= price) {
-        pendingMiner = i;
-        buyText.textContent = t('buyFor', { name: m.n, price: format(price) });
-        buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false');
-      } else { alert(t('notEnough')); }
-    };
-    minersContainerEl.appendChild(card);
-  });
+    // achievement check
+    checkAchievements();
+    selectedRoom = null; document.querySelectorAll('.room').forEach(r=>r.classList.remove('selected')); roundInProgress = false; }, delay+700);
 }
 
-// открыть/закрыть miningShop
-// miningBtn (кирка) и shopBtn (тележка) — оба открывают магазин
+document.getElementById('resetBtn').onclick = doHunt;
+
+// render miners
+function renderMiners(){ if (!minersContainerEl) return; minersContainerEl.innerHTML = ''; minersData.forEach((m,i)=>{ const st = minersState[i]; const price = Math.floor(m.p * Math.pow(2, st.count)); const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0; const card = document.createElement('div'); card.className = 'miner-card'; card.innerHTML = `\n      <img class="card-logo" src="logo.png" alt="logo" />\n      <h3>${m.n}</h3>\n      <div class="income">+${format(income)} / hr</div>\n      <div class="bottom">\n        <span class="lvl">Lvl ${st.count}</span>\n        <span class="price-pill">${format(price)}</span>\n      </div>\n    `; card.onclick = ()=>{ if (coins >= price) { pendingMiner = i; buyText.textContent = t('buyFor', { name: m.n, price: format(price) }); buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false'); } else { showToast(t('notEnough'), 'error'); } }; minersContainerEl.appendChild(card); }); }
+
+// shop open/close
 const miningBtn = document.getElementById('miningBtn');
 const shopBtn = document.getElementById('shopBtn');
 miningBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
@@ -522,22 +458,19 @@ shopBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttr
 document.getElementById('closeMiningShop').onclick = ()=>{ miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); };
 
 // buy confirm actions
-document.getElementById('confirmBuy').onclick = ()=>{
-  if (pendingMiner === null) return;
-  const i = pendingMiner; const m = minersData[i]; const st = minersState[i];
-  const price = m.p * Math.pow(2, st.count);
-  if (coins >= price) {
-    coins -= price; st.count++; updCoins(0); save(); renderMiners();
-  } else alert(t('notEnough'));
-  pendingMiner = null;
-  buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
-};
+document.getElementById('confirmBuy').onclick = ()=>{ if (pendingMiner === null) return; const i = pendingMiner; const m = minersData[i]; const st = minersState[i]; const price = Math.floor(m.p * Math.pow(2, st.count)); if (coins >= price) { coins -= price; st.count++; stats.minersBought++; updCoins(0); save(); renderMiners(); showToast('Miner purchased', 'success'); checkAchievements(); } else showToast(t('notEnough'), 'error'); pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); };
 document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); };
 
 // profile window
 const profileWindowEl = document.getElementById('profileWindow');
-document.getElementById('profileBtn').onclick = ()=>{ profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); };
+document.getElementById('profileBtn').onclick = ()=>{ profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); document.getElementById('prestigePoints').textContent = prestigePoints; };
 document.getElementById('closeProfile').onclick = ()=>{ profileWindowEl.style.display = 'none'; profileWindowEl.setAttribute('aria-hidden','true'); };
+
+// prestige
+function doPrestigeAction(){ if (coins < 10000 && maxCoins < 10000){ showToast('Need 10K max to prestige', 'warn'); return; } // grant prestige point
+  prestigePoints += 1; prestigeMul = 1 + (prestigePoints * 0.05); showToast('Prestige gained! Multiplier: x' + prestigeMul.toFixed(2), 'success'); // reset
+  coins = 0; maxCoins = 0; upgrades = { x2Prize:0, check1:0, survive:0, income:0, risk:0 }; minersState = minersData.map(_ => ({ count:0 })); save(); updCoins(0); renderMiners(); updUpg(); }
+document.getElementById('doPrestige').onclick = ()=>{ if (confirm('Prestige will reset progress for permanent bonus. Continue?')) doPrestigeAction(); };
 
 // daily & quest
 let questClaimed = localStorage.getItem('questClaimed') === 'true';
@@ -548,8 +481,8 @@ function updateQuestStatus(){ questStatusEl.textContent = questClaimed ? "✅ Co
 function updateDailyStatus(){ const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } }
 setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
-document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
-document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
+document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) showToast(t('questAlready'),'warn'); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
+document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) showToast(t('dailyAlready'),'warn'); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
 
 // info window
 const infoWindowEl = document.getElementById('infoWindow');
@@ -558,20 +491,47 @@ document.getElementById('closeInfo').onclick = ()=>{ infoWindowEl.style.display 
 
 // shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — только upgradePanel видна
 const upgradePanel = document.getElementById('upgradePanel');
-// Скрываем видимую панель майнеров на главном экране и показываем апгрейды
 minersPanelVisible.style.display = 'none';
 upgradePanel.style.display = 'flex';
 
 // language selector
 const langSelect = document.getElementById('langSelect'); langSelect.value = lang; langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
-// init UI
-coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck(); renderMiners(); applyLang();
+function applyLang(){ document.getElementById('miningLabel').textContent = t('miningIncome'); document.getElementById('shopTitle').textContent = t('miningShop'); document.getElementById('closeMiningShop').textContent = t('close'); document.getElementById('confirmBuy').textContent = t('buy'); document.getElementById('cancelBuy').textContent = t('cancel'); document.getElementById('infoTitle').textContent = t('howToPlay'); document.getElementById('profileTitle').textContent = t('profile'); document.getElementById('dailyTitle').textContent = t('dailyReward'); document.getElementById('dailyText').textContent = t('dailyText'); document.getElementById('claimDaily').textContent = t('claimDaily'); document.getElementById('questTitle').textContent = t('quest'); document.getElementById('claimQuest').textContent = t('claimQuest'); document.getElementById('settingsTitle').textContent = t('settings'); document.getElementById('settingsText').textContent = t('settingsText'); document.getElementById('closeInfo').textContent = t('close'); document.getElementById('closeProfile').textContent = t('close'); const infoListEl = document.getElementById('infoList'); infoListEl.innerHTML = ''; t('infoList')?.forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); }); }
 
+// achievements UI
+function renderAchievements(){ const el = document.getElementById('achList'); el.innerHTML = ''; achievements.forEach(a=>{ const unlocked = !!achieved[a.id]; const item = document.createElement('div'); item.className='ach-item'; item.innerHTML = `<div style="font-weight:800">${a.name}</div><div style="font-size:13px">${a.desc}</div><div style="margin-top:6px;color:${unlocked? '#39FF14':'#eaf2ff'}">${unlocked? 'Unlocked':'Locked'}</div>`; el.appendChild(item); }); document.getElementById('achModal').style.display = 'block'; setTimeout(()=>document.getElementById('achModal').style.display='none',3000); }
+
+function checkAchievements(){ achievements.forEach(a=>{ if (!achieved[a.id] && stats[a.field] >= a.goal){ achieved[a.id] = true; updCoins(a.reward); showToast('Achievement: ' + a.name + ' + ' + format(a.reward), 'success'); save(); renderAchievements(); } }); }
+
+// simple weekly event toggle (for demo)
+function startEvent(hours=24){ eventState.active = true; eventState.expires = Date.now() + hours*3600*1000; document.getElementById('eventBanner').style.display='block'; save(); updIncome(); }
+function stopEvent(){ eventState.active = false; eventState.expires = 0; document.getElementById('eventBanner').style.display='none'; save(); updIncome(); }
+if (eventState.active && eventState.expires > Date.now()) document.getElementById('eventBanner').style.display='block'; else stopEvent();
+
+// simple event activation for demo (can be tied to real schedule/server later)
+// activate event when player reaches 50k once
+if (!eventState.active && maxCoins >= 50000) { startEvent(24); showToast('Event started: Double income for 24h','warn'); }
+
+// auto-check (auto-hunt)
+let autoId = null; const autoToggle = document.getElementById('autoToggle'); const autoIntervalEl = document.getElementById('autoInterval');
+function startAuto(){ const sec = Math.max(1, parseInt(autoIntervalEl.value) || 5); autoId = setInterval(()=>{ if (!roundInProgress) doHunt(); }, sec*1000); autoToggle.textContent = 'Auto: ON'; autoToggle.classList.add('active'); showToast('Auto-hunt ON','warn'); }
+function stopAuto(){ if (autoId) clearInterval(autoId); autoId = null; autoToggle.textContent = 'Auto: OFF'; autoToggle.classList.remove('active'); showToast('Auto-hunt OFF','warn'); }
+autoToggle.onclick = ()=>{ if (autoId) stopAuto(); else startAuto(); };
+
+// achievement render on load
+renderAchievements();
+
+// init UI
+coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck(); renderMiners(); applyLang(); updProgress();
 // ensure windows hidden on load
 document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true');
 document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true');
 buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
+
+// expose some debug commands to console for testing
+window._game = { updCoins, doHunt, startEvent, stopEvent, stats, achievements, achieved };
+
 </script>
 </body>
 </html>
