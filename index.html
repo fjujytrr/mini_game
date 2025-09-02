@@ -211,6 +211,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   </div>
 
   <script>
+/* ==========================
+   Исправленный JS (готово)
+   ========================== */
+
 // ========== Локализация ==========
 const i18n = {
   ru: {
@@ -337,7 +341,25 @@ const minersData = [
   { n: "Miner 9", i: 8500, p: 45000 },
   { n: "Miner 10", i: 9500, p: 50000 }
 ];
-let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_ => ({ count: 0 }));
+
+// ======= Безопасная инициализация minersState (если в localStorage массив короче или повреждён)
+let minersState;
+try {
+  const saved = JSON.parse(localStorage.getItem('minersState'));
+  if (Array.isArray(saved)) {
+    // гарантируем длину равную minersData и докидываем отсутствующие элементы {count:0}
+    minersState = minersData.map((_, i) => {
+      const s = saved[i];
+      if (s && typeof s.count === 'number') return { count: s.count };
+      return { count: 0 };
+    });
+  } else {
+    minersState = minersData.map(_ => ({ count: 0 }));
+  }
+} catch (e) {
+  // если в localStorage хранится что-то невалидное — сбросим
+  minersState = minersData.map(_ => ({ count: 0 }));
+}
 
 const miningIncomeValEl = document.getElementById('miningIncomeVal');
 const minersContainerEl = document.querySelector('.miners-container');
@@ -356,13 +378,17 @@ function format(n) {
 
 // сохранить состояние
 function save() {
-  localStorage.setItem('coins', coins);
-  localStorage.setItem('maxCoins', maxCoins);
-  localStorage.setItem('upgrades', JSON.stringify(upgrades));
-  localStorage.setItem('check1Expire', check1Expire);
-  localStorage.setItem('minersState', JSON.stringify(minersState));
-  localStorage.setItem('lastTime', Date.now());
-  localStorage.setItem('lang', lang);
+  try {
+    localStorage.setItem('coins', coins);
+    localStorage.setItem('maxCoins', maxCoins);
+    localStorage.setItem('upgrades', JSON.stringify(upgrades));
+    localStorage.setItem('check1Expire', check1Expire);
+    localStorage.setItem('minersState', JSON.stringify(minersState));
+    localStorage.setItem('lastTime', Date.now());
+    localStorage.setItem('lang', lang);
+  } catch (e) {
+    console.warn('Save failed', e);
+  }
 }
 
 // обновить монеты
@@ -377,10 +403,11 @@ function updCoins(v = 0) {
   save();
 }
 
-// доход в час
+// доход в час (с защитой на случай undefined)
 function getIncome() {
   return minersState.reduce((sum, m, i) => {
-    return sum + (m.count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, m.count - 1)) : 0);
+    const count = (m && typeof m.count === 'number') ? m.count : 0;
+    return sum + (count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, count - 1)) : 0);
   }, 0);
 }
 function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
@@ -483,12 +510,13 @@ document.getElementById('resetBtn').onclick = ()=>{
   }, delay+700);
 };
 
-// render miners cards (только в модальном окне)
+// render miners cards (только в модальном окне) — с защитой на undefined
 function renderMiners(){
   if (!minersContainerEl) return;
   minersContainerEl.innerHTML = '';
   minersData.forEach((m,i)=>{
-    const st = minersState[i];
+    // безопасное получение состояния
+    const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
     const price = m.p * Math.pow(2, st.count);
     const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
 
@@ -503,9 +531,12 @@ function renderMiners(){
       </div>
     `;
     card.onclick = ()=>{
-      if (coins >= price) {
+      // снова защитная проверка цены
+      const currentSt = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
+      const currentPrice = m.p * Math.pow(2, currentSt.count);
+      if (coins >= currentPrice) {
         pendingMiner = i;
-        buyText.textContent = t('buyFor', { name: m.n, price: format(price) });
+        buyText.textContent = t('buyFor', { name: m.n, price: format(currentPrice) });
         buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false');
       } else { alert(t('notEnough')); }
     };
@@ -524,10 +555,10 @@ document.getElementById('closeMiningShop').onclick = ()=>{ miningShop.style.disp
 // buy confirm actions
 document.getElementById('confirmBuy').onclick = ()=>{
   if (pendingMiner === null) return;
-  const i = pendingMiner; const m = minersData[i]; const st = minersState[i];
+  const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
   const price = m.p * Math.pow(2, st.count);
   if (coins >= price) {
-    coins -= price; st.count++; updCoins(0); save(); renderMiners();
+    coins -= price; minersState[i] = { count: (st.count || 0) + 1 }; updCoins(0); save(); renderMiners();
   } else alert(t('notEnough'));
   pendingMiner = null;
   buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
@@ -572,6 +603,7 @@ coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck()
 document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true');
 document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true');
 buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
-</script>
+
+  </script>
 </body>
 </html>
