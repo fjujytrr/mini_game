@@ -232,13 +232,56 @@ button.secondary {
   max-width: 900px;
   display: flex;
   gap: 12px;
-  padding: 10px;
+  padding: 12px; /* чуть больше паддинга чтобы карточки не прилипали */
   overflow-x: auto;
   align-items: flex-start;
   margin-bottom: 12px;
-  background: rgba(255,255,255,0.02);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); /* лёгкий контраст с фоном */
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(255,215,0,0.04);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+.miners-panel .miner-card {
+  background: linear-gradient(160deg, #3a3a3a, #141414); /* чуть светлее, чтобы было видно */
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 16px; /* увеличенный padding для читаемости */
+  min-width: 180px; /* увеличенная ширина карточки на главном экране */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+  border: 1px solid rgba(255,215,0,0.12); /* тонкая золотая окантовка для контраста */
+  flex: 0 0 auto; /* гарантируем, что карточки не сжимаются */
+}
+.miners-panel .miner-card .card-logo,
+#miningShop .miner-card .card-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--frame-color);
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
+}
+.miners-panel .miner-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(255,215,0,0.12);
+}
+
+/* уточняем вид текста внутри карточки */
+.miners-panel .miner-card h3 { font-size: 16px; margin: 0; color: #fff; text-align:center; }
+.miners-panel .miner-card .income { color: var(--birch); font-weight:700; }
+.miners-panel .miner-card .income .income-val { color: #9ff3a1; }
+.miners-panel .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
+
+/* и на мобильных немного уменьшаем, но сохраняем контраст */
+@media (max-width:520px) {
+  .miners-panel { padding: 8px; }
+  .miners-panel .miner-card { min-width: 150px; padding: 12px; }
+  .miners-panel .miner-card .card-logo { width:48px; height:48px; }
 }
 .miners-panel .miner-card {
   background: linear-gradient(160deg, var(--bg-dark-2), #111);
@@ -883,6 +926,7 @@ buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
+
 
 
 
