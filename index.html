@@ -41,15 +41,16 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.18);
   border-radius: 12px;
   padding: 10px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
 }
 .level-bar {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.12);
   padding: 6px 10px;
   border-radius: 12px;
   flex: 1;
@@ -63,7 +64,7 @@ header {
   font-weight: 700;
   color: #eee;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
   transition: 0.5s;
   cursor: pointer;
 }
@@ -76,10 +77,10 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.28);
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
   padding: 8px 12px;
   border-radius: 16px;
-  box-shadow: 0 0 12px rgba(0,216,255,0.18);
+  box-shadow: 0 6px 20px rgba(0,216,255,0.08);
 }
 /* Логотип перед балансом */
 .coin-panel .coin-logo {
@@ -96,6 +97,16 @@ header {
   font-size: 18px;
   color: var(--accent-cyan);
 }
+.coin-panel .settings-btn {
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  font-weight:700;
+}
+.coin-panel .settings-btn:hover { transform: scale(1.04); }
 
 /* House / rooms */
 .house {
@@ -197,7 +208,7 @@ button.secondary {
   display: flex;
   justify-content: space-around;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.18);
   padding: 6px 0;
   border-radius: 16px;
   backdrop-filter: blur(5px);
@@ -384,7 +395,7 @@ button.secondary {
   height: 100%;
   transform: none;
   z-index: 1000;
-  background: #000000;
+  background: rgba(0,0,0,0.7);
   box-sizing: border-box;
   padding: 40px;
   overflow-y: auto;
@@ -392,7 +403,7 @@ button.secondary {
 #buyConfirm .confirm-box {
   max-width: 520px;
   margin: 40px auto;
-  background: linear-gradient(120deg, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
+  background: linear-gradient(120deg, rgba(0,0,0,0.6), rgba(0,0,0,0.72));
   border: 2px solid var(--accent-cyan);
   border-radius: 16px;
   padding: 20px;
@@ -403,8 +414,8 @@ button.secondary {
 #buyConfirm p { color: #fff; margin: 8px 0; }
 #buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:var(--accent-cyan); color:#000; border:none; border-radius:8px; }
 
-/* Info & profile windows — полный экран */
-#infoWindow {
+/* Info & profile windows — теперь оформлены как главный экран (не чёрные) */
+.window-fullscreen {
   display: none;
   position: fixed;
   top: 0;
@@ -413,52 +424,35 @@ button.secondary {
   height: 100%;
   transform: none;
   z-index: 800;
-  background: #000000;
+  background: linear-gradient(120deg, rgba(59,42,122,0.92), rgba(138,167,255,0.92));
+  color: #fff;
   box-sizing: border-box;
   padding: 28px;
   overflow-y: auto;
 }
-#infoWindow .content {
+.window-fullscreen .content {
   max-width: 720px;
   margin: 24px auto;
   border: 2px solid var(--accent-cyan);
   border-radius: 12px;
   padding: 16px;
-  background: rgba(0,0,0,0.86);
-  box-shadow: 0 0 20px var(--accent-cyan);
+  background: linear-gradient(180deg, rgba(0,0,0,0.24), rgba(0,0,0,0.12));
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
 }
-#infoWindow h2 { color: var(--accent-cyan); margin-bottom: 10px; }
-#infoWindow ul { color: #ccc; padding-left: 20px; }
-#infoWindow ul li::before { content: "• "; color: var(--accent-cyan); font-weight:600; }
-#infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-cyan); color:#000; cursor:pointer; font-weight:700; }
+.window-fullscreen h2 { color: var(--accent-cyan); margin-bottom: 10px; }
+.window-fullscreen ul { color: #e8f3ff; padding-left: 20px; }
+.window-fullscreen ul li::before { content: "• "; color: var(--accent-cyan); font-weight:600; }
+.window-fullscreen button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-cyan); color:#000; cursor:pointer; font-weight:700; }
 
-#profileWindow {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  z-index: 800;
-  background: #000000;
-  box-sizing: border-box;
-  padding: 28px;
-  overflow-y: auto;
-}
-#profileWindow .content {
-  max-width: 720px;
-  margin: 24px auto;
-  border: 2px solid var(--accent-cyan);
-  border-radius: 12px;
-  padding: 16px;
-  background: rgba(0,0,0,0.86);
-  box-shadow: 0 0 20px var(--accent-cyan);
-}
-#profileWindow h2 { color:var(--accent-cyan); margin-bottom:12px; text-align:center; }
-#profileWindow h3 { color:var(--accent-cyan); }
-#profileWindow p { color:#ccc; }
-#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-cyan); color:#000; cursor:pointer;font-weight:700; }
+/* Settings window: стиль как главный экран (похож на профиль) */
+#settingsWindow { display:none; }
+#settingsWindow .content { text-align:left; }
+.settings-row { display:flex; gap:10px; align-items:center; margin-top:8px; }
+.lang-option { cursor:pointer; padding:8px 12px; border-radius:8px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.03); }
+.lang-option.active { background: var(--accent-cyan); color: #000; border-color: rgba(0,0,0,0.08); }
+
+#profileWindow { }
+#infoWindow { }
 
 /* Мелкие адаптивные правки */
 @media (max-width: 520px) {
@@ -483,6 +477,8 @@ button.secondary {
   <div class="coin-panel">
     <img class="coin-logo" src="logo.png" alt="Coin logo" />
     <div class="val" id="coinsVal">0</div>
+    <!-- Кнопка настроек (заменила место для "рекорда") -->
+    <button id="settingsBtn" class="settings-btn" aria-label="Settings">⚙</button>
   </div>
 </header>
 
@@ -509,15 +505,15 @@ button.secondary {
 </div>
 
 <div class="mining-info">
-  <strong>Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
+  <strong id="miningLabel">Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
 </div>
 
 <!-- Visible miners panel - shown on main screen by default -->
 <div class="miners-panel" id="minersPanelVisible"></div>
 
 <!-- Modal mining shop — полный экран -->
-<div id="miningShop" aria-hidden="true">
-  <h2>Mining Shop</h2>
+<div id="miningShop" aria-hidden="true" class="window-fullscreen">
+  <h2 id="miningShopTitle">Mining Shop</h2>
   <div class="miners-container"></div>
   <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
 </div>
@@ -534,10 +530,10 @@ button.secondary {
 </div>
 
 <!-- Info window -->
-<div id="infoWindow" aria-hidden="true">
+<div id="infoWindow" aria-hidden="true" class="window-fullscreen">
   <div class="content">
-    <h2>How to Play</h2>
-    <ul>
+    <h2 id="infoTitle">How to Play</h2>
+    <ul id="infoList">
       <li>Select a room and then click the 🔍 button to hunt.</li>
       <li>The hunter searches 2 random rooms (1 if "Check 1 Room" is active).</li>
       <li>If your room is found, you lose coins (shown in red).</li>
@@ -550,18 +546,18 @@ button.secondary {
 </div>
 
 <!-- Profile window -->
-<div id="profileWindow" aria-hidden="true">
+<div id="profileWindow" aria-hidden="true" class="window-fullscreen">
   <div class="content">
-    <h2>Profile</h2>
-    <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
-      <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
+    <h2 id="profileTitle">Profile</h2>
+    <div style="margin-bottom:16px;padding:16px;background:rgba(255,255,255,0.04);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+      <h3 id="dailyTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
+      <p id="dailyText" style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
       <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
       <p id="dailyStatus" style="margin-top:8px;color:var(--accent-cyan);font-weight:600;text-align:center;"></p>
     </div>
-    <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
-      <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
+    <div style="margin-bottom:16px;padding:16px;background:rgba(255,255,255,0.04);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+      <h3 id="questTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
+      <p id="questText" style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
       <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
       <p id="questStatus" style="margin-top:8px;color:var(--accent-cyan);font-weight:600;text-align:center;"></p>
     </div>
@@ -569,14 +565,162 @@ button.secondary {
   </div>
 </div>
 
+<!-- Settings window -->
+<div id="settingsWindow" aria-hidden="true" class="window-fullscreen">
+  <div class="content">
+    <h2 id="settingsTitle">Settings</h2>
+    <div>
+      <h3 id="langTitle">Language</h3>
+      <div class="settings-row">
+        <div id="langRu" class="lang-option">Русский</div>
+        <div id="langEn" class="lang-option">English</div>
+      </div>
+      <p id="langNote" style="margin-top:8px;color:#e8f3ff;font-size:13px;">Choose interface language. Changes apply immediately.</p>
+    </div>
+    <div style="margin-top:18px;">
+      <button id="closeSettings">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="bottom-menu">
-  <button id="infoBtn" class="secondary">ℹ</button>
-  <button id="shopBtn" class="secondary">🛒</button>
-  <button id="miningBtn" class="secondary">⛏</button>
-  <button id="profileBtn" class="secondary">👤</button>
+  <button id="infoBtn" class="secondary" aria-label="Info">ℹ</button>
+  <button id="shopBtn" class="secondary" aria-label="Shop">🛒</button>
+  <button id="miningBtn" class="secondary" aria-label="Mining">⛏</button>
+  <button id="profileBtn" class="secondary" aria-label="Profile">👤</button>
 </div>
 
 <script>
+// --- Локализация — RU / EN
+const translations = {
+  ru: {
+    pickRoomFirst: 'Выберите комнату сначала!',
+    notEnoughCoins: 'Недостаточно монет!',
+    buyConfirm: 'Купить {name} за {price}?',
+    buy: 'Купить',
+    cancel: 'Отмена',
+    howToPlayTitle: 'Как играть',
+    infoList: [
+      'Выберите комнату, затем нажмите кнопку 🔍 для поиска.',
+      'Охотник проверяет 2 случайные комнаты (1, если активен "Check 1 Room").',
+      'Если вашу комнату нашли — вы теряете монеты (красным).',
+      'Если вы уклоняетесь — получаете монеты (зелёным).',
+      'Покупайте апгрейды и майнеров для увеличения дохода и шансов.',
+      'Забирайте ежедневные награды и выполняйте задания для бонусов.'
+    ],
+    miningIncome: 'Доход майнинга:',
+    miningShopTitle: 'Магазин майнинга',
+    close: 'Закрыть',
+    profileTitle: 'Профиль',
+    dailyTitle: 'Ежедневная награда',
+    dailyText: 'Получите 30 000 монет раз в день!',
+    claimDaily: 'Забрать',
+    dailyAvailable: '💰 Доступно!',
+    nextIn: 'До следующей: {h}ч {m}м',
+    questTitle: 'Задание',
+    questText: 'Подпишитесь, чтобы получить бонусные монеты!',
+    claimQuest: 'Взять задание',
+    questAlready: 'Задание уже выполнено!',
+    dailyAlready: 'Ежедневная награда уже получена!',
+    buyBtn: 'Купить',
+    cancelBtn: 'Отмена',
+    settingsTitle: 'Настройки',
+    langTitle: 'Язык',
+    langNote: 'Выберите язык интерфейса. Изменения применяются сразу.'
+  },
+  en: {
+    pickRoomFirst: 'Pick a room first!',
+    notEnoughCoins: 'Not enough coins!',
+    buyConfirm: 'Buy {name} for {price}?',
+    buy: 'Buy',
+    cancel: 'Cancel',
+    howToPlayTitle: 'How to Play',
+    infoList: [
+      'Select a room and then click the 🔍 button to hunt.',
+      'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
+      'If your room is found, you lose coins (shown in red).',
+      'If you evade the hunt, you gain coins (shown in green).',
+      'Buy upgrades or miners to improve your chances and income.',
+      'Claim daily rewards and complete quests for bonus coins.'
+    ],
+    miningIncome: 'Mining Income:',
+    miningShopTitle: 'Mining Shop',
+    close: 'Close',
+    profileTitle: 'Profile',
+    dailyTitle: 'Daily Reward',
+    dailyText: 'Get 30,000 coins once a day!',
+    claimDaily: 'Claim Daily',
+    dailyAvailable: '💰 Available!',
+    nextIn: 'Next in {h}h {m}m',
+    questTitle: 'Quest',
+    questText: 'Subscribe to get bonus coins!',
+    claimQuest: 'Claim Quest',
+    questAlready: 'Quest already claimed!',
+    dailyAlready: 'Daily reward already claimed!',
+    buyBtn: 'Buy',
+    cancelBtn: 'Cancel',
+    settingsTitle: 'Settings',
+    langTitle: 'Language',
+    langNote: 'Choose interface language. Changes apply immediately.'
+  }
+};
+
+let lang = localStorage.getItem('lang') || 'ru';
+function t(key) {
+  const val = translations[lang][key];
+  return val === undefined ? '' : val;
+}
+
+function applyLanguage() {
+  // Info window
+  document.getElementById('infoTitle').textContent = translations[lang].howToPlayTitle;
+  const list = document.getElementById('infoList');
+  list.innerHTML = '';
+  translations[lang].infoList.forEach(it => {
+    const li = document.createElement('li'); li.textContent = it; list.appendChild(li);
+  });
+  document.getElementById('closeInfo').textContent = translations[lang].close;
+
+  // Mining shop
+  document.getElementById('miningShopTitle').textContent = translations[lang].miningShopTitle;
+  document.getElementById('closeMiningShop').textContent = translations[lang].close;
+
+  // Buy confirm buttons
+  document.getElementById('confirmBuy').textContent = translations[lang].buyBtn || translations[lang].buy;
+  document.getElementById('cancelBuy').textContent = translations[lang].cancelBtn || translations[lang].cancel;
+
+  // Mining label
+  document.getElementById('miningLabel').textContent = translations[lang].miningIncome;
+
+  // Profile window
+  document.getElementById('profileTitle').textContent = translations[lang].profileTitle;
+  document.getElementById('dailyTitle').textContent = translations[lang].dailyTitle;
+  document.getElementById('dailyText').textContent = translations[lang].dailyText;
+  document.getElementById('claimDaily').textContent = translations[lang].claimDaily;
+  document.getElementById('questTitle').textContent = translations[lang].questTitle;
+  document.getElementById('questText').textContent = translations[lang].questText;
+  document.getElementById('claimQuest').textContent = translations[lang].claimQuest;
+  document.getElementById('closeProfile').textContent = translations[lang].close;
+
+  // Settings
+  document.getElementById('settingsTitle').textContent = translations[lang].settingsTitle;
+  document.getElementById('langTitle').textContent = translations[lang].langTitle;
+  document.getElementById('langNote').textContent = translations[lang].langNote;
+  document.getElementById('closeSettings').textContent = translations[lang].close;
+
+  updateDailyStatus();
+  updateQuestStatus();
+}
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('lang', l);
+  // update UI language
+  document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('active'));
+  document.getElementById(l === 'ru' ? 'langRu' : 'langEn').classList.add('active');
+  applyLanguage();
+}
+
 // --- Инициализация комнат
 const rooms = document.querySelector('.house');
 for (let i = 0; i < 8; i++) {
@@ -709,7 +853,7 @@ document.querySelectorAll('.upgrade').forEach(u => {
       save();
       updUpg();
     } else {
-      alert("Not enough coins!");
+      alert(translations[lang].notEnoughCoins);
     }
   };
 });
@@ -738,7 +882,7 @@ document.querySelectorAll('.room').forEach(r => {
 // Кнопка Start: сброс прошлых результатов
 document.getElementById('startBtn').onclick = () => {
   if (selectedRoom == null) {
-    alert('Pick a room first!');
+    alert(translations[lang].pickRoomFirst);
     return;
   }
   document.querySelectorAll('.room').forEach(r => {
@@ -749,7 +893,7 @@ document.getElementById('startBtn').onclick = () => {
 // Кнопка Reset (🔍): запускает охоту
 document.getElementById('resetBtn').onclick = () => {
   if (selectedRoom == null) {
-    alert('Pick a room first!');
+    alert(translations[lang].pickRoomFirst);
     return;
   }
   roundInProgress = true;
@@ -816,12 +960,13 @@ function renderMiners() {
       card.onclick = () => {
         if (coins >= price) {
           pendingMiner = i;
-          buyText.textContent = `Buy ${m.n} for ${format(price)}?`;
+          const msg = (translations[lang].buyConfirm || translations[lang].buy).replace('{name}', m.n).replace('{price}', format(price));
+          buyText.textContent = msg;
           buyConfirm.classList.add('show');
           buyConfirm.style.display = 'block';
           buyConfirm.setAttribute('aria-hidden', 'false');
         } else {
-          alert("Not enough coins!");
+          alert(translations[lang].notEnoughCoins);
         }
       };
       return card;
@@ -857,7 +1002,7 @@ document.getElementById('confirmBuy').onclick = () => {
     save();
     renderMiners();
   } else {
-    alert("Not enough coins!");
+    alert(translations[lang].notEnoughCoins);
   }
   pendingMiner = null;
   buyConfirm.classList.remove('show');
@@ -894,12 +1039,13 @@ function updateDailyStatus() {
   let now = Date.now();
   let nextAvailable = lastDaily + 24*60*60*1000;
   if (now >= nextAvailable) {
-    dailyStatusEl.textContent = "💰 Available!";
+    dailyStatusEl.textContent = translations[lang].dailyAvailable;
   } else {
     let diff = nextAvailable - now;
     let hours = Math.floor(diff / (1000*60*60));
     let minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-    dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`;
+    const tmpl = translations[lang].nextIn || '{h}h {m}m';
+    dailyStatusEl.textContent = tmpl.replace('{h}', hours).replace('{m}', minutes);
   }
 }
 setInterval(updateDailyStatus, 60000);
@@ -909,7 +1055,7 @@ updateQuestStatus();
 // Кнопки Daily/Quest
 document.getElementById('claimQuest').onclick = () => {
   if (questClaimed) {
-    alert("Quest already claimed!");
+    alert(translations[lang].questAlready);
   } else {
     updCoins(50000);
     questClaimed = true;
@@ -920,7 +1066,7 @@ document.getElementById('claimQuest').onclick = () => {
 document.getElementById('claimDaily').onclick = () => {
   let now = Date.now();
   if (now - lastDaily < 24*60*60*1000) {
-    alert("Daily reward already claimed!");
+    alert(translations[lang].dailyAlready);
   } else {
     updCoins(30000);
     lastDaily = now;
@@ -956,6 +1102,21 @@ shopBtn.onclick = () => {
   }
 };
 
+// Settings open/close and language selection
+const settingsWindowEl = document.getElementById('settingsWindow');
+document.getElementById('settingsBtn').onclick = () => {
+  settingsWindowEl.style.display = 'block';
+  settingsWindowEl.setAttribute('aria-hidden', 'false');
+};
+document.getElementById('closeSettings').onclick = () => {
+  settingsWindowEl.style.display = 'none';
+  settingsWindowEl.setAttribute('aria-hidden', 'true');
+};
+
+// lang option clicks
+document.getElementById('langRu').onclick = () => setLang('ru');
+document.getElementById('langEn').onclick = () => setLang('en');
+
 // Инициализация UI
 coinsVal.textContent = format(coins);
 updLv();
@@ -964,6 +1125,9 @@ updIncome();
 updCheck();
 renderMiners();
 
+// set active language UI on load
+setLang(lang);
+
 // Ensure windows hidden on load
 document.getElementById('infoWindow').style.display = 'none';
 document.getElementById('infoWindow').setAttribute('aria-hidden', 'true');
@@ -971,6 +1135,8 @@ document.getElementById('profileWindow').style.display = 'none';
 document.getElementById('profileWindow').setAttribute('aria-hidden', 'true');
 buyConfirm.style.display = 'none';
 buyConfirm.setAttribute('aria-hidden', 'true');
+settingsWindowEl.style.display = 'none';
+settingsWindowEl.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
