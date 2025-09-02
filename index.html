@@ -287,8 +287,8 @@ button.secondary {
   background: rgba(255,255,255,0.04);
   color: #fff;
   border-radius: 14px;
-  padding: 12px;
-  min-width: 160px;
+  padding: 10px;
+  min-width: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -347,8 +347,8 @@ button.secondary {
   background: rgba(255,255,255,0.06);
   color: #fff;
   border-radius: 12px;
-  padding: 12px;
-  width: 180px;
+  padding: 10px;
+  width: 140px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -379,17 +379,28 @@ button.secondary {
 #buyConfirm {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1000;
-  background: #000000;
+  background: transparent;
   box-sizing: border-box;
-  padding: 40px;
-  overflow-y: auto;
+  padding: 0;
 }
+#buyConfirm .confirm-box {
+  max-width: 520px;
+  margin: 0 auto;
+  background: linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));
+  border: 2px solid var(--accent-cyan);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(122,75,255,0.18);
+}
+#buyConfirm.show { display:block; }
+#buyConfirm p { color: #fff; margin: 8px 0; }
+#buyConfirm button { margin: 6px 6px; padding: 8px 12px; font-weight:700; background:var(--accent-cyan); color:#000; border:none; border-radius:8px; }
+
 #buyConfirm .confirm-box {
   max-width: 520px;
   margin: 40px auto;
@@ -481,6 +492,17 @@ button.secondary {
   .miners-panel .miner-card { min-width: 140px; }
   #miningShop .miner-card { width: 46%; }
 }
+
+/* Make bottom menu buttons (Info/Profile) lighter */
+.bottom-menu button.secondary {
+  background: rgba(255,255,255,0.12);
+  color: #000;
+  border-radius: 10px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.06);
+}
+.bottom-menu button.secondary:hover { transform: scale(1.12); color: var(--accent-cyan); }
+
 </style>
 </head>
 <body>
