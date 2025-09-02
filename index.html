@@ -533,5 +533,62 @@ buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true')
 window._game = { updCoins, doHunt, startEvent, stopEvent, stats, achievements, achieved };
 
 </script>
+<script>
+(function(){
+  try{
+    if (typeof i18n === 'undefined') return;
+    const defaults = {
+      ru: [
+        'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
+        'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
+        'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
+        'Если вы избежали охоты, вы получаете монеты (показываются зелёным).',
+        'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
+        'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
+      ],
+      en: [
+        'Select a room and then click the 🔍 button to hunt.',
+        'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
+        'If your room is found, you lose coins (shown in red).',
+        'If you evade the hunt, you gain coins (shown in green).',
+        'Buy upgrades or miners to improve your chances and income.',
+        'Claim daily rewards and complete quests for bonus coins.'
+      ]
+    };
+
+    ['ru','en'].forEach(l=>{
+      if (!i18n[l]) i18n[l] = {};
+      if (!i18n[l].infoList) i18n[l].infoList = defaults[l];
+    });
+
+    // Safe variable replacement without regex (to avoid escaping issues)
+    const origT = window.t;
+    window.t = function(key, vars){
+      const val = i18n[lang] && i18n[lang][key];
+      if (Array.isArray(val)) return val;
+      if (typeof val === 'string'){
+        if (!vars || Object.keys(vars).length === 0) return val;
+        // replace {key} occurrences without regex
+        return val.split('{').map(part=>{
+          if (part.indexOf('}') === -1) return part;
+          const idx = part.indexOf('}');
+          const k = part.slice(0, idx);
+          const rest = part.slice(idx+1);
+          return (vars && vars[k] !== undefined ? vars[k] : '') + rest;
+        }).join('');
+      }
+      return origT ? origT(key, vars) : undefined;
+    };
+
+    // Re-apply language/UI if functions exist
+    if (typeof applyLang === 'function') applyLang();
+    if (typeof updProgress === 'function') updProgress();
+    if (typeof updIncome === 'function') updIncome();
+    if (typeof renderMiners === 'function') renderMiners();
+
+    console.info('Patch applied: ensured infoList and safe t().');
+  }catch(e){ console.error('Patch apply failed', e); }
+})();
+</script>
 </body>
 </html>
