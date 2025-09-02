@@ -53,9 +53,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px}
 /* Mining info */
 .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)}
-/* Видимая панель майнеров — показываем на главном экране */
+/* Видимая панель майнеров — убираем с главного экрана */
 .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px}
-.miners-panel .miner-card{display:none} 
+.miners-panel .miner-card{display:none}
 /* Модальный магазин майнеров (полноэкранный) */
 #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
@@ -70,6 +70,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 /* Подтверждение покупки: центрированное */
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box}
 #buyConfirm .confirm-box{max-width:520px;margin:0 auto;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)}
+#buyConfirm.show{display:block}
 #buyConfirm p{color:#fff;margin:8px 0}
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px}
 /* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */
@@ -120,31 +121,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       <p>Hunter checks 1 room only (1 min)</p>
       <div class="price">20,000</div>
       <div class="timer" id="check1Timer"></div>
-    </div>
-
-    <!-- NEW UPGRADES -->
-    <div class="upgrade" data-key="shield" data-base-price="25000">
-      <h3>Shield</h3>
-      <p>Prevents a loss while active (1 min)</p>
-      <div class="price">25,000</div>
-      <div class="timer" id="shieldTimer"></div>
-      <div class="badge">New</div>
-    </div>
-
-    <div class="upgrade" data-key="prizeBoost" data-base-price="30000">
-      <h3>Prize Boost</h3>
-      <p>Increase prize by 50% for 1 minute</p>
-      <div class="price">30,000</div>
-      <div class="timer" id="prizeBoostTimer"></div>
-      <div class="badge">New</div>
-    </div>
-
-    <div class="upgrade" data-key="stealth" data-base-price="22000">
-      <h3>Stealth</h3>
-      <p>Reduces hunter picks by 1 for 1 minute</p>
-      <div class="price">22,000</div>
-      <div class="timer" id="stealthTimer"></div>
-      <div class="badge">New</div>
     </div>
   </div>
 
@@ -344,12 +320,8 @@ let selectedRoom = null;
 let coins = +localStorage.getItem('coins') || 0;
 let maxCoins = +localStorage.getItem('maxCoins') || coins;
 const coinsVal = document.getElementById('coinsVal');
-// add new upgrade keys
-let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0, shield: 0, prizeBoost: 0, stealth: 0 };
+let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0 };
 let check1Expire = +localStorage.getItem('check1Expire') || 0;
-let shieldExpire = +localStorage.getItem('shieldExpire') || 0;
-let prizeBoostExpire = +localStorage.getItem('prizeBoostExpire') || 0;
-let stealthExpire = +localStorage.getItem('stealthExpire') || 0;
 let roundInProgress = false;
 
 // майнеры (только для магазина)
@@ -388,9 +360,6 @@ function save() {
   localStorage.setItem('maxCoins', maxCoins);
   localStorage.setItem('upgrades', JSON.stringify(upgrades));
   localStorage.setItem('check1Expire', check1Expire);
-  localStorage.setItem('shieldExpire', shieldExpire);
-  localStorage.setItem('prizeBoostExpire', prizeBoostExpire);
-  localStorage.setItem('stealthExpire', stealthExpire);
   localStorage.setItem('minersState', JSON.stringify(minersState));
   localStorage.setItem('lastTime', Date.now());
   localStorage.setItem('lang', lang);
@@ -439,8 +408,7 @@ function updLv() { document.querySelectorAll('.level').forEach(l => l.classList.
 function updUpg() {
   document.querySelectorAll('.upgrade').forEach(u => {
     let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
-    // price grows by 1.5x each purchase
-    let price = Math.floor(base * Math.pow(1.5, count));
+    let price = base * Math.pow(2,count);
     let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price);
     const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New';
   });
@@ -450,33 +418,22 @@ function updUpg() {
 document.querySelectorAll('.upgrade').forEach(u=>{
   u.onclick = ()=>{
     let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0;
-    let price = Math.floor(base * Math.pow(1.5, count));
+    let price = base * Math.pow(2,count);
     if (coins >= price) {
       upgrades[key] = count+1; updCoins(-price);
-      const now = Date.now();
-      // set 1 minute expiry for specific upgrades
-      if (key === 'check1') check1Expire = now + 60000;
-      if (key === 'shield') shieldExpire = now + 60000;
-      if (key === 'prizeBoost') prizeBoostExpire = now + 60000;
-      if (key === 'stealth') stealthExpire = now + 60000;
+      if (key === 'check1') check1Expire = Date.now()+60000;
       save(); updUpg();
     } else alert(t('notEnough'));
   };
 });
 
-// timers for upgrades
-function updTimers() {
-  const now = Date.now();
-  const checkEl = document.getElementById('check1Timer');
-  const shieldEl = document.getElementById('shieldTimer');
-  const prizeEl = document.getElementById('prizeBoostTimer');
-  const stealthEl = document.getElementById('stealthTimer');
-  if (checkEl) checkEl.textContent = check1Expire > now ? '⏳ ' + Math.ceil((check1Expire - now)/1000) + 's' : '';
-  if (shieldEl) shieldEl.textContent = shieldExpire > now ? '⏳ ' + Math.ceil((shieldExpire - now)/1000) + 's' : '';
-  if (prizeEl) prizeEl.textContent = prizeBoostExpire > now ? '⏳ ' + Math.ceil((prizeBoostExpire - now)/1000) + 's' : '';
-  if (stealthEl) stealthEl.textContent = stealthExpire > now ? '⏳ ' + Math.ceil((stealthExpire - now)/1000) + 's' : '';
+// таймер check1
+function updCheck() {
+  const el = document.getElementById('check1Timer');
+  if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
+  else el.textContent = '';
 }
-setInterval(updTimers, 1000);
+setInterval(updCheck, 1000);
 
 // выбор комнаты
 document.querySelectorAll('.room').forEach(r => {
@@ -498,8 +455,7 @@ document.getElementById('startBtn').onclick = ()=>{
 document.getElementById('resetBtn').onclick = ()=>{
   if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
   roundInProgress = true;
-  const now = Date.now();
-  const numPicks = (check1Expire > now || stealthExpire > now) ? 1 : 2; // stealth reduces picks by 1
+  const numPicks = (check1Expire > Date.now()) ? 1 : 2;
   let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks);
   document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));
   let delay = 0;
@@ -511,21 +467,11 @@ document.getElementById('resetBtn').onclick = ()=>{
   });
   setTimeout(()=>{
     let prize = 1000, loss = -2000;
-    // x2Prize upgrade multiplies both prize and loss by 2 per level
     if (upgrades.x2Prize > 0) { prize *= Math.pow(2, upgrades.x2Prize); loss *= Math.pow(2, upgrades.x2Prize); }
-    // prizeBoost (temporary) increases prize by 50%
-    if (prizeBoostExpire > Date.now()) prize = Math.floor(prize * 1.5);
-
     if (picks.includes(selectedRoom)) {
       const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
-      // if shield active, prevent loss and treat as safe
-      if (shieldExpire > Date.now()) {
-        room.classList.add('safe');
-        updCoins(prize);
-      } else {
-        room.classList.add('found');
-        updCoins(loss);
-      }
+      room.classList.add('found');
+      updCoins(loss);
     } else {
       const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
       room.classList.add('safe');
@@ -620,7 +566,7 @@ upgradePanel.style.display = 'flex';
 const langSelect = document.getElementById('langSelect'); langSelect.value = lang; langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
 // init UI
-coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updTimers(); renderMiners(); applyLang();
+coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck(); renderMiners(); applyLang();
 
 // ensure windows hidden on load
 document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true');
@@ -629,4 +575,3 @@ buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true')
 </script>
 </body>
 </html>
-
