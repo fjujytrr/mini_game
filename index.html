@@ -590,5 +590,25 @@ window._game = { updCoins, doHunt, startEvent, stopEvent, stats, achievements, a
   }catch(e){ console.error('Patch apply failed', e); }
 })();
 </script>
+<script>
+(function(){
+  function showFatal(msg){
+    try{
+      let el=document.getElementById('fatalError');
+      if(!el){ el=document.createElement('div'); el.id='fatalError'; Object.assign(el.style,{position:'fixed',left:'10px',right:'10px',top:'10px',padding:'12px',background:'rgba(255,20,20,0.95)',color:'#fff',zIndex:99999,borderRadius:'8px',fontWeight:'700',fontSize:'14px'}); document.body.appendChild(el);}      
+      el.textContent= 'Ошибка: '+msg;
+      el.style.display='block';
+    }catch(e){ console.error('showFatal failed',e); }
+  }
+  window.addEventListener('error', function(e){ console.error(e.error||e.message); try{ showFatal(e.message || String(e.error)); }catch(err){} });
+  window.addEventListener('unhandledrejection', function(e){ console.error('UnhandledRejection', e.reason); try{ showFatal('UnhandledRejection: '+ (e.reason && e.reason.message ? e.reason.message : String(e.reason))); }catch(err){} });
+  try{
+    if(typeof applyLang==='function') applyLang();
+    if(typeof updProgress==='function') updProgress();
+    if(typeof updIncome==='function') updIncome();
+    if(typeof renderMiners==='function') renderMiners();
+  }catch(e){ console.error('reinit failed',e); showFatal(e.message || e); }
+})();
+</script>
 </body>
 </html>
