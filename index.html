@@ -110,52 +110,25 @@ header {
   grid-template-rows: repeat(4, 1fr);
   gap: 12px;
 }
-.room {
-  background: linear-gradient(145deg,var(--bg-dark-2),#111);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 28px;
-  color: var(--accent-gold);
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.06);
+/* Копия стилей комнат из второго (золотого) шаблона — ровные квадратные карточки, тёмный градиент и золотые акценты */
+.room{
+  background: linear-gradient(145deg,#2a2a2a,#111);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:28px;
+  cursor:pointer;
+  transition:.25s;
+  color:var(--accent-gold);
+  box-shadow:0 4px 12px rgba(0,0,0,.5);
 }
-.room:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(255,215,0,0.14);
-}
-.room.selected {
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 12px var(--accent-gold);
-}
-.room.found {
-  border-color: #FF4500;
-  box-shadow: 0 0 12px #FF4500;
-  animation: foundAnim 1s ease;
-}
-.room.safe {
-  border-color: #10B981;
-  box-shadow: 0 0 12px #10B981;
-  animation: safeAnim 0.8s ease;
-}
-.room.highlight {
-  box-shadow: 0 0 22px 4px var(--accent-gold);
-  transition: box-shadow 0.3s;
-}
-@keyframes foundAnim {
-  0% { transform: scale(1); }
-  50% { transform: rotate(10deg) scale(1.15); }
-  100% { transform: scale(1); }
-}
-@keyframes safeAnim {
-  0% { transform: scale(1); }
-  50% { transform: rotate(-10deg) scale(0.95); }
-  100% { transform: scale(1); }
-}
+.room:hover{box-shadow:0 6px 16px rgba(255,215,0,.4);} /* hover like в втором шаблоне */
+.room.selected{border:3px solid var(--accent-gold);} /* толще рамка при выборе */
+.room.found{border:3px solid #FF4500;box-shadow:0 0 12px #FF4500;} /* найденная — красная */
+.room.safe{border:3px solid #10B981;box-shadow:0 0 12px #10B981;} /* безопасная — зелёная */
+.room.highlight{box-shadow:0 0 20px 4px var(--accent-gold);transition:.3s;} /* подсветка хода */
 
 /* Controls */
 .controls {
@@ -367,7 +340,33 @@ button.secondary {
 
 /* Мелкие адаптивные правки */
 @media (max-width: 520px) {
+  /* Мобильная адаптация — элементы стекуются и масштабируются, чтобы не было наложений */
   .coin-panel .coin-logo { width: 34px; height: 34px; border-width: 2px; }
+  button { font-size: 16px; padding: 10px; }
+  .miners-panel .miner-card { min-width: 140px; }
+  #miningShop .miner-card { width: 46%; }
+
+  /* Контролы — на маленьком экране ставим кнопки в колонку */
+  .controls { flex-direction: column; gap: 8px; width: 92%; }
+  .controls button { margin: 6px 0; }
+
+  /* Header — уменьшаем межэлементы, чтобы уровни и баланс не накладывались */
+  header { padding: 8px; }
+  .level-bar { gap: 4px; padding: 4px 6px; }
+  .level { font-size: 12px; padding: 6px 4px; }
+
+  /* Дом (сетка комнат) — чтобы комнаты оставались квадратными и не ломали верстку */
+  .house { max-width: 420px; gap: 10px; }
+  .room { font-size: 22px; padding: 12px; }
+
+  /* Нижнее меню — чуть выше экрана и уменьшенные иконки */
+  .bottom-menu { bottom: 18px; padding: 6px 6px; }
+  .bottom-menu button { font-size: 20px; }
+
+  /* Модалки занимают полный экран на мобильных — удобнее взаимодействовать */
+  #miningShop { padding: 18px; }
+  #buyConfirm .confirm-box { margin: 24px 12px; padding: 14px; }
+}
   button { font-size: 18px; padding: 12px; }
   .miners-panel .miner-card { min-width: 140px; }
   #miningShop .miner-card { width: 46%; }
@@ -568,10 +567,15 @@ function updIncome() {
 function addOfflineCoins() {
   const last = +localStorage.getItem('lastTime') || Date.now();
   const now = Date.now();
-  const diff = (now - last) / 60000; // минуты
-  if (diff > 0) {
-    updCoins(Math.floor(getIncome()/60 * diff));
+  // разница в минутах
+  let diffMinutes = (now - last) / 60000;
+  const maxOfflineMinutes = 180; // максимум 3 часа оффлайн-накоплений
+  if (diffMinutes > 0) {
+    const minutesToCredit = Math.min(diffMinutes, maxOfflineMinutes);
+    // начисляем пропорционально доходу в час
+    updCoins(Math.floor(getIncome() / 60 * minutesToCredit));
   }
+  // Сбрасываем отметку времени: дальнейшее начисление будет считаться от момента захода пользователя
   localStorage.setItem('lastTime', now);
 }
 addOfflineCoins();
@@ -879,6 +883,7 @@ buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
+
 
 
 
