@@ -321,6 +321,12 @@ const minersData = [
   { n: "Miner 5", i: 4500, p: 25000 }
 ];
 let minersState = JSON.parse(localStorage.getItem('minersState')) || minersData.map(_ => ({ count: 0 }));
+// Normalize minersState length to match minersData (fixes errors when stored state is outdated)
+if (!Array.isArray(minersState) || minersState.length !== minersData.length) {
+  const old = Array.isArray(minersState) ? minersState : [];
+  minersState = minersData.map((_, idx) => ({ count: (old[idx] && typeof old[idx].count === 'number') ? old[idx].count : 0 }));
+  try { localStorage.setItem('minersState', JSON.stringify(minersState)); } catch(e) { /* ignore storage errors */ }
+} 
 
 const miningIncomeValEl = document.getElementById('miningIncomeVal');
 const minersContainerEl = document.querySelector('.miners-container');
@@ -360,12 +366,18 @@ function showCoinFx(text, color='#fff'){
 
 // income
 function getIncome(){
-  const base = minersState.reduce((sum, m, i) => { return sum + (m.count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, m.count - 1)) : 0); }, 0);
-  let inc = base * prestigeMul;
+  // Safely compute income from minersState and minersData, guarding against undefined entries
+  const base = minersState.reduce((sum, m, i) => {
+    const md = minersData[i];
+    if (!md || !m || !m.count) return sum;
+    const per = Math.floor((md.i || 0) * Math.pow(1.5, (m.count || 0) - 1));
+    return sum + per;
+  }, 0);
+  let inc = Math.floor(base * prestigeMul);
   if (upgrades.income > 0) inc = Math.floor(inc * (1 + 0.2 * upgrades.income));
   if (eventState.active && eventState.expires > Date.now()) inc = inc * 2;
   return Math.floor(inc);
-}
+} 
 function updIncome(){ miningIncomeValEl.textContent = format(getIncome()); }
 
 // offline
@@ -448,7 +460,34 @@ function doHunt(){ if (selectedRoom == null) { showToast(t('pickRoomFirst'), 'wa
 document.getElementById('resetBtn').onclick = doHunt;
 
 // render miners
-function renderMiners(){ if (!minersContainerEl) return; minersContainerEl.innerHTML = ''; minersData.forEach((m,i)=>{ const st = minersState[i]; const price = Math.floor(m.p * Math.pow(2, st.count)); const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0; const card = document.createElement('div'); card.className = 'miner-card'; card.innerHTML = `\n      <img class="card-logo" src="logo.png" alt="logo" />\n      <h3>${m.n}</h3>\n      <div class="income">+${format(income)} / hr</div>\n      <div class="bottom">\n        <span class="lvl">Lvl ${st.count}</span>\n        <span class="price-pill">${format(price)}</span>\n      </div>\n    `; card.onclick = ()=>{ if (coins >= price) { pendingMiner = i; buyText.textContent = t('buyFor', { name: m.n, price: format(price) }); buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false'); } else { showToast(t('notEnough'), 'error'); } }; minersContainerEl.appendChild(card); }); }
+function renderMiners(){
+  if (!minersContainerEl) return;
+  minersContainerEl.innerHTML = '';
+  minersData.forEach((m,i)=>{
+    const st = minersState[i] || { count: 0 };
+    const price = Math.floor((m && m.p ? m.p : 0) * Math.pow(2, st.count || 0));
+    const income = st.count > 0 ? Math.floor((m && m.i ? m.i : 0) * Math.pow(1.5, (st.count || 1) - 1)) : 0;
+
+    const card = document.createElement('div'); card.className = 'miner-card';
+    card.innerHTML = `
+      <img class="card-logo" src="logo.png" alt="logo" />
+      <h3>${m ? m.n : 'Unknown'}</h3>
+      <div class="income">+${format(income)} / hr</div>
+      <div class="bottom">
+        <span class="lvl">Lvl ${st.count}</span>
+        <span class="price-pill">${format(price)}</span>
+      </div>
+    `;
+    card.onclick = ()=>{
+      if (coins >= price) {
+        pendingMiner = i;
+        buyText.textContent = t('buyFor', { name: m ? m.n : 'Miner', price: format(price) }) || `Buy ${m ? m.n : 'Miner'} for ${format(price)}?`;
+        buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false');
+      } else { showToast(t('notEnough'), 'error'); }
+    };
+    minersContainerEl.appendChild(card);
+  });
+}
 
 // shop open/close
 const miningBtn = document.getElementById('miningBtn');
