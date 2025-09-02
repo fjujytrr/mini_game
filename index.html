@@ -47,32 +47,9 @@ header {
   backdrop-filter: blur(6px);
   box-shadow: 0 6px 30px rgba(0,0,0,0.25);
 }
-.level-bar {
-  display: flex;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.12);
-  padding: 6px 10px;
-  border-radius: 12px;
-  flex: 1;
-  justify-content: space-between;
-}
-.level {
-  flex: 1;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #eee;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  transition: 0.5s;
-  cursor: pointer;
-}
-.level.active {
-  background: var(--accent-cyan);
-  color: #000;
-  box-shadow: 0 0 8px var(--accent-cyan);
-}
+
+
+
 .coin-panel {
   display: flex;
   align-items: center;
@@ -465,19 +442,12 @@ button.secondary {
 </head>
 <body>
 <header>
-  <div class="header-actions" style="display:flex;align-items:center;justify-content:flex-start;flex:1;"></div>
-    <div class="level" data-val="50000">50K</div>
-    <div class="level" data-val="100000">100K</div>
-    <div class="level" data-val="250000">250K</div>
-    <div class="level" data-val="500000">500K</div>
-    <div class="level" data-val="1000000">1M</div>
-    <div class="level" data-val="5000000">5M</div>
-  </div>
-  <div class="coin-panel">
-    <img class="coin-logo" src="logo.png" alt="Coin logo" />
-    <div class="val" id="coinsVal">0</div>
-    <!-- Кнопка настроек (заменила место для "рекорда") -->
+  <div style="width:95%;margin:15px 0;display:flex;align-items:center;justify-content:space-between;">
     <button id="settingsBtn" class="settings-btn" aria-label="Settings">⚙</button>
+    <div class="coin-panel">
+      <img class="coin-logo" src="logo.png" alt="Coin logo" />
+      <div class="val" id="coinsVal">0</div>
+    </div>
   </div>
 </header>
 
