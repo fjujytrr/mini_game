@@ -3,20 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, user-scalable=no" />
-<title>Hide & Seek — Premium Emoji</title>
+<title>Hide & Seek — Premium Emoji (Gold Theme)</title>
 <style>
-/* --- СЛЕГКА СВЕТЛЕЕ ФОН ИГРЫ --- */
 :root{
-  --accent-cyan: #00D8FF;
-  --birch: #EDE4C8; /* березовый цвет для цен и Profit/hr */
-  --purple-frame: #7a4bff;
+  --accent-gold: #FFD700;
+  --birch: #FFD700; /* золотой для цен и Profit/hr */
+  --frame-color: #FFD700;
+  --bg-dark-1: #1a1a1a;
+  --bg-dark-2: #2a2a2a;
 }
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
+  /* сохраняем анимацию фона из оригинала, но используем темные оттенки, похожие на вторую версию */
+  background: linear-gradient(120deg, var(--bg-dark-2), var(--bg-dark-1));
   background-size: 200% 200%;
   animation: gradientBG 15s ease infinite;
   overflow: hidden;
@@ -49,7 +51,7 @@ header {
 .level-bar {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.28);
   padding: 6px 10px;
   border-radius: 12px;
   flex: 1;
@@ -61,16 +63,16 @@ header {
   padding: 6px 0;
   font-size: 14px;
   font-weight: 700;
-  color: #eee;
+  color: #777;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
   transition: 0.5s;
   cursor: pointer;
 }
 .level.active {
-  background: var(--accent-cyan);
+  background: var(--accent-gold);
   color: #000;
-  box-shadow: 0 0 8px var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(255,215,0,0.7);
 }
 .coin-panel {
   display: flex;
@@ -79,7 +81,7 @@ header {
   background: rgba(0, 0, 0, 0.28);
   padding: 8px 12px;
   border-radius: 16px;
-  box-shadow: 0 0 12px rgba(0,216,255,0.18);
+  box-shadow: 0 0 12px rgba(255,215,0,0.18);
 }
 /* Логотип перед балансом */
 .coin-panel .coin-logo {
@@ -87,14 +89,14 @@ header {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--purple-frame);
-  box-shadow: 0 6px 18px rgba(122,75,255,0.18);
+  border: 3px solid var(--frame-color);
+  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
   background: #ffffff;
 }
 .coin-panel .val {
   font-weight: 700;
   font-size: 18px;
-  color: var(--accent-cyan);
+  color: var(--accent-gold);
 }
 
 /* House / rooms */
@@ -109,39 +111,39 @@ header {
   gap: 12px;
 }
 .room {
-  background: rgba(255, 255, 255, 0.06);
+  background: linear-gradient(145deg,var(--bg-dark-2),#111);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 28px;
-  color: #fff;
+  color: var(--accent-gold);
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.14);
+  border: 2px solid rgba(255, 255, 255, 0.06);
 }
 .room:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 18px rgba(0,216,255,0.14);
+  box-shadow: 0 6px 16px rgba(255,215,0,0.14);
 }
 .room.selected {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 12px var(--accent-cyan);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 12px var(--accent-gold);
 }
 .room.found {
-  border-color: #FF0054;
-  box-shadow: 0 0 12px #FF0054;
+  border-color: #FF4500;
+  box-shadow: 0 0 12px #FF4500;
   animation: foundAnim 1s ease;
 }
 .room.safe {
-  border-color: #39FF14;
-  box-shadow: 0 0 12px #39FF14;
+  border-color: #10B981;
+  box-shadow: 0 0 12px #10B981;
   animation: safeAnim 0.8s ease;
 }
 .room.highlight {
-  box-shadow: 0 0 22px 4px var(--accent-cyan);
+  box-shadow: 0 0 22px 4px var(--accent-gold);
   transition: box-shadow 0.3s;
 }
 @keyframes foundAnim {
@@ -171,19 +173,19 @@ button {
   border-radius: 12px;
   cursor: pointer;
   color: #000;
-  background: var(--accent-cyan);
-  box-shadow: 0 4px 12px rgba(0,216,255,0.25);
+  background: linear-gradient(90deg, var(--accent-gold), #FFC107);
+  box-shadow: 0 4px 12px rgba(255,215,0,0.25);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 button:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0,216,255,0.18);
+  box-shadow: 0 2px 6px rgba(255,215,0,0.18);
 }
 button.secondary {
   background: rgba(0,0,0,0.36);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 3px 8px rgba(0,216,255,0.12);
+  color: var(--accent-gold);
+  border: 1px solid rgba(255,215,0,0.12);
+  box-shadow: 0 3px 8px rgba(255,215,0,0.12);
 }
 
 /* Bottom menu */
@@ -201,7 +203,7 @@ button.secondary {
   padding: 6px 0;
   border-radius: 16px;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0 12px rgba(0,216,255,0.18);
+  box-shadow: 0 0 12px rgba(255,215,0,0.18);
 }
 .bottom-menu button {
   background: transparent;
@@ -211,7 +213,7 @@ button.secondary {
 }
 .bottom-menu button:hover {
   transform: scale(1.16);
-  color: var(--accent-cyan);
+  color: var(--accent-gold);
 }
 
 /* Upgrade panel - hidden by default */
@@ -227,45 +229,28 @@ button.secondary {
 }
 .upgrade {
   flex: 0 0 auto;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
   padding: 12px;
   border-radius: 14px;
   text-align: center;
   min-width: 220px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.08);
+  box-shadow: 0 2px 6px rgba(255,215,0,0.08);
 }
-.upgrade h3 {
-  margin: 0 0 6px;
-  font-size: 16px;
-  color: var(--accent-cyan);
-}
-.upgrade p {
-  margin: 0;
-  font-size: 14px;
-  color: #eee;
-}
-/* Цена апгрейда — сделана "березовой" */
-.upgrade .price {
-  margin-top: 6px;
-  font-weight: 700;
-  color: var(--birch);
-}
-.upgrade .timer {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--accent-cyan);
-}
+.upgrade h3 { margin: 0 0 6px; font-size: 16px; color: var(--accent-gold); }
+.upgrade p { margin: 0; font-size: 14px; color: #eee; }
+.upgrade .price { margin-top: 6px; font-weight: 700; color: var(--birch); }
+.upgrade .timer { margin-top: 4px; font-size: 12px; color: var(--accent-gold); }
 
 /* Mining info + visible miners panel */
 .mining-info {
   margin: 10px 0;
   padding: 10px 12px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.03);
   border-radius: 14px;
   width: 95%;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
+  box-shadow: 0 2px 6px rgba(255,215,0,0.06);
 }
 
 /* Visible miners panel - main screen */
@@ -278,12 +263,12 @@ button.secondary {
   overflow-x: auto;
   align-items: flex-start;
   margin-bottom: 12px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.02);
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,216,255,0.06);
+  box-shadow: 0 2px 6px rgba(255,215,0,0.04);
 }
 .miners-panel .miner-card {
-  background: rgba(255,255,255,0.04);
+  background: linear-gradient(160deg, var(--bg-dark-2), #111);
   color: #fff;
   border-radius: 14px;
   padding: 12px;
@@ -292,27 +277,26 @@ button.secondary {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
   cursor: pointer;
   transition: transform 0.25s, box-shadow 0.25s;
 }
-/* Логотип в карточке майнера */
 .miners-panel .miner-card .card-logo,
 #miningShop .miner-card .card-logo {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--purple-frame);
+  border: 2px solid var(--frame-color);
   background: #fff;
-  box-shadow: 0 6px 18px rgba(122,75,255,0.12);
+  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
 }
 .miners-panel .miner-card:hover {
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0,216,255,0.06);
+  box-shadow: 0 8px 20px rgba(255,215,0,0.06);
 }
 
-/* --- МОДАЛЬНОЕ ОКНО МАЙНИНГА (ПОЛНЫЙ ЭКРАН) --- */
+/* Modal mining shop (full screen in original) - keep original behavior */
 #miningShop {
   display: none;
   position: fixed;
@@ -322,59 +306,22 @@ button.secondary {
   height: 100%;
   transform: none;
   z-index: 900;
-  background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
+  background: linear-gradient(120deg, var(--bg-dark-2), var(--bg-dark-1));
   color: #fff;
   padding: 28px;
   box-sizing: border-box;
   overflow-y: auto;
   border: none;
 }
-#miningShop h2 {
-  color: #ecf8ff;
-  text-align: center;
-  margin-bottom: 10px;
-}
-#miningShop .miners-container {
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  justify-content:center;
-  padding:8px 6px;
-}
-/* карточки майнеров внутри модалки */
-#miningShop .miner-card {
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  width: 180px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  cursor:pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid rgba(255,255,255,0.04);
-}
+#miningShop h2 { color: var(--accent-gold); text-align: center; margin-bottom: 10px; }
+#miningShop .miners-container { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; padding:8px 6px; }
+#miningShop .miner-card { background: rgba(255,255,255,0.04); color: #fff; border-radius: 12px; padding: 12px; width: 180px; display:flex; flex-direction:column; align-items:center; gap:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); cursor:pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(255,255,255,0.04); }
 #miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
 #miningShop .miner-card h3 { margin:0; color:#f0fbff; }
-/* Profit/hr — березовый цвет, как и цена апгрейда */
-#miningShop .miner-card .income,
-.miners-panel .miner-card .income {
-  color: var(--birch);
-  font-weight: 700;
-}
-#miningShop .miner-card .bottom,
-.miners-panel .miner-card .bottom {
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  font-weight:700;
-  font-size:14px;
-}
+#miningShop .miner-card .income, .miners-panel .miner-card .income { color: var(--birch); font-weight: 700; }
+#miningShop .miner-card .bottom, .miners-panel .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
 
-/* Buy confirm — полный экран */
+/* Buy confirm — keep full screen style from original */
 #buyConfirm {
   display: none;
   position: fixed;
@@ -393,72 +340,30 @@ button.secondary {
   max-width: 520px;
   margin: 40px auto;
   background: linear-gradient(120deg, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
-  border: 2px solid var(--accent-cyan);
+  border: 2px solid var(--accent-gold);
   border-radius: 16px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 0 20px var(--accent-cyan);
+  box-shadow: 0 0 20px var(--accent-gold);
 }
 #buyConfirm.show { display:block; }
 #buyConfirm p { color: #fff; margin: 8px 0; }
-#buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:var(--accent-cyan); color:#000; border:none; border-radius:8px; }
+#buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:var(--accent-gold); color:#000; border:none; border-radius:8px; }
 
-/* Info & profile windows — полный экран */
-#infoWindow {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  z-index: 800;
-  background: #000000;
-  box-sizing: border-box;
-  padding: 28px;
-  overflow-y: auto;
-}
-#infoWindow .content {
-  max-width: 720px;
-  margin: 24px auto;
-  border: 2px solid var(--accent-cyan);
-  border-radius: 12px;
-  padding: 16px;
-  background: rgba(0,0,0,0.86);
-  box-shadow: 0 0 20px var(--accent-cyan);
-}
-#infoWindow h2 { color: var(--accent-cyan); margin-bottom: 10px; }
+/* Info & profile windows — keep original full-screen look */
+#infoWindow { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; transform: none; z-index: 800; background: #000000; box-sizing: border-box; padding: 28px; overflow-y: auto; }
+#infoWindow .content { max-width: 720px; margin: 24px auto; border: 2px solid var(--accent-gold); border-radius: 12px; padding: 16px; background: rgba(0,0,0,0.86); box-shadow: 0 0 20px var(--accent-gold); }
+#infoWindow h2 { color: var(--accent-gold); margin-bottom: 10px; }
 #infoWindow ul { color: #ccc; padding-left: 20px; }
-#infoWindow ul li::before { content: "• "; color: var(--accent-cyan); font-weight:600; }
-#infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-cyan); color:#000; cursor:pointer; font-weight:700; }
+#infoWindow ul li::before { content: "• "; color: var(--accent-gold); font-weight:600; }
+#infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-gold); color:#000; cursor:pointer; font-weight:700; }
 
-#profileWindow {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  z-index: 800;
-  background: #000000;
-  box-sizing: border-box;
-  padding: 28px;
-  overflow-y: auto;
-}
-#profileWindow .content {
-  max-width: 720px;
-  margin: 24px auto;
-  border: 2px solid var(--accent-cyan);
-  border-radius: 12px;
-  padding: 16px;
-  background: rgba(0,0,0,0.86);
-  box-shadow: 0 0 20px var(--accent-cyan);
-}
-#profileWindow h2 { color:var(--accent-cyan); margin-bottom:12px; text-align:center; }
-#profileWindow h3 { color:var(--accent-cyan); }
+#profileWindow { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; transform: none; z-index: 800; background: #000000; box-sizing: border-box; padding: 28px; overflow-y: auto; }
+#profileWindow .content { max-width: 720px; margin: 24px auto; border: 2px solid var(--accent-gold); border-radius: 12px; padding: 16px; background: rgba(0,0,0,0.86); box-shadow: 0 0 20px var(--accent-gold); }
+#profileWindow h2 { color:var(--accent-gold); margin-bottom:12px; text-align:center; }
+#profileWindow h3 { color:var(--accent-gold); }
 #profileWindow p { color:#ccc; }
-#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-cyan); color:#000; cursor:pointer;font-weight:700; }
+#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-gold); color:#000; cursor:pointer;font-weight:700; }
 
 /* Мелкие адаптивные правки */
 @media (max-width: 520px) {
@@ -519,7 +424,7 @@ button.secondary {
 <div id="miningShop" aria-hidden="true">
   <h2>Mining Shop</h2>
   <div class="miners-container"></div>
-  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
+  <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:var(--accent-gold);color:#000;cursor:pointer;">Close</button>
 </div>
 
 <!-- Buy confirm -->
@@ -554,18 +459,18 @@ button.secondary {
   <div class="content">
     <h2>Profile</h2>
     <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
+      <h3 style="margin-bottom:8px;font-size:18px;color:var(--accent-gold)">Daily Reward</h3>
       <p style="margin-bottom:12px;color:#f0fbff">Get 30,000 coins once a day!</p>
-      <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
-      <p id="dailyStatus" style="margin-top:8px;color:var(--accent-cyan);font-weight:600;text-align:center;"></p>
+      <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-gold),#FFC107);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
+      <p id="dailyStatus" style="margin-top:8px;color:var(--accent-gold);font-weight:600;text-align:center;"></p>
     </div>
     <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.28);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-      <h3 style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
+      <h3 style="margin-bottom:8px;font-size:18px;color:var(--accent-gold)">Quest</h3>
       <p style="margin-bottom:12px;color:#f0fbff">Subscribe to get bonus coins!</p>
-      <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
-      <p id="questStatus" style="margin-top:8px;color:var(--accent-cyan);font-weight:600;text-align:center;"></p>
+      <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-gold),#FFC107);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
+      <p id="questStatus" style="margin-top:8px;color:var(--accent-gold);font-weight:600;text-align:center;"></p>
     </div>
-    <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Close</button>
+    <button id="closeProfile" style="width:100%;padding:14px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-gold),#FFC107);color:#000;cursor:pointer;font-weight:700;">Close</button>
   </div>
 </div>
 
@@ -799,7 +704,7 @@ function renderMiners() {
     function buildCard(forModal) {
       let card = document.createElement('div');
       card.className = 'miner-card';
-      // вставляем логотип над названием и делаем Profit/hr березовым (CSS управляет цветом)
+      // вставляем логотип над названием и делаем Profit/hr золотым (CSS управляет цветом)
       if (forModal) {
         card.innerHTML = ''
           + '<img class="card-logo" src="logo.png" alt="logo" />'
@@ -974,7 +879,6 @@ buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
-
 
 
 
