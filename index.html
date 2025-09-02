@@ -5,412 +5,109 @@
 <meta name="viewport" content="width=device-width, user-scalable=no" />
 <title>Hide & Seek — Premium Emoji (Gold Theme)</title>
 <style>
-:root{
-  --accent-gold: #FFD700;
-  --birch: #FFD700; /* золотой для цен и Profit/hr */
-  --frame-color: #FFD700;
-  --bg-dark-1: #1a1a1a;
-  --bg-dark-2: #2a2a2a;
-}
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: 'Inter', sans-serif;
-  /* сохраняем анимацию фона из оригинала, но используем темные оттенки, похожие на вторую версию */
-  background: linear-gradient(120deg, var(--bg-dark-2), var(--bg-dark-1));
-  background-size: 200% 200%;
-  animation: gradientBG 15s ease infinite;
-  overflow: hidden;
-  color: #ffffff;
-}
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-
-/* Header + panels */
-header {
-  width: 95%;
-  margin: 15px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.28);
-  border-radius: 12px;
-  padding: 10px;
-  backdrop-filter: blur(5px);
-}
-.level-bar {
-  display: flex;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.28);
-  padding: 6px 10px;
-  border-radius: 12px;
-  flex: 1;
-  justify-content: space-between;
-}
-.level {
-  flex: 1;
-  text-align: center;
-  padding: 6px 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #777;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: 0.5s;
-  cursor: pointer;
-}
-.level.active {
-  background: var(--accent-gold);
-  color: #000;
-  box-shadow: 0 0 12px rgba(255,215,0,0.7);
-}
-.coin-panel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.28);
-  padding: 8px 12px;
-  border-radius: 16px;
-  box-shadow: 0 0 12px rgba(255,215,0,0.18);
-}
-/* Логотип перед балансом */
-.coin-panel .coin-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--frame-color);
-  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
-  background: #ffffff;
-}
-.coin-panel .val {
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--accent-gold);
-}
-
-/* House / rooms */
-.house {
-  position: relative;
-  width: 95%;
-  max-width: 500px;
-  margin: 12px 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  /* Задаём фиксированную высоту рядов — чтобы комнаты были компактнее и не оттесняли панель майнеров */
-  grid-template-rows: repeat(4, 80px);
-  gap: 10px;
-}
-/* Компактные карточки комнат — копия стилей из золотого шаблона, но уменьшенные */
-.room{
-  background: linear-gradient(145deg,#2a2a2a,#111);
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:18px; /* уменьшенный шрифт */
-  cursor:pointer;
-  transition:.18s;
-  color:var(--accent-gold);
-  box-shadow:0 3px 8px rgba(0,0,0,.45);
-}
-.room:hover{box-shadow:0 6px 14px rgba(255,215,0,.32);} /* hover */
-.room.selected{border:2px solid var(--accent-gold);} /* тоньше рамка при выборе */
-.room.found{border:2px solid #FF4500;box-shadow:0 0 10px #FF4500;} /* найденная — красная */
-.room.safe{border:2px solid #10B981;box-shadow:0 0 10px #10B981;} /* безопасная — зелёная */
-.room.highlight{box-shadow:0 0 18px 3px var(--accent-gold);transition:.2s;} /* подсветка хода */
-
-/* Controls */
-.controls {
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-button {
-  flex: 1;
-  margin: 0 5px;
+html,body{margin:0;padding:0;font-family:Inter,sans-serif;background:#1a1a1a;color:#fff;overflow:hidden;touch-action:none;}
+body{display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;}
+.level-bar{display:flex;gap:6px;background:#222;padding:6px 10px;border-radius:12px;flex:1;justify-content:space-between;}
+.level{flex:1;text-align:center;padding:6px 0;font-size:14px;font-weight:700;color:#555;border-radius:8px;background:#333;transition:.5s;cursor:pointer;}
+.level.active{background:#FFD700;color:#000;box-shadow:0 0 12px rgba(255,215,0,.7);}
+.coin-panel{display:flex;align-items:center;gap:8px;background:#222;padding:8px 16px;border-radius:16px;box-shadow:0 0 10px rgba(255,215,0,.4);}
+.coin-panel .val{font-weight:700;font-size:18px;color:#FFD700;}
+#coinLogo{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid #FFD700;}
+.house{position:relative;width:95%;max-width:480px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px;}
+.room{background:linear-gradient(145deg,#2a2a2a,#111);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;cursor:pointer;transition:.25s;color:#FFD700;box-shadow:0 4px 12px rgba(0,0,0,.5);}
+.room:hover{box-shadow:0 6px 16px rgba(255,215,0,.4);}
+.room.selected{border:3px solid #FFD700;}
+.room.found{border:3px solid #FF4500;box-shadow:0 0 12px #FF4500;}
+.room.safe{border:3px solid #10B981;box-shadow:0 0 12px #10B981;}
+.room.highlight{box-shadow:0 0 20px 4px #FFD700;transition:.3s;}
+.controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px;}
+button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:linear-gradient(90deg,#FFD700,#FFC107);box-shadow:0 4px 8px rgba(255,215,0,.4);}
+button:active{box-shadow:0 2px 4px rgba(255,215,0,.3);}
+button.secondary{background:#2e2e2e;color:#FFD700;border:1px solid #FFD700;box-shadow:0 3px 6px rgba(255,215,0,.2);}
+.bottom-menu{position:fixed;bottom:50px;left:50%;transform:translateX(-50%);width:95%;display:flex;justify-content:space-around;gap:8px;background:#111;padding:6px 0;border-radius:16px;box-shadow:0 0 12px rgba(255,215,0,.3);}
+.bottom-menu button{flex:1;margin:0 4px;font-size:22px;}
+.upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:10px;width:95%;}
+.upgrade{flex:0 0 auto;background:#222;padding:12px;border-radius:14px;text-align:center;min-width:150px;cursor:pointer;box-shadow:0 2px 6px rgba(255,215,0,.2);}
+.upgrade h3{margin:0 0 6px;font-size:16px;color:#FFD700;}
+.upgrade p{margin:0;font-size:14px;}
+.upgrade .price{margin-top:6px;font-weight:700;color:#FFD700;}
+.upgrade .timer{margin-top:4px;font-size:12px;color:#FFD700;}
+.mining-info{margin:10px 0;padding:10px 12px;background:#222;border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(255,215,0,.2);}
+#miningShop{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:200;overflow-y:auto;max-height:80vh;}
+.miners-container{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.miner-card {
+  background: linear-gradient(160deg, #2a2a2a, #111);
+  color: #fff;
+  border-radius: 14px;
   padding: 14px;
-  font-size: 20px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #000;
-  background: linear-gradient(90deg, var(--accent-gold), #FFC107);
-  box-shadow: 0 4px 12px rgba(255,215,0,0.25);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(255,215,0,0.18);
-}
-button.secondary {
-  background: rgba(0,0,0,0.36);
-  color: var(--accent-gold);
-  border: 1px solid rgba(255,215,0,0.12);
-  box-shadow: 0 3px 8px rgba(255,215,0,0.12);
-}
-
-/* Bottom menu */
-.bottom-menu {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 480px;
-  display: flex;
-  justify-content: space-around;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.28);
-  padding: 6px 0;
-  border-radius: 16px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 12px rgba(255,215,0,0.18);
-}
-.bottom-menu button {
-  background: transparent;
-  color: #fff;
-  font-size: 22px;
-  transition: transform 0.2s;
-}
-.bottom-menu button:hover {
-  transform: scale(1.16);
-  color: var(--accent-gold);
-}
-
-/* Upgrade panel - hidden by default */
-.upgrade-panel {
-  display: none;
-  gap: 12px;
-  margin: 10px 0;
-  overflow-x: auto;
-  padding: 10px;
-  width: 95%;
-  justify-content: center;
-  align-items: stretch;
-}
-.upgrade {
-  flex: 0 0 auto;
-  background: rgba(255,255,255,0.03);
-  padding: 12px;
-  border-radius: 14px;
-  text-align: center;
-  min-width: 220px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(255,215,0,0.08);
-}
-.upgrade h3 { margin: 0 0 6px; font-size: 16px; color: var(--accent-gold); }
-.upgrade p { margin: 0; font-size: 14px; color: #eee; }
-.upgrade .price { margin-top: 6px; font-weight: 700; color: var(--birch); }
-.upgrade .timer { margin-top: 4px; font-size: 12px; color: var(--accent-gold); }
-
-/* Mining info + visible miners panel */
-.mining-info {
-  margin: 10px 0;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 14px;
-  width: 95%;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(255,215,0,0.06);
-}
-
-/* Visible miners panel - main screen */
-.miners-panel {
-  width: 95%;
-  max-width: 900px;
-  display: flex;
-  gap: 12px;
-  padding: 12px; /* чуть больше паддинга чтобы карточки не прилипали */
-  overflow-x: auto;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); /* лёгкий контраст с фоном */
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
-}
-.miners-panel .miner-card {
-  background: linear-gradient(160deg, #3a3a3a, #141414); /* чуть светлее, чтобы было видно */
-  color: #fff;
-  border-radius: 14px;
-  padding: 14px 16px; /* увеличенный padding для читаемости */
-  min-width: 180px; /* увеличенная ширина карточки на главном экране */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.6);
-  cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
-  border: 1px solid rgba(255,215,0,0.12); /* тонкая золотая окантовка для контраста */
-  flex: 0 0 auto; /* гарантируем, что карточки не сжимаются */
-}
-.miners-panel .miner-card .card-logo,
-#miningShop .miner-card .card-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--frame-color);
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
-}
-.miners-panel .miner-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(255,215,0,0.12);
-}
-
-/* уточняем вид текста внутри карточки */
-.miners-panel .miner-card h3 { font-size: 16px; margin: 0; color: #fff; text-align:center; }
-.miners-panel .miner-card .income { color: var(--birch); font-weight:700; }
-.miners-panel .miner-card .income .income-val { color: #9ff3a1; }
-.miners-panel .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
-
-/* и на мобильных немного уменьшаем, но сохраняем контраст */
-@media (max-width:520px) {
-  .miners-panel { padding: 8px; }
-  .miners-panel .miner-card { min-width: 150px; padding: 12px; }
-  .miners-panel .miner-card .card-logo { width:48px; height:48px; }
-}
-.miners-panel .miner-card {
-  background: linear-gradient(160deg, var(--bg-dark-2), #111);
-  color: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  min-width: 160px;
+  width: 45%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  box-shadow: 0 3px 10px rgba(0,0,0,.5);
   cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s;
+  transition: 0.3s;
 }
-.miners-panel .miner-card .card-logo,
-#miningShop .miner-card .card-logo {
-  width: 48px;
-  height: 48px;
+
+.miner-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 18px rgba(255,215,0,.4);
+}
+
+.miner-card h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.miner-card .miner-img {
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--frame-color);
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(255,215,0,0.12);
-}
-.miners-panel .miner-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(255,215,0,0.06);
+  border: 2px solid #FFD700;
+  background: #000;
 }
 
-/* Modal mining shop (full screen in original) - keep original behavior */
-#miningShop {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
+.miner-card .income {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.miner-card .income-val {
+  color: #10B981; /* зелёный для дохода */
+  font-weight: 700;
+}
+
+.miner-card .bottom {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
-  height: 100%;
-  transform: none;
-  z-index: 900;
-  background: linear-gradient(120deg, var(--bg-dark-2), var(--bg-dark-1));
-  color: #fff;
-  padding: 28px;
-  box-sizing: border-box;
-  overflow-y: auto;
-  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 6px;
 }
-#miningShop h2 { color: var(--accent-gold); text-align: center; margin-bottom: 10px; }
-#miningShop .miners-container { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; padding:8px 6px; }
-#miningShop .miner-card { background: rgba(255,255,255,0.04); color: #fff; border-radius: 12px; padding: 12px; width: 180px; display:flex; flex-direction:column; align-items:center; gap:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.18); cursor:pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(255,255,255,0.04); }
-#miningShop .miner-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
-#miningShop .miner-card h3 { margin:0; color:#f0fbff; }
-#miningShop .miner-card .income, .miners-panel .miner-card .income { color: var(--birch); font-weight: 700; }
-#miningShop .miner-card .bottom, .miners-panel .miner-card .bottom { width:100%; display:flex; justify-content:space-between; font-weight:700; font-size:14px; }
 
-/* Buy confirm — keep full screen style from original */
-#buyConfirm {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: none;
-  z-index: 1000;
-  background: #000000;
-  box-sizing: border-box;
-  padding: 40px;
-  overflow-y: auto;
+.miner-card .lvl {
+  color: #3B82F6; /* синий уровень */
 }
-#buyConfirm .confirm-box {
-  max-width: 520px;
-  margin: 40px auto;
-  background: linear-gradient(120deg, rgba(0,0,0,0.9), rgba(0,0,0,0.98));
-  border: 2px solid var(--accent-gold);
-  border-radius: 16px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 0 20px var(--accent-gold);
+
+.miner-card .price {
+  color: #FFD700; /* золотая цена */
 }
-#buyConfirm.show { display:block; }
-#buyConfirm p { color: #fff; margin: 8px 0; }
-#buyConfirm button { margin: 10px 8px; flex: 1; padding: 8px; font-weight:700; background:var(--accent-gold); color:#000; border:none; border-radius:8px; }
 
-/* Info & profile windows — keep original full-screen look */
-#infoWindow { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; transform: none; z-index: 800; background: #000000; box-sizing: border-box; padding: 28px; overflow-y: auto; }
-#infoWindow .content { max-width: 720px; margin: 24px auto; border: 2px solid var(--accent-gold); border-radius: 12px; padding: 16px; background: rgba(0,0,0,0.86); box-shadow: 0 0 20px var(--accent-gold); }
-#infoWindow h2 { color: var(--accent-gold); margin-bottom: 10px; }
-#infoWindow ul { color: #ccc; padding-left: 20px; }
-#infoWindow ul li::before { content: "• "; color: var(--accent-gold); font-weight:600; }
-#infoWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-gold); color:#000; cursor:pointer; font-weight:700; }
+.coin-img{width:18px;height:18px;border-radius:50%;vertical-align:middle;margin-right:4px;}
+#buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#222;border:2px solid #FFD700;border-radius:16px;padding:20px;text-align:center;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:300;opacity:0;transition:.3s;}
+#buyConfirm.show{display:block;opacity:1;}
+#buyConfirm button{margin:10px 8px;flex:1;}
+#profileWindow{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:500px;max-height:80vh;background:#222;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,215,0,.5);z-index:200;overflow-y:auto;}
 
-#profileWindow { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; transform: none; z-index: 800; background: #000000; box-sizing: border-box; padding: 28px; overflow-y: auto; }
-#profileWindow .content { max-width: 720px; margin: 24px auto; border: 2px solid var(--accent-gold); border-radius: 12px; padding: 16px; background: rgba(0,0,0,0.86); box-shadow: 0 0 20px var(--accent-gold); }
-#profileWindow h2 { color:var(--accent-gold); margin-bottom:12px; text-align:center; }
-#profileWindow h3 { color:var(--accent-gold); }
-#profileWindow p { color:#ccc; }
-#profileWindow button { width:100%; margin-top:12px; padding:12px; font-size:18px; border:none; border-radius:12px; background:var(--accent-gold); color:#000; cursor:pointer;font-weight:700; }
-
-/* Мелкие адаптивные правки */
+/* Мобильные правки */
 @media (max-width: 520px) {
-  /* Мобильная адаптация — элементы стекуются и масштабируются, чтобы не было наложений */
   .coin-panel .coin-logo { width: 34px; height: 34px; border-width: 2px; }
-  button { font-size: 16px; padding: 10px; }
-  .miners-panel .miner-card { min-width: 140px; }
-  #miningShop .miner-card { width: 46%; }
-
-  /* Контролы — на маленьком экране ставим кнопки в колонку */
-  .controls { flex-direction: column; gap: 8px; width: 92%; }
-  .controls button { margin: 6px 0; }
-
-  /* Header — уменьшаем межэлементы, чтобы уровни и баланс не накладывались */
-  header { padding: 8px; }
-  .level-bar { gap: 4px; padding: 4px 6px; }
-  .level { font-size: 12px; padding: 6px 4px; }
-
-  /* Дом (сетка комнат) — чтобы комнаты оставались квадратными и не ломали верстку */
-  .house { max-width: 420px; gap: 10px; }
-  .room { font-size: 22px; padding: 12px; }
-
-  /* Нижнее меню — чуть выше экрана и уменьшенные иконки */
-  .bottom-menu { bottom: 18px; padding: 6px 6px; }
-  .bottom-menu button { font-size: 20px; }
-
-  /* Модалки занимают полный экран на мобильных — удобнее взаимодействовать */
-  #miningShop { padding: 18px; }
-  #buyConfirm .confirm-box { margin: 24px 12px; padding: 14px; }
-}
   button { font-size: 18px; padding: 12px; }
   .miners-panel .miner-card { min-width: 140px; }
   #miningShop .miner-card { width: 46%; }
@@ -927,6 +624,7 @@ buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
+
 
 
 
