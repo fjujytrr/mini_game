@@ -16,7 +16,7 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(120deg, #3b2a7a, #8aa7ff);
+  background: linear-gradient(120deg, #3b2a7a, #7a4bff);
   background-size: 200% 200%;
   animation: gradientBG 15s ease infinite;
   overflow: hidden;
@@ -395,7 +395,7 @@ button.secondary {
   height: 100%;
   transform: none;
   z-index: 1000;
-  background: rgba(0,0,0,0.7);
+  background: linear-gradient(120deg, #3b2a7a, #7a4bff);
   box-sizing: border-box;
   padding: 40px;
   overflow-y: auto;
@@ -424,7 +424,7 @@ button.secondary {
   height: 100%;
   transform: none;
   z-index: 800;
-  background: linear-gradient(120deg, rgba(59,42,122,0.92), rgba(138,167,255,0.92));
+  background: linear-gradient(120deg, #3b2a7a, #7a4bff);
   color: #fff;
   box-sizing: border-box;
   padding: 28px;
@@ -436,7 +436,7 @@ button.secondary {
   border: 2px solid var(--accent-cyan);
   border-radius: 12px;
   padding: 16px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.24), rgba(0,0,0,0.12));
+  background: linear-gradient(180deg, #4b36a3, #3b2a7a);
   box-shadow: 0 10px 40px rgba(0,0,0,0.35);
 }
 .window-fullscreen h2 { color: var(--accent-cyan); margin-bottom: 10px; }
@@ -465,8 +465,7 @@ button.secondary {
 </head>
 <body>
 <header>
-  <div class="level-bar">
-    <div class="level" data-val="10000">10K</div>
+  <div class="header-actions" style="display:flex;align-items:center;justify-content:flex-start;flex:1;"></div>
     <div class="level" data-val="50000">50K</div>
     <div class="level" data-val="100000">100K</div>
     <div class="level" data-val="250000">250K</div>
