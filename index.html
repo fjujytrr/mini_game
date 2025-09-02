@@ -104,31 +104,32 @@ header {
   position: relative;
   width: 95%;
   max-width: 500px;
-  margin: 20px 0;
+  margin: 12px 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 12px;
+  /* Задаём фиксированную высоту рядов — чтобы комнаты были компактнее и не оттесняли панель майнеров */
+  grid-template-rows: repeat(4, 80px);
+  gap: 10px;
 }
-/* Копия стилей комнат из второго (золотого) шаблона — ровные квадратные карточки, тёмный градиент и золотые акценты */
+/* Компактные карточки комнат — копия стилей из золотого шаблона, но уменьшенные */
 .room{
   background: linear-gradient(145deg,#2a2a2a,#111);
-  border-radius:14px;
+  border-radius:10px;
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:700;
-  font-size:28px;
+  font-size:18px; /* уменьшенный шрифт */
   cursor:pointer;
-  transition:.25s;
+  transition:.18s;
   color:var(--accent-gold);
-  box-shadow:0 4px 12px rgba(0,0,0,.5);
+  box-shadow:0 3px 8px rgba(0,0,0,.45);
 }
-.room:hover{box-shadow:0 6px 16px rgba(255,215,0,.4);} /* hover like в втором шаблоне */
-.room.selected{border:3px solid var(--accent-gold);} /* толще рамка при выборе */
-.room.found{border:3px solid #FF4500;box-shadow:0 0 12px #FF4500;} /* найденная — красная */
-.room.safe{border:3px solid #10B981;box-shadow:0 0 12px #10B981;} /* безопасная — зелёная */
-.room.highlight{box-shadow:0 0 20px 4px var(--accent-gold);transition:.3s;} /* подсветка хода */
+.room:hover{box-shadow:0 6px 14px rgba(255,215,0,.32);} /* hover */
+.room.selected{border:2px solid var(--accent-gold);} /* тоньше рамка при выборе */
+.room.found{border:2px solid #FF4500;box-shadow:0 0 10px #FF4500;} /* найденная — красная */
+.room.safe{border:2px solid #10B981;box-shadow:0 0 10px #10B981;} /* безопасная — зелёная */
+.room.highlight{box-shadow:0 0 18px 3px var(--accent-gold);transition:.2s;} /* подсветка хода */
 
 /* Controls */
 .controls {
@@ -745,7 +746,7 @@ function renderMiners() {
 
   minersData.forEach((m, i) => {
     let st = minersState[i];
-    let price = m.p * Math.pow(2, st.count);
+    let price = m.p * Math.pow(3, st.count);
     let income = st.count > 0 ? m.i * Math.pow(2, st.count - 1) : 0;
 
     function buildCard(forModal) {
@@ -801,7 +802,7 @@ document.getElementById('confirmBuy').onclick = () => {
   let i = pendingMiner;
   let m = minersData[i];
   let st = minersState[i];
-  let price = m.p * Math.pow(2, st.count);
+  let price = m.p * Math.pow(3, st.count);
   if (coins >= price) {
     coins -= price;
     st.count++;
@@ -926,6 +927,7 @@ buyConfirm.setAttribute('aria-hidden', 'true');
 </script>
 </body>
 </html>
+
 
 
 
