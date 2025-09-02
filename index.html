@@ -182,7 +182,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     <strong id="miningLabel">Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
   </div>
 
-  <div class="event-banner" id="eventBanner">DOUBLE EVENT ACTIVE — +100% income</div>
+  
 
   <!-- Скрытая панель майнеров для совместимости (не показываем на главном) -->
   <div class="miners-panel" id="minersPanelVisible" aria-hidden="true"></div>
@@ -649,5 +649,25 @@ window._game = { updCoins, doHunt, startEvent, stopEvent, stats, achievements, a
   }catch(e){ console.error('reinit failed',e); showFatal(e.message || e); }
 })();
 </script>
+<script>(function(){
+  // ensure a hidden eventBanner exists so legacy code won't throw
+  try{ if (!document.getElementById('eventBanner')){ var e=document.createElement('div'); e.id='eventBanner'; e.style.display='none'; e.style.visibility='hidden'; document.body.appendChild(e); } }catch(e){}
+  // stub TelegramGameProxy to prevent environment-specific errors
+  try{ window.TelegramGameProxy = window.TelegramGameProxy || { receiveEvent: function(){} }; }catch(e){}
+  // suppress visible reward UI elements (toasts, coin effects, mining info)
+  try{
+    var tw = document.getElementById('toastWrap'); if (tw) tw.style.display='none';
+    var cf = document.getElementById('coinFloat'); if (cf) cf.style.display='none';
+    var mi = document.querySelector('.mining-info'); if (mi) mi.style.display='none';
+  }catch(e){}
+  // globally disable showToast and coin fx
+  try{ window.showToast = function(){}; window.showCoinFx = function(){}; }catch(e){}
+  // disable auto-hunt if present
+  try{ if (typeof autoId !== 'undefined' && autoId) clearInterval(autoId); window.startAuto = window.stopAuto = function(){}; }catch(e){}
+  // remove upgrade tooltips and hide auto-controls UI
+  try{ document.querySelectorAll('.upgrade').forEach(function(u){ u.onmouseenter=null; u.onmousemove=null; u.onmouseleave=null; }); document.querySelectorAll('.auto-controls').forEach(function(n){ n.remove(); }); }catch(e){}
+  // hide fatal error about TelegramGameProxy if it exists
+  try{ var fe = document.getElementById('fatalError'); if (fe && fe.textContent && fe.textContent.indexOf('TelegramGameProxy')!==-1) fe.style.display='none'; }catch(e){}
+})();</script>
 </body>
 </html>
