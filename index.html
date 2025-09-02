@@ -53,9 +53,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px}
 /* Mining info */
 .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)}
-/* Видимая панель майнеров — убираем с главного экрана */
-.miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px}
-.miners-panel .miner-card{display:none}
+/* Видимая панель майнеров — показываем на главном экране */
+.miners-panel{display:flex;width:95%;max-width:1100px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px}
+.miners-panel .miner-card{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;width:160px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)}
+.miners-panel .miner-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.35)}
 /* Модальный магазин майнеров (полноэкранный) */
 #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
@@ -128,8 +129,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     <strong id="miningLabel">Mining Income:</strong> <span id="miningIncomeVal">0</span>/hr
   </div>
 
-  <!-- Скрытая панель майнеров для совместимости (не показываем на главном) -->
-  <div class="miners-panel" id="minersPanelVisible" aria-hidden="true"></div>
+  <!-- Видимая панель майнеров (теперь показывается на главном экране) -->
+  <div class="miners-panel" id="minersPanelVisible" aria-hidden="false"></div>
 
   <!-- Modal mining shop (fullscreen modal) -->
   <div id="miningShop" aria-hidden="true">
@@ -483,15 +484,17 @@ document.getElementById('resetBtn').onclick = ()=>{
   }, delay+700);
 };
 
-// render miners cards (только в модальном окне)
+// render miners cards (теперь и в модальном окне, и на главном экране)
 function renderMiners(){
-  if (!minersContainerEl) return;
+  if (!minersContainerEl || !minersPanelVisible) return;
   minersContainerEl.innerHTML = '';
+  minersPanelVisible.innerHTML = '';
   minersData.forEach((m,i)=>{
     const st = minersState[i];
     const price = m.p * Math.pow(2, st.count);
     const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
 
+    // модальная карточка
     const card = document.createElement('div'); card.className = 'miner-card';
     card.innerHTML = `
       <img class="card-logo" src="logo.png" alt="logo" />
@@ -510,6 +513,12 @@ function renderMiners(){
       } else { alert(t('notEnough')); }
     };
     minersContainerEl.appendChild(card);
+
+    // карточка для главного экрана (дублирует поведение)
+    const mainCard = document.createElement('div'); mainCard.className = 'miner-card';
+    mainCard.innerHTML = card.innerHTML;
+    mainCard.onclick = card.onclick;
+    minersPanelVisible.appendChild(mainCard);
   });
 }
 
@@ -556,10 +565,10 @@ const infoWindowEl = document.getElementById('infoWindow');
 document.getElementById('infoBtn').onclick = ()=>{ infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); };
 document.getElementById('closeInfo').onclick = ()=>{ infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); };
 
-// shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — только upgradePanel видна
+// shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — апгрейды + панель майнеров
 const upgradePanel = document.getElementById('upgradePanel');
-// Скрываем видимую панель майнеров на главном экране и показываем апгрейды
-minersPanelVisible.style.display = 'none';
+// Показываем видимую панель майнеров на главном экране и апгрейды
+minersPanelVisible.style.display = 'flex';
 upgradePanel.style.display = 'flex';
 
 // language selector
