@@ -356,6 +356,8 @@ function save(){ localStorage.setItem('coins', coins); localStorage.setItem('max
 
 // Toasts
 const toastWrap = document.getElementById('toastWrap');
+function showError(msg, ttl=3000){ try{ let el=document.getElementById('uiErrorBanner'); if(!el){ el=document.createElement('div'); el.id='uiErrorBanner'; Object.assign(el.style,{position:'fixed',top:'12px',left:'50%',transform:'translateX(-50%)',padding:'10px 14px',background:'rgba(255,65,54,0.95)',color:'#fff',zIndex:99998,borderRadius:'8px',fontWeight:800}); document.body.appendChild(el); } el.textContent = msg; el.style.display='block'; setTimeout(()=>{ el.style.display='none'; }, ttl); }catch(e){ console.error('showError failed', e); } }
+(function(){ const old = window.showToast; window.showToast = function(text,type='success',ttl=2500){ try{ if (typeof text === 'string' && text === t('notEnough')) { showError(text); return; } }catch(e){} if (typeof old === 'function') return old(text,type,ttl); }; })();
 function showToast(text, type='success', ttl=2500){ const el = document.createElement('div'); el.className = 'toast ' + (type||''); el.textContent = text; toastWrap.appendChild(el); setTimeout(()=>{ el.style.opacity=0; setTimeout(()=>el.remove(),300); }, ttl); }
 
 // Coin float
@@ -431,7 +433,7 @@ document.querySelectorAll('.room').forEach(r => {
 });
 
 // start button
-document.getElementById('startBtn').onclick = ()=>{ if (selectedRoom == null) { showToast(t('pickRoomFirst'), 'warn'); return; } document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe')); };
+document.getElementById('startBtn').onclick = ()=>{ if (selectedRoom == null) { showError(t('pickRoomFirst')); return; } doHunt(); };
 
 // reset / hunt
 function doHunt(){ if (selectedRoom == null) { showToast(t('pickRoomFirst'), 'warn'); return; } roundInProgress = true; const numPicks = (check1Expire > Date.now()) ? 1 : 2; let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks); document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight')); let delay = 0; picks.forEach(i=>{ let room = document.querySelector(`.room[data-idx="${i}"]`); setTimeout(()=>{ room.classList.add('highlight'); }, delay); setTimeout(()=>{ room.classList.remove('highlight'); }, delay+600); delay += 700; }); setTimeout(()=>{ let prize = 1000, loss = -2000; // apply upgrades
