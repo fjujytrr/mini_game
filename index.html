@@ -506,16 +506,13 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
     #wsModalOverlay .glass{
       position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      bottom:0;
+      inset:0;
       width:100%;
-      height:auto;
+      height:100%;
       max-width:none;
       margin:0;
       box-sizing:border-box;
-      padding:28px;
+      padding:0; /* убираем внутренний отступ, чтобы контейнер касался края экрана */
       border-radius:0;
       backdrop-filter: blur(8px) saturate(1.05);
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -798,7 +795,8 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           const daysToUnlock = day - avail;
           const overlayEl = document.createElement('div');
           overlayEl.className = 'overlay';
-          overlayEl.textContent = daysToUnlock <= 1 ? `Unlock in ${daysToUnlock} day` : `Unlock in ${daysToUnlock} days`;
+          // текст убран — оставляем затемнение без подписи
+          overlayEl.textContent = '';
           card.appendChild(overlayEl);
         }
 
