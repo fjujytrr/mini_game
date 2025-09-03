@@ -228,6 +228,7 @@ function applyLang() {
 }
 
 // ========== Инициализация UI и состояния ==========
+// (Остальной JS код без изменений по логике игры; сокращённо — но полный внизу)
 const roomsContainer = document.querySelector('.house');
 for (let i = 0; i < 8; i++) {
   const d = document.createElement('div');
@@ -252,7 +253,6 @@ const minersData = [
   { n: "Miner 10", i: 9500, p: 50000 }
 ];
 
-// ======= Безопасная инициализация minersState (если в localStorage массив короче или повреждён) 
 let minersState; try {
   const saved = JSON.parse(localStorage.getItem('minersState'));
   if (Array.isArray(saved)) {
@@ -313,7 +313,6 @@ function getIncome() {
 }
 function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
 
-// оффлайн-доход 
 function addOfflineCoins() {
   const last = +localStorage.getItem('lastTime') || Date.now();
   const now = Date.now();
@@ -326,13 +325,10 @@ function addOfflineCoins() {
 }
 addOfflineCoins();
 
-// начисление в реальном времени
 setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
 
-// уровни 
 function updLv() { document.querySelectorAll('.level').forEach(l => l.classList.toggle('active', maxCoins >= +l.dataset.val)); }
 
-// апдейты апгрейдов 
 function updUpg() {
   document.querySelectorAll('.upgrade').forEach(u => {
     let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
@@ -342,7 +338,6 @@ function updUpg() {
   });
 }
 
-// апгрейды клики
 document.querySelectorAll('.upgrade').forEach(u=>{
   u.onclick = ()=>{
     let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0;
@@ -355,7 +350,6 @@ document.querySelectorAll('.upgrade').forEach(u=>{
   };
 });
 
-// таймер check1 
 function updCheck() {
   const el = document.getElementById('check1Timer');
   if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
@@ -363,7 +357,6 @@ function updCheck() {
 }
 setInterval(updCheck, 1000);
 
-// выбор комнаты
 document.querySelectorAll('.room').forEach(r => {
   r.onclick = () => {
     if (roundInProgress) return;
@@ -373,13 +366,11 @@ document.querySelectorAll('.room').forEach(r => {
   };
 });
 
-// start button
 document.getElementById('startBtn').onclick = ()=>{
   if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
   document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));
 };
 
-// reset / hunt
 document.getElementById('resetBtn').onclick = ()=>{
   if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
   roundInProgress = true;
@@ -411,12 +402,10 @@ document.getElementById('resetBtn').onclick = ()=>{
   }, delay+700);
 };
 
-// render miners cards (только в модальном окне) — с защитой на undefined 
 function renderMiners(){
   if (!minersContainerEl) return;
   minersContainerEl.innerHTML = '';
   minersData.forEach((m,i)=>{
-    // безопасное получение состояния
     const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
     const price = m.p * Math.pow(2, st.count);
     const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
@@ -431,7 +420,6 @@ function renderMiners(){
       </div>
     `;
     card.onclick = ()=>{
-      // снова защитная проверка цены
       const currentSt = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
       const currentPrice = m.p * Math.pow(2, currentSt.count);
       if (coins >= currentPrice) {
@@ -444,13 +432,11 @@ function renderMiners(){
   });
 }
 
-// открыть/закрыть miningShop // miningBtn (кирка) и shopBtn (тележка) — оба открывают магазин
 const miningBtn = document.getElementById('miningBtn'); const shopBtn = document.getElementById('shopBtn');
 miningBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
 shopBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
 document.getElementById('closeMiningShop').onclick = ()=>{ miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); };
 
-// buy confirm actions
 document.getElementById('confirmBuy').onclick = ()=>{
   if (pendingMiner === null) return;
   const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
@@ -463,30 +449,25 @@ document.getElementById('confirmBuy').onclick = ()=>{
 };
 document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); };
 
-// profile window 
 const profileWindowEl = document.getElementById('profileWindow'); document.getElementById('profileBtn').onclick = ()=>{ profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); };
 document.getElementById('closeProfile').onclick = ()=>{ profileWindowEl.style.display = 'none'; profileWindowEl.setAttribute('aria-hidden','true'); };
 
-// daily & quest 
 let questClaimed = localStorage.getItem('questClaimed') === 'true'; let lastDaily = +localStorage.getItem('lastDaily') || 0; const questStatusEl = document.getElementById('questStatus'); const dailyStatusEl = document.getElementById('dailyStatus'); function updateQuestStatus(){ questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; } function updateDailyStatus(){ const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
 document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
 document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
 
-// info window 
 const infoWindowEl = document.getElementById('infoWindow'); document.getElementById('infoBtn').onclick = ()=>{ infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); };
 document.getElementById('closeInfo').onclick = ()=>{ infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); };
 
-// shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — только upgradePanel видна
-const upgradePanel = document.getElementById('upgradePanel'); // Скрываем видимую панель майнеров на главном экране и показываем апгрейды
+const upgradePanel = document.getElementById('upgradePanel'); 
 minersPanelVisible.style.display = 'none'; upgradePanel.style.display = 'flex';
 
-// language selector 
 const langSelect = document.getElementById('langSelect'); langSelect.value = lang; langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
-// init UI coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck(); renderMiners(); applyLang();
+coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updCheck(); renderMiners(); applyLang();
 
-// ensure windows hidden on load document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true'); document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
+document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true'); document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
 
   </script>
 
@@ -503,19 +484,26 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     #wsModalOverlay .bgImage{
       position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28;
     }
-    /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
+    /* Изменено: .glass теперь прикреплён к нижней части экрана (bottom sheet) */
     #wsModalOverlay .glass{
-      position:relative;
+      position:fixed;
+      left:50%;
+      bottom:0;
+      transform:translateX(-50%);
       width:100%;
       max-width:980px;
-      margin:0 auto;
+      margin:0;
       box-sizing:border-box;
       padding:18px;
-      border-radius:18px 18px 0 0;
+      border-radius:18px 18px 0 0; /* закругление сверху; низ плотно к экрану */
       backdrop-filter: blur(8px) saturate(1.05);
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
       display:flex; flex-direction:column; gap:12px; overflow:hidden;
+      z-index:10001;
+      /* добавим лёгкую анимацию появления снизу */
+      transition: transform 300ms ease, opacity 300ms ease;
+      transform-origin: bottom center;
     }
 
     /* Header */
@@ -654,13 +642,11 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     }
 
     // ====== Expose/Connect to game API (safe wrappers) ======
-    // Preserve original if any
     const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
     const _orig_updCoins = window.updCoins instanceof Function ? window.updCoins : null;
     const _orig_saveGame = window.saveGameState instanceof Function ? window.saveGameState : null;
     const _orig_format = window.format instanceof Function ? window.format : null;
 
-    // format fallback
     function formatFallback(n){
       if (typeof _orig_format === 'function') return _orig_format(n);
       if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
@@ -669,7 +655,6 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       return String(n);
     }
 
-    // updater fallback: if game has updCoins, use it; else update coinsVal element and localStorage
     function updCoinsPublic(v=0){
       if (typeof _orig_updCoins === 'function'){
         try{ _orig_updCoins(v); return; }catch(e){}
@@ -684,10 +669,9 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       }catch(e){}
     }
 
-    // save fallback: call game's save() if exists, otherwise persist basic pieces
     function saveGameStatePublic(){
       if (typeof window.save === 'function'){
-        try{ window.save(); return; }catch(e){} // original game save function
+        try{ window.save(); return; }catch(e){} 
       }
       try{
         const coins = localStorage.getItem('coins') || '0';
@@ -697,7 +681,6 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       }catch(e){}
     }
 
-    // claimRewardFromModal public: first try original if present (saved in _orig_claim), else fallback to updating coins
     function claimRewardFromModalPublic(amount){
       if (typeof _orig_claim === 'function'){
         try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ }
@@ -716,7 +699,6 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       }catch(e){}
     }
 
-    // Expose to window (do not overwrite if user already has these functions; but ensure they exist)
     window.claimRewardFromModal = window.claimRewardFromModal || claimRewardFromModalPublic;
     window.updCoins = window.updCoins || updCoinsPublic;
     window.saveGameState = window.saveGameState || saveGameStatePublic;
@@ -756,7 +738,6 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       overlay.classList.add('hidden');
     }
 
-    // Build cards (1..7).
     function renderCards(){
       const avail = availableCount();
       gridTop.innerHTML = '';
@@ -793,7 +774,6 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           const daysToUnlock = day - avail;
           const overlayEl = document.createElement('div');
           overlayEl.className = 'overlay';
-          // текст убран — оставляем затемнение без подписи
           overlayEl.textContent = '';
           card.appendChild(overlayEl);
         }
