@@ -493,46 +493,45 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
   <!-- =================== Rewards modal: интегрирован в основную страницу (РАЗМЕРЫ ОТКОРРЕКТИРОВАНЫ) =================== -->
 
   <style>
-    /* Изолированные переменные и стиль модала (не переопределяют глобальные селекторы) */
-   #wsModalOverlay{
+   /* Оверлей остаётся во весь экран (фон покрывает всё) */
+#wsModalOverlay {
   --wm-accentA:#3b2a7a;
   --wm-accentB:#8aa7ff;
   --wm-accentC:#00D8FF;
   --wm-birch:#EDE4C8;
   z-index:10000;
   position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:1cm; /* <- оставляет ~1 см снизу */
+  inset:0;                  /* фон — полный экран */
   display:flex;
-  align-items:flex-start;
+  align-items:flex-start;   /* прижать содержимое к верху */
   justify-content:center;
   font-family:Inter,system-ui,Arial,sans-serif;
+  box-sizing:border-box;
 }
 
-    #wsModalOverlay.hidden{ display:none; }
-    #wsModalOverlay .bgLayer{
-      position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block;
-      overflow:hidden;
-    }
-    #wsModalOverlay .bgImage{
-      position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28;
-    }
-    /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
-    #wsModalOverlay .glass{
-      position:relative;
-      width:100%;
-      max-width:980px;
-      margin:0 auto;
-      box-sizing:border-box;
-      padding:18px;
-      border-radius:18px 18px 0 0;
-      backdrop-filter: blur(8px) saturate(1.05);
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
-      display:flex; flex-direction:column; gap:12px; overflow:hidden;
-    }
+/* Панель: прижата к верху, занимает ~90% высоты экрана */
+#wsModalOverlay .glass {
+  position:relative;
+  width:100%;
+  max-width:980px;
+  margin:0 auto;
+  box-sizing:border-box;
+  padding:18px;
+  border-radius:18px 18px 0 0;
+  backdrop-filter: blur(8px) saturate(1.05);
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  overflow:hidden;
+
+  /* Новые параметры для высоты/позиции */
+  align-self:flex-start;    /* жёстко прижать к верху оверлея */
+  margin-top:8px;           /* небольшой отступ сверху */
+  height:90vh;              /* занимает 90% высоты экрана */
+  max-height:90vh;
+}
 
     /* Header */
     #wsModalOverlay .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; color:#ecf8ff; position:relative; z-index:3; }
