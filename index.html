@@ -655,10 +655,10 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
 
     // ====== Expose/Connect to game API (safe wrappers) ======
     // Preserve original if any
-    const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
-    const _orig_updCoins = window.updCoins instanceof Function ? window.updCoins : null;
-    const _orig_saveGame = window.saveGameState instanceof Function ? window.saveGameState : null;
-    const _orig_format = window.format instanceof Function ? window.format : null;
+    const _orig_claim = (window.claimRewardFromModal instanceof Function) ? window.claimRewardFromModal : null;
+    const _orig_updCoins = (window.updCoins instanceof Function) ? window.updCoins : null;
+    const _orig_saveGame = (window.saveGameState instanceof Function) ? window.saveGameState : null;
+    const _orig_format = (window.format instanceof Function) ? window.format : null;
 
     // format fallback
     function formatFallback(n){
@@ -669,15 +669,15 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       return String(n);
     }
 
-    // updater fallback: if game has updCoins, use it; else update coinsVal element and localStorage
+    // updater fallback: update localStorage + visible element
     function updCoinsPublic(v=0){
       if (typeof _orig_updCoins === 'function'){
-        try{ _orig_updCoins(v); return; }catch(e){}
+        try{ _orig_updCoins(v); return; }catch(e){ /* fallthrough */ }
       }
       try{
         let cur = +localStorage.getItem('coins') || 0;
         cur += v;
-        if(cur < 0) cur = 0;
+        if (cur < 0) cur = 0;
         localStorage.setItem('coins', String(cur));
         const el = document.getElementById('coinsVal');
         if(el) el.textContent = formatFallback(cur);
@@ -697,27 +697,49 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       }catch(e){}
     }
 
-    // claimRewardFromModal public: first try original if present (saved in _orig_claim), else fallback to updating coins
+    // claimRewardFromModal public: prefer original claim, then prefer original updCoins(amount),
+    // else fallback to localStorage + UI update.
     function claimRewardFromModalPublic(amount){
+      // 1) If game provided its own claim function, prefer that
       if (typeof _orig_claim === 'function'){
-        try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ }
+        try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ /* fallback */ }
       }
+
+      // 2) Prefer calling game's original updCoins(amount) so internal game state updates too
+      if (typeof _orig_updCoins === 'function'){
+        try {
+          _orig_updCoins(amount);
+          saveGameStatePublic();
+          return;
+        } catch(e) {
+          // continue to fallback
+        }
+      }
+
+      // 3) Fallback: update localStorage and visible element
       try{
         let cur = +localStorage.getItem('coins') || 0;
         cur += amount;
+        if (cur < 0) cur = 0;
         localStorage.setItem('coins', String(cur));
-        if (typeof window.updCoins === 'function' || typeof _orig_updCoins === 'function'){
-          updCoinsPublic(0);
+
+        // If window.updCoins exists but original was not captured, try calling it with the amount
+        if (typeof window.updCoins === 'function' && window.updCoins !== updCoinsPublic){
+          try { window.updCoins(amount); }
+          catch(e){ /* ignore */ }
         } else {
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
         }
+
         saveGameStatePublic();
-      }catch(e){}
+      }catch(e){
+        console.warn('claimRewardFromModalPublic error', e);
+      }
     }
 
-    // Expose to window (do not overwrite if user already has these functions; but ensure they exist)
-    window.claimRewardFromModal = window.claimRewardFromModal || claimRewardFromModalPublic;
+    // Expose to window (overwrite to ensure behavior is consistent)
+    window.claimRewardFromModal = claimRewardFromModalPublic;
     window.updCoins = window.updCoins || updCoinsPublic;
     window.saveGameState = window.saveGameState || saveGameStatePublic;
     window.format = window.format || formatFallback;
@@ -854,7 +876,7 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     renderCards();
     syncCoinsDisplay();
 
-    setInterval(()=>{ renderCards(); }, 60*1000);
+    setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
       open: function(){ hideMainUI(); renderCards(); syncCoinsDisplay(); },
