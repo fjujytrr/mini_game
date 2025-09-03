@@ -68,9 +68,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box}
 #buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)}
 
-/* ====== НОВЫЙ: Fullscreen rewards modal (без пустого места) ====== */
+/* ====== НОВЫЙ: Fullscreen rewards modal с отступом снизу ≈ 1cm ====== */
 
-/* Модал "подарков" — занимает весь экран */
+/* Модал "подарков" — весь экран, фон растянут */
 #wsModalOverlay{
   position:fixed;
   inset:0;
@@ -90,12 +90,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 #wsModalOverlay .bgLayer{position:absolute; inset:0; z-index:0; background:linear-gradient(120deg,#3b2a7a,#8aa7ff); overflow:hidden;}
 #wsModalOverlay .bgImage{position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28; z-index:0;}
 
-/* Основной контейнер — full-bleed */
+/* Основной контейнер — full-bleed, но с нижним отступом ~1cm */
 #wsModalOverlay .glass{
   position:relative;
   z-index:2;
   width:100%;
-  height:100%;
+  /* высота уменьшена на 1cm, чтобы оставить отступ внизу */
+  height:calc(100vh - 1cm);
   margin:0;
   box-sizing:border-box;
   padding:18px;
@@ -276,7 +277,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     <button id="profileBtn" class="secondary">👤</button>
   </div>
 
-  <!-- ====== FULLSCREEN Rewards modal (visible by default) ====== -->
+  <!-- ====== FULLSCREEN Rewards modal (снизу ~1cm пустого пространства) ====== -->
   <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
     <div class="bgLayer" aria-hidden="true">
       <div class="bgImage" aria-hidden="true"></div>
