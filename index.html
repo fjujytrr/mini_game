@@ -505,17 +505,35 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     }
     /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
     #wsModalOverlay .glass{
-      position:relative;
+      position:fixed;
+      top:0;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
       width:100%;
       max-width:980px;
-      margin:0 auto;
+      height:100vh;
+      margin:0;
       box-sizing:border-box;
-      padding:18px;
-      border-radius:18px 18px 0 0;
+      padding:18px 18px 16px 18px;
+      /* касаемся сверху и снизу, убираем скругления сверху/снизу, оставляем мягкие углы по бокам */
+      border-radius:0;
       backdrop-filter: blur(8px) saturate(1.05);
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
-      display:flex; flex-direction:column; gap:12px; overflow:hidden;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      display:flex; flex-direction:column; gap:12px; overflow:hidden; z-index:10001;
+    }
+
+    /* Ограничиваем внутренний контейнер так, чтобы весь блок занимал доступное пространство без внешнего скролла */
+    .rewardsContainer{
+      background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02));
+      border-radius:14px;
+      padding:12px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.36);
+      border:1px solid rgba(255,255,255,0.04);
+      /* высота рассчитывается от общей высоты .glass: вычитаем высоту header и wsActions (~120px) чтобы избежать скролла */
+      height: calc(100vh - 120px);
+      overflow:auto;
     }
 
     /* Header */
