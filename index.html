@@ -72,18 +72,20 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
 /* Модал "подарков" — весь экран, фон растянут */
 #wsModalOverlay{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
+  --wm-accentA:#3b2a7a;
+  --wm-accentB:#8aa7ff;
+  --wm-accentC:#00D8FF;
+  --wm-birch:#EDE4C8;
   z-index:10000;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:1cm; /* <- оставляет ~1 см снизу */
   display:flex;
-  align-items:stretch;
+  align-items:flex-start;
   justify-content:center;
-  background:linear-gradient(120deg,#3b2a7a,#8aa7ff);
-  color:#fff;
-  box-sizing:border-box;
-  overflow:hidden;
+  font-family:Inter,system-ui,Arial,sans-serif;
 }
 
 /* фон (опционально) */
