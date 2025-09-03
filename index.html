@@ -54,13 +54,12 @@
     #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)}
     #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.35)}
     #miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 6px 18px rgba(122,75,255,0.12)}
-    #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff}
+    #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff'}
     #miningShop .miner-card .income{color:var(--birch);font-weight:800}
     #miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px}
     #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800}
     #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box}
     #buyConfirm .confirm-box{max-width:520px;margin:0 auto;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)}
-    #buyConfirm.show{display:block}
     #buyConfirm p{color:#fff;margin:8px 0}
     #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px}
     #infoWindow,#profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto}
@@ -84,28 +83,68 @@
     .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:12px; padding:12px; box-shadow:0 8px 24px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04); }
     .rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px; }
     .rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-    .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:10px; padding:8px; min-height:62px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .12s ease, box-shadow .12s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); font-size:13px; }
-    .rewardCard:hover{ transform:translateY(-4px); }
+
+    /* ---- уменьшенные карточки наград ---- */
+    .rewardCard{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:10px;
+      padding:6px;               /* уменьшенная внутренняя отступ */
+      min-height:40px;          /* значительно меньше */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      transition:transform .12s ease, box-shadow .12s ease;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,0.04);
+      font-size:12px;           /* общий размер шрифта немного меньше */
+    }
+    .rewardCard:hover{ transform:translateY(-3px); }
+
     .rewardCard.pop{ animation:pop .22s ease; }
     @keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.04);} 100%{ transform:scale(1); } }
-    .coinIconSmall{ width:36px; height:36px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:6px; border:1.5px solid rgba(255,255,255,0.06); box-shadow:0 6px 14px rgba(0,216,255,0.07); font-size:14px; }
-    .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:4px; font-size:13px; }
-    .amount{ font-weight:900; font-size:14px; color:var(--wm-accentC); text-shadow: 0 6px 14px rgba(0,216,255,0.06); }
+
+    .coinIconSmall{
+      width:24px;               /* уменьшено */
+      height:24px;              /* уменьшено */
+      border-radius:50%;
+      background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      color:#000;
+      margin-bottom:4px;
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow:0 6px 14px rgba(0,216,255,0.07);
+      font-size:12px;
+    }
+    .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:2px; font-size:11px; }
+    .amount{ font-weight:900; font-size:12px; color:var(--wm-accentC); text-shadow: 0 6px 14px rgba(0,216,255,0.06); }
+
     .rewardCard.locked{ opacity:0.36; pointer-events:auto; }
-    .rewardCard.locked .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.6)); border-radius:10px; color:#fff; font-weight:800; text-align:center; padding:6px; font-size:12px; }
-    .rewardCard.unlocked{ box-shadow:0 8px 22px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.10); }
+    .rewardCard.locked .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.6)); border-radius:10px; color:#fff; font-weight:800; text-align:center; padding:6px; font-size:11px; }
+    .rewardCard.unlocked{ box-shadow:0 6px 14px rgba(0,216,255,0.04); border:1px solid rgba(0,216,255,0.08); }
     .rewardCard.claimed{ opacity:0.95; pointer-events:none; }
-    .claimBadge{ position:absolute; top:6px; right:6px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:5px 7px; border-radius:999px; font-weight:800; box-shadow:0 6px 18px rgba(255,193,7,0.12); font-size:11px; }
-    .rewardCard.big{ min-height:86px; padding:10px; }
+
+    .claimBadge{ position:absolute; top:6px; right:6px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:4px 6px; border-radius:999px; font-weight:800; box-shadow:0 6px 18px rgba(255,193,7,0.12); font-size:10px; }
+
+    .rewardCard.big{ min-height:56px; padding:8px; } /* уменьшённая "большая" карточка */
+
     .wsActions{ display:flex; gap:8px; margin-top:8px; align-items:center; justify-content:space-between; }
     .wsActions .left{ color:var(--birch); font-weight:700; font-size:13px; }
     .btnPrimary{ padding:10px 14px; border-radius:10px; font-weight:800; border:none; cursor:pointer; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 10px 30px rgba(0,216,255,0.16); font-size:14px; }
     .btnGhost{ padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#ecf8ff; cursor:pointer; font-size:13px; }
+
     @media (max-width:720px){
       .rewardsGridTop{ grid-template-columns:repeat(2,1fr); }
       .rewardsGridBottom{ grid-template-columns:repeat(2,1fr); }
       .glass{ padding:12px; border-radius:12px 12px 6px 6px; }
-      .rewardCard.big{ min-height:78px; }
+      .rewardCard.big{ min-height:50px; padding:6px; }
+      .rewardCard{ min-height:38px; padding:6px; font-size:11px; }
+      .coinIconSmall{ width:20px; height:20px; font-size:11px; }
+      .claimBadge{ top:6px; right:6px; padding:3px 5px; font-size:9px; }
     }
   </style>
 </head>
