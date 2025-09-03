@@ -506,8 +506,7 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
     #wsModalOverlay .glass{
       position:fixed;
-      top:0;
-      bottom:0;
+      inset:0; /* top:0; right:0; bottom:0; left:0; */
       left:50%;
       transform:translateX(-50%);
       width:100%;
@@ -515,12 +514,11 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       height:100vh;
       margin:0;
       box-sizing:border-box;
-      padding:18px 18px 16px 18px;
-      /* касаемся сверху и снизу, убираем скругления сверху/снизу, оставляем мягкие углы по бокам */
-      border-radius:0;
+      padding:18px;
+      border-radius:0; /* чтобы не было прозрачных краёв */
       backdrop-filter: blur(8px) saturate(1.05);
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 0 0 rgba(0,0,0,0);
+      box-shadow: none;
       display:flex; flex-direction:column; gap:12px; overflow:hidden; z-index:10001;
     }
 
