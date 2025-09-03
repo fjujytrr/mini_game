@@ -530,7 +530,23 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       box-shadow:0 8px 30px rgba(0,0,0,0.36);
       border:1px solid rgba(255,255,255,0.04);
       /* теперь контейнер растягивается внутри .glass и размещает кнопки внизу */
-      display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;
+      display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; position:relative;
+    }
+
+    .gridsWrap{ flex:1; min-height:0; overflow:auto; padding-bottom:140px; /* запас под фиксированные кнопки внизу */ }
+
+    /* Кнопки и счётчик закреплены в самом низу .glass (самый низ экрана) */
+    .wsActions{ position:absolute; left:18px; right:18px; bottom:12px; height:96px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; box-sizing:border-box; }
+
+    .wsActions .left{ flex:0 0 auto; }
+    .wsActions .btnGhost, .wsActions .btnPrimary{ flex:0 0 44%; }
+
+    .wsActions .btnPrimary{ width:44%; }
+
+    @media (max-width:480px){
+      .gridsWrap{ padding-bottom:160px; }
+      .wsActions{ height:100px; bottom:8px; left:12px; right:12px; }
+      .wsActions .btnGhost, .wsActions .btnPrimary{ flex-basis:45%; }
     }
 
     .gridsWrap{ flex:1; min-height:0; overflow:auto; }
