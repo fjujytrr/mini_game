@@ -543,7 +543,8 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     #wsModalOverlay .sub{ color:var(--wm-birch); font-weight:700; font-size:14px; }
 
     /* Rewards shell: уменьшили "высоту" и сделали внутреннюю контейнер прокручиваемым, чтобы карточки не перекрывали заголовок */
-    .rewardsShell{ display:flex; flex-direction:column; gap:12px; }
+    .rewardsShell{ display:flex; flex-direction:column; gap:12px; /* занимает оставшееся пространство внутри .glass */ flex:1; min-height:0; }
+    .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04); /* заполняет всё доступное пространство и доходит до низа */ flex:1; min-height:0; overflow:auto; }
     .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04);
       /* Ограничим высоту контейнера и включим прокрутку при переполнении */
       max-height: calc(70vh - 110px); overflow:auto;
