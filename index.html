@@ -531,10 +531,13 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
       padding:12px;
       box-shadow:0 8px 30px rgba(0,0,0,0.36);
       border:1px solid rgba(255,255,255,0.04);
-      /* высота рассчитывается от общей высоты .glass: вычитаем высоту header и wsActions (~120px) чтобы избежать скролла */
-      height: calc(100vh - 120px);
-      overflow:auto;
+      /* теперь контейнер растягивается внутри .glass и размещает кнопки внизу */
+      display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;
     }
+
+    .gridsWrap{ flex:1; min-height:0; overflow:auto; }
+
+    .wsActions{ flex-shrink:0; }
 
     /* Header */
     #wsModalOverlay .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; color:#ecf8ff; position:relative; z-index:3; }
@@ -611,9 +614,11 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
 
       <div class="rewardsShell" id="rewardsShell">
         <div class="rewardsContainer" id="rewardsContainer">
-          <div class="rewardsGridTop" id="rewardsGridTop" aria-hidden="false"></div>
-          <div style="height:8px"></div>
-          <div class="rewardsGridBottom" id="rewardsGridBottom" aria-hidden="false"></div>
+          <div class="gridsWrap" style="flex:1;min-height:0;overflow:auto;padding-right:6px;box-sizing:border-box;">
+            <div class="rewardsGridTop" id="rewardsGridTop" aria-hidden="false"></div>
+            <div style="height:8px"></div>
+            <div class="rewardsGridBottom" id="rewardsGridBottom" aria-hidden="false"></div>
+          </div>
 
           <div class="wsActions">
             <div class="left">Unlocked: <span id="wsUnlockedCount" style="font-weight:900;color:var(--wm-accentC)">0</span>/7</div>
@@ -621,6 +626,8 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
               <button class="btnGhost" id="wsBtnRules">How it works</button>
               <button class="btnPrimary" id="wsBtnClose">Come back tomorrow</button>
             </div>
+          </div>
+        </div>
           </div>
         </div>
       </div>
