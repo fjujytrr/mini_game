@@ -771,12 +771,15 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
         try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ }
       }
       try{
-        let cur = +localStorage.getItem('coins') || 0;
-        cur += amount;
-        localStorage.setItem('coins', String(cur));
-        if (typeof window.updCoins === 'function' || typeof _orig_updCoins === 'function'){
-          updCoinsPublic(0);
+        // Prefer calling the game's updater if available so state stays consistent
+        if (typeof _orig_updCoins === 'function') {
+          _orig_updCoins(amount);
+        } else if (typeof window.updCoins === 'function') {
+          window.updCoins(amount);
         } else {
+          let cur = +localStorage.getItem('coins') || 0;
+          cur += amount;
+          localStorage.setItem('coins', String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
         }
