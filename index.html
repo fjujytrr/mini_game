@@ -130,14 +130,6 @@
         <p id="questStatus" style="margin-top:8px;color:var(--birch);font-weight:600;text-align:center;"></p>
       </div>
 
-      <!-- Новая секция: Рабочая кнопка -->
-      <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.06);border-radius:12px;">
-        <h3 id="workTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Рабочая</h3>
-        <p id="workText" style="margin-bottom:12px;color:#fff">Получите небольшую рабочую выплату прямо сейчас.</p>
-        <button id="workBtn" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Рабочую</button>
-        <p id="workStatus" style="margin-top:8px;color:var(--birch);font-weight:600;text-align:center;"></p>
-      </div>
-
        <div class="settings-card">
         <div class="settings-row">
           <div>
@@ -188,7 +180,7 @@
     profile: 'Профиль',
     dailyReward: 'Ежедневная награда',
     dailyText: 'Получите 30 000 монет раз в день!',
-    claimDaily: 'Забрать ежедневную награду',
+    claimDaily: 'Забрать',
     quest: 'Квест',
     claimQuest: 'Взять',
     settings: 'Настройки',
@@ -196,11 +188,7 @@
     buyFor: 'Купить {name} за {price}?',
     buy: 'Купить',
     cancel: 'Отмена',
-    profitHr: 'Прибыль/ч:',
-    workTitle: 'Рабочая',
-    workText: 'Получите 10 000 монет сейчас.',
-    workBtn: 'Рабочую',
-    workGot: 'Получено {amount}!'
+    profitHr: 'Прибыль/ч:'
   },
   en: {
     pickRoomFirst: 'Pick a room first!',
@@ -230,11 +218,7 @@
     buyFor: 'Buy {name} for {price}?',
     buy: 'Buy',
     cancel: 'Cancel',
-    profitHr: 'Profit/hr:',
-    workTitle: 'Work',
-    workText: 'Get 10,000 coins now.',
-    workBtn: 'Work',
-    workGot: 'Received {amount}!'
+    profitHr: 'Profit/hr:'
   }
 };
 let lang = localStorage.getItem('lang') || 'ru';
@@ -262,15 +246,6 @@ function applyLang() {
   document.getElementById('settingsText').textContent = t('settingsText');
   document.getElementById('closeInfo').textContent = t('close');
   document.getElementById('closeProfile').textContent = t('close');
-
-  // work / profile additions
-  const workTitle = document.getElementById('workTitle');
-  const workText = document.getElementById('workText');
-  const workBtn = document.getElementById('workBtn');
-  if (workTitle) workTitle.textContent = t('workTitle');
-  if (workText) workText.textContent = t('workText');
-  if (workBtn) workBtn.textContent = t('workBtn');
-
   // info list
   const infoListEl = document.getElementById('infoList');
   infoListEl.innerHTML = '';
@@ -376,7 +351,7 @@ function getIncome() {
 }
 function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
 
- // оффлайн-доход 
+// оффлайн-доход 
 function addOfflineCoins() {
   const last = +localStorage.getItem('lastTime') || Date.now();
   const now = Date.now();
@@ -563,23 +538,8 @@ document.getElementById('closeProfile').onclick = ()=>{ profileWindowEl.style.di
 // daily & quest 
 let questClaimed = localStorage.getItem('questClaimed') === 'true'; let lastDaily = +localStorage.getItem('lastDaily') || 0; const questStatusEl = document.getElementById('questStatus'); const dailyStatusEl = document.getElementById('dailyStatus'); function updateQuestStatus(){ questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; } function updateDailyStatus(){ const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
-// Обработчики кнопок: ежедневная, квест и рабочая — мгновенно начисляют монеты и сохраняют
 document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
 document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
-
-// НОВОЕ: Рабочая кнопка — моментальное начисление (10 000). Обновляем статус и внешний вид.
-document.getElementById('workBtn').onclick = ()=>{
-  const amount = 10000;
-  updCoins(amount);
-  // короткий визуальный отклик в тексте статуса
-  const ws = document.getElementById('workStatus');
-  if (ws) {
-    ws.textContent = t('workGot', { amount: format(amount) });
-    setTimeout(()=>{ ws.textContent = ''; }, 3000);
-  }
-  // сохраняем (updCoins уже сохраняет), можно дополнительно логировать
-  save();
-};
 
 // info window 
 const infoWindowEl = document.getElementById('infoWindow'); document.getElementById('infoBtn').onclick = ()=>{ infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); };
@@ -866,10 +826,12 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
 
     // Build cards (1..7).
     function renderCards(){
+      // reload claimed from storage to stay in sync with other tabs
+      claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
+
       const avail = availableCount();
       gridTop.innerHTML = '';
       gridBottom.innerHTML = '';
-      let unlockedCount = 0;
 
       for(let i=0;i<MAX_DAYS;i++){
         const day = i+1;
@@ -895,27 +857,56 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           card.appendChild(badge);
         } else if(isUnlocked){
           card.classList.add('unlocked');
-          unlockedCount++;
         } else {
           card.classList.add('locked');
-          const daysToUnlock = day - avail;
           const overlayEl = document.createElement('div');
           overlayEl.className = 'overlay';
-          // текст убран — оставляем затемнение без подписи
           overlayEl.textContent = '';
           card.appendChild(overlayEl);
         }
 
-        card.addEventListener('click', function(){
-          if (!isUnlocked || isClaimed) return;
+        // Attach a safe click handler which checks current availability/claimed state at click moment
+        card.addEventListener('click', function onCardClick(){
+          // Re-read claimed/availability to avoid stale closures
+          claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
+          const nowClaimed = !!claimed[i];
+          const nowAvail = i < availableCount();
+          if (!nowAvail || nowClaimed) return; // not ready or already claimed
+
+          // Prevent double clicks immediately
+          card.style.pointerEvents = 'none';
+
+          // optimistic UI
           card.classList.add('pop');
           setTimeout(()=>card.classList.remove('pop'),260);
 
+          // mark claimed and persist
           claimed[i] = true;
           safeSetJSON(LS_CLAIMED, claimed);
 
-          try{ claimRewardFromModal(amounts[i]); }catch(e){ console.warn('reward error', e); }
+          // Try to credit the coins robustly. Use game's API when available, otherwise fallback.
+          try {
+            if (typeof claimRewardFromModal === 'function') {
+              // call the public claim; it itself will try to use game's internal functions if present
+              claimRewardFromModal(amounts[i]);
+            } else if (typeof updCoins === 'function') {
+              // fallback to adding coins via updater
+              updCoins(amounts[i]);
+            } else {
+              // last-resort direct write to localStorage + UI
+              let cur = +localStorage.getItem('coins') || 0;
+              cur += amounts[i];
+              localStorage.setItem('coins', String(cur));
+              const mainEl = document.getElementById('coinsVal');
+              if (mainEl) mainEl.textContent = formatNum(cur);
+            }
+          } catch(e){
+            console.error('claimReward error', e);
+            // try safe fallback
+            try { updCoinsPublic(amounts[i]); } catch(e2){}
+          }
 
+          // Update card UI to claimed
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
           badge.textContent = 'Claimed';
@@ -924,9 +915,10 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           card.classList.add('claimed');
           card.style.pointerEvents = 'none';
 
+          // Sync displays
           syncCoinsDisplay();
-
           renderUnlockedCount();
+
         });
 
         if(i < 4) gridTop.appendChild(card);
@@ -962,7 +954,8 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
     renderCards();
     syncCoinsDisplay();
 
-    setInterval(()=>{ renderCards(); }, 60*1000);
+    // refresh UI each minute in case time-based availability changes
+    setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
       open: function(){ hideMainUI(); renderCards(); syncCoinsDisplay(); },
