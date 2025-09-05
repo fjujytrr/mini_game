@@ -19,6 +19,24 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
 /* Header */
 /* Убрали общий фон у header — теперь фон балансов локализован в .coin-panel */
 header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:transparent;border-radius:12px;padding:10px;backdrop-filter:blur(5px)}
+/* Энергия в левом верхнем углу */
+.energy-panel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(0,0,0,0.16);
+  padding:6px 10px;
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  min-width:120px;
+  max-width:220px;
+  font-weight:800;
+  color:#fff;
+}
+.energy-panel .icon{font-size:18px;margin-right:6px}
+.energy-panel .val{font-size:16px;color:var(--accent-cyan);line-height:1}
+.energy-panel .timer{font-size:11px;color:var(--birch);line-height:1}
+
 /* Баланс — теперь имеет собственный контейнер (внутри него фон) */
 .coin-panel{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.18);margin-left:auto;min-width:120px;max-width:220px;justify-content:flex-end}
 /* Логотипы теперь изображения; уменьшены размеры для верхнего правого угла */
@@ -101,7 +119,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 /* ========== Casino wheel styles ========== */
 /* Стилизуем в общем стиле (берём те же градиенты) */
 .casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(120deg,#3b2a7a88,#8aa7ff88);backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
-.casino-modal .card{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);display:flex;gap:12px;flex-direction:column}
+/* Изменено: фон .card теперь плотный (непрозрачный), в стиле главного экрана */
+.casino-modal .card{width:100%;max-width:820px;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);display:flex;gap:12px;flex-direction:column}
 .casino-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .casino-body{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
 .wheel-wrap{position:relative;width:380px;height:380px;display:flex;align-items:center;justify-content:center}
@@ -123,7 +142,18 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 </head>
 <body>
   <header>
-    <div></div><!-- пустой блок вместо удалённой шкалы достижений -->
+    <!-- Энергия — верхний левый угол -->
+    <div class="energy-panel" id="energyPanel" aria-live="polite" aria-atomic="true">
+      <div class="icon">⚡</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;">
+        <div style="font-size:11px;color:var(--birch);font-weight:800">Energy</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="val" id="energyVal">50</div>
+          <div class="timer" id="energyTimer">—</div>
+        </div>
+      </div>
+    </div>
+
     <!-- coin-panel теперь содержит локальный фон (удалён общий фон header) -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -316,7 +346,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     buyFor: 'Купить {name} за {price}?',
     buy: 'Купить',
     cancel: 'Отмена',
-    profitHr: 'Прибыль/ч:'
+    profitHr: 'Прибыль/ч:',
+    noEnergy: 'Нет энергии!'
   },
   en: {
     pickRoomFirst: 'Pick a room first!',
@@ -346,7 +377,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     buyFor: 'Buy {name} for {price}?',
     buy: 'Buy',
     cancel: 'Cancel',
-    profitHr: 'Profit/hr:'
+    profitHr: 'Profit/hr:',
+    noEnergy: 'No energy!'
   } };
   let lang = localStorage.getItem('lang') || 'ru';
   function t(key, vars = {}) {
@@ -378,6 +410,112 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     infoListEl.innerHTML = '';
     t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
   }
+
+  // ========== Energy system ==========
+  const MAX_ENERGY = 50;
+  const REGEN_INTERVAL_MS = 30 * 1000; // 30 секунд
+  const LS_ENERGY = 'player_energy_v1';
+  const LS_ENERGY_TICK = 'player_energy_tick_v1';
+
+  let energy = +localStorage.getItem(LS_ENERGY);
+  if (!Number.isFinite(energy)) energy = MAX_ENERGY;
+  let energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
+
+  function loadEnergy() {
+    energy = +localStorage.getItem(LS_ENERGY);
+    if (!Number.isFinite(energy)) energy = MAX_ENERGY;
+    energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
+    // apply regen based on elapsed time
+    const now = Date.now();
+    if (now > energyLastTick && energy < MAX_ENERGY) {
+      const delta = now - energyLastTick;
+      const gained = Math.floor(delta / REGEN_INTERVAL_MS);
+      if (gained > 0) {
+        energy = Math.min(MAX_ENERGY, energy + gained);
+        energyLastTick += gained * REGEN_INTERVAL_MS;
+      }
+    }
+    // if energy full, keep lastTick = now to reset timer display
+    if (energy >= MAX_ENERGY) energyLastTick = Date.now();
+    saveEnergy();
+    updateEnergyDisplay();
+  }
+
+  function saveEnergy() {
+    try {
+      localStorage.setItem(LS_ENERGY, String(energy));
+      localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
+    } catch (e) { /* ignore */ }
+  }
+
+  function updateEnergyDisplay() {
+    const el = document.getElementById('energyVal');
+    const timerEl = document.getElementById('energyTimer');
+    if (el) el.textContent = String(energy);
+    if (timerEl) {
+      if (energy >= MAX_ENERGY) {
+        timerEl.textContent = 'Full';
+      } else {
+        const now = Date.now();
+        const delta = now - (energyLastTick || now);
+        const rem = REGEN_INTERVAL_MS - (delta % REGEN_INTERVAL_MS);
+        const secs = Math.ceil(rem / 1000);
+        const mm = Math.floor(secs / 60);
+        const ss = secs % 60;
+        timerEl.textContent = `${mm>0?mm+'m ':''}${ss}s`;
+      }
+    }
+  }
+
+  // call to attempt to consume one energy; returns true if succeeded
+  function consumeEnergyOne() {
+    // regen before consume
+    const now = Date.now();
+    if (now > energyLastTick && energy < MAX_ENERGY) {
+      const delta = now - energyLastTick;
+      const gained = Math.floor(delta / REGEN_INTERVAL_MS);
+      if (gained > 0) {
+        energy = Math.min(MAX_ENERGY, energy + gained);
+        energyLastTick += gained * REGEN_INTERVAL_MS;
+      }
+    }
+    if (energy <= 0) {
+      alert(t('noEnergy'));
+      return false;
+    }
+    energy = Math.max(0, energy - 1);
+    // if below max, ensure tick reference set (if it was full before)
+    if (energy < MAX_ENERGY && !energyLastTick) energyLastTick = Date.now();
+    // set lastTick to now if we just consumed and we want next regen from now
+    // keep energyLastTick as-is so leftover toward next tick is preserved; better: if energy < MAX_ENERGY and no pending ticks, set to now
+    if (energy < MAX_ENERGY && energyLastTick > Date.now()) energyLastTick = Date.now();
+    saveEnergy();
+    updateEnergyDisplay();
+    return true;
+  }
+
+  // periodic regen check
+  setInterval(()=> {
+    const now = Date.now();
+    if (energy >= MAX_ENERGY) {
+      energyLastTick = now;
+      saveEnergy();
+      updateEnergyDisplay();
+      return;
+    }
+    if (now - energyLastTick >= REGEN_INTERVAL_MS) {
+      const gained = Math.floor((now - energyLastTick) / REGEN_INTERVAL_MS);
+      if (gained > 0) {
+        energy = Math.min(MAX_ENERGY, energy + gained);
+        energyLastTick += gained * REGEN_INTERVAL_MS;
+        if (energy >= MAX_ENERGY) energyLastTick = now;
+        saveEnergy();
+        updateEnergyDisplay();
+      }
+    } else {
+      updateEnergyDisplay();
+    }
+  }, 1000);
 
   // ========== Инициализация UI и состояния ==========
   // создаём комнаты
@@ -491,6 +629,11 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       const wsTon = formatTon(ton);
       wsZex.textContent = format(coins) + ' ZEX • ' + wsTon + ' TON';
     }
+    // также обновляем отображение в казино
+    const casinoBalance = document.getElementById('casinoBalance');
+    if (casinoBalance) {
+      casinoBalance.textContent = format(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
+    }
   }
 
   // обновить монеты
@@ -598,6 +741,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   // reset / hunt
   document.getElementById('resetBtn').onclick = ()=>{
     if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
+    // require 1 energy per hunt
+    if (!consumeEnergyOne()) return; // will alert no energy if none
     roundInProgress = true;
     const numPicks = (check1Expire > Date.now()) ? 1 : 2;
     let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks);
@@ -730,6 +875,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
   // init UI
+  loadEnergy(); // load energy before other UI
   updateBalancesDisplay();
   updUpg();
   updIncome();
