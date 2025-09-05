@@ -17,15 +17,19 @@ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-
 @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
 /* Header */
-header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.28);border-radius:12px;padding:10px;backdrop-filter:blur(5px)}
-/* Изменено: делаем фон панели баланса прозрачным, чтобы фон основного экрана продолжался */
-.coin-panel{display:flex;align-items:center;gap:12px;background:transparent;padding:8px 12px;border-radius:16px;box-shadow:none}
-.coin-logo{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000}
-.coin-panel .val{font-weight:800;font-size:18px;color:var(--accent-cyan)}
-/* TON panel */
-.ton-panel{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.02)}
-.ton-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(90deg,#FFD35A,#FFC107);color:#000;border:3px solid rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(255,193,7,0.12)}
-.ton-val{font-weight:800;font-size:14px;color:#ffeaa7}
+/* Убрали общий фон у header — теперь фон балансов локализован в .coin-panel */
+header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:transparent;border-radius:12px;padding:10px;backdrop-filter:blur(5px)}
+/* Баланс — теперь имеет собственный контейнер (внутри него фон) */
+.coin-panel{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.18);margin-left:auto;min-width:120px;max-width:220px;justify-content:flex-end}
+/* Логотипы теперь изображения; уменьшены размеры для верхнего правого угла */
+.coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
+.coin-logo{width:36px;height:36px;border:2px solid var(--purple-frame);box-shadow:0 6px 14px rgba(122,75,255,0.12);background:#fff}
+.coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
+.coin-panel .val{font-weight:800;font-size:14px;color:var(--accent-cyan);line-height:1}
+.ton-panel{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:6px}
+.ton-logo{width:30px;height:30px;border:2px solid rgba(255,255,255,0.06);box-shadow:0 6px 12px rgba(255,193,7,0.08);background:#fff}
+.ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
+.ton-val{font-weight:800;font-size:12px;color:#ffeaa7;line-height:1}
 /* Дом: сетка комнат */
 .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px}
 .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)}
@@ -88,7 +92,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .select-lang{Padding:8px 10px;border-radius:8px;border:none;font-weight:700}
 /* Адаптив */
 @media (max-width:520px){
-  .coin-logo{width:40px;height:40px;border-width:2px}
+  .coin-logo{width:32px;height:32px;border-width:2px}
   button{font-size:18px;padding:12px}
   #miningShop .miner-card{width:46%}
   .upgrade{min-width:160px}
@@ -120,18 +124,25 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 <body>
   <header>
     <div></div><!-- пустой блок вместо удалённой шкалы достижений -->
+    <!-- coin-panel теперь содержит локальный фон (удалён общий фон header) -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="coin-logo" title="ZEX">Z</div>
-        <div>
-          <div style="font-size:12px;color:var(--birch);font-weight:800">ZEX</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="coin-logo" title="ZEX">
+          <!-- заменили на картинку logo.png -->
+          <img src="logo.png" alt="ZEX logo" />
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
+          <div style="font-size:11px;color:var(--birch);font-weight:800">ZEX</div>
           <div class="val" id="coinsVal">0</div>
         </div>
       </div>
        <div class="ton-panel" style="margin-left:6px;">
-        <div class="ton-logo" title="TON">T</div>
-        <div>
-          <div style="font-size:12px;color:var(--birch);font-weight:800">TON</div>
+        <div class="ton-logo" title="TON">
+          <!-- заменили на картинку ton.png -->
+          <img src="ton.png" alt="TON logo" />
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
+          <div style="font-size:11px;color:var(--birch);font-weight:800">TON</div>
           <div class="ton-val" id="tonVal">0</div>
         </div>
       </div>
@@ -361,7 +372,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     document.getElementById('settingsTitle').textContent = t('settings');
     document.getElementById('settingsText').textContent = t('settingsText');
     document.getElementById('closeInfo').textContent = t('close');
-    document.getElementById('closeProfile').textContent = t('close');
+
     // info list
     const infoListEl = document.getElementById('infoList');
     infoListEl.innerHTML = '';
