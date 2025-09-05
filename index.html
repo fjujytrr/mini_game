@@ -417,15 +417,42 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   const LS_ENERGY = 'player_energy_v1';
   const LS_ENERGY_TICK = 'player_energy_tick_v1';
 
-  let energy = +localStorage.getItem(LS_ENERGY);
-  if (!Number.isFinite(energy)) energy = MAX_ENERGY;
-  let energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
+  // Ensure first-time visitor gets full energy (50).
+  // If key is absent in localStorage we initialize it to MAX_ENERGY.
+  let energy;
+  let energyLastTick;
+  (function initEnergyStorage(){
+    const raw = localStorage.getItem(LS_ENERGY);
+    if (raw === null) {
+      // first visit => give full energy
+      energy = MAX_ENERGY;
+      energyLastTick = Date.now();
+      try {
+        localStorage.setItem(LS_ENERGY, String(energy));
+        localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
+      } catch(e){}
+    } else {
+      energy = +raw;
+      if (!Number.isFinite(energy)) energy = MAX_ENERGY;
+      energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
+    }
+    // If energy is full, ensure next tick is now (so timer shows Full)
+    if (energy >= MAX_ENERGY) energyLastTick = Date.now();
+    // persist sanitized values
+    try {
+      localStorage.setItem(LS_ENERGY, String(energy));
+      localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
+    } catch(e){}
+  })();
 
   function loadEnergy() {
-    energy = +localStorage.getItem(LS_ENERGY);
+    // recompute regen from saved tick (in case tab was closed)
+    const stored = localStorage.getItem(LS_ENERGY);
+    const storedTick = localStorage.getItem(LS_ENERGY_TICK);
+    if (stored !== null) energy = +stored;
     if (!Number.isFinite(energy)) energy = MAX_ENERGY;
-    energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
-    // apply regen based on elapsed time
+    energyLastTick = +storedTick || Date.now();
+
     const now = Date.now();
     if (now > energyLastTick && energy < MAX_ENERGY) {
       const delta = now - energyLastTick;
@@ -435,7 +462,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         energyLastTick += gained * REGEN_INTERVAL_MS;
       }
     }
-    // if energy full, keep lastTick = now to reset timer display
     if (energy >= MAX_ENERGY) energyLastTick = Date.now();
     saveEnergy();
     updateEnergyDisplay();
@@ -484,11 +510,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return false;
     }
     energy = Math.max(0, energy - 1);
-    // if below max, ensure tick reference set (if it was full before)
-    if (energy < MAX_ENERGY && !energyLastTick) energyLastTick = Date.now();
-    // set lastTick to now if we just consumed and we want next regen from now
-    // keep energyLastTick as-is so leftover toward next tick is preserved; better: if energy < MAX_ENERGY and no pending ticks, set to now
-    if (energy < MAX_ENERGY && energyLastTick > Date.now()) energyLastTick = Date.now();
+    // if energy was full and we consumed, start tick from now
+    if (energy < MAX_ENERGY && (!energyLastTick || energyLastTick < Date.now() - 24*3600*1000)) energyLastTick = Date.now();
     saveEnergy();
     updateEnergyDisplay();
     return true;
