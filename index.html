@@ -6,19 +6,27 @@
   <title>Hide & Seek — Premium Emoji (Updated)</title>
   <style>
 :root{   --accent-cyan: #00D8FF;   --birch: #EDE4C8;   --purple-frame: #7a4bff;   --deep-purple: #5a2ecc;   --glass: rgba(255,255,255,0.06); }
-/* Базовая страница */ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);background-size:200% 200%;animation:gradientBG 15s ease infinite;color:#fff;overflow:hidden} @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}} body{display:flex;flex-direction:column;align-items:center;min-height:100vh} /* Header */ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.28);border-radius:12px;padding:10px;backdrop-filter:blur(5px)} .level-bar{display:flex;gap:6px;background:rgba(0,0,0,0.2);padding:6px 10px;border-radius:12px;flex:1;justify-content:space-between} .level{flex:1;text-align:center;padding:6px 0;font-size:14px;font-weight:700;color:#eee;border-radius:8px;background:rgba(255,255,255,0.06);transition:.25s;cursor:pointer} .level.active{background:var(--accent-cyan);color:#000;box-shadow:0 0 8px var(--accent-cyan)} .coin-panel{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.28);padding:8px 12px;border-radius:16px;box-shadow:0 0 12px rgba(0,216,255,0.18)} .coin-logo{width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff} .coin-panel .val{font-weight:700;font-size:18px;color:var(--accent-cyan)} /* Дом: сетка комнат */ .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px} .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)} .room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.14)} .room.selected{border-color:var(--accent-cyan);box-shadow:0 0 12px var(--accent-cyan)} .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease} .room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease} .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s} @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}} @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}} /* Контролы */ .controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px} button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s} button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)} button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)} /* Нижнее меню */ .bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)} .bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s} .bottom-menu button:hover{transform:scale(1.16);color:var(--accent-cyan)} /* Апгрейды */ .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:12px 10px;width:95%;justify-content:flex-start;align-items:stretch} .upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);transition:transform .18s,box-shadow .18s} .upgrade:hover{transform:translateY(-6px)} .upgrade h3{margin:0 0 8px;font-size:16px;color:var(--accent-cyan)} .upgrade p{margin:0;font-size:14px;color:#eee} .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px} .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px} /* Mining info */ .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)} /* Видимая панель майнеров — убираем с главного экрана */ .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px} .miners-panel .miner-card{display:none} /* Модальный магазин майнеров (полноэкранный) */ #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none} #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px} #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px} #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)} #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.35)} #miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 6px 18px rgba(122,75,255,0.12)} #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff} #miningShop .miner-card .income{color:var(--birch);font-weight:800} #miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px} #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800} /* Подтверждение покупки: центрированное */ #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box} #buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)} #buyConfirm.show{display:block} #buyConfirm p{color:#fff;margin:8px 0} #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px} /* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */ #infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto} #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:rgba(0,0,0,0.22);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.04)} #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px} #infoWindow ul{color:#eaf2ff;padding-left:20px} #infoWindow ul li::before{content:'• ';color:var(--accent-cyan);font-weight:600} #infoWindow button, #profileWindow button{width:100%;margin-top:12px;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700} /* Profile specific content */ .settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.03)} .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px} .select-lang{Padding:8px 10px;border-radius:8px;border:none;font-weight:700} /* Адаптив */ @media (max-width:520px){   .coin-logo{width:34px;height:34px;border-width:2px}   button{font-size:18px;padding:12px}   #miningShop .miner-card{width:46%}   .upgrade{min-width:160px} }   </style>
+/* Базовая страница */ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);background-size:200% 200%;animation:gradientBG 15s ease infinite;color:#fff;overflow:hidden} @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}} body{display:flex;flex-direction:column;align-items:center;min-height:100vh} /* Header */ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.28);border-radius:12px;padding:10px;backdrop-filter:blur(5px)} .coin-panel{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.28);padding:8px 12px;border-radius:16px;box-shadow:0 0 12px rgba(0,216,255,0.18)} .coin-logo{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000} .coin-panel .val{font-weight:800;font-size:18px;color:var(--accent-cyan)} /* TON panel */ .ton-panel{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.02)} .ton-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(90deg,#FFD35A,#FFC107);color:#000;border:3px solid rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(255,193,7,0.12)} .ton-val{font-weight:800;font-size:14px;color:#ffeaa7} /* Дом: сетка комнат */ .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px} .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)} .room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.14)} .room.selected{border-color:var(--accent-cyan);box-shadow:0 0 12px var(--accent-cyan)} .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease} .room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease} .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s} @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}} @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}} /* Контролы */ .controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px} button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s} button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)} button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)} /* Нижнее меню */ .bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)} .bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s} .bottom-menu button:hover{transform:scale(1.16);color:var(--accent-cyan)} /* Апгрейды */ .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:12px 10px;width:95%;justify-content:flex-start;align-items:stretch} .upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);transition:transform .18s,box-shadow .18s} .upgrade:hover{transform:translateY(-6px)} .upgrade h3{margin:0 0 8px;font-size:16px;color:var(--accent-cyan)} .upgrade p{margin:0;font-size:14px;color:#eee} .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px} .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px} /* Mining info */ .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)} /* Видимая панель майнеров — убираем с главного экрана */ .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px} .miners-panel .miner-card{display:none} /* Модальный магазин майнеров (полноэкранный) */ #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none} #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px} #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px} #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)} #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.35)} #miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 6px 18px rgba(122,75,255,0.12)} #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff} #miningShop .miner-card .income{color:var(--birch);font-weight:800} #miningShop .miner-card .bottom{width:100%;Display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px} #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800} /* Подтверждение покупки: центрированное */ #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box} #buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)} #buyConfirm.show{display:block} #buyConfirm p{color:#fff;margin:8px 0} #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px} /* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */ #infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto} #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:rgba(0,0,0,0.22);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.04)} #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px} #infoWindow ul{color:#eaf2ff;padding-left:20px} #infoWindow ul li::before{content:'• ';color:var(--accent-cyan);font-weight:600} #infoWindow button, #profileWindow button{width:100%;margin-top:12px;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700} /* Profile specific content */ .settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.03)} .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px} .select-lang{Padding:8px 10px;border-radius:8px;border:none;font-weight:700} /* Адаптив */ @media (max-width:520px){   .coin-logo{width:40px;height:40px;border-width:2px}   button{font-size:18px;padding:12px}   #miningShop .miner-card{width:46%}   .upgrade{min-width:160px} }   </style>
 </head>
 <body>
   <header>
-    <div class="level-bar">
-   <div class="level" data-val="10000">10K</div>
-   <div class="level" data-val="100000">100K</div>
-   <div class="level" data-val="1000000">1M</div>
-   <div class="level" data-val="5000000">5M</div>
- </div>
- <div class="coin-panel">
-      <img class="coin-logo" src="logo.png" alt="Coin logo" />
-      <div class="val" id="coinsVal">0</div>
+    <div></div><!-- пустой блок вместо удалённой шкалы достижений -->
+    <div class="coin-panel" aria-live="polite" aria-atomic="true">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="coin-logo" title="ZEX">Z</div>
+        <div>
+          <div style="font-size:12px;color:var(--birch);font-weight:800">ZEX</div>
+          <div class="val" id="coinsVal">0</div>
+        </div>
+      </div>
+
+      <div class="ton-panel" style="margin-left:6px;">
+        <div class="ton-logo" title="TON">T</div>
+        <div>
+          <div style="font-size:12px;color:var(--birch);font-weight:800">TON</div>
+          <div class="ton-val" id="tonVal">0</div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -308,6 +316,15 @@ function format(n) {
          n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
 }
 
+// форматирование TON (тонкая дробь)
+function formatTon(n){
+  if (!isFinite(n)) return '0';
+  if (n === 0) return '0';
+  if (n < 0.000001) return '<0.000001';
+  // показываем до 6 знаков после запятой, убираем лишние нули
+  return Number(n.toFixed(6)).toString();
+}
+
 // сохранить состояние 
 function save() {
   try {
@@ -327,13 +344,29 @@ function save() {
   }
 }
 
+// Обновление отображения ZEX и TON
+function updateBalancesDisplay(){
+  // ZEX
+  coinsVal.textContent = format(coins);
+  // TON = coins * 0.000003 (по правилу 1000 ZEX = 0.003 TON)
+  const ton = coins * 0.000003;
+  const tonEl = document.getElementById('tonVal');
+  if (tonEl) tonEl.textContent = formatTon(ton);
+  // если есть модальное отображение баланса в rewards, синхронизируем и там
+  const wsZex = document.getElementById('wsModalCoinsDisplay');
+  if (wsZex) {
+    // show ZEX and TON inside the modal coin display
+    const wsTon = formatTon(ton);
+    wsZex.textContent = format(coins) + ' ZEX • ' + wsTon + ' TON';
+  }
+}
+
 // обновить монеты 
 function updCoins(v = 0) {
   coins += v;
   if (coins < 0) coins = 0;
   if (coins > maxCoins) maxCoins = coins;
-  coinsVal.textContent = format(coins);
-  updLv();
+  updateBalancesDisplay();
   updUpg();
   updIncome();
   save();
@@ -351,7 +384,7 @@ function getIncome() {
 }
 function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
 
-// оффлайн-доход 
+ // оффлайн-доход 
 function addOfflineCoins() {
   const last = +localStorage.getItem('lastTime') || Date.now();
   const now = Date.now();
@@ -366,9 +399,6 @@ addOfflineCoins();
 
 // начисление в реальном времени
 setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
-
-// уровни 
-function updLv() { document.querySelectorAll('.level').forEach(l => l.classList.toggle('active', maxCoins >= +l.dataset.val)); }
 
 // апдейты апгрейдов 
 function updUpg() {
@@ -552,7 +582,8 @@ minersPanelVisible.style.display = 'none'; upgradePanel.style.display = 'flex';
 // language selector 
 const langSelect = document.getElementById('langSelect'); langSelect.value = lang; langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
-// init UI coinsVal.textContent = format(coins); updLv(); updUpg(); updIncome(); updTimers(); renderMiners(); applyLang();
+// init UI
+updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); applyLang();
 
 // ensure windows hidden on load document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true'); document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
 
@@ -653,7 +684,7 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           </div>
         </div>
         <div style="text-align:right">
-          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0</div>
+          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0 TON</div>
           <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
         </div>
       </div>
@@ -749,6 +780,12 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
         localStorage.setItem('coins', String(cur));
         const el = document.getElementById('coinsVal');
         if(el) el.textContent = formatFallback(cur);
+        // also update TON if possible
+        const tonEl = document.getElementById('tonVal');
+        if(tonEl) {
+          const ton = cur * 0.000003;
+          tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
+        }
       }catch(e){}
     }
 
@@ -782,6 +819,11 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
           localStorage.setItem('coins', String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
+          const tonEl = document.getElementById('tonVal');
+          if(tonEl) {
+            const ton = cur * 0.000003;
+            tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
+          }
         }
         saveGameStatePublic();
       }catch(e){}
@@ -939,9 +981,12 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
 
     function syncCoinsDisplay(){
       const coins = +localStorage.getItem('coins') || 0;
-      coinsDisplayEl.textContent = formatNum(coins);
+      const ton = coins * 0.000003;
+      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if (mainEl) mainEl.textContent = formatNum(coins);
+      const tonEl = document.getElementById('tonVal');
+      if (tonEl) tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
     }
 
     btnClose.addEventListener('click', function(){
