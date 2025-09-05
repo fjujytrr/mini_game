@@ -6,22 +6,22 @@
   <title>Hide & Seek — Premium Emoji (Updated)</title>
   <style>
 :root{   --accent-cyan: #00D8FF;   --birch: #EDE4C8;   --purple-frame: #7a4bff;   --deep-purple: #5a2ecc;   --glass: rgba(255,255,255,0.06); }
-/* Базовая страница */ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);background-size:200% 200%;animation:gradientBG 15s ease infinite;color:#fff;overflow:hidden} @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}} body{display:flex;flex-direction:column;align-items:center;min-height:100vh} /* Header */ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.28);border-radius:12px;padding:10px;backdrop-filter:blur(5px)} .coin-panel{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.28);padding:8px 12px;border-radius:16px;box-shadow:0 0 12px rgba(0,216,255,0.18)} .coin-logo{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000} .coin-panel .val{font-weight:800;font-size:18px;color:var(--accent-cyan)} /* TON panel */ .ton-panel{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.02)} .ton-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;background:linear-gradient(90deg,#FFD35A,#FFC107);color:#000;border:3px solid rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(255,193,7,0.12)} .ton-val{font-weight:800;font-size:14px;color:#ffeaa7} /* Дом: сетка комнат */ .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px} .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)} .room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.14)} .room.selected{border-color:var(--accent-cyan);box-shadow:0 0 12px var(--accent-cyan)} .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease} .room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease} .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s} @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}} @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}} /* Контролы */ .controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px} button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s} button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)} button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)} /* Нижнее меню */ .bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)} .bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s} .bottom-menu button:hover{transform:scale(1.16);color:var(--accent-cyan)} /* Апгрейды */ .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:12px 10px;width:95%;justify-content:flex-start;align-items:stretch} .upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);transition:transform .18s,box-shadow .18s} .upgrade:hover{transform:translateY(-6px)} .upgrade h3{margin:0 0 8px;font-size:16px;color:var(--accent-cyan)} .upgrade p{margin:0;font-size:14px;color:#eee} .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px} .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px} /* Mining info */ .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)} /* Видимая панель майнеров — убираем с главного экрана */ .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px} .miners-panel .miner-card{display:none} /* Модальный магазин майнеров (полноэкранный) */ #miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none} #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px} #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px} #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)} #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.35)} #miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 6px 18px rgba(122,75,255,0.12)} #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff} #miningShop .miner-card .income{color:var(--birch);font-weight:800} #miningShop .miner-card .bottom{width:100%;Display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px} #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800} /* Подтверждение покупки: центрированное */ #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box} #buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)} #buyConfirm.show{display:block} #buyConfirm p{color:#fff;margin:8px 0} #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px} /* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */ #infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto} #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:rgba(0,0,0,0.22);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.04)} #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px} #infoWindow ul{color:#eaf2ff;padding-left:20px} #infoWindow ul li::before{content:'• ';color:var(--accent-cyan);font-weight:600} #infoWindow button, #profileWindow button{width:100%;margin-top:12px;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700} /* Profile specific content */ .settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.03)} .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px} .select-lang{Padding:8px 10px;border-radius:8px;border:none;font-weight:700} /* Адаптив */ @media (max-width:520px){   .coin-logo{width:40px;height:40px;border-width:2px}   button{font-size:18px;padding:12px}   #miningShop .miner-card{width:46%}   .upgrade{min-width:160px} }   </style>
+/* Базовая страница */ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);background-size:200% 200%;animation:gradientBG 15s ease infinite;color:#fff;overflow:hidden} @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}} body{display:flex;flex-direction:column;align-items:center;min-height:100vh} /* Header */ header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.08);border-radius:12px;padding:10px;backdrop-filter:blur(5px)} .coin-panel{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:16px;box-shadow:0 0 12px rgba(0,216,255,0.08)} .coin-logo{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);box-shadow:0 6px 18px rgba(122,75,255,0.18);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000} .coin-panel .val{font-weight:800;font-size:18px;color:var(--accent-cyan)} /* TON panel */ .ton-panel{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;background:transparent} .ton-logo{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;background:transparent;color:#000;border:3px solid rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(255,193,7,0.06);object-fit:cover} .ton-val{font-weight:800;font-size:14px;color:#ffeaa7} /* Дом: сетка комнат */ .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px} .room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)} .room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.14)} .room.selected{border-color:var(--accent-cyan);box-shadow:0 0 12px var(--accent-cyan)} .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease} .room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease} .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s} @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}} @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}} /* Контролы */ .controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px} button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s} button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)} button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)} /* Нижнее меню */ .bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:620px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 12px;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)} .bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s;padding:8px 10px;border-radius:10px} .bottom-menu button:hover{transform:scale(1.12);color:var(--accent-cyan)} /* Апгрейды */ .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:12px 10px;width:95%;justify-content:flex-start;align-items:stretch} .upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);transition:transform .18s,box-shadow .18s} .upgrade:hover{transform:translateY(-6px)} .upgrade h3{margin:0 0 8px;font-size:16px;color:var(--accent-cyan)} .upgrade p{margin:0;font-size:14px;color:#eee} .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px} .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px} /* Mining info */ .mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)} /* Модальные окна и панель наград */ /* Сделано: фон контейнера .glass прозрачный (по вашему требованию) */ #wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; } #wsModalOverlay.hidden{ display:none; } #wsModalOverlay .bgLayer{ position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block; overflow:hidden; opacity:0.06; } #wsModalOverlay .bgImage{ position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.12; } /* ОТЛАДКА: фон .glass теперь прозрачный */ #wsModalOverlay .glass{ position:relative; width:100%; max-width:980px; margin:0 auto; box-sizing:border-box; padding:18px; border-radius:18px 18px 0 0; backdrop-filter: blur(8px) saturate(1.05); background:transparent; box-shadow: 0 -12px 40px rgba(0,0,0,0.25); display:flex; flex-direction:column; gap:12px; overflow:hidden; } /* Rewards */ .rewardsShell{ display:flex; flex-direction:column; gap:12px; } .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.01)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04); max-height: calc(70vh - 110px); overflow:auto; } .rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; } .rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; } .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); } .rewardCard:hover{ transform:translateY(-6px); } .rewardCard.pop{ animation:pop .26s ease; } @keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.06);} 100%{ transform:scale(1); } } .rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.06); box-shadow:0 8px 18px rgba(0,216,255,0.08); } .rewardCard .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:6px; } .rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.08); } .rewardCard.locked{ opacity:0.36; pointer-events:auto; } .rewardCard.locked .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.6)); border-radius:12px; color:#fff; font-weight:800; text-align:center; padding:6px; font-size:13px; } .rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.12); } .rewardCard.claimed{ opacity:0.9; pointer-events:none; } .rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.12); font-size:12px; } .rewardCard.big{ min-height:120px; padding:18px; } /* Casino modal (wheel) */ #casinoModal{ position:fixed; inset:0; z-index:11000; display:none; align-items:center; justify-content:center; padding:24px; box-sizing:border-box; } #casinoModal .panel{ width:100%; max-width:760px; border-radius:14px; padding:18px; box-sizing:border-box; background:transparent; box-shadow:0 10px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04); } .casino-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; } .casino-title{ font-weight:900; color:#ecf8ff; display:flex;align-items:center;gap:10px } .wheel-wrap{ display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:wrap; } .wheel{ width:320px; height:320px; border-radius:50%; position:relative; box-shadow:0 12px 40px rgba(0,0,0,0.4); border:8px solid rgba(255,255,255,0.03); overflow:hidden; } .wheel .inner{ width:100%; height:100%; border-radius:50%; transition:transform 4s cubic-bezier(.08,.9,.2,1); transform:rotate(0deg); } .pointer{ width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-bottom:28px solid #fff; position:relative; top:-12px; transform:translateY(-50%); margin:0 auto; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.4)); } .spin-btn{ padding:12px 18px; border-radius:12px; font-weight:900; border:none; cursor:pointer; background:linear-gradient(90deg,var(--accent-cyan),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.18); } .prizes-list{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:12px; } .prize-chip{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04); text-align:center; font-weight:800 } .casino-footer{ display:flex; justify-content:space-between; align-items:center; margin-top:12px; } .small-muted{ color:var(--birch); font-weight:700 } /* Responsive */ @media (max-width:720px){ .wheel{ width:260px;height:260px } .panel{ padding:12px } .bottom-menu{max-width:520px} }   </style>
 </head>
 <body>
   <header>
     <div></div><!-- пустой блок вместо удалённой шкалы достижений -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
       <div style="display:flex;align-items:center;gap:12px;">
-        <div class="coin-logo" title="ZEX">Z</div>
+        <img class="coin-logo" id="zexLogo" src="logo.png" alt="ZEX" />
         <div>
           <div style="font-size:12px;color:var(--birch);font-weight:800">ZEX</div>
           <div class="val" id="coinsVal">0</div>
         </div>
       </div>
 
-      <div class="ton-panel" style="margin-left:6px;">
-        <div class="ton-logo" title="TON">T</div>
+      <div class="ton-panel" style="margin-left:8px;">
+        <img class="ton-logo" id="tonLogo" src="ton.png" alt="TON" />
         <div>
           <div style="font-size:12px;color:var(--birch);font-weight:800">TON</div>
           <div class="ton-val" id="tonVal">0</div>
@@ -157,108 +157,65 @@
     </div>
   </div>
 
+  <!-- Casino modal -->
+  <div id="casinoModal" aria-hidden="true" role="dialog" aria-label="Casino wheel">
+    <div class="panel" role="document" aria-modal="true">
+      <div class="casino-header">
+        <div class="casino-title">🎰 Casino — Wheel of Fortune</div>
+        <div style="text-align:right">
+          <div style="font-weight:800;color:var(--accent-cyan);font-size:16px" id="casinoBalance">0 ZEX • 0 TON</div>
+          <div style="font-size:12px;color:var(--birch)">Spin once every 2 hours</div>
+        </div>
+      </div>
+
+      <div class="wheel-wrap">
+        <div>
+          <div class="pointer" id="wheelPointer" aria-hidden="true"></div>
+          <div class="wheel" aria-hidden="true">
+            <div class="inner" id="wheelInner" role="img" aria-label="Wheel">
+              <!-- wheel sectors are drawn with conic-gradient via JS/CSS -->
+            </div>
+          </div>
+        </div>
+
+        <div style="max-width:320px;">
+          <div style="margin-bottom:12px;">
+            <button class="spin-btn" id="spinBtn">Spin the Wheel</button>
+          </div>
+          <div class="small-muted" id="spinStatus">Ready to spin</div>
+
+          <div class="prizes-list" id="prizesList" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <div class="casino-footer">
+        <div class="small-muted">Good luck!</div>
+        <div>
+          <button class="btnGhost" id="closeCasino">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="bottom-menu">
     <button id="infoBtn" class="secondary">ℹ</button>
     <button id="shopBtn" class="secondary">🛒</button>
     <button id="miningBtn" class="secondary">⛏</button>
+    <button id="casinoBtn" class="secondary">🎰</button>
     <button id="profileBtn" class="secondary">👤</button>
   </div>
 
   <script>
-  /* ==========================    Исправленный JS (готово)    ========================== */ 
- // ========== Локализация ========== 
+  /* ==========================    JS (добавлены казино + логотипы)    ========================== */ 
+
+ // ========== Локализация (сокращённо) ========== 
  const i18n = {
-  ru: {
-    pickRoomFirst: 'Сначала выберите комнату!',
-    notEnough: 'Недостаточно монет!',
-    dailyAlready: 'Ежедневная награда уже получена!',
-    questAlready: 'Квест уже выполнен!',
-    miningIncome: 'Доход майнинга:',
-    miningShop: 'Магазин майнинга',
-    close: 'Закрыть',
-    howToPlay: 'Как играть',
-    infoList: [
-      'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
-      'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
-      'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
-      'Если вы избежали охоты, вы получаете монеты (показываются зеленым).',
-      'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
-      'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
-    ],
-    profile: 'Профиль',
-    dailyReward: 'Ежедневная награда',
-    dailyText: 'Получите 30 000 монет раз в день!',
-    claimDaily: 'Забрать',
-    quest: 'Квест',
-    claimQuest: 'Взять',
-    settings: 'Настройки',
-    settingsText: 'Смените язык и другие параметры.',
-    buyFor: 'Купить {name} за {price}?',
-    buy: 'Купить',
-    cancel: 'Отмена',
-    profitHr: 'Прибыль/ч:'
-  },
-  en: {
-    pickRoomFirst: 'Pick a room first!',
-    notEnough: 'Not enough coins!',
-    dailyAlready: 'Daily reward already claimed!',
-    questAlready: 'Quest already claimed!',
-    miningIncome: 'Mining Income:',
-    miningShop: 'Mining Shop',
-    close: 'Close',
-    howToPlay: 'How to Play',
-    infoList: [
-      'Select a room and then click the 🔍 button to hunt.',
-      'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
-      'If your room is found, you lose coins (shown in red).',
-      'If you evade the hunt, you gain coins (shown in green).',
-      'Buy upgrades or miners to improve your chances and income.',
-      'Claim daily rewards and complete quests for bonus coins.'
-    ],
-    profile: 'Profile',
-    dailyReward: 'Daily Reward',
-    dailyText: 'Get 30,000 coins once a day!',
-    claimDaily: 'Claim Daily',
-    quest: 'Quest',
-    claimQuest: 'Claim Quest',
-    settings: 'Settings',
-    settingsText: 'Change language and other preferences.',
-    buyFor: 'Buy {name} for {price}?',
-    buy: 'Buy',
-    cancel: 'Cancel',
-    profitHr: 'Profit/hr:'
-  }
+  ru: { pickRoomFirst: 'Сначала выберите комнату!', notEnough: 'Недостаточно монет!', dailyAlready: 'Ежедневная награда уже получена!', questAlready: 'Квест уже выполнен!', miningIncome: 'Доход майнинга:', miningShop: 'Магазин майнинга', close: 'Закрыть', howToPlay: 'Как играть', infoList: ['Выберите комнату, затем нажмите кнопку 🔍 для охоты.','Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").','Если вашу комнату нашли, вы теряете монеты (показываются красным).','Если вы избежали охоты, вы получаете монеты (показываются зеленым).','Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.','Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'], profile: 'Профиль', dailyReward: 'Ежедневная награда', dailyText: 'Получите 30 000 монет раз в день!', claimDaily: 'Забрать', quest: 'Квест', claimQuest: 'Взять', settings: 'Настройки', settingsText: 'Смените язык и другие параметры.', buyFor: 'Купить {name} за {price}?', buy: 'Купить', cancel: 'Отмена', profitHr: 'Прибыль/ч:' },
+  en: { pickRoomFirst: 'Pick a room first!', notEnough: 'Not enough coins!', dailyAlready: 'Daily reward already claimed!', questAlready: 'Quest already claimed!', miningIncome: 'Mining Income:', miningShop: 'Mining Shop', close: 'Close', howToPlay: 'How to Play', infoList: ['Select a room and then click the 🔍 button to hunt.','The hunter searches 2 random rooms (1 if "Check 1 Room" is active).','If your room is found, you lose coins (shown in red).','If you evade the hunt, you gain coins (shown in green).','Buy upgrades or miners to improve your chances and income.','Claim daily rewards and complete quests for bonus coins.'], profile: 'Profile', dailyReward: 'Daily Reward', dailyText: 'Get 30,000 coins once a day!', claimDaily: 'Claim Daily', quest: 'Quest', claimQuest: 'Claim Quest', settings: 'Settings', settingsText: 'Change language and other preferences.', buyFor: 'Buy {name} for {price}?', buy: 'Buy', cancel: 'Cancel', profitHr: 'Profit/hr:' }
 };
 let lang = localStorage.getItem('lang') || 'ru';
-function t(key, vars = {}) {
-  const val = i18n[lang][key];
-  if (typeof val === 'string') {
-    return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
-  }
-  return val;
-}
-function applyLang() {
-  document.getElementById('miningLabel').textContent = t('miningIncome');
-  document.getElementById('shopTitle').textContent = t('miningShop');
-  document.getElementById('closeMiningShop').textContent = t('close');
-  document.getElementById('confirmBuy').textContent = t('buy');
-  document.getElementById('cancelBuy').textContent = t('cancel');
-  document.getElementById('infoTitle').textContent = t('howToPlay');
-  document.getElementById('profileTitle').textContent = t('profile');
-  document.getElementById('dailyTitle').textContent = t('dailyReward');
-  document.getElementById('dailyText').textContent = t('dailyText');
-  document.getElementById('claimDaily').textContent = t('claimDaily');
-  document.getElementById('questTitle').textContent = t('quest');
-  document.getElementById('claimQuest').textContent = t('claimQuest');
-  document.getElementById('settingsTitle').textContent = t('settings');
-  document.getElementById('settingsText').textContent = t('settingsText');
-  document.getElementById('closeInfo').textContent = t('close');
-  document.getElementById('closeProfile').textContent = t('close');
-  // info list
-  const infoListEl = document.getElementById('infoList');
-  infoListEl.innerHTML = '';
-  t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
-}
+function t(key, vars = {}) { const val = i18n[lang][key]; if (typeof val === 'string') return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || ''); return val; }
+function applyLang(){ document.getElementById('miningLabel').textContent = t('miningIncome'); document.getElementById('shopTitle').textContent = t('miningShop'); document.getElementById('closeMiningShop') && (document.getElementById('closeMiningShop').textContent = t('close')); document.getElementById('confirmBuy') && (document.getElementById('confirmBuy').textContent = t('buy')); document.getElementById('cancelBuy') && (document.getElementById('cancelBuy').textContent = t('cancel')); document.getElementById('infoTitle').textContent = t('howToPlay'); document.getElementById('profileTitle').textContent = t('profile'); document.getElementById('dailyTitle').textContent = t('dailyReward'); document.getElementById('dailyText').textContent = t('dailyText'); document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily')); document.getElementById('questTitle').textContent = t('quest'); document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest')); document.getElementById('settingsTitle').textContent = t('settings'); document.getElementById('settingsText').textContent = t('settingsText'); document.getElementById('closeInfo').textContent = t('close'); document.getElementById('closeProfile').textContent = t('close'); const infoListEl = document.getElementById('infoList'); infoListEl.innerHTML = ''; t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); }); }
 
 // ========== Инициализация UI и состояния ==========
 // создаём комнаты
@@ -291,7 +248,7 @@ const minersData = [
   { n: "Miner 10", i: 9500, p: 50000 }
 ];
 
-// ======= Безопасная инициализация minersState (если в localStorage массив короче или повреждён) 
+// ======= Безопасная инициализация minersState
 let minersState; try {
   const saved = JSON.parse(localStorage.getItem('minersState'));
   if (Array.isArray(saved)) {
@@ -321,7 +278,6 @@ function formatTon(n){
   if (!isFinite(n)) return '0';
   if (n === 0) return '0';
   if (n < 0.000001) return '<0.000001';
-  // показываем до 6 знаков после запятой, убираем лишние нули
   return Number(n.toFixed(6)).toString();
 }
 
@@ -352,13 +308,12 @@ function updateBalancesDisplay(){
   const ton = coins * 0.000003;
   const tonEl = document.getElementById('tonVal');
   if (tonEl) tonEl.textContent = formatTon(ton);
-  // если есть модальное отображение баланса в rewards, синхронизируем и там
+  // синхронизируем в казино-модал (если открыт)
+  const casinoBalance = document.getElementById('casinoBalance');
+  if (casinoBalance) casinoBalance.textContent = format(coins) + ' ZEX • ' + formatTon(ton);
+  // и rewards modal
   const wsZex = document.getElementById('wsModalCoinsDisplay');
-  if (wsZex) {
-    // show ZEX and TON inside the modal coin display
-    const wsTon = formatTon(ton);
-    wsZex.textContent = format(coins) + ' ZEX • ' + wsTon + ' TON';
-  }
+  if (wsZex) wsZex.textContent = format(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
 }
 
 // обновить монеты 
@@ -372,13 +327,12 @@ function updCoins(v = 0) {
   save();
 }
 
-// доход в час (с защитой на случай undefined) 
+// доход в час
 function getIncome() {
   const base = minersState.reduce((sum, m, i) => {
     const count = (m && typeof m.count === 'number') ? m.count : 0;
     return sum + (count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, count - 1)) : 0);
   }, 0);
-  // если активен doubleIncome — удваиваем доход
   if (doubleIncomeExpire > Date.now()) return base * 2;
   return base;
 }
@@ -417,7 +371,6 @@ document.querySelectorAll('.upgrade').forEach(u=>{
     let price = base * Math.pow(2,count);
     if (coins >= price) {
       upgrades[key] = count+1; updCoins(-price);
-      // специальные эффекты: старый check1 и новые улучшения на 1 минуту
       if (key === 'check1') check1Expire = Date.now()+60000;
       if (key === 'shield') shieldExpire = Date.now()+60000;
       if (key === 'incBoost') doubleIncomeExpire = Date.now()+60000;
@@ -430,20 +383,16 @@ document.querySelectorAll('.upgrade').forEach(u=>{
 // таймеры check1 + новые таймеры
 function updTimers() {
   const el = document.getElementById('check1Timer');
-  if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
-  else el.textContent = '';
+  if (el) el.textContent = check1Expire > Date.now() ? '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's' : '';
 
   const shEl = document.getElementById('shieldTimer');
-  if (shieldExpire > Date.now()) shEl.textContent = '⏳ ' + Math.floor((shieldExpire - Date.now())/1000) + 's';
-  else shEl.textContent = '';
+  if (shEl) shEl.textContent = shieldExpire > Date.now() ? '⏳ ' + Math.floor((shieldExpire - Date.now())/1000) + 's' : '';
 
   const incEl = document.getElementById('incTimer');
-  if (doubleIncomeExpire > Date.now()) incEl.textContent = '⏳ ' + Math.floor((doubleIncomeExpire - Date.now())/1000) + 's';
-  else incEl.textContent = '';
+  if (incEl) incEl.textContent = doubleIncomeExpire > Date.now() ? '⏳ ' + Math.floor((doubleIncomeExpire - Date.now())/1000) + 's' : '';
 
   const luckEl = document.getElementById('luckTimer');
-  if (luckExpire > Date.now()) luckEl.textContent = '⏳ ' + Math.floor((luckExpire - Date.now())/1000) + 's';
-  else luckEl.textContent = '';
+  if (luckEl) luckEl.textContent = luckExpire > Date.now() ? '⏳ ' + Math.floor((luckExpire - Date.now())/1000) + 's' : '';
 }
 setInterval(updTimers, 1000);
 
@@ -484,13 +433,10 @@ document.getElementById('resetBtn').onclick = ()=>{
     const roomEl = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
 
     if (picks.includes(selectedRoom)) {
-      // если активен shield — предотвращаем потерю и считаем как safe (без награды)
       if (shieldExpire > Date.now()) {
         roomEl.classList.add('safe');
-        // не меняем монеты (или можно дать небольшую компенсацию, здесь 0)
         updCoins(0);
       } else if (luckExpire > Date.now() && Math.random() < 0.5) {
-        // удачный шанс избежать — считаем как safe и даём приз
         roomEl.classList.add('safe');
         updCoins(prize);
       } else {
@@ -509,12 +455,11 @@ document.getElementById('resetBtn').onclick = ()=>{
   }, delay+700);
 };
 
-// render miners cards (только в модальном окне) — с защитой на undefined 
+// render miners cards (только в модальном окне)
 function renderMiners(){
   if (!minersContainerEl) return;
   minersContainerEl.innerHTML = '';
   minersData.forEach((m,i)=>{
-    // безопасное получение состояния
     const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
     const price = m.p * Math.pow(2, st.count);
     const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
@@ -529,7 +474,6 @@ function renderMiners(){
       </div>
     `;
     card.onclick = ()=>{
-      // снова защитная проверка цены
       const currentSt = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
       const currentPrice = m.p * Math.pow(2, currentSt.count);
       if (coins >= currentPrice) {
@@ -542,7 +486,7 @@ function renderMiners(){
   });
 }
 
-// открыть/закрыть miningShop // miningBtn (кирка) и shopBtn (тележка) — оба открывают магазин
+// mining shop open/close
 const miningBtn = document.getElementById('miningBtn'); const shopBtn = document.getElementById('shopBtn');
 miningBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
 shopBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
@@ -576,8 +520,7 @@ const infoWindowEl = document.getElementById('infoWindow'); document.getElementB
 document.getElementById('closeInfo').onclick = ()=>{ infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); };
 
 // shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — только upgradePanel видна
-const upgradePanel = document.getElementById('upgradePanel'); // Скрываем видимую панель майнеров на главном экране и показываем апгрейды
-minersPanelVisible.style.display = 'none'; upgradePanel.style.display = 'flex';
+const upgradePanel = document.getElementById('upgradePanel'); minersPanelVisible.style.display = 'none'; upgradePanel.style.display = 'flex';
 
 // language selector 
 const langSelect = document.getElementById('langSelect'); langSelect.value = lang; langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
@@ -585,128 +528,191 @@ const langSelect = document.getElementById('langSelect'); langSelect.value = lan
 // init UI
 updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); applyLang();
 
-// ensure windows hidden on load document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true'); document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
+// ensure windows hidden on load
+document.getElementById('infoWindow').style.display = 'none'; document.getElementById('infoWindow').setAttribute('aria-hidden','true');
+document.getElementById('profileWindow').style.display = 'none'; document.getElementById('profileWindow').setAttribute('aria-hidden','true');
+buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
+
+/* =========================================
+   Casino wheel implementation
+   ========================================= */
+const casinoBtn = document.getElementById('casinoBtn');
+const casinoModal = document.getElementById('casinoModal');
+const closeCasino = document.getElementById('closeCasino');
+const spinBtn = document.getElementById('spinBtn');
+const wheelInner = document.getElementById('wheelInner');
+const spinStatus = document.getElementById('spinStatus');
+const prizesList = document.getElementById('prizesList');
+const WHEEL_COOLDOWN = 2 * 60 * 60 * 1000; // 2 hours
+const LS_LAST_SPIN = 'casino_last_spin_ts';
+
+// define prizes (mixture of ZEX and TON)
+const prizes = [
+  { type: 'zex', amount: 1000 },
+  { type: 'zex', amount: 5000 },
+  { type: 'zex', amount: 25000 },
+  { type: 'zex', amount: 100000 },
+  { type: 'ton', amount: 0.1 },
+  { type: 'ton', amount: 0.25 },
+  { type: 'ton', amount: 0.5 },
+  { type: 'ton', amount: 2 }
+];
+
+function buildWheelSectors(){
+  const seg = prizes.length;
+  const colors = ['#4facfe','#00d2ff','#9b7bff','#ffd166','#ffd7a6','#8ae6b0','#ff8a8a','#c3b3ff'];
+  const step = 360/seg;
+  let gradientParts = [];
+  for(let i=0;i<seg;i++){
+    const from = i*step;
+    const to = (i+1)*step;
+    gradientParts.push(`${colors[i % colors.length]} ${from}deg ${to}deg`);
+  }
+  const css = `conic-gradient(${gradientParts.join(',')})`;
+  wheelInner.style.background = css;
+
+  // write labels via absolutely positioned spans inside wheelInner
+  wheelInner.innerHTML = ''; // clear
+  const radius = 140; // for positioning labels (approx)
+  for(let i=0;i<seg;i++){
+    const angle = (i + 0.5) * step; // middle of segment
+    const el = document.createElement('div');
+    el.className = 'sector-label';
+    el.style.position = 'absolute';
+    el.style.left = '50%';
+    el.style.top = '50%';
+    el.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(${90}deg)`;
+    el.style.transformOrigin = '0 0';
+    el.style.fontSize = '13px';
+    el.style.fontWeight = '800';
+    el.style.color = '#000';
+    el.style.textShadow = '0 2px 6px rgba(255,255,255,0.6)';
+    el.innerText = prizes[i].type === 'zex' ? `${prizes[i].amount} ZEX` : `${prizes[i].amount} TON`;
+    wheelInner.appendChild(el);
+  }
+}
+
+function renderPrizesList(){
+  prizesList.innerHTML = '';
+  prizes.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'prize-chip';
+    div.textContent = p.type === 'zex' ? `${p.amount} ZEX` : `${p.amount} TON`;
+    prizesList.appendChild(div);
+  });
+}
+
+function getLastSpinTs(){ return +localStorage.getItem(LS_LAST_SPIN) || 0; }
+function setLastSpinTs(ts){ localStorage.setItem(LS_LAST_SPIN, String(ts)); }
+
+function timeUntilNextSpin(){
+  const last = getLastSpinTs();
+  const now = Date.now();
+  const diff = last + WHEEL_COOLDOWN - now;
+  return diff > 0 ? diff : 0;
+}
+
+function formatRemaining(ms){
+  const s = Math.floor(ms/1000);
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  return `${h}h ${m}m`;
+}
+
+function updateSpinStatusUI(){
+  const rem = timeUntilNextSpin();
+  if (rem === 0){
+    spinStatus.textContent = 'Ready to spin';
+    spinBtn.disabled = false;
+  } else {
+    spinStatus.textContent = 'Next spin: ' + formatRemaining(rem);
+    spinBtn.disabled = true;
+  }
+}
+
+// spin logic
+let spinning = false;
+let currentRotation = 0;
+
+spinBtn.addEventListener('click', ()=>{
+  if (spinning) return;
+  const rem = timeUntilNextSpin();
+  if (rem > 0) { updateSpinStatusUI(); return; }
+
+  spinning = true;
+  spinBtn.disabled = true;
+  spinStatus.textContent = 'Spinning…';
+
+  // pick random prize index
+  const idx = Math.floor(Math.random() * prizes.length);
+
+  // calculate rotation target so that chosen sector lands under pointer (pointer at top)
+  const sectors = prizes.length;
+  const sectorAngle = 360 / sectors;
+  // center of sector idx angle (relative)
+  // wheelInner initial orientation 0deg -> top alignment may vary; we'll rotate to align label positions
+  const extra = (sectorAngle * idx) + sectorAngle/2;
+  // do multiple full rotations
+  const full = 360 * (Math.floor(Math.random()*3) + 4); // 4-6 full turns
+  const randomOffset = (Math.random() * (sectorAngle/2)) - (sectorAngle/4); // small offset for randomness
+  const target = full + extra + randomOffset;
+
+  // animate
+  wheelInner.style.transition = 'transform 4s cubic-bezier(.08,.9,.2,1)';
+  currentRotation = (currentRotation + target) % 3600000;
+  wheelInner.style.transform = `rotate(${currentRotation}deg)`;
+
+  // after animation ends -> award prize
+  function onEnd(){
+    wheelInner.style.transition = '';
+    spinning = false;
+    setLastSpinTs(Date.now());
+    updateSpinStatusUI();
+
+    const prize = prizes[idx];
+    if (prize.type === 'zex'){
+      // award ZEX directly
+      updCoins(prize.amount);
+      alert(`You won ${prize.amount} ZEX!`);
+    } else {
+      // prize.type == 'ton' -> convert TON to ZEX using TON = ZEX * 0.000003 => ZEX = TON / 0.000003
+      const zexFromTon = Math.round(prize.amount / 0.000003);
+      updCoins(zexFromTon);
+      alert(`You won ${prize.amount} TON (≈ ${format(zexFromTon)} ZEX)!`);
+    }
+
+    wheelInner.removeEventListener('transitionend', onEnd);
+  }
+  wheelInner.addEventListener('transitionend', onEnd, { once: true });
+});
+
+// open/close casino modal
+casinoBtn.onclick = ()=>{
+  buildWheelSectors();
+  renderPrizesList();
+  updateSpinStatusUI();
+  casinoModal.style.display = 'flex';
+  casinoModal.setAttribute('aria-hidden','false');
+  // sync balance
+  const ton = coins * 0.000003;
+  document.getElementById('casinoBalance').textContent = format(coins) + ' ZEX • ' + formatTon(ton);
+};
+closeCasino.onclick = ()=>{
+  casinoModal.style.display = 'none';
+  casinoModal.setAttribute('aria-hidden','true');
+};
+
+// periodic update of spin cooldown
+setInterval(updateSpinStatusUI, 10000);
+
+// initialize wheel UI immediately (but not show modal)
+buildWheelSectors();
+renderPrizesList();
+updateSpinStatusUI();
 
   </script>
 
-  <!-- =================== Rewards modal: интегрирован в основную страницу (РАЗМЕРЫ ОТКОРРЕКТИРОВАНЫ) =================== -->
-
-  <style>
-    /* Изолированные переменные и стиль модала (не переопределяют глобальные селекторы) */
-    #wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
-    #wsModalOverlay.hidden{ display:none; }
-    #wsModalOverlay .bgLayer{
-      position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block;
-      overflow:hidden;
-    }
-    #wsModalOverlay .bgImage{
-      position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28;
-    }
-    /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
-    #wsModalOverlay .glass{
-      position:relative;
-      width:100%;
-      max-width:980px;
-      margin:0 auto;
-      box-sizing:border-box;
-      padding:18px;
-      border-radius:18px 18px 0 0;
-      backdrop-filter: blur(8px) saturate(1.05);
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
-      display:flex; flex-direction:column; gap:12px; overflow:hidden;
-    }
-
-    /* Header */
-    #wsModalOverlay .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; color:#ecf8ff; position:relative; z-index:3; }
-    #wsModalOverlay .title{ font-size:20px; font-weight:800; letter-spacing:0.2px; display:flex; align-items:center; gap:10px; }
-    #wsModalOverlay .title .coinIcon{ width:36px; height:36px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:inline-flex; align-items:center; justify-content:center; color:#000; font-weight:900; box-shadow:0 8px 28px rgba(0,216,255,0.12); }
-    #wsModalOverlay .sub{ color:var(--wm-birch); font-weight:700; font-size:14px; }
-
-    /* Rewards shell: уменьшили "высоту" и сделали внутреннюю контейнер прокручиваемым, чтобы карточки не перекрывали заголовок */
-    .rewardsShell{ display:flex; flex-direction:column; gap:12px; }
-    .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04);
-      /* Ограничим высоту контейнера и включим прокрутку при переполнении */
-      max-height: calc(70vh - 110px); overflow:auto;
-    }
-
-    .rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
-    .rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); }
-    .rewardCard:hover{ transform:translateY(-6px); }
-    .rewardCard.pop{ animation:pop .26s ease; }
-    @keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.06);} 100%{ transform:scale(1); } }
-
-    .rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.06); box-shadow:0 8px 18px rgba(0,216,255,0.08); }
-    .rewardCard .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:6px; }
-    .rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.08); }
-    .rewardCard.locked{ opacity:0.36; pointer-events:auto; }
-    .rewardCard.locked .overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.36), rgba(0,0,0,0.6)); border-radius:12px; color:#fff; font-weight:800; text-align:center; padding:6px; font-size:13px; }
-    .rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.12); }
-    .rewardCard.claimed{ opacity:0.9; pointer-events:none; }
-    .rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.12); font-size:12px; }
-
-    .rewardCard.big{ min-height:120px; padding:18px; }
-
-    /* Bottom actions */
-    .wsActions{ display:flex; gap:12px; margin-top:12px; align-items:center; justify-content:space-between; }
-    .wsActions .left{ color:var(--wm-birch); font-weight:700; }
-    .btnPrimary{
-      padding:12px 18px; border-radius:12px; font-weight:900; border:none; cursor:pointer;
-      background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.18);
-    }
-    .btnGhost{
-      padding:10px 14px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#ecf8ff; cursor:pointer;
-    }
-
-    /* Responsive tweaks */
-    @media (max-width:720px){
-      .rewardsContainer{ max-height: calc(60vh - 90px); }
-      .rewardsGridTop{ grid-template-columns:repeat(2,1fr); }
-      .rewardsGridBottom{ grid-template-columns:repeat(2,1fr); }
-      .glass{ padding:12px; border-radius:12px 12px 0 0; }
-      .rewardCard.big{ min-height:100px; }
-    }
-  </style>
-
-  <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
-    <div class="bgLayer" aria-hidden="true">
-      <div class="bgImage" aria-hidden="true"></div>
-    </div>
-
-    <div class="glass" role="document" aria-modal="true">
-      <div class="header">
-        <div class="title">
-          <div class="coinIcon">💎</div>
-          <div>
-            <div style="font-size:18px">Premium Gifts</div>
-            <div class="sub">7 days of rewards — claim one per day</div>
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0 TON</div>
-          <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
-        </div>
-      </div>
-
-      <div class="rewardsShell" id="rewardsShell">
-        <div class="rewardsContainer" id="rewardsContainer">
-          <div class="rewardsGridTop" id="rewardsGridTop" aria-hidden="false"></div>
-          <div style="height:8px"></div>
-          <div class="rewardsGridBottom" id="rewardsGridBottom" aria-hidden="false"></div>
-
-          <div class="wsActions">
-            <div class="left">Unlocked: <span id="wsUnlockedCount" style="font-weight:900;color:var(--wm-accentC)">0</span>/7</div>
-            <div style="display:flex;gap:10px">
-              <button class="btnGhost" id="wsBtnRules">How it works</button>
-              <button class="btnPrimary" id="wsBtnClose">Come back tomorrow</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <!-- Rewards modal script (keeps previous behavior) -->
   <script>
   (function(){
     // ====== Config ======
@@ -752,26 +758,19 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
       return Math.min(MAX_DAYS, daysSinceFirst() + 1);
     }
 
-    // ====== Expose/Connect to game API (safe wrappers) ======
-    // Preserve original if any
-    const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
-    const _orig_updCoins = window.updCoins instanceof Function ? window.updCoins : null;
-    const _orig_saveGame = window.saveGameState instanceof Function ? window.saveGameState : null;
-    const _orig_format = window.format instanceof Function ? window.format : null;
-
-    // format fallback
+    // format fallback - reuse existing format functions if present
     function formatFallback(n){
-      if (typeof _orig_format === 'function') return _orig_format(n);
+      if (window.format) return window.format(n);
       if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
       if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
       if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
       return String(n);
     }
 
-    // updater fallback: if game has updCoins, use it; else update coinsVal element and localStorage
+    // updater fallback
     function updCoinsPublic(v=0){
-      if (typeof _orig_updCoins === 'function'){
-        try{ _orig_updCoins(v); return; }catch(e){}
+      if (typeof window.updCoins === 'function'){
+        try{ window.updCoins(v); return; }catch(e){}
       }
       try{
         let cur = +localStorage.getItem('coins') || 0;
@@ -780,16 +779,9 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
         localStorage.setItem('coins', String(cur));
         const el = document.getElementById('coinsVal');
         if(el) el.textContent = formatFallback(cur);
-        // also update TON if possible
-        const tonEl = document.getElementById('tonVal');
-        if(tonEl) {
-          const ton = cur * 0.000003;
-          tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
-        }
       }catch(e){}
     }
 
-    // save fallback: call game's save() if exists, otherwise persist basic pieces
     function saveGameStatePublic(){
       if (typeof window.save === 'function'){
         try{ window.save(); return; }catch(e){} // original game save function
@@ -802,16 +794,12 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
       }catch(e){}
     }
 
-    // claimRewardFromModal public: first try original if present (saved in _orig_claim), else fallback to updating coins
     function claimRewardFromModalPublic(amount){
-      if (typeof _orig_claim === 'function'){
-        try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ }
+      if (typeof window.claimRewardFromModal === 'function'){
+        try{ window.claimRewardFromModal(amount); saveGameStatePublic(); return; }catch(e) { }
       }
       try{
-        // Prefer calling the game's updater if available so state stays consistent
-        if (typeof _orig_updCoins === 'function') {
-          _orig_updCoins(amount);
-        } else if (typeof window.updCoins === 'function') {
+        if (typeof window.updCoins === 'function') {
           window.updCoins(amount);
         } else {
           let cur = +localStorage.getItem('coins') || 0;
@@ -819,28 +807,14 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
           localStorage.setItem('coins', String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
-          const tonEl = document.getElementById('tonVal');
-          if(tonEl) {
-            const ton = cur * 0.000003;
-            tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
-          }
         }
         saveGameStatePublic();
       }catch(e){}
     }
 
-    // Expose to window (do not overwrite if user already has these functions; but ensure they exist)
     window.claimRewardFromModal = window.claimRewardFromModal || claimRewardFromModalPublic;
-    window.updCoins = window.updCoins || updCoinsPublic;
-    window.saveGameState = window.saveGameState || saveGameStatePublic;
-    window.format = window.format || formatFallback;
 
-    const updCoins = window.updCoins;
-    const claimRewardFromModal = window.claimRewardFromModal;
-    const saveGameState = window.saveGameState;
-    const formatNum = window.format;
-
-    // ====== Modal DOM & logic ======
+    // Modal DOM & logic
     const overlay = document.getElementById('wsModalOverlay');
     const gridTop = document.getElementById('rewardsGridTop');
     const gridBottom = document.getElementById('rewardsGridBottom');
@@ -869,11 +843,8 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
       overlay.classList.add('hidden');
     }
 
-    // Build cards (1..7).
     function renderCards(){
-      // reload claimed from storage to stay in sync with other tabs
       claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
-
       const avail = availableCount();
       gridTop.innerHTML = '';
       gridBottom.innerHTML = '';
@@ -888,7 +859,7 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
         card.innerHTML = `
           <div class="coinIconSmall">💰</div>
           <div class="dayLabel">Day ${day}</div>
-          <div class="amount">${formatNum(amount)}</div>
+          <div class="amount">${formatFallback(amount)}</div>
         `;
 
         const isUnlocked = i < avail;
@@ -910,48 +881,33 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
           card.appendChild(overlayEl);
         }
 
-        // Attach a safe click handler which checks current availability/claimed state at click moment
         card.addEventListener('click', function onCardClick(){
-          // Re-read claimed/availability to avoid stale closures
           claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
           const nowClaimed = !!claimed[i];
           const nowAvail = i < availableCount();
-          if (!nowAvail || nowClaimed) return; // not ready or already claimed
-
-          // Prevent double clicks immediately
+          if (!nowAvail || nowClaimed) return;
           card.style.pointerEvents = 'none';
-
-          // optimistic UI
           card.classList.add('pop');
           setTimeout(()=>card.classList.remove('pop'),260);
-
-          // mark claimed and persist
           claimed[i] = true;
           safeSetJSON(LS_CLAIMED, claimed);
 
-          // Try to credit the coins robustly. Use game's API when available, otherwise fallback.
           try {
-            if (typeof claimRewardFromModal === 'function') {
-              // call the public claim; it itself will try to use game's internal functions if present
-              claimRewardFromModal(amounts[i]);
-            } else if (typeof updCoins === 'function') {
-              // fallback to adding coins via updater
-              updCoins(amounts[i]);
+            if (typeof window.claimRewardFromModal === 'function') {
+              window.claimRewardFromModal(amounts[i]);
+            } else if (typeof window.updCoins === 'function') {
+              window.updCoins(amounts[i]);
             } else {
-              // last-resort direct write to localStorage + UI
               let cur = +localStorage.getItem('coins') || 0;
               cur += amounts[i];
               localStorage.setItem('coins', String(cur));
               const mainEl = document.getElementById('coinsVal');
-              if (mainEl) mainEl.textContent = formatNum(cur);
+              if (mainEl) mainEl.textContent = formatFallback(cur);
             }
           } catch(e){
-            console.error('claimReward error', e);
-            // try safe fallback
             try { updCoinsPublic(amounts[i]); } catch(e2){}
           }
 
-          // Update card UI to claimed
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
           badge.textContent = 'Claimed';
@@ -960,7 +916,6 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
           card.classList.add('claimed');
           card.style.pointerEvents = 'none';
 
-          // Sync displays
           syncCoinsDisplay();
           renderUnlockedCount();
 
@@ -982,16 +937,16 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
     function syncCoinsDisplay(){
       const coins = +localStorage.getItem('coins') || 0;
       const ton = coins * 0.000003;
-      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
+      coinsDisplayEl.textContent = formatFallback(coins) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
       const mainEl = document.getElementById('coinsVal');
-      if (mainEl) mainEl.textContent = formatNum(coins);
+      if (mainEl) mainEl.textContent = formatFallback(coins);
       const tonEl = document.getElementById('tonVal');
       if (tonEl) tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
     }
 
     btnClose.addEventListener('click', function(){
       showMainUI();
-      saveGameState();
+      saveGameStatePublic();
     });
 
     btnRules.addEventListener('click', function(){
@@ -1002,12 +957,11 @@ updateBalancesDisplay(); updUpg(); updIncome(); updTimers(); renderMiners(); app
     renderCards();
     syncCoinsDisplay();
 
-    // refresh UI each minute in case time-based availability changes
     setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
       open: function(){ hideMainUI(); renderCards(); syncCoinsDisplay(); },
-      close: function(){ showMainUI(); saveGameState(); },
+      close: function(){ showMainUI(); saveGameStatePublic(); },
       getState: function(){ return { firstSeen, claimed: claimed.slice(), available: availableCount() }; },
       forceResetClaims: function(){ claimed = new Array(MAX_DAYS).fill(false); safeSetJSON(LS_CLAIMED,claimed); renderCards(); }
     };
