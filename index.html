@@ -27,27 +27,19 @@ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-
 body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
 
 /* ====== Apply rewards-modal "glass" aesthetic to main UI ====== */
-/* **Изменения для вашего запроса**
-   - header теперь примыкает к верху (убран верхний margin)
-   - header увеличен по высоте (padding) чтобы "растянуть вверх"
-   - coin-panel имеет margin-left:auto и уходит вправо
-*/
 header{
   width:95%;
-  margin:0; /* убрал пустое пространство сверху */
+  margin:15px 0;
   display:flex;
-  justify-content:flex-start;
+  justify-content:flex-start; /* moved balance left (changed from space-between) */
   align-items:center;
   gap:12px;
   background: var(--glass-strong);
-  /* сделаем верхние углы ровными, чтобы он визуально доходил до верха */
-  border-radius:0 0 18px 18px;
-  padding:18px 18px; /* увеличенный padding — растянет контейнер вверх/вниз */
+  border-radius:18px;
+  padding:12px 18px;
   backdrop-filter: blur(8px) saturate(1.05);
   box-shadow: 0 14px 40px rgba(0,0,0,0.65);
   border:1px solid rgba(255,255,255,0.03);
-  position:relative;
-  top:0;
 }
 
 /* Energy panel (уменьшена) */
@@ -69,7 +61,7 @@ header{
 .energy-panel .val{font-size:14px;color:var(--wm-accentC);line-height:1}
 .energy-panel .timer{font-size:11px;color:var(--birch);line-height:1}
 
-/* Coin panel — теперь уходит вправо благодаря margin-left:auto */
+/* Coin panel — растянута влево (теперь рядом с energy) */
 .coin-panel{
   display:flex;
   align-items:center;
@@ -78,9 +70,9 @@ header{
   padding:8px 12px;
   border-radius:12px;
   box-shadow:0 10px 30px rgba(0,0,0,0.6);
-  margin-left:auto;              /* ключ: подвинуть в правую сторону */
+  margin-left:0;              /* теперь не auto — сидит рядом с energy */
   min-width:140px;
-  max-width:360px;           /* чуть больше чтобы логотипы влезали */
+  max-width:320px;           /* увеличил max, чтобы логотип не выходил */
   justify-content:flex-end;
   border:1px solid rgba(255,255,255,0.02);
   gap:10px;
@@ -96,7 +88,7 @@ header{
 .ton-val{font-weight:800;font-size:13px;color:#ffeaa7;line-height:1}
 
 /* House / rooms */
-.house{position:relative;width:95%;max-width:560px;margin:10px 0 18px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:14px}
+.house{position:relative;width:95%;max-width:560px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:14px}
 .room{
   background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
   border-radius:14px;
@@ -152,7 +144,7 @@ header{
 .miners-panel .miner-card{display:none}
 
 /* Mining shop modal */
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
+#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2b2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
@@ -171,7 +163,7 @@ header{
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);color:#000;border:none;border-radius:8px}
 
 /* Info & Profile windows (glass-like fullscreen) */
-#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
+#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2b2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
 #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;box-shadow:0 18px 50px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.02)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
@@ -486,7 +478,12 @@ header{
   <script>
   /* ===========================
      Full JS: game logic, UI, modals
-     (оставил логику как в вашем файле)
+     Changes made:
+      - Energy container smaller
+      - Balance moved left (header layout)
+      - 1000 ZEX = 0.001 TON  (1 ZEX = 0.000001 TON)
+      - TON is stored separately and DOES NOT decrease when ZEX are spent.
+        TON increases only on positive ZEX gains or direct TON rewards.
   =========================== */
 
   // ======= Constants & storage keys =======
@@ -1076,10 +1073,9 @@ header{
   buyConfirm.setAttribute('aria-hidden','true');
 
   /* ===========================
-     Rewards modal & Casino logic (copied from исходника)
-     ... оставил без изменений ...
+     Rewards modal logic (keeps TON formatting)
+     Adjusted to use separate TON storage
   =========================== */
-
   (function(){
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
@@ -1167,88 +1163,389 @@ header{
 
     function claimRewardFromModalPublic(amount){
       if (typeof _orig_claim === 'function'){
-        try{ _orig_claim(amount); return; }catch(e){}
+        try{ _orig_claim(amount); saveGameStatePublic(); return; }catch(e){ }
       }
-      updCoinsPublic(amount);
-      // persist claimed
-      safeSetJSON(LS_CLAIMED, claimed);
+      try{
+        if (typeof _orig_upd === 'function') {
+          _orig_upd(amount);
+        } else if (typeof window.updCoins === 'function') {
+          window.updCoins(amount);
+        } else {
+          let cur = +localStorage.getItem(LS_COINS) || 0;
+          cur += amount;
+          localStorage.setItem(LS_COINS, String(cur));
+          const cv = document.getElementById('coinsVal');
+          if(cv) cv.textContent = formatFallback(cur);
+          // also increase TON when gaining ZEX
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += amount * ZEX_TO_TON;
+          localStorage.setItem(LS_TON, String(storedTon));
+          const tonEl = document.getElementById('tonVal');
+          if (tonEl) tonEl.textContent = formatTon(storedTon);
+        }
+        saveGameStatePublic();
+      }catch(e){}
     }
 
-    // build UI
+    window.claimRewardFromModal = window.claimRewardFromModal || claimRewardFromModalPublic;
+    window.updCoins = window.updCoins || updCoinsPublic;
+    window.saveGameState = window.saveGameState || saveGameStatePublic;
+    window.format = window.format || formatFallback;
+
+    const updCoins = window.updCoins;
+    const claimRewardFromModal = window.claimRewardFromModal;
+    const saveGameState = window.saveGameState;
+    const formatNum = window.format;
+
+    const overlay = document.getElementById('wsModalOverlay');
     const gridTop = document.getElementById('rewardsGridTop');
     const gridBottom = document.getElementById('rewardsGridBottom');
-    function render(){
-      if(!gridTop || !gridBottom) return;
-      gridTop.innerHTML=''; gridBottom.innerHTML='';
-      for(let i=0;i<MAX_DAYS;i++){
-        const day = document.createElement('div');
-        day.className='rewardCard';
-        const unlocked = i < availableCount();
-        if(!unlocked) day.classList.add('locked');
-        if(claimed[i]) day.classList.add('claimed');
-        day.innerHTML = `<div class="coinIconSmall">💎</div><div class="dayLabel">Day ${i+1}</div><div class="amount">${formatFallback(amounts[i])} ZEX</div>`;
-        day.onclick = ()=>{
-          if(!unlocked || claimed[i]) return;
-          // claim
-          claimed[i] = true;
-          saveGameStatePublic();
-          claimRewardFromModalPublic(amounts[i]);
-          render();
-        };
-        if(i<4) gridTop.appendChild(day); else gridBottom.appendChild(day);
-      }
-      document.getElementById('wsUnlockedCount').textContent = String(availableCount());
-    }
-    render();
+    const unlockedCountEl = document.getElementById('wsUnlockedCount');
+    const coinsDisplayEl = document.getElementById('wsModalCoinsDisplay');
+    const btnClose = document.getElementById('wsBtnClose');
+    const btnRules = document.getElementById('wsBtnRules');
 
-    document.getElementById('wsBtnClose').addEventListener('click', ()=>{
-      document.getElementById('wsModalOverlay').classList.add('hidden');
-      document.getElementById('wsModalOverlay').setAttribute('aria-hidden','true');
+    const hiddenTargets = [];
+    function hideMainUI(){
+      const bodyChildren = Array.from(document.body.children);
+      bodyChildren.forEach(ch=>{ if (ch === overlay) return; const prev = ch.style.display || ''; hiddenTargets.push({el: ch, prev}); ch.style.display = 'none'; });
+      overlay.classList.remove('hidden');
+    }
+    function showMainUI(){
+      hiddenTargets.forEach(item=>{ try{ item.el.style.display = item.prev || ''; }catch(e){} });
+      hiddenTargets.length = 0;
+      overlay.classList.add('hidden');
+    }
+
+    function renderCards(){
+      claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
+
+      const avail = availableCount();
+      gridTop.innerHTML = '';
+      gridBottom.innerHTML = '';
+
+      for(let i=0;i<MAX_DAYS;i++){
+        const day = i+1;
+        const amount = amounts[i] || 0;
+        const card = document.createElement('div');
+        card.className = 'rewardCard';
+        if (day === 7) card.classList.add('big');
+
+        card.innerHTML = `
+          <div class="coinIconSmall">💰</div>
+          <div class="dayLabel">Day ${day}</div>
+          <div class="amount">${formatNum(amount)}</div>
+        `;
+
+        const isUnlocked = i < avail;
+        const isClaimed = !!claimed[i];
+
+        if(isClaimed){
+          card.classList.add('claimed');
+          const badge = document.createElement('div');
+          badge.className = 'claimBadge';
+          badge.textContent = 'Claimed';
+          card.appendChild(badge);
+        } else if(isUnlocked){
+          card.classList.add('unlocked');
+        } else {
+          card.classList.add('locked');
+          const overlayEl = document.createElement('div');
+          overlayEl.className = 'overlay';
+          overlayEl.textContent = '';
+          card.appendChild(overlayEl);
+        }
+
+        card.addEventListener('click', function onCardClick(){
+          claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
+          const nowClaimed = !!claimed[i];
+          const nowAvail = i < availableCount();
+          if (!nowAvail || nowClaimed) return;
+
+          card.style.pointerEvents = 'none';
+          card.classList.add('pop');
+          setTimeout(()=>card.classList.remove('pop'),260);
+
+          claimed[i] = true;
+          safeSetJSON(LS_CLAIMED, claimed);
+
+          try {
+            if (typeof claimRewardFromModal === 'function') {
+              claimRewardFromModal(amounts[i]);
+            } else if (typeof updCoins === 'function') {
+              updCoins(amounts[i]);
+            } else {
+              let cur = +localStorage.getItem(LS_COINS) || 0;
+              cur += amounts[i];
+              localStorage.setItem(LS_COINS, String(cur));
+              const mainEl = document.getElementById('coinsVal');
+              if (mainEl) mainEl.textContent = formatNum(cur);
+            }
+            saveGameStatePublic();
+          } catch(e){
+            console.error('claimReward error', e);
+            try { updCoinsPublic(amounts[i]); } catch(e2){}
+          }
+
+          const badge = document.createElement('div');
+          badge.className = 'claimBadge';
+          badge.textContent = 'Claimed';
+          card.appendChild(badge);
+          card.classList.remove('unlocked');
+          card.classList.add('claimed');
+          card.style.pointerEvents = 'none';
+
+          syncCoinsDisplay();
+          renderUnlockedCount();
+        });
+
+        if(i < 4) gridTop.appendChild(card);
+        else gridBottom.appendChild(card);
+      }
+
+      renderUnlockedCount();
+    }
+
+    function renderUnlockedCount(){
+      const avail = availableCount();
+      const unlockedNow = Math.min(avail, MAX_DAYS);
+      unlockedCountEl.textContent = String(unlockedNow);
+    }
+
+    function syncCoinsDisplay(){
+      const coinsLocal = +localStorage.getItem(LS_COINS) || 0;
+      const tonLocal = +localStorage.getItem(LS_TON) || 0;
+      coinsDisplayEl.textContent = formatNum(coinsLocal) + ' ZEX • ' + formatTon(tonLocal) + ' TON';
+      const mainEl = document.getElementById('coinsVal');
+      if (mainEl) mainEl.textContent = formatNum(coinsLocal);
+      const tonEl = document.getElementById('tonVal');
+      if (tonEl) tonEl.textContent = formatTon(tonLocal);
+    }
+
+    btnClose.addEventListener('click', function(){
+      showMainUI();
+      saveGameState();
     });
 
+    btnRules.addEventListener('click', function(){
+      alert('Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
+    });
+
+    hideMainUI();
+    renderCards();
+    syncCoinsDisplay();
+
+    setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
+
+    window._wsModal = {
+      open: function(){ hideMainUI(); renderCards(); syncCoinsDisplay(); },
+      close: function(){ showMainUI(); saveGameState(); },
+      getState: function(){ return { firstSeen, claimed: claimed.slice(), available: availableCount() }; },
+      forceResetClaims: function(){ claimed = new Array(MAX_DAYS).fill(false); safeSetJSON(LS_CLAIMED,claimed); renderCards(); }
+    };
+
+    overlay.tabIndex = -1;
   })();
 
-  // Casino small logic (kept from исходника)
+  /* ===========================
+     Casino modal & logic
+     Adjusted to credit TON separately (TON prizes increase TON balance directly;
+     ZEX prizes increase coins which ALSO increases TON by conversion for positive ZEX)
+  =========================== */
   (function(){
-    const casinoModal = document.getElementById('casinoModal');
     const casinoBtn = document.getElementById('casinoBtn');
+    const casinoModal = document.getElementById('casinoModal');
     const closeCasino = document.getElementById('closeCasino');
-    const casinoCooldownEl = document.getElementById('casinoCooldown');
     const spinBtn = document.getElementById('spinBtn');
-    const casinoResult = document.getElementById('casinoResult');
-    const COOL_KEY = 'casino_last_spin';
-    const COOLDOWN_MS = 2*60*60*1000; // 2 hours
+    const casinoCooldownEl = document.getElementById('casinoCooldown');
+    const casinoResultEl = document.getElementById('casinoResult');
+    const casinoBalanceEl = document.getElementById('casinoBalance');
+    const wheelCanvas = document.getElementById('wheelCanvas');
+    const ctx = wheelCanvas.getContext('2d');
+
+    const segments = [
+      { label: '100K ZEX', type: 'zex', value: 100000 },
+      { label: '0.10 TON', type: 'ton', value: 0.10 },
+      { label: '5K ZEX', type: 'zex', value: 5000 },
+      { label: '0.50 TON', type: 'ton', value: 0.50 },
+      { label: '10K ZEX', type: 'zex', value: 10000 },
+      { label: '1 TON', type: 'ton', value: 1 },
+      { label: '50K ZEX', type: 'zex', value: 50000 },
+      { label: '0.20 TON', type: 'ton', value: 0.20 },
+      { label: '1K ZEX', type: 'zex', value: 1000 },
+      { label: '2 TON', type: 'ton', value: 2 }
+    ];
+
+    const SEG_COUNT = segments.length;
+    const COOL_KEY = 'casino_last_spin_v2';
+    const COOLDOWN_MS = 2 * 60 * 60 * 1000;
+
+    let rotation = 0;
+    let isSpinning = false;
+
+    function drawWheel(){
+      const w = wheelCanvas.width;
+      const h = wheelCanvas.height;
+      const cx = w/2;
+      const cy = h/2;
+      const radius = Math.min(cx,cy) - 8;
+      ctx.clearRect(0,0,w,h);
+      const anglePer = 2*Math.PI / SEG_COUNT;
+      for(let i=0;i<SEG_COUNT;i++){
+        const start = i*anglePer - Math.PI/2;
+        const end = start + anglePer;
+        ctx.beginPath();
+        ctx.moveTo(cx,cy);
+        ctx.arc(cx,cy,radius,start,end);
+        ctx.closePath();
+        ctx.fillStyle = (i%2===0) ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.save();
+        const textAngle = start + anglePer/2;
+        ctx.translate(cx + Math.cos(textAngle)*(radius*0.66), cy + Math.sin(textAngle)*(radius*0.66));
+        ctx.rotate(textAngle + Math.PI/2);
+        ctx.fillStyle = '#ecf8ff';
+        ctx.font = 'bold 22px Inter, system-ui, Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(segments[i].label, 0, 0);
+        ctx.restore();
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx,cy,60,0,2*Math.PI);
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.stroke();
+    }
+
+    function render(){
+      wheelCanvas.style.transform = `rotate(${rotation}deg)`;
+    }
+
+    function getRandomSegmentIndex(){
+      return Math.floor(Math.random()*SEG_COUNT);
+    }
+
+    function angleForIndex(i){
+      const anglePerDeg = 360 / SEG_COUNT;
+      const center = i * anglePerDeg + anglePerDeg/2;
+      return (360 - center) % 360;
+    }
+
+    function spinToIndex(i){
+      if (isSpinning) return;
+      isSpinning = true;
+      spinBtn.disabled = true;
+      const baseSpins = 6;
+      const targetAngle = angleForIndex(i);
+      const randomOffset = (Math.random()*15) - 7.5;
+      const finalAngle = baseSpins*360 + targetAngle + randomOffset;
+      const duration = 5000 + Math.random()*1000;
+      const start = performance.now();
+      const from = rotation % 360;
+      const to = rotation + finalAngle;
+      function easeOutCubic(t){ return 1 - Math.pow(1-t,3); }
+      function step(now){
+        const elapsed = now - start;
+        const p = Math.min(1, elapsed / duration);
+        const eased = easeOutCubic(p);
+        rotation = from + (to - from) * eased;
+        render();
+        if(p < 1) requestAnimationFrame(step);
+        else {
+          isSpinning = false;
+          spinBtn.disabled = false;
+          const landed = ((360 - (rotation % 360)) + 360) % 360;
+          const anglePerDeg = 360 / SEG_COUNT;
+          let idx = Math.floor((landed) / anglePerDeg);
+          idx = (idx + SEG_COUNT) % SEG_COUNT;
+          announcePrize(idx);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function announcePrize(idx){
+      const seg = segments[idx];
+      if(!seg) return;
+      let text = '';
+      if(seg.type === 'zex'){
+        const amount = Math.round(seg.value);
+        try{
+          if(typeof window.updCoins === 'function') window.updCoins(amount);
+          else { // fallback
+            let cur = +localStorage.getItem(LS_COINS) || 0;
+            cur += amount;
+            localStorage.setItem(LS_COINS, String(cur));
+            // TON increases on positive ZEX gain
+            let storedTon = +localStorage.getItem(LS_TON) || 0;
+            storedTon += amount * ZEX_TO_TON;
+            localStorage.setItem(LS_TON, String(storedTon));
+          }
+        }catch(e){
+          // fallback
+          let cur = +localStorage.getItem(LS_COINS) || 0;
+          cur += amount;
+          localStorage.setItem(LS_COINS, String(cur));
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += amount * ZEX_TO_TON;
+          localStorage.setItem(LS_TON, String(storedTon));
+        }
+        text = `+${format(amount)} ZEX`;
+      } else {
+        const tonAmount = seg.value;
+        // credit TON directly (do NOT deduct TON when spending ZEX)
+        try{
+          ton += tonAmount;
+          // persist
+          localStorage.setItem(LS_TON, String(ton));
+        }catch(e){
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += tonAmount;
+          localStorage.setItem(LS_TON, String(storedTon));
+        }
+        text = `+${tonAmount.toFixed(2)} TON`;
+      }
+      casinoResultEl.textContent = text;
+      updateCasinoBalanceDisplay();
+      localStorage.setItem(COOL_KEY, String(Date.now()));
+      updateCooldownDisplay();
+      // persist coins & ton
+      localStorage.setItem(LS_COINS, String(coins));
+      localStorage.setItem(LS_TON, String(ton));
+    }
 
     function updateCasinoBalanceDisplay(){
-      const el = document.getElementById('casinoBalance');
-      if(el) el.textContent = format(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
+      const c = +localStorage.getItem(LS_COINS) || coins || 0;
+      const tLocal = +localStorage.getItem(LS_TON) || ton || 0;
+      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + formatTon(tLocal) + ' TON';
+      const mainEl = document.getElementById('coinsVal');
+      if(mainEl) mainEl.textContent = format(c);
+      const tonEl = document.getElementById('tonVal');
+      if(tonEl) tonEl.textContent = formatTon(tLocal);
     }
+
     function updateCooldownDisplay(){
       const last = +localStorage.getItem(COOL_KEY) || 0;
       const now = Date.now();
-      if(!last || now - last >= COOLDOWN_MS){
+      const diff = now - last;
+      if(last === 0 || diff >= COOLDOWN_MS){
         casinoCooldownEl.textContent = 'Ready';
         spinBtn.disabled = false;
       } else {
-        const rem = COOLDOWN_MS - (now - last);
+        const rem = COOLDOWN_MS - diff;
         const hours = Math.floor(rem / (1000*60*60));
         const minutes = Math.floor((rem % (1000*60*60)) / (1000*60));
         const seconds = Math.floor((rem % (1000*60)) / 1000);
         casinoCooldownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
         spinBtn.disabled = true;
       }
-    }
-
-    function getRandomSegmentIndex(){ return Math.floor(Math.random()*8); }
-    function spinToIndex(idx){
-      // simplified: immediately show a result
-      const prizes = [100,200,500,1000,2000,5000,10000,0];
-      const amount = prizes[idx] || 0;
-      if(amount>0) updCoins(amount);
-      casinoResult.textContent = (amount>0?('+'+format(amount)+' ZEX'):'Nothing');
-      localStorage.setItem(COOL_KEY, Date.now());
-      updateCooldownDisplay();
-      updateCasinoBalanceDisplay();
     }
 
     casinoBtn.addEventListener('click', ()=>{
@@ -1273,9 +1570,24 @@ header{
       spinToIndex(idx);
     });
 
+    drawWheel();
+    render();
     setInterval(updateCooldownDisplay, 1000);
-  })();
 
+    function format(n){
+      if(typeof window.format === 'function') return window.format(n);
+      if(n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
+      if(n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+      if(n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
+      return String(n);
+    }
+
+    window._casino = {
+      open: ()=>{ casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); },
+      close: ()=>{ casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); },
+      lastSpin: ()=>+localStorage.getItem(COOL_KEY) || 0
+    };
+  })();
   </script>
 </body>
 </html>
