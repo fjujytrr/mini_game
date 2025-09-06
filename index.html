@@ -31,61 +31,61 @@ header{
   width:95%;
   margin:15px 0;
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-start; /* moved balance left (changed from space-between) */
   align-items:center;
+  gap:12px;
   background: var(--glass-strong);
   border-radius:18px;
-  padding:12px;
+  padding:12px 18px;
   backdrop-filter: blur(8px) saturate(1.05);
   box-shadow: 0 14px 40px rgba(0,0,0,0.65);
   border:1px solid rgba(255,255,255,0.03);
 }
 
-/* Energy panel */
+/* Energy panel (уменьшена) */
 .energy-panel{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:8px;
   background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-  padding:10px 14px;
-  border-radius:14px;
+  padding:6px 10px; /* уменьшенный padding */
+  border-radius:10px;
   box-shadow:0 10px 30px rgba(0,0,0,0.6);
-  min-width:140px;
-  max-width:260px;
+  min-width:100px;  /* уменьшили ширину */
+  max-width:160px;
   font-weight:800;
   color:var(--text-light);
   border:1px solid rgba(255,255,255,0.02);
 }
-.energy-panel .icon{font-size:18px;margin-right:6px}
-.energy-panel .val{font-size:16px;color:var(--wm-accentC);line-height:1}
-.energy-panel .timer{font-size:12px;color:var(--birch);line-height:1}
+.energy-panel .icon{font-size:16px;margin-right:6px}
+.energy-panel .val{font-size:14px;color:var(--wm-accentC);line-height:1}
+.energy-panel .timer{font-size:11px;color:var(--birch);line-height:1}
 
-/* Coin panel — уменьшённый контейнер баланса */
+/* Coin panel — растянута влево (теперь рядом с energy) */
 .coin-panel{
   display:flex;
   align-items:center;
   gap:10px;
   background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-  padding:6px 8px;               /* уменьшили padding */
+  padding:8px 12px;
   border-radius:12px;
   box-shadow:0 10px 30px rgba(0,0,0,0.6);
-  margin-left:auto;
-  min-width:110px;               /* уменьшили ширину */
-  max-width:180px;               /* уменьшили ширину */
+  margin-left:0;              /* теперь не auto — сидит рядом с energy */
+  min-width:140px;
+  max-width:320px;           /* увеличил max, чтобы логотип не выходил */
   justify-content:flex-end;
   border:1px solid rgba(255,255,255,0.02);
-  gap:8px;
+  gap:10px;
 }
 .coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
-/* Изменено: обводка логотипов — светло-серый; уменьшены размеры для компактности */
-.coin-logo{width:36px;height:36px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(122,75,255,0.06);background:#fff}
+/* Изменено: обводка логотипов — светло-серая; размеры удобнее */
+.coin-logo{width:40px;height:40px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(122,75,255,0.06);background:#fff}
 .coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
-.coin-panel .val{font-weight:900;font-size:13px;color:var(--wm-accentC);line-height:1} /* чуть поменьше */
-.ton-panel{display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:6px}
-/* Тоже уменьшили TON логотип */
-.ton-logo{width:30px;height:30px;border:2px solid var(--logo-border-light);box-shadow:0 8px 14px rgba(255,193,7,0.06);background:#fff}
+.coin-panel .val{font-weight:900;font-size:14px;color:var(--wm-accentC);line-height:1}
+.ton-panel{display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:8px}
+.ton-logo{width:34px;height:34px;border:2px solid var(--logo-border-light);box-shadow:0 8px 14px rgba(255,193,7,0.06);background:#fff}
 .ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
-.ton-val{font-weight:800;font-size:12px;color:#ffeaa7;line-height:1}
+.ton-val{font-weight:800;font-size:13px;color:#ffeaa7;line-height:1}
 
 /* House / rooms */
 .house{position:relative;width:95%;max-width:560px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:14px}
@@ -242,7 +242,7 @@ header{
   .btnPrimary{font-size:16px;padding:12px}
   #miningShop .miner-card{width:46%}
   .upgrade{min-width:160px}
-  .coin-panel{min-width:100px;max-width:160px;padding:6px 6px}
+  .coin-panel{min-width:100px;max-width:220px;padding:6px 6px}
   .coin-panel .val{font-size:12px}
 }
   </style>
@@ -478,12 +478,25 @@ header{
   <script>
   /* ===========================
      Full JS: game logic, UI, modals
-     Changes:
-      - TON always shows 2 decimals
-      - light-gray border around coin logos (CSS)
-      - smaller coin container (CSS)
-      - rewards modal and casino use the same TON formatting
+     Changes made:
+      - Energy container smaller
+      - Balance moved left (header layout)
+      - 1000 ZEX = 0.001 TON  (1 ZEX = 0.000001 TON)
+      - TON is stored separately and DOES NOT decrease when ZEX are spent.
+        TON increases only on positive ZEX gains or direct TON rewards.
   =========================== */
+
+  // ======= Constants & storage keys =======
+  const LS_COINS = 'coins';
+  const LS_MAXCOINS = 'maxCoins';
+  const LS_UPGRADES = 'upgrades';
+  const LS_MINERS = 'minersState';
+  const LS_LASTTIME = 'lastTime';
+  const LS_TON = 'player_ton_v1';
+
+  // Conversion: 1 ZEX -> 0.000001 TON  (so 1000 ZEX = 0.001 TON)
+  const ZEX_TO_TON = 0.000001;
+  const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 ZEX
 
   // ========== Localization ==========
   const i18n = {
@@ -708,10 +721,14 @@ header{
     roomsContainer.appendChild(d);
   }
   let selectedRoom = null;
-  let coins = +localStorage.getItem('coins') || 0;
-  let maxCoins = +localStorage.getItem('maxCoins') || coins;
+
+  // coins (ZEX) and ton are separate now
+  let coins = +localStorage.getItem(LS_COINS) || 0;
+  let maxCoins = +localStorage.getItem(LS_MAXCOINS) || coins;
+  let ton = +localStorage.getItem(LS_TON) || 0; // TON stored independently
+
   const coinsVal = document.getElementById('coinsVal');
-  let upgrades = JSON.parse(localStorage.getItem('upgrades')) || { x2Prize: 0, check1: 0 };
+  let upgrades = JSON.parse(localStorage.getItem(LS_UPGRADES)) || { x2Prize: 0, check1: 0 };
   let check1Expire = +localStorage.getItem('check1Expire') || 0;
   let roundInProgress = false;
 
@@ -734,7 +751,7 @@ header{
 
   let minersState;
   try {
-    const saved = JSON.parse(localStorage.getItem('minersState'));
+    const saved = JSON.parse(localStorage.getItem(LS_MINERS));
     if (Array.isArray(saved)) {
       minersState = minersData.map((_, i) => {
         const s = saved[i];
@@ -772,24 +789,26 @@ header{
 
   function save() {
     try {
-      localStorage.setItem('coins', coins);
-      localStorage.setItem('maxCoins', maxCoins);
-      localStorage.setItem('upgrades', JSON.stringify(upgrades));
+      localStorage.setItem(LS_COINS, String(coins));
+      localStorage.setItem(LS_MAXCOINS, String(maxCoins));
+      localStorage.setItem(LS_UPGRADES, JSON.stringify(upgrades));
       localStorage.setItem('check1Expire', check1Expire);
-      localStorage.setItem('minersState', JSON.stringify(minersState));
-      localStorage.setItem('lastTime', Date.now());
+      localStorage.setItem(LS_MINERS, JSON.stringify(minersState));
+      localStorage.setItem(LS_LASTTIME, Date.now());
       localStorage.setItem('lang', lang);
       localStorage.setItem('shieldExpire', shieldExpire);
       localStorage.setItem('doubleIncomeExpire', doubleIncomeExpire);
       localStorage.setItem('luckExpire', luckExpire);
+      localStorage.setItem(LS_TON, String(ton));
     } catch (e) {
       console.warn('Save failed', e);
     }
   }
 
   function updateBalancesDisplay(){
-    coinsVal.textContent = format(coins);
-    const ton = coins * 0.000003;
+    // show coins normally
+    if (coinsVal) coinsVal.textContent = format(coins);
+    // TON now from independent 'ton' variable (doesn't decrease when spending coins)
     const tonEl = document.getElementById('tonVal');
     if (tonEl) tonEl.textContent = formatTon(ton);
     const wsZex = document.getElementById('wsModalCoinsDisplay');
@@ -803,7 +822,15 @@ header{
     }
   }
 
+  // When updCoins is called with positive v, we increase coins and also increase TON proportionally.
+  // When v is negative (spending), coins decrease but TON stays the same.
   function updCoins(v = 0) {
+    if (typeof v !== 'number') v = Number(v) || 0;
+    if (v > 0) {
+      // earn coins -> also convert earned ZEX to TON (so TON only rises on gains)
+      const tonGain = v * ZEX_TO_TON;
+      ton += tonGain;
+    }
     coins += v;
     if (coins < 0) coins = 0;
     if (coins > maxCoins) maxCoins = coins;
@@ -823,20 +850,24 @@ header{
   }
   function updIncome() { if (miningIncomeValEl) miningIncomeValEl.textContent = format(getIncome()); }
 
+  // ===== offline gains & income tick =====
   function addOfflineCoins() {
-    const last = +localStorage.getItem('lastTime') || Date.now();
+    const last = +localStorage.getItem(LS_LASTTIME) || Date.now();
     const now = Date.now();
     const diffMinutes = (now - last) / 60000;
     if (diffMinutes > 0) {
       const minutesToAward = Math.min(diffMinutes, 180);
-      updCoins(Math.floor(getIncome()/60 * minutesToAward));
+      const perMin = Math.floor(getIncome()/60);
+      if(perMin > 0) updCoins(perMin * minutesToAward);
     }
-    localStorage.setItem('lastTime', now);
+    localStorage.setItem(LS_LASTTIME, now);
   }
   addOfflineCoins();
 
+  // income per second (approx)
   setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
 
+  // ===== upgrades UI =====
   function updUpg() {
     document.querySelectorAll('.upgrade').forEach(u => {
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
@@ -1043,7 +1074,8 @@ header{
 
   /* ===========================
      Rewards modal logic (keeps TON formatting)
-     =========================== */
+     Adjusted to use separate TON storage
+  =========================== */
   (function(){
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
@@ -1083,6 +1115,7 @@ header{
       return Math.min(MAX_DAYS, daysSinceFirst() + 1);
     }
 
+    // If page defines claimRewardFromModal/updCoins/save, prefer them. Otherwise use local implementations.
     const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
     const _orig_upd = window.updCoins instanceof Function ? window.updCoins : null;
     const _orig_save = window.save instanceof Function ? window.save : null;
@@ -1101,17 +1134,18 @@ header{
         try{ _orig_upd(v); return; }catch(e){}
       }
       try{
-        let cur = +localStorage.getItem('coins') || 0;
+        let cur = +localStorage.getItem(LS_COINS) || 0;
         cur += v;
         if(cur < 0) cur = 0;
-        localStorage.setItem('coins', String(cur));
+        localStorage.setItem(LS_COINS, String(cur));
         const el = document.getElementById('coinsVal');
         if(el) el.textContent = formatFallback(cur);
+        // TON: when gaining coins, we also increase TON proportionally here
+        let storedTon = +localStorage.getItem(LS_TON) || 0;
+        if (v > 0) storedTon += v * ZEX_TO_TON;
+        localStorage.setItem(LS_TON, String(storedTon));
         const tonEl = document.getElementById('tonVal');
-        if(tonEl) {
-          const ton = cur * 0.000003;
-          tonEl.textContent = window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
-        }
+        if (tonEl) tonEl.textContent = formatTon(storedTon);
       }catch(e){}
     }
 
@@ -1120,8 +1154,8 @@ header{
         try{ window.save(); return; }catch(e){} // original game save function
       }
       try{
-        const coins = localStorage.getItem('coins') || '0';
-        localStorage.setItem('coins', coins);
+        const coinsVal = localStorage.getItem(LS_COINS) || '0';
+        localStorage.setItem(LS_COINS, coinsVal);
         safeSetJSON(LS_CLAIMED, claimed);
         localStorage.setItem(LS_FIRST, String(firstSeen));
       }catch(e){}
@@ -1137,13 +1171,17 @@ header{
         } else if (typeof window.updCoins === 'function') {
           window.updCoins(amount);
         } else {
-          let cur = +localStorage.getItem('coins') || 0;
+          let cur = +localStorage.getItem(LS_COINS) || 0;
           cur += amount;
-          localStorage.setItem('coins', String(cur));
+          localStorage.setItem(LS_COINS, String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
+          // also increase TON when gaining ZEX
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += amount * ZEX_TO_TON;
+          localStorage.setItem(LS_TON, String(storedTon));
           const tonEl = document.getElementById('tonVal');
-          if(tonEl) { const ton = cur * 0.000003; tonEl.textContent = window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString(); }
+          if (tonEl) tonEl.textContent = formatTon(storedTon);
         }
         saveGameStatePublic();
       }catch(e){}
@@ -1237,9 +1275,9 @@ header{
             } else if (typeof updCoins === 'function') {
               updCoins(amounts[i]);
             } else {
-              let cur = +localStorage.getItem('coins') || 0;
+              let cur = +localStorage.getItem(LS_COINS) || 0;
               cur += amounts[i];
-              localStorage.setItem('coins', String(cur));
+              localStorage.setItem(LS_COINS, String(cur));
               const mainEl = document.getElementById('coinsVal');
               if (mainEl) mainEl.textContent = formatNum(cur);
             }
@@ -1275,13 +1313,13 @@ header{
     }
 
     function syncCoinsDisplay(){
-      const coins = +localStorage.getItem('coins') || 0;
-      const ton = coins * 0.000003;
-      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString())) + ' TON';
+      const coinsLocal = +localStorage.getItem(LS_COINS) || 0;
+      const tonLocal = +localStorage.getItem(LS_TON) || 0;
+      coinsDisplayEl.textContent = formatNum(coinsLocal) + ' ZEX • ' + formatTon(tonLocal) + ' TON';
       const mainEl = document.getElementById('coinsVal');
-      if (mainEl) mainEl.textContent = formatNum(coins);
+      if (mainEl) mainEl.textContent = formatNum(coinsLocal);
       const tonEl = document.getElementById('tonVal');
-      if (tonEl) tonEl.textContent = (window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()));
+      if (tonEl) tonEl.textContent = formatTon(tonLocal);
     }
 
     btnClose.addEventListener('click', function(){
@@ -1311,7 +1349,9 @@ header{
 
   /* ===========================
      Casino modal & logic
-     =========================== */
+     Adjusted to credit TON separately (TON prizes increase TON balance directly;
+     ZEX prizes increase coins which ALSO increases TON by conversion for positive ZEX)
+  =========================== */
   (function(){
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
@@ -1337,8 +1377,6 @@ header{
     ];
 
     const SEG_COUNT = segments.length;
-    const TON_TO_ZEX = 1000 / 0.003; // 333333.333...
-
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
 
@@ -1441,32 +1479,56 @@ header{
         const amount = Math.round(seg.value);
         try{
           if(typeof window.updCoins === 'function') window.updCoins(amount);
-          else updCoinsPublic(amount);
-        }catch(e){ updCoinsPublic(amount); }
+          else { // fallback
+            let cur = +localStorage.getItem(LS_COINS) || 0;
+            cur += amount;
+            localStorage.setItem(LS_COINS, String(cur));
+            // TON increases on positive ZEX gain
+            let storedTon = +localStorage.getItem(LS_TON) || 0;
+            storedTon += amount * ZEX_TO_TON;
+            localStorage.setItem(LS_TON, String(storedTon));
+          }
+        }catch(e){
+          // fallback
+          let cur = +localStorage.getItem(LS_COINS) || 0;
+          cur += amount;
+          localStorage.setItem(LS_COINS, String(cur));
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += amount * ZEX_TO_TON;
+          localStorage.setItem(LS_TON, String(storedTon));
+        }
         text = `+${format(amount)} ZEX`;
       } else {
         const tonAmount = seg.value;
-        const zexAmount = Math.round(tonAmount * TON_TO_ZEX);
+        // credit TON directly (do NOT deduct TON when spending ZEX)
         try{
-          if(typeof window.updCoins === 'function') window.updCoins(zexAmount);
-          else updCoinsPublic(zexAmount);
-        }catch(e){ updCoinsPublic(zexAmount); }
-        text = `+${tonAmount.toFixed(2)} TON (~${format(zexAmount)} ZEX)`;
+          ton += tonAmount;
+          // persist
+          localStorage.setItem(LS_TON, String(ton));
+        }catch(e){
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += tonAmount;
+          localStorage.setItem(LS_TON, String(storedTon));
+        }
+        text = `+${tonAmount.toFixed(2)} TON`;
       }
       casinoResultEl.textContent = text;
       updateCasinoBalanceDisplay();
       localStorage.setItem(COOL_KEY, String(Date.now()));
       updateCooldownDisplay();
+      // persist coins & ton
+      localStorage.setItem(LS_COINS, String(coins));
+      localStorage.setItem(LS_TON, String(ton));
     }
 
     function updateCasinoBalanceDisplay(){
-      const c = +localStorage.getItem('coins') || 0;
-      const ton = c * 0.000003;
-      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + (window.formatTon ? window.formatTon(ton) : Number(ton.toFixed(2)).toString()) + ' TON';
+      const c = +localStorage.getItem(LS_COINS) || coins || 0;
+      const tLocal = +localStorage.getItem(LS_TON) || ton || 0;
+      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + formatTon(tLocal) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
-      if(tonEl) tonEl.textContent = (window.formatTon ? window.formatTon(ton) : Number(ton.toFixed(2)).toString());
+      if(tonEl) tonEl.textContent = formatTon(tLocal);
     }
 
     function updateCooldownDisplay(){
