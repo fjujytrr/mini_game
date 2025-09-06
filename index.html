@@ -11,103 +11,124 @@
   --purple-frame: #7a4bff;
   --deep-purple: #5a2ecc;
   --glass: rgba(255,255,255,0.06);
+
+  /* Dark theme variables */
+  --bg-dark: #121314;            /* page background */
+  --panel-dark: rgba(255,255,255,0.03); /* containers */
+  --panel-dark-2: rgba(255,255,255,0.04);
+  --button-dark: #1f1f20;       /* neutral button base */
+  --text-light: #ffffff;
+  --profit-green: #39FF14;
 }
-/* Базовая страница */
-html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);background-size:200% 200%;animation:gradientBG 15s ease infinite;color:#fff;overflow:hidden}
-@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* Базовая страница — тёмный фон */
+html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg-dark);color:var(--text-light);overflow:hidden}
 body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
+
 /* Header */
-/* Убрали общий фон у header — теперь фон балансов локализован в .coin-panel */
 header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:transparent;border-radius:12px;padding:10px;backdrop-filter:blur(5px)}
-/* Энергия в левом верхнем углу */
+
+/* Энергия */
 .energy-panel{
   display:flex;
   align-items:center;
   gap:8px;
-  background:rgba(0,0,0,0.16);
+  background:var(--panel-dark);
   padding:6px 10px;
   border-radius:12px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
   min-width:120px;
   max-width:220px;
   font-weight:800;
-  color:#fff;
+  color:var(--text-light);
 }
 .energy-panel .icon{font-size:18px;margin-right:6px}
 .energy-panel .val{font-size:16px;color:var(--accent-cyan);line-height:1}
 .energy-panel .timer{font-size:11px;color:var(--birch);line-height:1}
 
-/* Баланс — теперь имеет собственный контейнер (внутри него фон) */
-.coin-panel{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.18);margin-left:auto;min-width:120px;max-width:220px;justify-content:flex-end}
-/* Логотипы теперь изображения; уменьшены размеры для верхнего правого угла */
+/* Баланс */
+.coin-panel{display:flex;align-items:center;gap:10px;background:var(--panel-dark);padding:6px 10px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.35);margin-left:auto;min-width:120px;max-width:240px;justify-content:flex-end}
 .coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
-.coin-logo{width:36px;height:36px;border:2px solid var(--purple-frame);box-shadow:0 6px 14px rgba(122,75,255,0.12);background:#fff}
+.coin-logo{width:36px;height:36px;border:2px solid var(--purple-frame);box-shadow:0 6px 14px rgba(122,75,255,0.06);background:var(--panel-dark-2)}
 .coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .coin-panel .val{font-weight:800;font-size:14px;color:var(--accent-cyan);line-height:1}
 .ton-panel{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:6px}
-.ton-logo{width:30px;height:30px;border:2px solid rgba(255,255,255,0.06);box-shadow:0 6px 12px rgba(255,193,7,0.08);background:#fff}
+.ton-logo{width:30px;height:30px;border:2px solid rgba(255,255,255,0.03);box-shadow:0 6px 12px rgba(0,0,0,0.2);background:var(--panel-dark-2)}
 .ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .ton-val{font-weight:800;font-size:12px;color:#ffeaa7;line-height:1}
+
 /* Дом: сетка комнат */
 .house{position:relative;width:95%;max-width:500px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:12px}
-.room{background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#fff;cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.14)}
-.room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.14)}
+.room{background:var(--panel-dark);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--text-light);cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative;border:2px solid rgba(255,255,255,0.04)}
+.room:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(0,216,255,0.06)}
 .room.selected{border-color:var(--accent-cyan);box-shadow:0 0 12px var(--accent-cyan)}
 .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease}
-.room.safe{border-color:#39FF14;box-shadow:0 0 12px #39FF14;animation:safeAnim .8s ease}
+.room.safe{border-color:var(--profit-green);box-shadow:0 0 12px var(--profit-green);animation:safeAnim .8s ease}
 .room.highlight{box-shadow:0 0 22px 4px var(--accent-cyan);transition:box-shadow .3s}
 @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}}
 @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}}
+
 /* Контролы */
 .controls{width:90%;display:flex;justify-content:space-between;margin-bottom:15px}
-button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.25);transition:transform .2s,box-shadow .2s}
-button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.18)}
-button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(255,255,255,0.06);box-shadow:0 3px 8px rgba(0,216,255,0.12)}
+button{flex:1;margin:0 5px;padding:14px;font-size:20px;border:none;border-radius:12px;cursor:pointer;color:#000;background:var(--accent-cyan);box-shadow:0 4px 12px rgba(0,216,255,0.14);transition:transform .2s,box-shadow .2s}
+button:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,216,255,0.12)}
+button.secondary{background:var(--panel-dark);color:var(--text-light);border:1px solid rgba(255,255,255,0.04);box-shadow:0 3px 8px rgba(0,0,0,0.35)}
+
 /* Нижнее меню */
-.bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:rgba(0,0,0,0.28);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,216,255,0.18)}
-.bottom-menu button{background:transparent;color:#fff;font-size:22px;transition:transform .2s}
+.bottom-menu{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);Width:90%;max-width:480px;display:flex;justify-content:space-around;gap:8px;background:var(--panel-dark);padding:6px 0;border-radius:16px;backdrop-filter:blur(5px);box-shadow:0 0 12px rgba(0,0,0,0.35)}
+.bottom-menu button{background:transparent;color:var(--text-light);font-size:22px;transition:transform .2s}
 .bottom-menu button:hover{transform:scale(1.16);color:var(--accent-cyan)}
+
 /* Апгрейды */
 .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:12px 10px;width:95%;justify-content:flex-start;align-items:stretch}
-.upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);transition:transform .18s,box-shadow .18s}
+.upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.03);transition:transform .18s,box-shadow .18s}
 .upgrade:hover{transform:translateY(-6px)}
 .upgrade h3{margin:0 0 8px;font-size:16px;color:var(--accent-cyan)}
-.upgrade p{margin:0;font-size:14px;color:#eee}
+.upgrade p{margin:0;font-size:14px;color:#e6eef8}
 .upgrade .price{margin-top:10px;font-weight:800;color:var(--birch);font-size:16px}
 .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.18);font-weight:700;color:#fff;font-size:12px}
+
 /* Mining info */
-.mining-info{margin:10px 0;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,216,255,0.06)}
+.mining-info{margin:10px 0;padding:10px 12px;background:var(--panel-dark);border-radius:14px;width:95%;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.35)}
+
 /* Видимая панель майнеров — убираем с главного экрана */
 .miners-panel{display:none;width:95%;max-width:900px;gap:12px;padding:10px;overflow-x:auto;align-items:flex-start;margin-bottom:12px;background:transparent;border-radius:12px}
 .miners-panel .miner-card{display:none}
-/* Модальный магазин майнеров (полноэкранный) */
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
+
+/* Модальные и окна: используем тёмную палитру */
+#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:var(--bg-dark);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
-#miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.28);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.06)}
-#miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.35)}
-#miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 6px 18px rgba(122,75,255,0.12)}
+#miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,0.45);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.03)}
+#miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.55)}
+#miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:var(--panel-dark);box-shadow:0 6px 18px rgba(122,75,255,0.06)}
 #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff}
 #miningShop .miner-card .income{color:var(--birch);font-weight:800}
-#miningShop .miner-card .bottom{width:100%;Display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px}
+#miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px}
 #miningShop .price-pill{background:rgba(0,0,0,0.14);padding:6px 8px;border-radius:10px;font-weight:800}
-/* Подтверждение покупки: центрированное */
+
+/* Buy confirm */
 #buyConfirm{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1000;background:transparent;padding:0;box-sizing:border-box}
-#buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(90,46,204,0.95), rgba(122,75,255,0.95));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(122,75,255,0.18)}
+#buyConfirm .confirm-box{max-width:520px;margin:0;background:linear-gradient(120deg, rgba(40,40,40,0.98), rgba(60,60,60,0.98));border:2px solid var(--accent-cyan);border-radius:12px;padding:14px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
 #buyConfirm.show{display:block}
 #buyConfirm p{color:#fff;margin:8px 0}
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:var(--accent-cyan);color:#000;border:none;border-radius:8px}
-/* Info & Profile: теперь полноэкранные, непрозрачный фон как главный экран */
-#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto}
-#infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:rgba(0,0,0,0.22);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.04)}
+
+/* Info & Profile: полноэкранные */
+#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:var(--bg-dark);color:#fff;padding:28px;box-sizing:border-box;overflow-y:auto}
+#infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:var(--panel-dark);color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
 #infoWindow ul li::before{content:'• ';color:var(--accent-cyan);font-weight:600}
 #infoWindow button, #profileWindow button{width:100%;margin-top:12px;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700}
+
 /* Profile specific content */
-.settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.settings-card{margin-top:12px;padding:12px;background:rgba(255,255,255,0.01);border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
 .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.select-lang{Padding:8px 10px;border-radius:8px;border:none;font-weight:700}
+.select-lang{padding:8px 10px;border-radius:8px;border:none;font-weight:700;background:var(--panel-dark);color:var(--text-light)}
+
+/* Casino & other modals will also adopt dark backgrounds */
+
 /* Адаптив */
 @media (max-width:520px){
   .coin-logo{width:32px;height:32px;border-width:2px}
@@ -117,27 +138,22 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 }
 
 /* ========== Casino wheel styles ========== */
-/* Стилизуем в общем стиле (берём те же градиенты) */
-.casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(120deg,#3b2a7a88,#8aa7ff88);backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
-/* Изменено: фон .card теперь плотный (непрозрачный), в стиле главного экрана */
-.casino-modal .card{width:100%;max-width:820px;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);display:flex;gap:12px;flex-direction:column}
+.casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(18,19,20,0.9), rgba(26,27,28,0.95));backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
+.casino-modal .card{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(28,28,30,0.98), rgba(36,36,38,0.98));border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.02);display:flex;gap:12px;flex-direction:column}
 .casino-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .casino-body{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
 .wheel-wrap{position:relative;width:380px;height:380px;display:flex;align-items:center;justify-content:center}
-#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
 .wheel-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-bottom:26px solid #fff;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.28))}
 .casino-controls{display:flex;flex-direction:column;gap:8px;min-width:220px}
-.spin-btn{padding:12px 18px;border-radius:12px;border:none;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;box-shadow:0 12px 36px rgba(0,216,255,0.18)}
+.spin-btn{padding:12px 18px;border-radius:12px;border:none;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;box-shadow:0 12px 36px rgba(0,216,255,0.12)}
 .casino-note{color:var(--birch);font-weight:700}
 .casino-result{font-weight:900;color:var(--accent-cyan);font-size:18px}
-/* disabled look */
 .spin-btn[disabled]{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* small screens tweak */
-@media (max-width:720px){
-  .wheel-wrap{width:320px;height:320px}
-  .casino-controls{min-width:unset;width:100%;align-items:center}
-}
+/* Rewards modal styles (keeps dark look) */
+/* ... (further styles for rewards modal are inlined later) */
+
   </style>
 </head>
 <body>
@@ -238,7 +254,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   <div id="miningShop" aria-hidden="true">
     <h2 id="shopTitle">Mining Shop</h2>
     <div class="miners-container"></div>
-    <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:rgba(0,0,0,0.22);color:#fff;cursor:pointer;">Close</button>
+    <button id="closeMiningShop" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:none;border-radius:12px;background:var(--panel-dark);color:#fff;cursor:pointer;">Close</button>
   </div>
 
   <!-- Buy confirm -->
@@ -272,13 +288,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   <div id="profileWindow" aria-hidden="true">
     <div class="content">
       <h2 id="profileTitle">Profile</h2>
-        <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.06);border-radius:12px;">
+        <div style="margin-bottom:16px;padding:16px;background:var(--panel-dark);border-radius:12px;">
         <h3 id="dailyTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Daily Reward</h3>
         <p id="dailyText" style="margin-bottom:12px;color:#fff">Get 30,000 coins once a day!</p>
         <button id="claimDaily" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Daily</button>
         <p id="dailyStatus" style="margin-top:8px;color:var(--birch);font-weight:600;text-align:center;"></p>
       </div>
-        <div style="margin-bottom:16px;padding:16px;background:rgba(0,0,0,0.06);border-radius:12px;">
+        <div style="margin-bottom:16px;padding:16px;background:var(--panel-dark);border-radius:12px;">
         <h3 id="questTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Quest</h3>
         <p id="questText" style="margin-bottom:12px;color:#fff">Subscribe to get bonus coins!</p>
         <button id="claimQuest" style="width:100%;padding:12px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;cursor:pointer;font-weight:700;">Claim Quest</button>
@@ -417,14 +433,11 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   const LS_ENERGY = 'player_energy_v1';
   const LS_ENERGY_TICK = 'player_energy_tick_v1';
 
-  // Ensure first-time visitor gets full energy (50).
-  // If key is absent in localStorage we initialize it to MAX_ENERGY.
   let energy;
   let energyLastTick;
   (function initEnergyStorage(){
     const raw = localStorage.getItem(LS_ENERGY);
     if (raw === null) {
-      // first visit => give full energy
       energy = MAX_ENERGY;
       energyLastTick = Date.now();
       try {
@@ -436,9 +449,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       if (!Number.isFinite(energy)) energy = MAX_ENERGY;
       energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
     }
-    // If energy is full, ensure next tick is now (so timer shows Full)
     if (energy >= MAX_ENERGY) energyLastTick = Date.now();
-    // persist sanitized values
     try {
       localStorage.setItem(LS_ENERGY, String(energy));
       localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
@@ -446,7 +457,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   })();
 
   function loadEnergy() {
-    // recompute regen from saved tick (in case tab was closed)
     const stored = localStorage.getItem(LS_ENERGY);
     const storedTick = localStorage.getItem(LS_ENERGY_TICK);
     if (stored !== null) energy = +stored;
@@ -493,9 +503,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     }
   }
 
-  // call to attempt to consume one energy; returns true if succeeded
   function consumeEnergyOne() {
-    // regen before consume
     const now = Date.now();
     if (now > energyLastTick && energy < MAX_ENERGY) {
       const delta = now - energyLastTick;
@@ -510,7 +518,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return false;
     }
     energy = Math.max(0, energy - 1);
-    // if energy was full and we consumed, start tick from now
+    // если энергия была полной и мы потратили — стартуем новый тик
     if (energy < MAX_ENERGY && (!energyLastTick || energyLastTick < Date.now() - 24*3600*1000)) energyLastTick = Date.now();
     saveEnergy();
     updateEnergyDisplay();
@@ -558,12 +566,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   let check1Expire = +localStorage.getItem('check1Expire') || 0;
   let roundInProgress = false;
 
-  // Новые expire-переменные для апгрейдов на 1 минуту
   let shieldExpire = +localStorage.getItem('shieldExpire') || 0;
   let doubleIncomeExpire = +localStorage.getItem('doubleIncomeExpire') || 0;
   let luckExpire = +localStorage.getItem('luckExpire') || 0;
 
-  // майнеры (только для магазина)
   const minersData = [
     { n: "Miner 1", i: 500, p: 7000 },
     { n: "Miner 2", i: 1788, p: 12000 },
@@ -577,7 +583,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     { n: "Miner 10", i: 9500, p: 50000 }
   ];
 
-  // ======= Безопасная инициализация minersState (если в localStorage массив короче или повреждён)
   let minersState;
   try {
     const saved = JSON.parse(localStorage.getItem('minersState'));
@@ -609,16 +614,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
            n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
   }
 
-  // форматирование TON (тонкая дробь)
   function formatTon(n){
     if (!isFinite(n)) return '0';
     if (n === 0) return '0';
     if (n < 0.000001) return '<0.000001';
-    // показываем до 6 знаков после запятой, убираем лишние нули
     return Number(n.toFixed(6)).toString();
   }
 
-  // сохранить состояние
   function save() {
     try {
       localStorage.setItem('coins', coins);
@@ -628,7 +630,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       localStorage.setItem('minersState', JSON.stringify(minersState));
       localStorage.setItem('lastTime', Date.now());
       localStorage.setItem('lang', lang);
-      // новые expire
       localStorage.setItem('shieldExpire', shieldExpire);
       localStorage.setItem('doubleIncomeExpire', doubleIncomeExpire);
       localStorage.setItem('luckExpire', luckExpire);
@@ -637,29 +638,22 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     }
   }
 
-  // Обновление отображения ZEX и TON
   function updateBalancesDisplay(){
-    // ZEX
     coinsVal.textContent = format(coins);
-    // TON = coins * 0.000003 (по правилу 1000 ZEX = 0.003 TON)
     const ton = coins * 0.000003;
     const tonEl = document.getElementById('tonVal');
     if (tonEl) tonEl.textContent = formatTon(ton);
-    // если есть модальное отображение баланса в rewards, синхронизируем и там
     const wsZex = document.getElementById('wsModalCoinsDisplay');
     if (wsZex) {
-      // show ZEX and TON inside the modal coin display
       const wsTon = formatTon(ton);
       wsZex.textContent = format(coins) + ' ZEX • ' + wsTon + ' TON';
     }
-    // также обновляем отображение в казино
     const casinoBalance = document.getElementById('casinoBalance');
     if (casinoBalance) {
       casinoBalance.textContent = format(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
     }
   }
 
-  // обновить монеты
   function updCoins(v = 0) {
     coins += v;
     if (coins < 0) coins = 0;
@@ -670,19 +664,16 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     save();
   }
 
-  // доход в час (с защитой на случай undefined)
   function getIncome() {
     const base = minersState.reduce((sum, m, i) => {
       const count = (m && typeof m.count === 'number') ? m.count : 0;
       return sum + (count > 0 ? Math.floor(minersData[i].i * Math.pow(1.5, count - 1)) : 0);
     }, 0);
-    // если активен doubleIncome — удваиваем доход
     if (doubleIncomeExpire > Date.now()) return base * 2;
     return base;
   }
   function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
 
-  // оффлайн-доход
   function addOfflineCoins() {
     const last = +localStorage.getItem('lastTime') || Date.now();
     const now = Date.now();
@@ -695,10 +686,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   }
   addOfflineCoins();
 
-  // начисление в реальном времени
   setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
 
-  // апдейты апгрейдов
   function updUpg() {
     document.querySelectorAll('.upgrade').forEach(u => {
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
@@ -708,14 +697,12 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     });
   }
 
-  // апгрейды клики
   document.querySelectorAll('.upgrade').forEach(u=>{
     u.onclick = ()=>{
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0;
       let price = base * Math.pow(2,count);
       if (coins >= price) {
         upgrades[key] = count+1; updCoins(-price);
-        // специальные эффекты: старый check1 и новые улучшения на 1 минуту
         if (key === 'check1') check1Expire = Date.now()+60000;
         if (key === 'shield') shieldExpire = Date.now()+60000;
         if (key === 'incBoost') doubleIncomeExpire = Date.now()+60000;
@@ -725,7 +712,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     };
   });
 
-  // таймеры check1 + новые таймеры
   function updTimers() {
     const el = document.getElementById('check1Timer');
     if (check1Expire > Date.now()) el.textContent = '⏳ ' + Math.floor((check1Expire - Date.now())/1000) + 's';
@@ -745,7 +731,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   }
   setInterval(updTimers, 1000);
 
-  // выбор комнаты
   document.querySelectorAll('.room').forEach(r => {
     r.onclick = () => {
       if (roundInProgress) return;
@@ -755,17 +740,14 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     };
   });
 
-  // start button
   document.getElementById('startBtn').onclick = ()=>{
     if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
     document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));
   };
 
-  // reset / hunt
   document.getElementById('resetBtn').onclick = ()=>{
     if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
-    // require 1 energy per hunt
-    if (!consumeEnergyOne()) return; // will alert no energy if none
+    if (!consumeEnergyOne()) return;
     roundInProgress = true;
     const numPicks = (check1Expire > Date.now()) ? 1 : 2;
     let picks = [...Array(8).keys()].sort(()=>0.5-Math.random()).slice(0,numPicks);
@@ -784,13 +766,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       const roomEl = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
 
       if (picks.includes(selectedRoom)) {
-        // если активен shield — предотвращаем потерю и считаем как safe (без награды)
         if (shieldExpire > Date.now()) {
           roomEl.classList.add('safe');
-          // не меняем монеты (или можно дать небольшую компенсацию, здесь 0)
           updCoins(0);
         } else if (luckExpire > Date.now() && Math.random() < 0.5) {
-          // удачный шанс избежать — считаем как safe и даём приз
           roomEl.classList.add('safe');
           updCoins(prize);
         } else {
@@ -814,7 +793,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     if (!minersContainerEl) return;
     minersContainerEl.innerHTML = '';
     minersData.forEach((m,i)=>{
-      // безопасное получение состояния
       const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
       const price = m.p * Math.pow(2, st.count);
       const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
@@ -830,7 +808,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         </div>
       `;
       card.onclick = ()=>{
-        // снова защитная проверка цены
         const currentSt = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
         const currentPrice = m.p * Math.pow(2, currentSt.count);
         if (coins >= currentPrice) {
@@ -843,15 +820,12 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     });
   }
 
-  // открыть/закрыть miningShop
-  // miningBtn (кирка) и shopBtn (тележка) — оба открывают магазин
   const miningBtn = document.getElementById('miningBtn');
   const shopBtn = document.getElementById('shopBtn');
   miningBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
   shopBtn.onclick = () => { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); };
   document.getElementById('closeMiningShop').onclick = ()=>{ miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); };
 
-  // buy confirm actions
   document.getElementById('confirmBuy').onclick = ()=>{
     if (pendingMiner === null) return;
     const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
@@ -864,12 +838,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   };
   document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); };
 
-  // profile window
   const profileWindowEl = document.getElementById('profileWindow');
   document.getElementById('profileBtn').onclick = ()=>{ profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); };
   document.getElementById('closeProfile').onclick = ()=>{ profileWindowEl.style.display = 'none'; profileWindowEl.setAttribute('aria-hidden','true'); };
 
-  // daily & quest
   let questClaimed = localStorage.getItem('questClaimed') === 'true';
   let lastDaily = +localStorage.getItem('lastDaily') || 0;
   const questStatusEl = document.getElementById('questStatus');
@@ -881,24 +853,20 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
   document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
 
-  // info window
   const infoWindowEl = document.getElementById('infoWindow');
   document.getElementById('infoBtn').onclick = ()=>{ infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); };
   document.getElementById('closeInfo').onclick = ()=>{ infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); };
 
-  // shop toggle: теперь shopBtn и miningBtn открывают магазин; на главном — только upgradePanel видна
   const upgradePanel = document.getElementById('upgradePanel');
-  // Скрываем видимую панель майнеров на главном экране и показываем апгрейды
   minersPanelVisible.style.display = 'none';
   upgradePanel.style.display = 'flex';
 
-  // language selector
   const langSelect = document.getElementById('langSelect');
   langSelect.value = lang;
   langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
 
   // init UI
-  loadEnergy(); // load energy before other UI
+  loadEnergy();
   updateBalancesDisplay();
   updUpg();
   updIncome();
@@ -906,7 +874,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   renderMiners();
   applyLang();
 
-  // ensure windows hidden on load
   document.getElementById('infoWindow').style.display = 'none';
   document.getElementById('infoWindow').setAttribute('aria-hidden','true');
   document.getElementById('profileWindow').style.display = 'none';
@@ -915,19 +882,17 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   buyConfirm.setAttribute('aria-hidden','true');
   </script>
 
-  <!-- =================== Rewards modal: интегрирован в основную страницу (РАЗМЕРЫ ОТКОРРЕКТИРОВАНЫ) =================== -->
+  <!-- =================== Rewards modal: интегрирован в основную страницу =================== -->
   <style>
-    /* Изолированные переменные и стиль модала (не переопределяют глобальные селекторы) */
-    #wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
+    #wsModalOverlay{ --wm-accentA:#1b1b1f; --wm-accentB:#2b2b2f; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
     #wsModalOverlay.hidden{ display:none; }
     #wsModalOverlay .bgLayer{
-      position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block;
+      position:absolute; inset:0; background:linear-gradient(180deg,var(--wm-accentA),var(--wm-accentB)); display:block;
       overflow:hidden;
     }
     #wsModalOverlay .bgImage{
-      position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28;
+      position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.08;
     }
-    /* Изменено: .glass теперь гибкий контейнер, потерянная прокрутка у карточек исправлена */
     #wsModalOverlay .glass{
       position:relative;
       width:100%;
@@ -937,53 +902,47 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       padding:18px;
       border-radius:18px 18px 0 0;
       backdrop-filter: blur(8px) saturate(1.05);
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 -12px 40px rgba(0,0,0,0.45);
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      box-shadow: 0 -12px 40px rgba(0,0,0,0.7);
       display:flex; flex-direction:column; gap:12px; overflow:hidden;
     }
 
-    /* Header */
     #wsModalOverlay .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; color:#ecf8ff; position:relative; z-index:3; }
     #wsModalOverlay .title{ font-size:20px; font-weight:800; letter-spacing:0.2px; display:flex; align-items:center; gap:10px; }
-    #wsModalOverlay .title .coinIcon{ width:36px; height:36px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:inline-flex; align-items:center; justify-content:center; color:#000; font-weight:900; box-shadow:0 8px 28px rgba(0,216,255,0.12); }
-    #wsModalOverlay .sub{ color:var(--wm-birch); font-weight:700; font-size:14px; }
+    #wsModalOverlay .title .coinIcon{ width:36px; height:36px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:inline-flex; align-items:center; justify-content:center; color:#000; font-weight:900; box-shadow:0 8px 28px rgba(0,216,255,0.06); }
 
-    /* Rewards shell: уменьшили "высоту" и сделали внутреннюю контейнер прокручиваемым, чтобы карточки не перекрывали заголовок */
     .rewardsShell{ display:flex; flex-direction:column; gap:12px; }
-    .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04);
-      /* Ограничим высоту контейнера и включим прокрутку при переполнении */
+    .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.00)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.02);
       max-height: calc(70vh - 110px); overflow:auto;
     }
 
     .rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
     .rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); }
+    .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.02); }
     .rewardCard:hover{ transform:translateY(-6px); }
     .rewardCard.pop{ animation:pop .26s ease; }
     @keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.06);} 100%{ transform:scale(1); } }
 
-    .rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.06); box-shadow:0 8px 18px rgba(0,216,255,0.08); }
+    .rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.04); box-shadow:0 8px 18px rgba(0,216,255,0.04); }
     .rewardCard .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:6px; }
-    .rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.08); }
+    .rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.03); }
     .rewardCard.locked{ opacity:0.36; pointer-events:auto; }
-    .rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.12); }
+    .rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.02); border:1px solid rgba(0,216,255,0.04); }
     .rewardCard.claimed{ opacity:0.9; pointer-events:none; }
-    .rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.12); font-size:12px; }
+    .rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.08); font-size:12px; }
 
     .rewardCard.big{ min-height:120px; padding:18px; }
 
-    /* Bottom actions */
     .wsActions{ display:flex; gap:12px; margin-top:12px; align-items:center; justify-content:space-between; }
     .wsActions .left{ color:var(--wm-birch); font-weight:700; }
     .btnPrimary{
       padding:12px 18px; border-radius:12px; font-weight:900; border:none; cursor:pointer;
-      background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.18);
+      background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.08);
     }
     .btnGhost{
-      padding:10px 14px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#ecf8ff; cursor:pointer;
+      padding:10px 14px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.03); background:transparent; color:#ecf8ff; cursor:pointer;
     }
 
-    /* Responsive tweaks */
     @media (max-width:720px){
       .rewardsContainer{ max-height: calc(60vh - 90px); }
       .rewardsGridTop{ grid-template-columns:repeat(2,1fr); }
@@ -1039,7 +998,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const MAX_DAYS = 7;
     const amounts = [30000,100000,500000,1000000,3000000,6000000,10000000];
 
-    // ====== Safe LS utils ======
     function safeGetJSON(key, fallback){
       try{
         const raw = localStorage.getItem(key);
@@ -1052,21 +1010,18 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
     }
 
-    // Ensure first seen exists
     let firstSeen = +localStorage.getItem(LS_FIRST) || 0;
     if(!firstSeen || isNaN(firstSeen)){
       firstSeen = Date.now();
       try{ localStorage.setItem(LS_FIRST, String(firstSeen)); }catch(e){}
     }
 
-    // claimed array safe init
     let claimed = safeGetJSON(LS_CLAIMED, null);
     if(!Array.isArray(claimed) || claimed.length !== MAX_DAYS){
       claimed = new Array(MAX_DAYS).fill(false);
       safeSetJSON(LS_CLAIMED, claimed);
     }
 
-    // compute availability
     function daysSinceFirst(){
       const now = Date.now();
       const diffDays = Math.floor((now - firstSeen) / (24*60*60*1000));
@@ -1076,7 +1031,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return Math.min(MAX_DAYS, daysSinceFirst() + 1);
     }
 
-    // ====== Expose/Connect to game API (safe wrappers) ======
     const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
     const _orig_upd = window.updCoins instanceof Function ? window.updCoins : null;
     const _orig_save = window.save instanceof Function ? window.save : null;
@@ -1111,7 +1065,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
     function saveGameStatePublic(){
       if (typeof window.save === 'function'){
-        try{ window.save(); return; }catch(e){} // original game save function
+        try{ window.save(); return; }catch(e){} 
       }
       try{
         const coins = localStorage.getItem('coins') || '0';
@@ -1153,7 +1107,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const saveGameState = window.saveGameState;
     const formatNum = window.format;
 
-    // ====== Modal DOM & logic ======
     const overlay = document.getElementById('wsModalOverlay');
     const gridTop = document.getElementById('rewardsGridTop');
     const gridBottom = document.getElementById('rewardsGridBottom');
@@ -1162,7 +1115,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const btnClose = document.getElementById('wsBtnClose');
     const btnRules = document.getElementById('wsBtnRules');
 
-    // Hide main page children while modal is visible.
     const hiddenTargets = [];
     function hideMainUI(){
       const bodyChildren = Array.from(document.body.children);
@@ -1175,9 +1127,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       overlay.classList.add('hidden');
     }
 
-    // Build cards (1..7).
     function renderCards(){
-      // reload claimed from storage to stay in sync with other tabs
       claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
 
       const avail = availableCount();
@@ -1216,26 +1166,19 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
           card.appendChild(overlayEl);
         }
 
-        // Attach a safe click handler which checks current availability/claimed state at click moment
         card.addEventListener('click', function onCardClick(){
-          // Re-read claimed/availability to avoid stale closures
           claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
           const nowClaimed = !!claimed[i];
           const nowAvail = i < availableCount();
-          if (!nowAvail || nowClaimed) return; // not ready or already claimed
+          if (!nowAvail || nowClaimed) return;
 
-          // Prevent double clicks immediately
           card.style.pointerEvents = 'none';
-
-          // optimistic UI
           card.classList.add('pop');
           setTimeout(()=>card.classList.remove('pop'),260);
 
-          // mark claimed and persist
           claimed[i] = true;
           safeSetJSON(LS_CLAIMED, claimed);
 
-          // Try to credit the coins robustly. Use game's API when available, otherwise fallback.
           try {
             if (typeof claimRewardFromModal === 'function') {
               claimRewardFromModal(amounts[i]);
@@ -1254,7 +1197,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
             try { updCoinsPublic(amounts[i]); } catch(e2){}
           }
 
-          // Update card UI to claimed
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
           badge.textContent = 'Claimed';
@@ -1263,7 +1205,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
           card.classList.add('claimed');
           card.style.pointerEvents = 'none';
 
-          // Sync displays
           syncCoinsDisplay();
           renderUnlockedCount();
         });
@@ -1304,7 +1245,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     renderCards();
     syncCoinsDisplay();
 
-    // refresh UI each minute in case time-based availability changes
     setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
@@ -1347,7 +1287,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
   <script>
   (function(){
-    // Casino wheel implementation
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
     const closeCasino = document.getElementById('closeCasino');
@@ -1358,8 +1297,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const wheelCanvas = document.getElementById('wheelCanvas');
     const ctx = wheelCanvas.getContext('2d');
 
-    // Config: segments mixing TON and ZEX (max TON 2, max coins 100k)
-    // Each segment: {label, type: 'ton'|'zex', value}
     const segments = [
       { label: '100K ZEX', type: 'zex', value: 100000 },
       { label: '0.1 TON', type: 'ton', value: 0.1 },
@@ -1374,19 +1311,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     ];
 
     const SEG_COUNT = segments.length;
-
-    // Conversion: 1000 ZEX = 0.003 TON => 1 TON = 1000 / 0.003 = 333333.3333333333 ZEX
     const TON_TO_ZEX = 1000 / 0.003;
-
-    // cooldown: 2 hours
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
 
-    // wheel state
-    let rotation = 0; // degrees
+    let rotation = 0;
     let isSpinning = false;
 
-    // draw wheel
     function drawWheel(){
       const w = wheelCanvas.width;
       const h = wheelCanvas.height;
@@ -1398,18 +1329,16 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       for(let i=0;i<SEG_COUNT;i++){
         const start = i*anglePer - Math.PI/2;
         const end = start + anglePer;
-        // alternate colors
         ctx.beginPath();
         ctx.moveTo(cx,cy);
         ctx.arc(cx,cy,radius,start,end);
         ctx.closePath();
-        ctx.fillStyle = (i%2===0) ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
+        ctx.fillStyle = (i%2===0) ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.02)';
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // draw label
         ctx.save();
         const textAngle = start + anglePer/2;
         ctx.translate(cx + Math.cos(textAngle)*(radius*0.66), cy + Math.sin(textAngle)*(radius*0.66));
@@ -1419,55 +1348,41 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const label = segments[i].label;
-        // wrap if long
-        const lines = label.split(' ');
         ctx.fillText(label, 0, 0);
         ctx.restore();
       }
 
-      // draw center
       ctx.beginPath();
       ctx.arc(cx,cy,60,0,2*Math.PI);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.02)';
       ctx.stroke();
     }
 
-    // render with rotation
     function render(){
-      // rotate canvas via CSS transform on container
       wheelCanvas.style.transform = `rotate(${rotation}deg)`;
     }
 
-    // random spin: pick segment index uniformly, compute target rotation so that segment center aligns to pointer (top)
     function getRandomSegmentIndex(){
       return Math.floor(Math.random()*SEG_COUNT);
     }
 
-    // mapping index -> angle to bring its center to top (pointer)
     function angleForIndex(i){
-      // each segment center angle in degrees (0 at top since we drew with -PI/2 offset)
       const anglePerDeg = 360 / SEG_COUNT;
-      // center of segment i measured clockwise from top:
       const center = i * anglePerDeg + anglePerDeg/2;
-      // We need to rotate wheel so that that center lands at top (0deg rotation). Because positive rotation rotates clockwise for CSS,
-      // targetRotation such that ((initialRotation + targetRotation) mod 360) === -center (since we want the segment center at 0 deg)
-      // Simpler: compute target = 360 * k + (360 - center)
       return (360 - center) % 360;
     }
 
-    // perform spin animation
     function spinToIndex(i){
       if (isSpinning) return;
       isSpinning = true;
       spinBtn.disabled = true;
-      const baseSpins = 6; // full revolutions
+      const baseSpins = 6;
       const targetAngle = angleForIndex(i);
-      const randomOffset = (Math.random()*15) - 7.5; // small jitter
+      const randomOffset = (Math.random()*15) - 7.5;
       const finalAngle = baseSpins*360 + targetAngle + randomOffset;
-      const duration = 5000 + Math.random()*1000; // ms
-      // animate rotation from current rotation to current + finalAngle
+      const duration = 5000 + Math.random()*1000;
       const start = performance.now();
       const from = rotation % 360;
       const to = rotation + finalAngle;
@@ -1480,14 +1395,11 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         render();
         if(p < 1) requestAnimationFrame(step);
         else {
-          // finished
           isSpinning = false;
           spinBtn.disabled = false;
-          // compute chosen index from rotation
-          const landed = ((360 - (rotation % 360)) + 360) % 360; // angle at top
+          const landed = ((360 - (rotation % 360)) + 360) % 360;
           const anglePerDeg = 360 / SEG_COUNT;
           let idx = Math.floor((landed) / anglePerDeg);
-          // ensure idx in range
           idx = (idx + SEG_COUNT) % SEG_COUNT;
           announcePrize(idx);
         }
@@ -1500,16 +1412,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       if(!seg) return;
       let text = '';
       if(seg.type === 'zex'){
-        // award ZEX directly
         const amount = Math.round(seg.value);
-        // use game's updater if available
         try{
           if(typeof window.updCoins === 'function') window.updCoins(amount);
           else updCoinsPublic(amount);
         }catch(e){ updCoinsPublic(amount); }
         text = `+${format(amount)} ZEX`;
       } else {
-        // TON -> convert to ZEX and award as ZEX (since game tracks coins)
         const tonAmount = seg.value;
         const zexAmount = Math.round(tonAmount * TON_TO_ZEX);
         try{
@@ -1519,9 +1428,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         text = `+${tonAmount} TON (~${format(zexAmount)} ZEX)`;
       }
       casinoResultEl.textContent = text;
-      // update shared display
       updateCasinoBalanceDisplay();
-      // set last spin
       localStorage.setItem(COOL_KEY, String(Date.now()));
       updateCooldownDisplay();
     }
@@ -1530,7 +1437,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       const c = +localStorage.getItem('coins') || 0;
       const ton = c * 0.000003;
       casinoBalanceEl.textContent = format(c) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
-      // also sync main UI
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
@@ -1554,7 +1460,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       }
     }
 
-    // events
     casinoBtn.addEventListener('click', ()=>{
       casinoModal.style.display = 'flex';
       casinoModal.setAttribute('aria-hidden','false');
@@ -1566,7 +1471,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       casinoModal.setAttribute('aria-hidden','true');
     });
 
-    // spin click: check cooldown
     spinBtn.addEventListener('click', ()=>{
       const last = +localStorage.getItem(COOL_KEY) || 0;
       const now = Date.now();
@@ -1574,19 +1478,15 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         updateCooldownDisplay();
         return;
       }
-      // pick random segment and spin to it
       const idx = getRandomSegmentIndex();
       spinToIndex(idx);
     });
 
-    // initial draw and animation frame
     drawWheel();
     render();
 
-    // refresh cooldown every second
     setInterval(updateCooldownDisplay, 1000);
 
-    // helper for formatting numbers (reuse existing format if present)
     function format(n){
       if(typeof window.format === 'function') return window.format(n);
       if(n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
@@ -1595,7 +1495,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return String(n);
     }
 
-    // expose for debugging if needed
     window._casino = {
       open: ()=>{ casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); },
       close: ()=>{ casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); },
