@@ -19,6 +19,7 @@
   --bg-dark: linear-gradient(120deg,#1f2023,#2a2c31);
   --text-light: #ecf2ff;
   --profit-green: #39FF14;
+  --logo-border-light: #dcdcdc; /* светло-серая обводка для логотипов */
 }
 
 /* Base page */
@@ -75,11 +76,13 @@ header{
   border:1px solid rgba(255,255,255,0.02);
 }
 .coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
-.coin-logo{width:44px;height:44px;border:2px solid var(--purple-frame);box-shadow:0 8px 24px rgba(122,75,255,0.06);background:#fff}
+/* Изменено: обводка логотипов — светло-серый */
+.coin-logo{width:44px;height:44px;border:2px solid var(--logo-border-light);box-shadow:0 8px 24px rgba(122,75,255,0.06);background:#fff}
 .coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .coin-panel .val{font-weight:900;font-size:15px;color:var(--wm-accentC);line-height:1}
 .ton-panel{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:transparent;margin-left:8px}
-.ton-logo{width:36px;height:36px;border:2px solid rgba(255,255,255,0.04);box-shadow:0 8px 18px rgba(255,193,7,0.06);background:#fff}
+/* Изменено: обводка логотипа TON — светло-серая */
+.ton-logo{width:36px;height:36px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(255,193,7,0.06);background:#fff}
 .ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .ton-val{font-weight:800;font-size:13px;color:#ffeaa7;line-height:1}
 
@@ -272,7 +275,7 @@ header{
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
           <div style="font-size:11px;color:var(--birch);font-weight:800">TON</div>
-          <div class="ton-val" id="tonVal">0</div>
+          <div class="ton-val" id="tonVal">0.00</div>
         </div>
       </div>
     </div>
@@ -686,11 +689,10 @@ header{
            n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
   }
 
+  // TON formatting: всегда 2 знака после запятой
   function formatTon(n){
-    if (!isFinite(n)) return '0';
-    if (n === 0) return '0';
-    if (n < 0.000001) return '<0.000001';
-    return Number(n.toFixed(6)).toString();
+    if (!isFinite(n)) return '0.00';
+    return Number(n).toFixed(2);
   }
 
   function save() {
@@ -981,7 +983,7 @@ header{
           </div>
         </div>
         <div style="text-align:right">
-          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0 TON</div>
+          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0.00 TON</div>
           <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
         </div>
       </div>
@@ -1072,7 +1074,7 @@ header{
         const tonEl = document.getElementById('tonVal');
         if(tonEl) {
           const ton = cur * 0.000003;
-          tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
+          tonEl.textContent = formatTon(ton);
         }
       }catch(e){}
     }
@@ -1105,7 +1107,7 @@ header{
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
           const tonEl = document.getElementById('tonVal');
-          if(tonEl) { const ton = cur * 0.000003; tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString(); }
+          if(tonEl) { const ton = cur * 0.000003; tonEl.textContent = formatTon(ton); }
         }
         saveGameStatePublic();
       }catch(e){}
@@ -1239,11 +1241,11 @@ header{
     function syncCoinsDisplay(){
       const coins = +localStorage.getItem('coins') || 0;
       const ton = coins * 0.000003;
-      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
+      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if (mainEl) mainEl.textContent = formatNum(coins);
       const tonEl = document.getElementById('tonVal');
-      if (tonEl) tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
+      if (tonEl) tonEl.textContent = formatTon(ton);
     }
 
     btnClose.addEventListener('click', function(){
@@ -1280,7 +1282,7 @@ header{
           <div style="font-size:20px;font-weight:900">🎰 Casino</div>
           <div style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
         </div>
-        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 ZEX • 0 TON</div>
+        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 ZEX • 0.00 TON</div>
       </div>
 
       <div class="casino-body">
@@ -1451,11 +1453,11 @@ header{
     function updateCasinoBalanceDisplay(){
       const c = +localStorage.getItem('coins') || 0;
       const ton = c * 0.000003;
-      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
+      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + formatTon(ton) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
-      if(tonEl) tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
+      if(tonEl) tonEl.textContent = formatTon(ton);
     }
 
     function updateCooldownDisplay(){
