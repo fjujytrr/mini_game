@@ -129,7 +129,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .casino-result{font-weight:900;color:var(--accent-cyan);font-size:18px}
 .spin-btn[disabled]{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* Rewards modal styles (kept from previous) */
+/* Rewards modal styles */
 #wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
 #wsModalOverlay.hidden{ display:none; }
 #wsModalOverlay .bgLayer{ position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block; overflow:hidden; }
@@ -137,122 +137,47 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
 #wsModalOverlay .glass{ position:relative; width:100%; max-width:980px; margin:0 auto; box-sizing:border-box; padding:18px; border-radius:18px 18px 0 0; backdrop-filter: blur(8px) saturate(1.05); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: 0 -12px 40px rgba(0,0,0,0.45); display:flex; flex-direction:column; gap:12px; overflow:hidden; }
 
-/* PRE-BANNER */
-#wsPreBanner{
-  position:relative;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:12;
-  pointer-events:auto;
+/* Rewards shell */
+.rewardsShell{ display:flex; flex-direction:column; gap:12px; }
+.rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04);
+  max-height: calc(70vh - 110px); overflow:auto;
 }
-#wsPreBanner .bannerBox{
-  display:flex;
-  gap:14px;
-  align-items:center;
-  padding:18px 22px;
-  border-radius:16px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-  box-shadow:0 20px 60px rgba(0,0,0,0.45);
-  border:1px solid rgba(255,255,255,0.06);
-  max-width:920px;
-  text-align:left;
-}
-#wsPreBanner .bannerLogo{width:64px;height:64px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center}
-#wsPreBanner .bannerLogo img{width:100%;height:100%;object-fit:cover;display:block}
-#wsPreBanner .bannerText{font-weight:900;font-size:18px;line-height:1.05;color:#ecf8ff}
-#wsPreBanner .bannerSub{font-weight:700;font-size:13px;color:var(--birch);margin-top:6px}
-#wsPreBanner.hide{opacity:0;transform:scale(.98);pointer-events:none;transition:all .36s ease}
-#wsPreBanner.show{opacity:1;transform:scale(1);transition:all .36s ease}
 
-/* ========== Listing modal (NEW: красивое отдельное окно перед наградами) ========== */
-#listingModal{
-  position:absolute;
-  inset:0;
-  z-index:13000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:30px;
-  pointer-events:auto;
+.rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
+.rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); }
+.rewardCard:hover{ transform:translateY(-6px); }
+.rewardCard.pop{ animation:pop .26s ease; }
+@keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.06);} 100%{ transform:scale(1); } }
+
+.rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.06); box-shadow:0 8px 18px rgba(0,216,255,0.08); }
+.rewardCard .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:6px; }
+.rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.08); }
+.rewardCard.locked{ opacity:0.36; pointer-events:auto; }
+.rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.12); }
+.rewardCard.claimed{ opacity:0.9; pointer-events:none; }
+.rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.12); font-size:12px; }
+
+.rewardCard.big{ min-height:120px; padding:18px; }
+
+/* Bottom actions */
+.wsActions{ display:flex; gap:12px; margin-top:12px; align-items:center; justify-content:space-between; }
+.wsActions .left{ color:var(--wm-birch); font-weight:700; }
+.btnPrimary{
+  padding:12px 18px; border-radius:12px; font-weight:900; border:none; cursor:pointer;
+  background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.18);
 }
-#listingModal .card{
-  width:100%;
-  max-width:980px;
-  border-radius:20px;
-  padding:28px;
-  box-sizing:border-box;
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border:1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 30px 80px rgba(18,6,40,0.6);
-  display:flex;
-  gap:18px;
-  align-items:center;
-  transform-origin:center;
-  animation:cardIn .5s ease;
+.btnGhost{
+  padding:10px 14px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#ecf8ff; cursor:pointer;
 }
-@keyframes cardIn{ from{opacity:0; transform:translateY(18px) scale(.98)} to{opacity:1; transform:translateY(0) scale(1)} }
-#listingModal .hero{
-  display:flex;
-  gap:20px;
-  align-items:center;
-  flex:1;
-}
-#listingModal .hero .left{
-  width:140px;
-  height:140px;
-  border-radius:18px;
-  background:linear-gradient(90deg,var(--accent-cyan),#7a4bff);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 18px 50px rgba(0,216,255,0.12);
-  border:2px solid rgba(255,255,255,0.12);
-}
-#listingModal .hero .left img{width:90%;height:90%;object-fit:contain;display:block}
-#listingModal .hero .right{flex:1}
-#listingModal .hero h1{
-  margin:0;
-  font-size:34px;
-  line-height:1;
-  color:#fff;
-  letter-spacing:0.4px;
-  text-shadow:0 8px 36px rgba(0,0,0,0.4);
-}
-#listingModal .hero p{
-  margin:8px 0 0 0;
-  color:var(--birch);
-  font-weight:700;
-  opacity:0.95;
-}
-#listingModal .decor{
-  position:absolute;
-  right:28px;
-  top:12px;
-  width:160px;
-  height:160px;
-  pointer-events:none;
-  filter:blur(12px) saturate(1.1);
-  opacity:0.35;
-}
-#listingModal .controls{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  margin-left:auto;
-}
-#listingModal .btnPrimary{
-  padding:12px 18px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;font-weight:900;box-shadow:0 12px 36px rgba(0,216,255,0.18)
-}
-#listingModal .btnGhost{
-  padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#ecf8ff;font-weight:800;cursor:pointer;
-}
-/* Small screens */
+
+/* Responsive tweaks */
 @media (max-width:720px){
-  #listingModal .card{flex-direction:column;align-items:stretch;padding:18px}
-  #listingModal .hero{flex-direction:row;gap:12px}
-  #listingModal .hero h1{font-size:22px}
-  #listingModal .decor{display:none}
+  .rewardsContainer{ max-height: calc(60vh - 90px); }
+  .rewardsGridTop{ grid-template-columns:repeat(2,1fr); }
+  .rewardsGridBottom{ grid-template-columns:repeat(2,1fr); }
+  .glass{ padding:12px; border-radius:12px 12px 0 0; }
+  .rewardCard.big{ min-height:100px; }
 }
   </style>
 </head>
@@ -429,9 +354,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   <script>
   /* ==========================
    Исправленный JS (готово)
-   Дополнения:
-   - Отдельный красивый модал "До листинга 67 дней", который показывается перед 7-дневными наградами.
-   - При нажатии "Перейти к наградам" — запускается существующий баннер + карточки.
    ========================== */
   // ========== Локализация ==========
   const i18n = {
@@ -984,56 +906,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   buyConfirm.setAttribute('aria-hidden','true');
   </script>
 
-  <!-- =================== Rewards modal with listing modal (NEW) =================== -->
+  <!-- =================== Rewards modal: интегрирован в основную страницу =================== -->
   <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
     <div class="bgLayer" aria-hidden="true">
       <div class="bgImage" aria-hidden="true"></div>
-    </div>
-
-    <!-- LISTING MODAL (separate beautiful window shown BEFORE rewards) -->
-    <div id="listingModal" aria-hidden="true" style="display:none;">
-      <div class="card" role="document" aria-modal="true">
-        <div class="hero">
-          <div class="left">
-            <img src="logo.png" alt="logo"/>
-          </div>
-          <div class="right">
-            <h1>ДО ЛИСТИНГА — 67 ДНЕЙ</h1>
-            <p>НАКОПИ КАК МОЖНО БОЛЬШЕ МОНЕТ, КОТОРЫЕ БУДУТ ОБМЕНЯНЫ НА TON. Сейчас время набирать капитал — каждая монета важна.</p>
-          </div>
-        </div>
-
-        <div class="decor" aria-hidden="true">
-          <!-- декоративные круги -->
-          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="g1" x1="0" x2="1">
-                <stop offset="0" stop-color="#00D8FF" stop-opacity="0.8"/>
-                <stop offset="1" stop-color="#7a4bff" stop-opacity="0.8"/>
-              </linearGradient>
-            </defs>
-            <circle cx="80" cy="40" r="36" fill="url(#g1)"/>
-            <circle cx="120" cy="120" r="22" fill="rgba(255,255,255,0.06)"/>
-            <circle cx="38" cy="110" r="16" fill="rgba(255,255,255,0.04)"/>
-          </svg>
-        </div>
-
-        <div class="controls" style="margin-left:20px;">
-          <button class="btnPrimary" id="listingContinue">Перейти к наградам</button>
-          <button class="btnGhost" id="listingLater">Позже</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PRE-BANNER (hidden initially) -->
-    <div id="wsPreBanner" class="show" aria-hidden="true">
-      <div class="bannerBox">
-        <div class="bannerLogo"><img src="logo.png" alt="logo" /></div>
-        <div>
-          <div class="bannerText">ДО ЛИСТИНГА 67 ДНЕЙ — НАКОПИ КАК МОЖНО БОЛЬШЕ МОНЕТ КОТОРЫЕ МОЖНО БУДЕТ ОБМЕНЯТЬ НА TON</div>
-          <div class="bannerSub">Собирайте монеты сейчас — обмен на TON станет доступен позже.</div>
-        </div>
-      </div>
     </div>
 
     <div class="glass" role="document" aria-modal="true">
@@ -1071,12 +947,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
   <script>
   (function(){
-    // ====== Config & utils (kept from previous code) ======
+    // ====== Config ======
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
     const MAX_DAYS = 7;
     const amounts = [30000,100000,500000,1000000,3000000,6000000,10000000];
 
+    // ====== Safe LS utils ======
     function safeGetJSON(key, fallback){
       try{
         const raw = localStorage.getItem(key);
@@ -1089,7 +966,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
     }
 
-    // ensure firstSeen exists
+    // Ensure first seen exists
     let firstSeen = +localStorage.getItem(LS_FIRST) || 0;
     if(!firstSeen || isNaN(firstSeen)){
       firstSeen = Date.now();
@@ -1103,6 +980,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       safeSetJSON(LS_CLAIMED, claimed);
     }
 
+    // compute availability
     function daysSinceFirst(){
       const now = Date.now();
       const diffDays = Math.floor((now - firstSeen) / (24*60*60*1000));
@@ -1112,7 +990,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return Math.min(MAX_DAYS, daysSinceFirst() + 1);
     }
 
-    // game API wrappers
+    // ====== Expose/Connect to game API (safe wrappers) ======
     const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
     const _orig_upd = window.updCoins instanceof Function ? window.updCoins : null;
     const _orig_save = window.save instanceof Function ? window.save : null;
@@ -1139,7 +1017,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         if(el) el.textContent = formatFallback(cur);
         const tonEl = document.getElementById('tonVal');
         if(tonEl) {
-          const ton = cur * 0.000002;
+          const ton = cur * ZEX_TO_TON;
           tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
         }
       }catch(e){}
@@ -1147,7 +1025,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
     function saveGameStatePublic(){
       if (typeof window.save === 'function'){
-        try{ window.save(); return; }catch(e){} 
+        try{ window.save(); return; }catch(e){} // original game save function
       }
       try{
         const coins = localStorage.getItem('coins') || '0';
@@ -1173,7 +1051,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
           const tonEl = document.getElementById('tonVal');
-          if(tonEl) { const ton = cur * 0.000002; tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString(); }
+          if(tonEl) { const ton = cur * ZEX_TO_TON; tonEl.textContent = (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString(); }
         }
         saveGameStatePublic();
       }catch(e){}
@@ -1189,18 +1067,14 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const saveGameState = window.saveGameState;
     const formatNum = window.format;
 
-    // DOM
+    // ====== Modal DOM & logic ======
     const overlay = document.getElementById('wsModalOverlay');
-    const listingModal = document.getElementById('listingModal');
-    const preBanner = document.getElementById('wsPreBanner');
     const gridTop = document.getElementById('rewardsGridTop');
     const gridBottom = document.getElementById('rewardsGridBottom');
     const unlockedCountEl = document.getElementById('wsUnlockedCount');
     const coinsDisplayEl = document.getElementById('wsModalCoinsDisplay');
     const btnClose = document.getElementById('wsBtnClose');
     const btnRules = document.getElementById('wsBtnRules');
-    const btnListingContinue = document.getElementById('listingContinue');
-    const btnListingLater = document.getElementById('listingLater');
 
     // Hide main page children while modal is visible.
     const hiddenTargets = [];
@@ -1215,42 +1089,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       overlay.classList.add('hidden');
     }
 
-    // Show listing modal
-    function showListingModal(){
-      try{
-        listingModal.style.display = 'flex';
-        listingModal.setAttribute('aria-hidden','false');
-      }catch(e){}
-    }
-    function hideListingModal(){
-      try{
-        listingModal.style.display = 'none';
-        listingModal.setAttribute('aria-hidden','true');
-      }catch(e){}
-    }
-
-    // PRE-BANNER -> then cards
-    function showPreBannerThenCards(){
-      try {
-        preBanner.style.display = 'flex';
-        preBanner.classList.remove('hide');
-        preBanner.classList.add('show');
-        preBanner.setAttribute('aria-hidden','false');
-      } catch(e){}
-      setTimeout(()=> {
-        try {
-          preBanner.classList.remove('show');
-          preBanner.classList.add('hide');
-          preBanner.setAttribute('aria-hidden','true');
-          setTimeout(()=>{ preBanner.style.display = 'none'; }, 360);
-        } catch(e){}
-        renderCards();
-        syncCoinsDisplay();
-      }, 3000);
-    }
-
     // Build cards (1..7).
     function renderCards(){
+      // reload claimed from storage to stay in sync with other tabs
       claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
 
       const avail = availableCount();
@@ -1289,19 +1130,26 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
           card.appendChild(overlayEl);
         }
 
+        // Attach a safe click handler which checks current availability/claimed state at click moment
         card.addEventListener('click', function onCardClick(){
+          // Re-read claimed/availability to avoid stale closures
           claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
           const nowClaimed = !!claimed[i];
           const nowAvail = i < availableCount();
-          if (!nowAvail || nowClaimed) return;
+          if (!nowAvail || nowClaimed) return; // not ready or already claimed
 
+          // Prevent double clicks immediately
           card.style.pointerEvents = 'none';
+
+          // optimistic UI
           card.classList.add('pop');
           setTimeout(()=>card.classList.remove('pop'),260);
 
+          // mark claimed and persist
           claimed[i] = true;
           safeSetJSON(LS_CLAIMED, claimed);
 
+          // Try to credit the coins robustly. Use game's API when available, otherwise fallback.
           try {
             if (typeof claimRewardFromModal === 'function') {
               claimRewardFromModal(amounts[i]);
@@ -1320,6 +1168,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
             try { updCoinsPublic(amounts[i]); } catch(e2){}
           }
 
+          // Update card UI to claimed
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
           badge.textContent = 'Claimed';
@@ -1328,6 +1177,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
           card.classList.add('claimed');
           card.style.pointerEvents = 'none';
 
+          // Sync displays
           syncCoinsDisplay();
           renderUnlockedCount();
         });
@@ -1347,7 +1197,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
     function syncCoinsDisplay(){
       const coins = +localStorage.getItem('coins') || 0;
-      const ton = coins * 0.000002;
+      const ton = coins * ZEX_TO_TON;
       coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if (mainEl) mainEl.textContent = formatNum(coins);
@@ -1364,31 +1214,15 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       alert('Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
     });
 
-    // listing modal handlers
-    btnListingContinue.addEventListener('click', function(){
-      // hide listing, then show pre-banner then cards
-      hideListingModal();
-      showPreBannerThenCards();
-    });
-    btnListingLater.addEventListener('click', function(){
-      // close everything and show main UI
-      hideListingModal();
-      showMainUI();
-      saveGameState();
-    });
-
-    // Show overlay, then listing modal (then user continues -> pre-banner -> cards)
     hideMainUI();
-    // show listing modal inside overlay
-    showListingModal();
-    // Ensure coins display synced
+    renderCards();
     syncCoinsDisplay();
 
     // refresh UI each minute in case time-based availability changes
     setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
-      open: function(){ hideMainUI(); showListingModal(); },
+      open: function(){ hideMainUI(); renderCards(); syncCoinsDisplay(); },
       close: function(){ showMainUI(); saveGameState(); },
       getState: function(){ return { firstSeen, claimed: claimed.slice(), available: availableCount() }; },
       forceResetClaims: function(){ claimed = new Array(MAX_DAYS).fill(false); safeSetJSON(LS_CLAIMED,claimed); renderCards(); }
@@ -1398,7 +1232,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   })();
   </script>
 
-  <!-- Casino (kept unchanged) -->
+  <!-- ================= Casino modal & logic ================= -->
   <div id="casinoModal" class="casino-modal" aria-hidden="true" role="dialog" aria-label="Casino wheel">
     <div class="card" role="document">
       <div class="casino-header">
@@ -1427,6 +1261,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
   <script>
   (function(){
+    // Casino wheel implementation
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
     const closeCasino = document.getElementById('closeCasino');
@@ -1437,6 +1272,8 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const wheelCanvas = document.getElementById('wheelCanvas');
     const ctx = wheelCanvas.getContext('2d');
 
+    // Config: segments mixing TON and ZEX (max TON 2, max coins 100k)
+    // Each segment: {label, type: 'ton'|'zex', value}
     const segments = [
       { label: '100K ZEX', type: 'zex', value: 100000 },
       { label: '0.1 TON', type: 'ton', value: 0.1 },
@@ -1451,12 +1288,19 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     ];
 
     const SEG_COUNT = segments.length;
+
+    // Conversion: 1000 ZEX = 0.002 TON => 1 TON = 1000 / 0.002 = 500000 ZEX
     const TON_TO_ZEX = 1000 / 0.002;
+
+    // cooldown: 2 hours
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
-    let rotation = 0;
+
+    // wheel state
+    let rotation = 0; // degrees
     let isSpinning = false;
 
+    // draw wheel
     function drawWheel(){
       const w = wheelCanvas.width;
       const h = wheelCanvas.height;
@@ -1468,6 +1312,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       for(let i=0;i<SEG_COUNT;i++){
         const start = i*anglePer - Math.PI/2;
         const end = start + anglePer;
+        // alternate colors
         ctx.beginPath();
         ctx.moveTo(cx,cy);
         ctx.arc(cx,cy,radius,start,end);
@@ -1478,6 +1323,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // draw label
         ctx.save();
         const textAngle = start + anglePer/2;
         ctx.translate(cx + Math.cos(textAngle)*(radius*0.66), cy + Math.sin(textAngle)*(radius*0.66));
@@ -1487,10 +1333,13 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const label = segments[i].label;
+        // wrap if long
+        const lines = label.split(' ');
         ctx.fillText(label, 0, 0);
         ctx.restore();
       }
 
+      // draw center
       ctx.beginPath();
       ctx.arc(cx,cy,60,0,2*Math.PI);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
@@ -1499,29 +1348,40 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       ctx.stroke();
     }
 
+    // render with rotation
     function render(){
+      // rotate canvas via CSS transform on container
       wheelCanvas.style.transform = `rotate(${rotation}deg)`;
     }
 
+    // random spin: pick segment index uniformly, compute target rotation so that segment center aligns to pointer (top)
     function getRandomSegmentIndex(){
       return Math.floor(Math.random()*SEG_COUNT);
     }
 
+    // mapping index -> angle to bring its center to top (pointer)
     function angleForIndex(i){
+      // each segment center angle in degrees (0 at top since we drew with -PI/2 offset)
       const anglePerDeg = 360 / SEG_COUNT;
+      // center of segment i measured clockwise from top:
       const center = i * anglePerDeg + anglePerDeg/2;
+      // We need to rotate wheel so that that center lands at top (0deg rotation). Because positive rotation rotates clockwise for CSS,
+      // targetRotation such that ((initialRotation + targetRotation) mod 360) === -center (since we want the segment center at 0 deg)
+      // Simpler: compute target = 360 * k + (360 - center)
       return (360 - center) % 360;
     }
 
+    // perform spin animation
     function spinToIndex(i){
       if (isSpinning) return;
       isSpinning = true;
       spinBtn.disabled = true;
-      const baseSpins = 6;
+      const baseSpins = 6; // full revolutions
       const targetAngle = angleForIndex(i);
-      const randomOffset = (Math.random()*15) - 7.5;
+      const randomOffset = (Math.random()*15) - 7.5; // small jitter
       const finalAngle = baseSpins*360 + targetAngle + randomOffset;
-      const duration = 5000 + Math.random()*1000;
+      const duration = 5000 + Math.random()*1000; // ms
+      // animate rotation from current rotation to current + finalAngle
       const start = performance.now();
       const from = rotation % 360;
       const to = rotation + finalAngle;
@@ -1534,11 +1394,14 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         render();
         if(p < 1) requestAnimationFrame(step);
         else {
+          // finished
           isSpinning = false;
           spinBtn.disabled = false;
-          const landed = ((360 - (rotation % 360)) + 360) % 360;
+          // compute chosen index from rotation
+          const landed = ((360 - (rotation % 360)) + 360) % 360; // angle at top
           const anglePerDeg = 360 / SEG_COUNT;
           let idx = Math.floor((landed) / anglePerDeg);
+          // ensure idx in range
           idx = (idx + SEG_COUNT) % SEG_COUNT;
           announcePrize(idx);
         }
@@ -1551,13 +1414,16 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       if(!seg) return;
       let text = '';
       if(seg.type === 'zex'){
+        // award ZEX directly
         const amount = Math.round(seg.value);
+        // use game's updater if available
         try{
           if(typeof window.updCoins === 'function') window.updCoins(amount);
           else updCoinsPublic(amount);
         }catch(e){ updCoinsPublic(amount); }
         text = `+${format(amount)} ZEX`;
       } else {
+        // TON -> convert to ZEX and award as ZEX (since game tracks coins)
         const tonAmount = seg.value;
         const zexAmount = Math.round(tonAmount * TON_TO_ZEX);
         try{
@@ -1567,15 +1433,18 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         text = `+${tonAmount} TON (~${format(zexAmount)} ZEX)`;
       }
       casinoResultEl.textContent = text;
+      // update shared display
       updateCasinoBalanceDisplay();
+      // set last spin
       localStorage.setItem(COOL_KEY, String(Date.now()));
       updateCooldownDisplay();
     }
 
     function updateCasinoBalanceDisplay(){
       const c = +localStorage.getItem('coins') || 0;
-      const ton = c * 0.000002;
+      const ton = c * ZEX_TO_TON;
       casinoBalanceEl.textContent = format(c) + ' ZEX • ' + (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()) + ' TON';
+      // also sync main UI
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
@@ -1599,6 +1468,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       }
     }
 
+    // events
     casinoBtn.addEventListener('click', ()=>{
       casinoModal.style.display = 'flex';
       casinoModal.setAttribute('aria-hidden','false');
@@ -1610,6 +1480,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       casinoModal.setAttribute('aria-hidden','true');
     });
 
+    // spin click: check cooldown
     spinBtn.addEventListener('click', ()=>{
       const last = +localStorage.getItem(COOL_KEY) || 0;
       const now = Date.now();
@@ -1617,14 +1488,19 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
         updateCooldownDisplay();
         return;
       }
+      // pick random segment and spin to it
       const idx = getRandomSegmentIndex();
       spinToIndex(idx);
     });
 
+    // initial draw and animation frame
     drawWheel();
     render();
+
+    // refresh cooldown every second
     setInterval(updateCooldownDisplay, 1000);
 
+    // helper for formatting numbers (reuse existing format if present)
     function format(n){
       if(typeof window.format === 'function') return window.format(n);
       if(n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
@@ -1633,6 +1509,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return String(n);
     }
 
+    // expose for debugging if needed
     window._casino = {
       open: ()=>{ casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); },
       close: ()=>{ casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); },
