@@ -17,7 +17,6 @@ html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-
 @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
 /* Header */
-/* Убрали общий фон у header — теперь фон балансов локализован в .coin-panel */
 header{width:95%;margin:15px 0;display:flex;justify-content:space-between;align-items:center;background:transparent;border-radius:12px;padding:10px;backdrop-filter:blur(5px)}
 /* Энергия в левом верхнем углу */
 .energy-panel{
@@ -117,9 +116,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 }
 
 /* ========== Casino wheel styles ========== */
-/* Стилизуем в общем стиле (берём те же градиенты) */
 .casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(120deg,#3b2a7a88,#8aa7ff88);backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
-/* Изменено: фон .card теперь плотный (непрозрачный), в стиле главного экрана */
 .casino-modal .card{width:100%;max-width:820px;background:linear-gradient(120deg,#3b2a7a,#8aa7ff);border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);display:flex;gap:12px;flex-direction:column}
 .casino-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .casino-body{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
@@ -130,23 +127,23 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 .spin-btn{padding:12px 18px;border-radius:12px;border:none;font-weight:900;cursor:pointer;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;box-shadow:0 12px 36px rgba(0,216,255,0.18)}
 .casino-note{color:var(--birch);font-weight:700}
 .casino-result{font-weight:900;color:var(--accent-cyan);font-size:18px}
-/* disabled look */
 .spin-btn[disabled]{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* small screens tweak */
-@media (max-width:720px){
-  .wheel-wrap{width:320px;height:320px}
-  .casino-controls{min-width:unset;width:100%;align-items:center}
-}
+/* Rewards modal styles (kept from previous) */
+#wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
+#wsModalOverlay.hidden{ display:none; }
+#wsModalOverlay .bgLayer{ position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block; overflow:hidden; }
+#wsModalOverlay .bgImage{ position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28; }
 
-/* ================= Pre-banner inside rewards modal ================= */
+#wsModalOverlay .glass{ position:relative; width:100%; max-width:980px; margin:0 auto; box-sizing:border-box; padding:18px; border-radius:18px 18px 0 0; backdrop-filter: blur(8px) saturate(1.05); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: 0 -12px 40px rgba(0,0,0,0.45); display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+
+/* PRE-BANNER */
 #wsPreBanner{
-  position:absolute;
-  inset:0;
-  display:flex;
+  position:relative;
+  display:none;
   align-items:center;
   justify-content:center;
-  z-index:12000;
+  z-index:12;
   pointer-events:auto;
 }
 #wsPreBanner .bannerBox{
@@ -167,6 +164,96 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 #wsPreBanner .bannerSub{font-weight:700;font-size:13px;color:var(--birch);margin-top:6px}
 #wsPreBanner.hide{opacity:0;transform:scale(.98);pointer-events:none;transition:all .36s ease}
 #wsPreBanner.show{opacity:1;transform:scale(1);transition:all .36s ease}
+
+/* ========== Listing modal (NEW: красивое отдельное окно перед наградами) ========== */
+#listingModal{
+  position:absolute;
+  inset:0;
+  z-index:13000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+  pointer-events:auto;
+}
+#listingModal .card{
+  width:100%;
+  max-width:980px;
+  border-radius:20px;
+  padding:28px;
+  box-sizing:border-box;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 30px 80px rgba(18,6,40,0.6);
+  display:flex;
+  gap:18px;
+  align-items:center;
+  transform-origin:center;
+  animation:cardIn .5s ease;
+}
+@keyframes cardIn{ from{opacity:0; transform:translateY(18px) scale(.98)} to{opacity:1; transform:translateY(0) scale(1)} }
+#listingModal .hero{
+  display:flex;
+  gap:20px;
+  align-items:center;
+  flex:1;
+}
+#listingModal .hero .left{
+  width:140px;
+  height:140px;
+  border-radius:18px;
+  background:linear-gradient(90deg,var(--accent-cyan),#7a4bff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 18px 50px rgba(0,216,255,0.12);
+  border:2px solid rgba(255,255,255,0.12);
+}
+#listingModal .hero .left img{width:90%;height:90%;object-fit:contain;display:block}
+#listingModal .hero .right{flex:1}
+#listingModal .hero h1{
+  margin:0;
+  font-size:34px;
+  line-height:1;
+  color:#fff;
+  letter-spacing:0.4px;
+  text-shadow:0 8px 36px rgba(0,0,0,0.4);
+}
+#listingModal .hero p{
+  margin:8px 0 0 0;
+  color:var(--birch);
+  font-weight:700;
+  opacity:0.95;
+}
+#listingModal .decor{
+  position:absolute;
+  right:28px;
+  top:12px;
+  width:160px;
+  height:160px;
+  pointer-events:none;
+  filter:blur(12px) saturate(1.1);
+  opacity:0.35;
+}
+#listingModal .controls{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-left:auto;
+}
+#listingModal .btnPrimary{
+  padding:12px 18px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent-cyan),#00A8FF);color:#000;font-weight:900;box-shadow:0 12px 36px rgba(0,216,255,0.18)
+}
+#listingModal .btnGhost{
+  padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#ecf8ff;font-weight:800;cursor:pointer;
+}
+/* Small screens */
+@media (max-width:720px){
+  #listingModal .card{flex-direction:column;align-items:stretch;padding:18px}
+  #listingModal .hero{flex-direction:row;gap:12px}
+  #listingModal .hero h1{font-size:22px}
+  #listingModal .decor{display:none}
+}
   </style>
 </head>
 <body>
@@ -187,7 +274,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="coin-logo" title="ZEX">
-          <!-- заменили на картинку logo.png -->
           <img src="logo.png" alt="ZEX logo" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
@@ -197,7 +283,6 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       </div>
        <div class="ton-panel" style="margin-left:6px;">
         <div class="ton-logo" title="TON">
-          <!-- заменили на картинку ton.png -->
           <img src="ton.png" alt="TON logo" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
@@ -344,10 +429,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   <script>
   /* ==========================
    Исправленный JS (готово)
-   Изменено:
-   - Конверсия: 1000 ZEX = 0.002 TON
-   - Добавлен предварительный баннер перед модальным окном наград
-   - При трате ZEX — TON просто отображение (не тратится отдельно)
+   Дополнения:
+   - Отдельный красивый модал "До листинга 67 дней", который показывается перед 7-дневными наградами.
+   - При нажатии "Перейти к наградам" — запускается существующий баннер + карточки.
    ========================== */
   // ========== Локализация ==========
   const i18n = {
@@ -900,54 +984,49 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   buyConfirm.setAttribute('aria-hidden','true');
   </script>
 
-  <!-- =================== Rewards modal with pre-banner =================== -->
-  <style>
-    /* Minor override for modal overlay z-index handling above */
-    #wsModalOverlay{ --wm-accentA:#3b2a7a; --wm-accentB:#8aa7ff; --wm-accentC:#00D8FF; --wm-birch:#EDE4C8; z-index:10000; position:fixed; inset:0; display:flex; align-items:flex-start; justify-content:center; font-family:Inter,system-ui,Arial,sans-serif; }
-    #wsModalOverlay.hidden{ display:none; }
-    #wsModalOverlay .bgLayer{ position:absolute; inset:0; background:linear-gradient(120deg,var(--wm-accentA),var(--wm-accentB)); display:block; overflow:hidden; }
-    #wsModalOverlay .bgImage{ position:absolute; inset:0; background-image:url('fon.png'); background-size:cover; background-position:center; filter:blur(6px) saturate(1.05); mix-blend-mode:overlay; opacity:0.28; }
-
-    #wsModalOverlay .glass{ position:relative; width:100%; max-width:980px; margin:0 auto; box-sizing:border-box; padding:18px; border-radius:18px 18px 0 0; backdrop-filter: blur(8px) saturate(1.05); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: 0 -12px 40px rgba(0,0,0,0.45); display:flex; flex-direction:column; gap:12px; overflow:hidden; }
-
-    /* Reuse previous reward-card styles (kept earlier) */
-    .rewardsShell{ display:flex; flex-direction:column; gap:12px; }
-    .rewardsContainer{ background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.02)); border-radius:14px; padding:12px; box-shadow:0 8px 30px rgba(0,0,0,0.36); border:1px solid rgba(255,255,255,0.04); max-height: calc(70vh - 110px); overflow:auto; }
-    .rewardsGridTop{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:12px; }
-    .rewardsGridBottom{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .rewardCard{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:12px; min-height:86px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; transition:transform .16s ease, box-shadow .16s ease; cursor:pointer; border:1px solid rgba(255,255,255,0.04); }
-    .rewardCard:hover{ transform:translateY(-6px); }
-    .rewardCard.pop{ animation:pop .26s ease; }
-    @keyframes pop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.06);} 100%{ transform:scale(1); } }
-    .rewardCard .coinIconSmall{ width:44px; height:44px; border-radius:50%; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; margin-bottom:8px; border:2px solid rgba(255,255,255,0.06); box-shadow:0 8px 18px rgba(0,216,255,0.08); }
-    .rewardCard .dayLabel{ font-weight:800; color:#ecf8ff; margin-bottom:6px; }
-    .rewardCard .amount{ font-weight:900; font-size:16px; color:var(--wm-accentC); text-shadow: 0 6px 18px rgba(0,216,255,0.08); }
-    .rewardCard.locked{ opacity:0.36; pointer-events:auto; }
-    .rewardCard.unlocked{ box-shadow:0 10px 30px rgba(0,216,255,0.06); border:1px solid rgba(0,216,255,0.12); }
-    .rewardCard.claimed{ opacity:0.9; pointer-events:none; }
-    .rewardCard .claimBadge{ position:absolute; top:8px; right:8px; background:linear-gradient(90deg,#FFD54A,#FFC107); color:#000; padding:6px 8px; border-radius:999px; font-weight:800; box-shadow:0 6px 20px rgba(255,193,7,0.12); font-size:12px; }
-    .rewardCard.big{ min-height:120px; padding:18px; }
-    .wsActions{ display:flex; gap:12px; margin-top:12px; align-items:center; justify-content:space-between; }
-    .wsActions .left{ color:var(--wm-birch); font-weight:700; }
-    .btnPrimary{ padding:12px 18px; border-radius:12px; font-weight:900; border:none; cursor:pointer; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; box-shadow:0 12px 36px rgba(0,216,255,0.18); }
-    .btnGhost{ padding:10px 14px; border-radius:12px; font-weight:800; border:1px solid rgba(255,255,255,0.06); background:transparent; color:#ecf8ff; cursor:pointer; }
-
-    @media (max-width:720px){
-      .rewardsContainer{ max-height: calc(60vh - 90px); }
-      .rewardsGridTop{ grid-template-columns:repeat(2,1fr); }
-      .rewardsGridBottom{ grid-template-columns:repeat(2,1fr); }
-      .glass{ padding:12px; border-radius:12px 12px 0 0; }
-      .rewardCard.big{ min-height:100px; }
-    }
-  </style>
-
+  <!-- =================== Rewards modal with listing modal (NEW) =================== -->
   <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
     <div class="bgLayer" aria-hidden="true">
       <div class="bgImage" aria-hidden="true"></div>
     </div>
 
-    <!-- PRE-BANNER (будет показываться поверх остального в overlay перед показом карточек) -->
-    <div id="wsPreBanner" class="show" aria-hidden="true" style="display:none;">
+    <!-- LISTING MODAL (separate beautiful window shown BEFORE rewards) -->
+    <div id="listingModal" aria-hidden="true" style="display:none;">
+      <div class="card" role="document" aria-modal="true">
+        <div class="hero">
+          <div class="left">
+            <img src="logo.png" alt="logo"/>
+          </div>
+          <div class="right">
+            <h1>ДО ЛИСТИНГА — 67 ДНЕЙ</h1>
+            <p>НАКОПИ КАК МОЖНО БОЛЬШЕ МОНЕТ, КОТОРЫЕ БУДУТ ОБМЕНЯНЫ НА TON. Сейчас время набирать капитал — каждая монета важна.</p>
+          </div>
+        </div>
+
+        <div class="decor" aria-hidden="true">
+          <!-- декоративные круги -->
+          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#00D8FF" stop-opacity="0.8"/>
+                <stop offset="1" stop-color="#7a4bff" stop-opacity="0.8"/>
+              </linearGradient>
+            </defs>
+            <circle cx="80" cy="40" r="36" fill="url(#g1)"/>
+            <circle cx="120" cy="120" r="22" fill="rgba(255,255,255,0.06)"/>
+            <circle cx="38" cy="110" r="16" fill="rgba(255,255,255,0.04)"/>
+          </svg>
+        </div>
+
+        <div class="controls" style="margin-left:20px;">
+          <button class="btnPrimary" id="listingContinue">Перейти к наградам</button>
+          <button class="btnGhost" id="listingLater">Позже</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRE-BANNER (hidden initially) -->
+    <div id="wsPreBanner" class="show" aria-hidden="true">
       <div class="bannerBox">
         <div class="bannerLogo"><img src="logo.png" alt="logo" /></div>
         <div>
@@ -992,6 +1071,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
 
   <script>
   (function(){
+    // ====== Config & utils (kept from previous code) ======
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
     const MAX_DAYS = 7;
@@ -1009,12 +1089,14 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
     }
 
+    // ensure firstSeen exists
     let firstSeen = +localStorage.getItem(LS_FIRST) || 0;
     if(!firstSeen || isNaN(firstSeen)){
       firstSeen = Date.now();
       try{ localStorage.setItem(LS_FIRST, String(firstSeen)); }catch(e){}
     }
 
+    // claimed array safe init
     let claimed = safeGetJSON(LS_CLAIMED, null);
     if(!Array.isArray(claimed) || claimed.length !== MAX_DAYS){
       claimed = new Array(MAX_DAYS).fill(false);
@@ -1030,6 +1112,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       return Math.min(MAX_DAYS, daysSinceFirst() + 1);
     }
 
+    // game API wrappers
     const _orig_claim = window.claimRewardFromModal instanceof Function ? window.claimRewardFromModal : null;
     const _orig_upd = window.updCoins instanceof Function ? window.updCoins : null;
     const _orig_save = window.save instanceof Function ? window.save : null;
@@ -1106,7 +1189,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const saveGameState = window.saveGameState;
     const formatNum = window.format;
 
+    // DOM
     const overlay = document.getElementById('wsModalOverlay');
+    const listingModal = document.getElementById('listingModal');
     const preBanner = document.getElementById('wsPreBanner');
     const gridTop = document.getElementById('rewardsGridTop');
     const gridBottom = document.getElementById('rewardsGridBottom');
@@ -1114,7 +1199,10 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     const coinsDisplayEl = document.getElementById('wsModalCoinsDisplay');
     const btnClose = document.getElementById('wsBtnClose');
     const btnRules = document.getElementById('wsBtnRules');
+    const btnListingContinue = document.getElementById('listingContinue');
+    const btnListingLater = document.getElementById('listingLater');
 
+    // Hide main page children while modal is visible.
     const hiddenTargets = [];
     function hideMainUI(){
       const bodyChildren = Array.from(document.body.children);
@@ -1127,15 +1215,28 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       overlay.classList.add('hidden');
     }
 
+    // Show listing modal
+    function showListingModal(){
+      try{
+        listingModal.style.display = 'flex';
+        listingModal.setAttribute('aria-hidden','false');
+      }catch(e){}
+    }
+    function hideListingModal(){
+      try{
+        listingModal.style.display = 'none';
+        listingModal.setAttribute('aria-hidden','true');
+      }catch(e){}
+    }
+
+    // PRE-BANNER -> then cards
     function showPreBannerThenCards(){
-      // show banner element
       try {
         preBanner.style.display = 'flex';
         preBanner.classList.remove('hide');
         preBanner.classList.add('show');
         preBanner.setAttribute('aria-hidden','false');
       } catch(e){}
-      // after 3s hide banner and render cards
       setTimeout(()=> {
         try {
           preBanner.classList.remove('show');
@@ -1148,6 +1249,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       }, 3000);
     }
 
+    // Build cards (1..7).
     function renderCards(){
       claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
 
@@ -1262,15 +1364,31 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
       alert('Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
     });
 
-    // Show overlay, then banner, then cards
+    // listing modal handlers
+    btnListingContinue.addEventListener('click', function(){
+      // hide listing, then show pre-banner then cards
+      hideListingModal();
+      showPreBannerThenCards();
+    });
+    btnListingLater.addEventListener('click', function(){
+      // close everything and show main UI
+      hideListingModal();
+      showMainUI();
+      saveGameState();
+    });
+
+    // Show overlay, then listing modal (then user continues -> pre-banner -> cards)
     hideMainUI();
-    showPreBannerThenCards();
+    // show listing modal inside overlay
+    showListingModal();
+    // Ensure coins display synced
     syncCoinsDisplay();
 
+    // refresh UI each minute in case time-based availability changes
     setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
-      open: function(){ hideMainUI(); preBanner.style.display = 'flex'; preBanner.classList.remove('hide'); preBanner.classList.add('show'); preBanner.setAttribute('aria-hidden','false'); setTimeout(()=>{ preBanner.classList.remove('show'); preBanner.classList.add('hide'); preBanner.setAttribute('aria-hidden','true'); setTimeout(()=>{ preBanner.style.display = 'none'; renderCards(); syncCoinsDisplay(); },360); },3000); },
+      open: function(){ hideMainUI(); showListingModal(); },
       close: function(){ showMainUI(); saveGameState(); },
       getState: function(){ return { firstSeen, claimed: claimed.slice(), available: availableCount() }; },
       forceResetClaims: function(){ claimed = new Array(MAX_DAYS).fill(false); safeSetJSON(LS_CLAIMED,claimed); renderCards(); }
@@ -1280,7 +1398,7 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
   })();
   </script>
 
-  <!-- ================= Casino modal & logic ================= -->
+  <!-- Casino (kept unchanged) -->
   <div id="casinoModal" class="casino-modal" aria-hidden="true" role="dialog" aria-label="Casino wheel">
     <div class="card" role="document">
       <div class="casino-header">
@@ -1333,13 +1451,9 @@ button.secondary{background:rgba(0,0,0,0.36);color:#fff;border:1px solid rgba(25
     ];
 
     const SEG_COUNT = segments.length;
-
-    // Conversion updated: 1000 ZEX = 0.002 TON -> 1 TON = 1000 / 0.002 = 500000 ZEX
     const TON_TO_ZEX = 1000 / 0.002;
-
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
-
     let rotation = 0;
     let isSpinning = false;
 
