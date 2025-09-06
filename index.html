@@ -35,7 +35,7 @@ header{
   align-items:center;
   background: var(--glass-strong);
   border-radius:18px;
-  padding:14px;
+  padding:12px;
   backdrop-filter: blur(8px) saturate(1.05);
   box-shadow: 0 14px 40px rgba(0,0,0,0.65);
   border:1px solid rgba(255,255,255,0.03);
@@ -60,31 +60,32 @@ header{
 .energy-panel .val{font-size:16px;color:var(--wm-accentC);line-height:1}
 .energy-panel .timer{font-size:12px;color:var(--birch);line-height:1}
 
-/* Coin panel */
+/* Coin panel — уменьшённый контейнер баланса */
 .coin-panel{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-  padding:10px 14px;
-  border-radius:14px;
+  padding:6px 8px;               /* уменьшили padding */
+  border-radius:12px;
   box-shadow:0 10px 30px rgba(0,0,0,0.6);
   margin-left:auto;
-  min-width:160px;
-  max-width:300px;
+  min-width:110px;               /* уменьшили ширину */
+  max-width:180px;               /* уменьшили ширину */
   justify-content:flex-end;
   border:1px solid rgba(255,255,255,0.02);
+  gap:8px;
 }
 .coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
-/* Изменено: обводка логотипов — светло-серый */
-.coin-logo{width:44px;height:44px;border:2px solid var(--logo-border-light);box-shadow:0 8px 24px rgba(122,75,255,0.06);background:#fff}
+/* Изменено: обводка логотипов — светло-серый; уменьшены размеры для компактности */
+.coin-logo{width:36px;height:36px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(122,75,255,0.06);background:#fff}
 .coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
-.coin-panel .val{font-weight:900;font-size:15px;color:var(--wm-accentC);line-height:1}
-.ton-panel{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:transparent;margin-left:8px}
-/* Изменено: обводка логотипа TON — светло-серая */
-.ton-logo{width:36px;height:36px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(255,193,7,0.06);background:#fff}
+.coin-panel .val{font-weight:900;font-size:13px;color:var(--wm-accentC);line-height:1} /* чуть поменьше */
+.ton-panel{display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:6px}
+/* Тоже уменьшили TON логотип */
+.ton-logo{width:30px;height:30px;border:2px solid var(--logo-border-light);box-shadow:0 8px 14px rgba(255,193,7,0.06);background:#fff}
 .ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
-.ton-val{font-weight:800;font-size:13px;color:#ffeaa7;line-height:1}
+.ton-val{font-weight:800;font-size:12px;color:#ffeaa7;line-height:1}
 
 /* House / rooms */
 .house{position:relative;width:95%;max-width:560px;margin:20px 0;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,1fr);gap:14px}
@@ -237,10 +238,12 @@ header{
 
 /* small screens tweak */
 @media (max-width:520px){
-  .coin-logo{width:36px;height:36px;border-width:2px}
+  .coin-logo{width:32px;height:32px;border-width:2px}
   .btnPrimary{font-size:16px;padding:12px}
   #miningShop .miner-card{width:46%}
   .upgrade{min-width:160px}
+  .coin-panel{min-width:100px;max-width:160px;padding:6px 6px}
+  .coin-panel .val{font-size:12px}
 }
   </style>
 </head>
@@ -258,9 +261,9 @@ header{
       </div>
     </div>
 
-    <!-- Coin panel -->
+    <!-- Coin panel (уменьшён) -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div style="display:flex;align-items:center;gap:8px;">
         <div class="coin-logo" title="ZEX">
           <img src="logo.png" alt="ZEX logo" />
         </div>
@@ -269,7 +272,7 @@ header{
           <div class="val" id="coinsVal">0</div>
         </div>
       </div>
-       <div class="ton-panel" style="margin-left:8px;">
+       <div class="ton-panel" style="margin-left:6px;">
         <div class="ton-logo" title="TON">
           <img src="ton.png" alt="TON logo" />
         </div>
@@ -406,12 +409,83 @@ header{
     <button id="casinoBtn" class="btnGhost" title="Casino">🎰</button>
   </div>
 
+  <!-- Rewards modal -->
+  <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
+    <div class="bgLayer" aria-hidden="true">
+      <div class="bgImage" aria-hidden="true"></div>
+    </div>
+
+    <div class="glass" role="document" aria-modal="true">
+      <div class="header">
+        <div class="title">
+          <div class="coinIcon">💎</div>
+          <div>
+            <div style="font-size:18px">Premium Gifts</div>
+            <div class="sub">7 days of rewards — claim one per day</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0.00 TON</div>
+          <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
+        </div>
+      </div>
+
+      <div class="rewardsShell" id="rewardsShell">
+        <div class="rewardsContainer" id="rewardsContainer">
+          <div class="rewardsGridTop" id="rewardsGridTop" aria-hidden="false"></div>
+          <div style="height:8px"></div>
+          <div class="rewardsGridBottom" id="rewardsGridBottom" aria-hidden="false"></div>
+
+          <div class="wsActions">
+            <div class="left">Unlocked: <span id="wsUnlockedCount" style="font-weight:900;color:var(--wm-accentC)">0</span>/7</div>
+            <div style="display:flex;gap:10px">
+              <button class="btnGhost" id="wsBtnRules">How it works</button>
+              <button class="btnPrimarySmall" id="wsBtnClose">Come back tomorrow</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Casino modal -->
+  <div id="casinoModal" class="casino-modal" aria-hidden="true" role="dialog" aria-label="Casino wheel">
+    <div class="card" role="document">
+      <div class="casino-header">
+        <div>
+          <div style="font-size:20px;font-weight:900">🎰 Casino</div>
+          <div style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
+        </div>
+        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 ZEX • 0.00 TON</div>
+      </div>
+
+      <div class="casino-body">
+        <div class="wheel-wrap">
+          <canvas id="wheelCanvas" width="800" height="800" aria-hidden="false"></canvas>
+          <div class="wheel-pointer" aria-hidden="true"></div>
+        </div>
+
+        <div class="casino-controls">
+          <div class="casino-note">Next spin in: <span id="casinoCooldown">Ready</span></div>
+          <button id="spinBtn" class="spin-btn">SPIN</button>
+          <div>Result: <span id="casinoResult" class="casino-result">—</span></div>
+          <button id="closeCasino" class="btnGhost" style="padding:8px 12px;border-radius:10px;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   /* ===========================
-     Полный JS (объединённый — сохраняет логику игры)
-     =========================== */
+     Full JS: game logic, UI, modals
+     Changes:
+      - TON always shows 2 decimals
+      - light-gray border around coin logos (CSS)
+      - smaller coin container (CSS)
+      - rewards modal and casino use the same TON formatting
+  =========================== */
 
-  // ========== Локализация ==========
+  // ========== Localization ==========
   const i18n = {
   ru: {
     pickRoomFirst: 'Сначала выберите комнату!',
@@ -487,8 +561,7 @@ header{
     document.getElementById('miningLabel').textContent = t('miningIncome');
     document.getElementById('shopTitle').textContent = t('miningShop');
     document.getElementById('closeMiningShop').textContent = t('close');
-    const cb = document.getElementById('confirmBuy');
-    const canc = document.getElementById('cancelBuy');
+    const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
     if (cb) cb.textContent = t('buy');
     if (canc) canc.textContent = t('cancel');
     document.getElementById('infoTitle').textContent = t('howToPlay');
@@ -689,11 +762,13 @@ header{
            n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
   }
 
-  // TON formatting: всегда 2 знака после запятой
+  // TON formatting: always 2 decimals
   function formatTon(n){
     if (!isFinite(n)) return '0.00';
     return Number(n).toFixed(2);
   }
+  // expose globally so other modules inside page can use
+  window.formatTon = formatTon;
 
   function save() {
     try {
@@ -746,7 +821,7 @@ header{
     if (doubleIncomeExpire > Date.now()) return base * 2;
     return base;
   }
-  function updIncome() { miningIncomeValEl.textContent = format(getIncome()); }
+  function updIncome() { if (miningIncomeValEl) miningIncomeValEl.textContent = format(getIncome()); }
 
   function addOfflineCoins() {
     const last = +localStorage.getItem('lastTime') || Date.now();
@@ -965,50 +1040,11 @@ header{
   document.getElementById('profileWindow').setAttribute('aria-hidden','true');
   buyConfirm.style.display = 'none';
   buyConfirm.setAttribute('aria-hidden','true');
-  </script>
 
-  <!-- =================== Rewards modal (integrated) =================== -->
-  <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
-    <div class="bgLayer" aria-hidden="true">
-      <div class="bgImage" aria-hidden="true"></div>
-    </div>
-
-    <div class="glass" role="document" aria-modal="true">
-      <div class="header">
-        <div class="title">
-          <div class="coinIcon">💎</div>
-          <div>
-            <div style="font-size:18px">Premium Gifts</div>
-            <div class="sub">7 days of rewards — claim one per day</div>
-          </div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0.00 TON</div>
-          <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
-        </div>
-      </div>
-
-      <div class="rewardsShell" id="rewardsShell">
-        <div class="rewardsContainer" id="rewardsContainer">
-          <div class="rewardsGridTop" id="rewardsGridTop" aria-hidden="false"></div>
-          <div style="height:8px"></div>
-          <div class="rewardsGridBottom" id="rewardsGridBottom" aria-hidden="false"></div>
-
-          <div class="wsActions">
-            <div class="left">Unlocked: <span id="wsUnlockedCount" style="font-weight:900;color:var(--wm-accentC)">0</span>/7</div>
-            <div style="display:flex;gap:10px">
-              <button class="btnGhost" id="wsBtnRules">How it works</button>
-              <button class="btnPrimarySmall" id="wsBtnClose">Come back tomorrow</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
+  /* ===========================
+     Rewards modal logic (keeps TON formatting)
+     =========================== */
   (function(){
-    // ====== Config ======
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
     const MAX_DAYS = 7;
@@ -1074,14 +1110,14 @@ header{
         const tonEl = document.getElementById('tonVal');
         if(tonEl) {
           const ton = cur * 0.000003;
-          tonEl.textContent = formatTon(ton);
+          tonEl.textContent = window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString();
         }
       }catch(e){}
     }
 
     function saveGameStatePublic(){
       if (typeof window.save === 'function'){
-        try{ window.save(); return; }catch(e){} 
+        try{ window.save(); return; }catch(e){} // original game save function
       }
       try{
         const coins = localStorage.getItem('coins') || '0';
@@ -1107,7 +1143,7 @@ header{
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
           const tonEl = document.getElementById('tonVal');
-          if(tonEl) { const ton = cur * 0.000003; tonEl.textContent = formatTon(ton); }
+          if(tonEl) { const ton = cur * 0.000003; tonEl.textContent = window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0) ? '<0.000001' : Number(ton.toFixed(6)).toString(); }
         }
         saveGameStatePublic();
       }catch(e){}
@@ -1241,11 +1277,11 @@ header{
     function syncCoinsDisplay(){
       const coins = +localStorage.getItem('coins') || 0;
       const ton = coins * 0.000003;
-      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
+      coinsDisplayEl.textContent = formatNum(coins) + ' ZEX • ' + (window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString())) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if (mainEl) mainEl.textContent = formatNum(coins);
       const tonEl = document.getElementById('tonVal');
-      if (tonEl) tonEl.textContent = formatTon(ton);
+      if (tonEl) tonEl.textContent = (window.formatTon ? window.formatTon(ton) : (ton < 0.000001 && ton > 0 ? '<0.000001' : Number(ton.toFixed(6)).toString()));
     }
 
     btnClose.addEventListener('click', function(){
@@ -1272,38 +1308,11 @@ header{
 
     overlay.tabIndex = -1;
   })();
-  </script>
 
-  <!-- ================= Casino modal & logic ================= -->
-  <div id="casinoModal" class="casino-modal" aria-hidden="true" role="dialog" aria-label="Casino wheel">
-    <div class="card" role="document">
-      <div class="casino-header">
-        <div>
-          <div style="font-size:20px;font-weight:900">🎰 Casino</div>
-          <div style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
-        </div>
-        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 ZEX • 0.00 TON</div>
-      </div>
-
-      <div class="casino-body">
-        <div class="wheel-wrap">
-          <canvas id="wheelCanvas" width="800" height="800" aria-hidden="false"></canvas>
-          <div class="wheel-pointer" aria-hidden="true"></div>
-        </div>
-
-        <div class="casino-controls">
-          <div class="casino-note">Next spin in: <span id="casinoCooldown">Ready</span></div>
-          <button id="spinBtn" class="spin-btn">SPIN</button>
-          <div>Result: <span id="casinoResult" class="casino-result">—</span></div>
-          <button id="closeCasino" class="btnGhost" style="padding:8px 12px;border-radius:10px;">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
+  /* ===========================
+     Casino modal & logic
+     =========================== */
   (function(){
-    // Casino wheel implementation
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
     const closeCasino = document.getElementById('closeCasino');
@@ -1316,19 +1325,20 @@ header{
 
     const segments = [
       { label: '100K ZEX', type: 'zex', value: 100000 },
-      { label: '0.1 TON', type: 'ton', value: 0.1 },
+      { label: '0.10 TON', type: 'ton', value: 0.10 },
       { label: '5K ZEX', type: 'zex', value: 5000 },
-      { label: '0.5 TON', type: 'ton', value: 0.5 },
+      { label: '0.50 TON', type: 'ton', value: 0.50 },
       { label: '10K ZEX', type: 'zex', value: 10000 },
       { label: '1 TON', type: 'ton', value: 1 },
       { label: '50K ZEX', type: 'zex', value: 50000 },
-      { label: '0.2 TON', type: 'ton', value: 0.2 },
+      { label: '0.20 TON', type: 'ton', value: 0.20 },
       { label: '1K ZEX', type: 'zex', value: 1000 },
       { label: '2 TON', type: 'ton', value: 2 }
     ];
 
     const SEG_COUNT = segments.length;
-    const TON_TO_ZEX = 1000 / 0.003;
+    const TON_TO_ZEX = 1000 / 0.003; // 333333.333...
+
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
 
@@ -1350,9 +1360,9 @@ header{
         ctx.moveTo(cx,cy);
         ctx.arc(cx,cy,radius,start,end);
         ctx.closePath();
-        ctx.fillStyle = (i%2===0) ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)';
+        ctx.fillStyle = (i%2===0) ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -1364,8 +1374,7 @@ header{
         ctx.font = 'bold 22px Inter, system-ui, Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const label = segments[i].label;
-        ctx.fillText(label, 0, 0);
+        ctx.fillText(segments[i].label, 0, 0);
         ctx.restore();
       }
 
@@ -1373,7 +1382,7 @@ header{
       ctx.arc(cx,cy,60,0,2*Math.PI);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       ctx.stroke();
     }
 
@@ -1442,7 +1451,7 @@ header{
           if(typeof window.updCoins === 'function') window.updCoins(zexAmount);
           else updCoinsPublic(zexAmount);
         }catch(e){ updCoinsPublic(zexAmount); }
-        text = `+${tonAmount} TON (~${format(zexAmount)} ZEX)`;
+        text = `+${tonAmount.toFixed(2)} TON (~${format(zexAmount)} ZEX)`;
       }
       casinoResultEl.textContent = text;
       updateCasinoBalanceDisplay();
@@ -1453,11 +1462,11 @@ header{
     function updateCasinoBalanceDisplay(){
       const c = +localStorage.getItem('coins') || 0;
       const ton = c * 0.000003;
-      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + formatTon(ton) + ' TON';
+      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + (window.formatTon ? window.formatTon(ton) : Number(ton.toFixed(2)).toString()) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
-      if(tonEl) tonEl.textContent = formatTon(ton);
+      if(tonEl) tonEl.textContent = (window.formatTon ? window.formatTon(ton) : Number(ton.toFixed(2)).toString());
     }
 
     function updateCooldownDisplay(){
@@ -1501,7 +1510,6 @@ header{
 
     drawWheel();
     render();
-
     setInterval(updateCooldownDisplay, 1000);
 
     function format(n){
@@ -1517,7 +1525,6 @@ header{
       close: ()=>{ casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); },
       lastSpin: ()=>+localStorage.getItem(COOL_KEY) || 0
     };
-
   })();
   </script>
 </body>
