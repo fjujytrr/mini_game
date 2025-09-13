@@ -3,272 +3,160 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hide & Seek — Premium Emoji (Updated with TON Keeper)</title>
-
+  <title>Hide & Seek — DApp с Tonkeeper</title>
   <style>
-:root{
-  --wm-accentA:#1b1b1f;
-  --wm-accentB:#2b2b2f;
-  --wm-accentC:#00D8FF;
-  --wm-birch:#EDE4C8;
-  --accent-cyan:#00D8FF;
-  --birch:#EDE4C8;
-  --purple-frame:#7a4bff;
-  --deep-purple:#5a2ecc;
-  --glass-weak: rgba(255,255,255,0.01);
-  --glass-strong: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-  --bg-dark: linear-gradient(120deg,#1f2023,#2a2c31);
-  --text-light: #ecf2ff;
-  --profit-green: #39FF14;
-  --logo-border-light: #dcdcdc;
-}
-
-html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg-dark);color:var(--text-light);overflow:hidden}
-body{display:flex;flex-direction:column;align-items:center;min-height:100vh}
-
-/* header */
-header{
-  width:95%;
-  margin:15px 0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  background: var(--glass-strong);
-  border-radius:18px;
-  padding:12px 18px;
-  backdrop-filter: blur(8px) saturate(1.05);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.65);
-  border:1px solid rgba(255,255,255,0.03);
-}
-
-/* Energy panel */
-.energy-panel{ display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:10px; min-width:100px; max-width:160px; font-weight:800; color:var(--text-light); border:1px solid rgba(255,255,255,0.02); }
-.energy-panel .icon{font-size:16px;margin-right:6px}
-.energy-panel .val{font-size:14px;color:var(--wm-accentC);line-height:1}
-.energy-panel .timer{font-size:11px;color:var(--birch);line-height:1}
-
-/* Coin panel */
-.coin-panel{ display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:12px; margin-left:auto; min-width:140px; max-width:320px; justify-content:flex-end; border:1px solid rgba(255,255,255,0.02); gap:10px; }
-.coin-logo, .ton-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;flex:0 0 auto}
-.coin-logo{width:40px;height:40px;border:2px solid var(--logo-border-light);box-shadow:0 8px 18px rgba(122,75,255,0.06);background:#fff}
-.coin-logo img{width:100%;height:100%;object-fit:cover;display:block}
-.coin-panel .val{font-weight:900;font-size:14px;color:var(--wm-accentC);line-height:1}
-.ton-panel{display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:10px;background:transparent;margin-left:8px}
-.ton-logo{width:34px;height:34px;border:2px solid var(--logo-border-light);background:#fff}
-.ton-logo img{width:100%;height:100%;object-fit:cover;display:block}
-
-/* Main area */
-.house{ width:95%; height:48vh; margin:12px 0; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.08); font-size:48px; border-radius:14px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); }
-
-/* Controls */
-.controls{ display:flex; gap:8px; margin:10px 0; }
-.btnPrimary{ padding:12px 18px; border-radius:10px; border:none; font-weight:900; background:linear-gradient(90deg,var(--wm-accentC),#00A8FF); color:#000; cursor:pointer; box-shadow:0 12px 36px rgba(0,216,255,0.12) }
-.btnGhost{ padding:10px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text-light); cursor:pointer }
-
-/* bottom nav */
-.bottom-nav{
-  position:fixed; left:0; right:0; bottom:12px; display:flex; justify-content:center; z-index:9999;
-}
-.bottom-nav .nav-wrap{
-  background:var(--glass-strong);
-  padding:10px 14px;
-  border-radius:40px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-  box-shadow:0 18px 60px rgba(0,0,0,0.6);
-  border:1px solid rgba(255,255,255,0.03);
-}
-.bottom-nav button{ background:transparent; border:none; padding:10px 12px; font-size:20px; border-radius:12px; cursor:pointer; color:var(--text-light) }
-.bottom-nav button:hover{ transform:translateY(-4px); transition:all .18s ease }
-
-/* wallet modal */
-#walletModal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:11000; background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6)); }
-#walletModal .card{ width:95%; max-width:420px; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)); border-radius:14px; box-shadow:0 14px 48px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); }
-#walletModal h3{ margin:0 0 8px 0; color:#ecf8ff }
-.wallet-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:8px 0; }
-.small-muted{ color:var(--birch); font-size:13px; }
-
-/* responsive */
-@media (max-width:520px){
-  .coin-logo{width:32px;height:32px;border-width:2px}
-  .btnPrimary{font-size:16px;padding:12px}
-  .bottom-nav .nav-wrap{ padding:8px; gap:6px }
-}
+    :root{ --bg:#0f1113; --card:#121316; --muted:#bfc9d6; --accent:#00D8FF; --glass: rgba(255,255,255,0.02); color-scheme: dark; }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#0b0c0e,#131418); color:#e6f0ff}
+    header{display:flex;align-items:center;justify-content:space-between;padding:14px;gap:12px}
+    .coin-panel{display:flex;align-items:center;gap:12px;background:var(--glass);padding:8px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .house{height:50vh;display:flex;align-items:center;justify-content:center;border-radius:12px;margin:12px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00))}
+    .controls{display:flex;gap:8px;padding:10px}
+    .btnPrimary{background:linear-gradient(90deg,var(--accent),#00A8FF);border:none;padding:10px 14px;border-radius:10px;color:#000;font-weight:700;cursor:pointer}
+    .btnGhost{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:9px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+    .bottom-nav{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:center;pointer-events:none}
+    .nav-wrap{pointer-events:auto;background:var(--glass);display:flex;gap:8px;padding:8px;border-radius:40px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 14px 40px rgba(0,0,0,0.6)}
+    .nav-wrap button{background:transparent;border:none;font-size:20px;padding:8px;border-radius:10px;color:inherit;cursor:pointer}
+    /* wallet modal */
+    #walletModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));z-index:11000}
+    #walletModal .card{width:95%;max-width:420px;background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .wallet-row{display:flex;justify-content:space-between;gap:8px;margin-top:8px}
+    .small-muted{color:var(--muted);font-size:13px}
+    pre{background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;overflow:auto;color:var(--muted)}
   </style>
 </head>
 <body>
   <header>
-    <!-- Energy -->
-    <div class="energy-panel" id="energyPanel" aria-live="polite" aria-atomic="true">
-      <div class="icon">⚡</div>
-      <div style="display:flex;flex-direction:column;align-items:flex-start;">
-        <div style="font-size:11px;color:var(--birch);font-weight:800">Energy</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="val" id="energyVal">50</div>
-          <div class="timer" id="energyTimer">—</div>
+    <div class="coin-panel">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:#fff"><img src="logo.png" alt="logo" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <div style="font-size:12px;color:var(--muted)">ZEX</div>
+          <div id="coinsVal" style="font-weight:900">0</div>
         </div>
+      </div>
+      <div style="margin-left:16px;display:flex;align-items:center;gap:8px">
+        <div style="font-size:12px;color:var(--muted)">TON</div>
+        <div id="tonVal" style="font-weight:900">0.00</div>
       </div>
     </div>
-
-    <!-- Coin panel -->
-    <div class="coin-panel" aria-live="polite" aria-atomic="true">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div class="coin-logo" title="ZEX">
-          <img src="logo.png" alt="ZEX logo" />
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
-          <div style="font-size:11px;color:var(--birch);font-weight:800">ZEX</div>
-          <div class="val" id="coinsVal">0</div>
-        </div>
-      </div>
-       <div class="ton-panel" style="margin-left:6px;">
-        <div class="ton-logo" title="TON">
-          <img src="ton.png" alt="TON logo" />
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
-          <div style="font-size:11px;color:var(--birch);font-weight:800">TON</div>
-          <div class="ton-val" id="tonVal">0.00</div>
-        </div>
-      </div>
-    </div>
+    <div style="font-size:14px;color:var(--muted)">Hide & Seek — DApp</div>
   </header>
 
-  <div class="house">GAME AREA</div>
-
-  <div class="controls">
-    <button id="startBtn" class="btnPrimary">🏠 Start</button>
-    <button id="resetBtn" class="btnGhost">🔍 Hunt</button>
-  </div>
-
-  <!-- many UI blocks (shop, casino, profile etc.) -->
-  <!-- (Я сохранил все ваши оригинальные модальные блоки и логику в скрипте ниже) -->
+  <main>
+    <div class="house">Зона игры</div>
+    <div class="controls">
+      <button class="btnPrimary" id="startBtn">Start</button>
+      <button class="btnGhost" id="resetBtn">Reset</button>
+    </div>
+  </main>
 
   <!-- Wallet modal -->
   <div id="walletModal" aria-hidden="true">
     <div class="card" role="dialog" aria-modal="true" aria-labelledby="walletTitle">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <h3 id="walletTitle">Подключить кошелек TON</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h3 id="walletTitle" style="margin:0">Подключить TON-кошелек</h3>
         <button id="closeWallet" class="btnGhost">✕</button>
       </div>
-      <p class="small-muted">Нажмите <strong>Connect</strong> чтобы подключить Tonkeeper или другой совместимый кошелек (TON Connect).</p>
+      <p class="small-muted">Подключите Tonkeeper или другой кошелёк через TON Connect.</p>
 
       <div class="wallet-row">
         <div>
           <div class="small-muted">Статус</div>
           <div id="walletStatus" style="font-weight:900">Not connected</div>
         </div>
-        <div style="text-align:right;">
+        <div style="text-align:right">
           <div class="small-muted">Адрес</div>
           <div id="walletAddr">—</div>
         </div>
       </div>
 
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
         <button id="connectWalletBtn" class="btnPrimary">Connect</button>
         <button id="disconnectWalletBtn" class="btnGhost" style="display:none">Disconnect</button>
       </div>
 
-      <div style="margin-top:12px;font-size:13px;color:var(--birch)">
-        Примечание: рекомендуется добавить файл <code>/tonconnect-manifest.json</code> в корень сайта — пример ниже.
-        <details style="margin-top:6px;color:var(--birch)">
-          <summary style="cursor:pointer">Пример манифеста (click)</summary>
-          <pre style="white-space:pre-wrap;margin-top:8px;background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;">
-{
+      <div style="margin-top:12px" class="small-muted">
+        Рекомендуется положить <code>/tonconnect-manifest.json</code> в корень сайта. Пример:
+        <pre>{
+  "url": "https://your-domain.com",
   "name": "HideAndSeek DApp",
-  "description": "Demo dapp to connect Tonkeeper",
-  "icons": ["https://example.com/logo-192.png"],
-  "website": "https://your-domain.example"
-}
-          </pre>
-        </details>
+  "iconUrl": "https://your-domain.com/icon-192.png"
+}</pre>
       </div>
     </div>
   </div>
 
   <!-- bottom navigation -->
-  <div class="bottom-nav" aria-hidden="false">
+  <div class="bottom-nav">
     <div class="nav-wrap">
       <button id="navHome" title="Home">🏠</button>
-      <button id="miningBtn" title="Mining / Shop">⛏️</button>
+      <button id="miningBtn" title="Mining">⛏️</button>
       <button id="casinoBtn" title="Casino">🎰</button>
       <button id="profileBtn" title="Profile">👤</button>
-      <!-- NEW wallet button -->
+      <!-- wallet button -->
       <button id="walletBtn" title="Wallet">👛</button>
     </div>
   </div>
 
-  <!-- ==========================
-       TON Connect SDK (CDN)
-       ==========================
-       We load the official TonConnect SDK from UNPKG.
-       This exposes global TonConnectSDK (TonConnect class).
-  -->
+  <!-- TonConnect SDK -->
   <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
 
-  <!-- ================
-       MAIN GAME SCRIPT
-       (вставьте сюда ваш полный JS-код — я сохранил все оригинальные функции)
-       Ниже — упрощённо: основные переменные и ранний init + добавлена интеграция TonConnect.
-       Если у вас уже есть огромный скрипт (как в загруженном файле), просто вставьте этот блок в конец вашего скрипта
-       и убедитесь, что CDN для tonconnect загружен перед использованием.
-       ================ -->
   <script>
-  /* ===========================
-     Ваш существующий JS (игра) должен идти здесь.
-     В целях демонстрации я сохранил основные переменные и функции,
-     а затем добавил интеграцию TonConnect.
-     (В реальном файле вставьте оригинальный блок JS полностью;
-      в том числе все функций: updCoins, renderMiners, casino, rewards и т.д.)
-  ============================ */
-
-  // --- примеры констант из вашего файла (они уже есть в исходнике) ---
-  const LS_COINS = 'coins';
-  const LS_TON = 'player_ton_v1';
-  const ZEX_TO_TON = 0.000001;
-
-  // minimal UI bindings (в полном файле у вас их уже больше)
+  // ---------- Простая логика балансов (пример) ----------
   const coinsVal = document.getElementById('coinsVal');
   const tonVal = document.getElementById('tonVal');
+  let coins = +localStorage.getItem('coins') || 0;
+  let ton = +localStorage.getItem('ton') || 0.00;
+  function renderBalances(){ coinsVal.textContent = (coins>=1000? (coins/1000).toFixed(1)+'K':String(coins)); tonVal.textContent = Number(ton).toFixed(2) }
+  renderBalances();
+  document.getElementById('startBtn').addEventListener('click', ()=>{ coins += 100; localStorage.setItem('coins', coins); renderBalances() });
+  document.getElementById('resetBtn').addEventListener('click', ()=>{ coins=0; localStorage.setItem('coins', coins); renderBalances() });
 
-  function format(n){
-    if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
-    if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
-    if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
-    return String(n);
-  }
-  function formatTon(n){ return Number(n || 0).toFixed(2); }
+  // ---------- TON CONNECT: устойчивый, готовый код ----------
+  (async function initTonConnect() {
+    // разные экспорты в разных сборках
+    const TonConnectExports = window.TonConnectSDK || window.TonConnect || window.TonConnect;
+    if (!TonConnectExports) {
+      console.warn('TonConnect SDK не найден. Проверьте подключение CDN скрипта.');
+      // Даже если SDK не найден — делаем минимальные UI-хэндлеры.
+      attachWalletUIWithoutSDK();
+      return;
+    }
 
-  // Load saved values
-  let coins = +localStorage.getItem(LS_COINS) || 0;
-  let ton = +localStorage.getItem(LS_TON) || 0;
-  function updateBalancesDisplay(){
-    if (coinsVal) coinsVal.textContent = format(coins);
-    if (tonVal) tonVal.textContent = formatTon(ton);
-  }
-  updateBalancesDisplay();
+    // Попытаемся заранее получить manifest (если он доступен).
+    const manifestUrl = window.location.origin + '/tonconnect-manifest.json';
+    let gotManifest = false;
+    try {
+      const resp = await fetch(manifestUrl, {cache: "no-store"});
+      if (resp.ok) {
+        // пробуем распарсить, чтобы понять, валидный ли JSON
+        await resp.json();
+        gotManifest = true;
+        console.log('tonconnect-manifest.json найден и корректен');
+      } else {
+        console.warn('tonconnect-manifest.json HTTP status:', resp.status);
+      }
+    } catch (e) {
+      console.warn('Не удалось получить или распарсить tonconnect-manifest.json:', e);
+    }
 
-  // Example: wire existing bottom nav buttons to existing modals if present
-  document.getElementById('miningBtn')?.addEventListener('click', ()=> {
-    // если у вас есть miningShop модал, откройте его:
-    const ms = document.getElementById('miningShop');
-    if (ms){ ms.style.display = 'block'; ms.setAttribute('aria-hidden','false'); }
-  });
-  document.getElementById('casinoBtn')?.addEventListener('click', ()=> {
-    const casinoModal = document.getElementById('casinoModal');
-    if (casinoModal){ casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); }
-  });
-  document.getElementById('profileBtn')?.addEventListener('click', ()=> {
-    const profileWindowEl = document.getElementById('profileWindow');
-    if (profileWindowEl){ profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); }
-  });
+    // Создаём connector безопасно (учитывая разные экспорты)
+    let connector;
+    try {
+      // TonConnectExports может быть классом или объектом с полем TonConnect
+      const TonConnectClass = TonConnectExports.TonConnect ? TonConnectExports.TonConnect : TonConnectExports;
+      if (gotManifest) {
+        connector = new TonConnectClass({ manifestUrl });
+      } else {
+        connector = new TonConnectClass();
+      }
+    } catch (e) {
+      console.error('Ошибка при создании TonConnect connector:', e);
+      attachWalletUIWithoutSDK();
+      return;
+    }
 
-  // ============================
-  // TON CONNECT (Tonkeeper) Integration
-  // ============================
-  (function initTonConnect(){
-    // Elements
+    // UI элементы
     const walletBtn = document.getElementById('walletBtn');
     const walletModal = document.getElementById('walletModal');
     const closeWallet = document.getElementById('closeWallet');
@@ -277,113 +165,118 @@ header{
     const walletStatusEl = document.getElementById('walletStatus');
     const walletAddrEl = document.getElementById('walletAddr');
 
-    // Defensive: ensure TonConnect SDK loaded
-    if (typeof TonConnectSDK === 'undefined') {
-      console.warn('TonConnect SDK not loaded. Wallet connect disabled.');
-      // still show modal but with warning
-      connectBtn.onclick = ()=> alert('TonConnect SDK не загружен (CDN). Проверьте подключение SDK.');
-      return;
-    }
-
-    // Create connector
-    // manifestUrl: рекомендуется указать URL к вашему tonconnect-manifest.json (опционально)
-    const connector = new TonConnectSDK.TonConnect({
-      manifestUrl: window.location.origin + '/tonconnect-manifest.json'
-    });
-
-    // restore previous connection if any
-    try { connector.restoreConnection(); } catch(e){ console.warn('restoreConnection failed', e); }
-
-    // Helper to extract address from various possible payloads
-    function extractAddressFromInfo(info){
-      if (!info) return null;
-      // common shapes: info.account.address  OR info.account?.address
+    // helper to safely extract address
+    function extractAddress(info) {
       try {
+        if (!info) return null;
         if (info.account && info.account.address) return info.account.address;
-        if (info?.account?.address) return info.account.address;
-        // some SDK versions expose wallet property
         if (info.wallet && info.wallet.account && info.wallet.account.address) return info.wallet.account.address;
-      } catch(e){}
+        // sometimes connector exposes wallet/account directly
+        if (connector && connector.wallet && connector.wallet.account && connector.wallet.account.address) return connector.wallet.account.address;
+        if (connector && connector.account && connector.account.address) return connector.account.address;
+      } catch (e) {
+        console.warn('extractAddress error', e);
+      }
       return null;
     }
 
-    function updateWalletUI(info){
-      // try info first, then connector state
-      let addr = extractAddressFromInfo(info);
-      // fallback checks
-      try {
-        if(!addr && connector?.wallet && connector.wallet?.account && connector.wallet.account.address) addr = connector.wallet.account.address;
-        if(!addr && connector?.account && connector.account.address) addr = connector.account.address;
-      } catch(e){ /*ignore*/ }
-
-      if (addr){
+    // update UI
+    function updateWalletUI(info) {
+      const addr = extractAddress(info);
+      if (addr) {
         walletStatusEl.textContent = 'Connected';
         walletAddrEl.textContent = addr;
         connectBtn.style.display = 'none';
         disconnectBtn.style.display = 'inline-block';
-        // Optionally save connected address to localStorage for UI persistence
-        localStorage.setItem('connected_ton_address', addr);
       } else {
         walletStatusEl.textContent = 'Not connected';
         walletAddrEl.textContent = '—';
         connectBtn.style.display = 'inline-block';
         disconnectBtn.style.display = 'none';
-        localStorage.removeItem('connected_ton_address');
       }
     }
 
-    // TON Connect status listener
-    connector.onStatusChange((walletInfo) => {
-      console.log('TonConnect status change', walletInfo);
-      updateWalletUI(walletInfo);
-    });
+    // subscribe to status changes (if available)
+    try {
+      connector.onStatusChange?.((info) => {
+        console.log('TonConnect status change', info);
+        updateWalletUI(info);
+      });
+    } catch (e) {
+      console.warn('onStatusChange subscription failed', e);
+    }
 
-    // Connect button
+    // restore connection if previously connected
+    try { connector.restoreConnection?.(); } catch (e) { console.warn('restoreConnection failed', e); }
+
+    // connect button
     connectBtn.addEventListener('click', async () => {
       try {
-        // connect() opens selection dialog (Tonkeeper, Tonkeeper extension, other wallets)
         await connector.connect();
-        // after successful connect, onStatusChange will be triggered and update UI
-      } catch (e) {
-        console.error('Connector.connect error', e);
-        alert('Ошибка при подключении кошелька: ' + (e?.message || e));
+        // status change handler обновит UI
+      } catch (err) {
+        console.error('connector.connect error', err);
+        // дружелюбное сообщение
+        let friendly = 'Ошибка при подключении кошелька.';
+        if (err && err.message) friendly += '\n\n' + err.message;
+        friendly += '\n\nПроверьте: 1) доступен ли tonconnect-manifest.json (или инициализация без него), 2) установлен ли кошелёк/расширение, 3) консоль браузера.';
+        alert(friendly);
       }
     });
 
-    // Disconnect button
+    // disconnect button
     disconnectBtn.addEventListener('click', async () => {
       try {
         await connector.disconnect();
-      } catch(e){
-        console.warn('disconnect failed', e);
-      } finally {
-        updateWalletUI(null);
-      }
+      } catch (e) { console.warn('disconnect error', e); }
+      updateWalletUI(null);
     });
 
-    // open modal
+    // open/close modal
     walletBtn.addEventListener('click', ()=> {
       walletModal.style.display = 'flex';
-      walletModal.setAttribute('aria-hidden','false');
-      updateWalletUI(); // refresh
+      walletModal.setAttribute('aria-hidden', 'false');
+      // обновим отображение текущего состояния
+      try {
+        // если connector предоставляет текущий info - передадим в update
+        const current = connector.wallet || connector.account || null;
+        updateWalletUI(current);
+      } catch (e) { console.warn(e); }
     });
-    // close modal
     closeWallet.addEventListener('click', ()=> {
+      walletModal.style.display = 'none';
+      walletModal.setAttribute('aria-hidden', 'true');
+    });
+
+    // expose for debug
+    window._tonConnector = connector;
+    // начальное обновление UI (вдруг уже подключено)
+    try { updateWalletUI(connector.wallet || connector.account || null); } catch(e){}
+  })();
+
+  // Если SDK совсем отсутствует — падаем мягко: подключим кнопки, но без функционала.
+  function attachWalletUIWithoutSDK(){
+    const walletBtn = document.getElementById('walletBtn');
+    const walletModal = document.getElementById('walletModal');
+    const closeWallet = document.getElementById('closeWallet');
+    const connectBtn = document.getElementById('connectWalletBtn');
+    const disconnectBtn = document.getElementById('disconnectWalletBtn');
+    const walletStatusEl = document.getElementById('walletStatus');
+    const walletAddrEl = document.getElementById('walletAddr');
+
+    walletBtn?.addEventListener('click', ()=> {
+      walletModal.style.display = 'flex';
+      walletModal.setAttribute('aria-hidden','false');
+      walletStatusEl.textContent = 'SDK not loaded';
+      walletAddrEl.textContent = '—';
+      connectBtn.onclick = ()=> alert('TonConnect SDK не подключён. Добавьте <script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>');
+    });
+    closeWallet?.addEventListener('click', ()=> {
       walletModal.style.display = 'none';
       walletModal.setAttribute('aria-hidden','true');
     });
-
-    // expose for debugging
-    window._tonConnector = connector;
-    // initial UI update
-    updateWalletUI();
-  })();
-
-  // ============================
-  // (Остальная логика игры — ваш существующий скрипт)
-  // Предполагаю, что весь ваш оригинальный JS (exploded) уже присутствует в этом файле;
-  // если нет — вставьте туда исходный блок полностью (он есть в загруженном вами файле).
-  // ============================
+    disconnectBtn.style.display = 'none';
+  }
   </script>
 </body>
 </html>
