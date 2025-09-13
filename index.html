@@ -1,192 +1,337 @@
-<!-- === TON WALLET: button + modal + TonConnect SDK (paste before </body>) === -->
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Тест: TonKeeper — подключение кошелька</title>
+  <style>
+    :root{
+      --bg:#0f1113;
+      --card:#121316;
+      --accent:#00d8ff;
+      --text:#e6eef3;
+      --muted:#9aa7b0;
+    }
+    html,body{height:100%;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:var(--bg); color:var(--text);}
+    .app {
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      padding:24px;
+      box-sizing:border-box;
+    }
 
-<!-- TonConnect SDK + UI (CDN) -->
-<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    .content {
+      width:100%;
+      max-width:1100px;
+      margin:auto;
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--muted);
+      text-align:center;
+    }
+    .panel {
+      background:linear-gradient(180deg,#0c0d0f,#0f1113);
+      border:1px solid rgba(255,255,255,0.03);
+      padding:28px;
+      border-radius:14px;
+      box-shadow:0 10px 40px rgba(0,0,0,0.7);
+      width:100%;
+      max-width:920px;
+    }
+    .h1 { font-size:20px; margin:0 0 8px; color:var(--text); }
+    .p { color:var(--muted); margin:0 0 14px; font-size:14px; }
 
-<!-- Wallet modal -->
-<style>
-  /* простой стиль модального окна кошелька */
-  #walletModal { display:none; position:fixed; inset:0; z-index:12000; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); }
-  #walletModal .card { width:92%; max-width:520px; border-radius:12px; padding:18px; box-shadow:0 18px 60px rgba(0,0,0,0.7); background:linear-gradient(180deg,#121214,#1b1b1f); color:var(--text-light); border:1px solid rgba(255,255,255,0.04); }
-  #walletModal .card h3 { margin:0 0 8px; font-size:18px; color:#ecf8ff; }
-  #walletModal .row { display:flex; gap:8px; align-items:center; margin-top:12px; }
-  #walletModal button { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; }
-  #walletModal .btnPrimary { background:linear-gradient(90deg,var(--wm-accentC,#00D8FF),#00A8FF); color:#000; }
-  #walletModal .btnGhost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text-light); }
-  #walletModal .addr { font-family:monospace; padding:8px 10px; background:rgba(255,255,255,0.02); border-radius:8px; margin-top:10px; word-break:break-all; }
-  #walletModal .hint { margin-top:8px; color:var(--birch,#EDE4C8); font-size:13px; }
-</style>
+    /* Bottom menu */
+    .bottom-menu {
+      width:100%;
+      max-width:1100px;
+      display:flex;
+      gap:8px;
+      padding:12px;
+      box-sizing:border-box;
+      justify-content:space-between;
+      align-items:center;
+      margin:12px auto 0;
+    }
+    .bottom-menu .left { display:flex; gap:8px; align-items:center; }
+    .bottom-menu button {
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+      backdrop-filter: blur(4px);
+    }
+    .bottom-menu button:active{ transform:translateY(1px); }
+    .wallet-btn { font-size:18px; padding:10px 12px; }
 
-<div id="walletModal" role="dialog" aria-hidden="true">
-  <div class="card" role="document" aria-label="Wallet connect">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h3>Кошелек — TON</h3>
-      <button id="closeWalletModal" class="btnGhost">Закрыть</button>
+    /* Wallet modal (dark - not white) */
+    #walletModal {
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:12000;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(2,6,10,0.72), rgba(0,0,0,0.72));
+      padding:20px;
+    }
+    #walletModal .card {
+      width:100%;
+      max-width:560px;
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 20px 80px rgba(0,0,0,0.8);
+      background:linear-gradient(180deg,#0f1113,#151516);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,0.03);
+      box-sizing:border-box;
+    }
+    #walletModal .card h3 { margin:0 0 6px; font-size:18px; color:var(--text); }
+    #walletModal .card .desc { color:var(--muted); font-size:13px; margin:0 0 12px; }
+    #walletModal .row { display:flex; gap:8px; align-items:center; margin-top:12px; flex-wrap:wrap; }
+    #walletModal button { padding:10px 12px; border-radius:10px; border:none; cursor:pointer; font-weight:800; }
+    .btnPrimary { background:linear-gradient(90deg,var(--accent),#00a8ff); color:#001; }
+    .btnGhost { background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text); }
+    .addr { font-family:monospace; padding:10px; background:rgba(255,255,255,0.02); border-radius:8px; margin-top:10px; word-break:break-all; }
+    .hint { margin-top:8px; color:var(--muted); font-size:13px; }
+
+    #closeWalletModal { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); padding:6px 8px; border-radius:8px; }
+
+    /* small responsive */
+    @media (max-width:520px){
+      .panel{ padding:18px; border-radius:12px; }
+      .bottom-menu { padding:10px; gap:6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="content">
+      <div class="panel">
+        <div class="h1">Тест подключения TonKeeper (TonConnect)</div>
+        <div class="p">Нажмите кнопку <b>👛 Кошелёк</b> внизу, чтобы открыть модальное окно подключения. Если видите белый экран — это старый баг; в этом файле фон тёмный. Если SDK не загружен (отсутствует доступ в интернет), увидите сообщение об этом.</div>
+      </div>
     </div>
 
-    <div id="walletContent">
-      <p class="hint">Подключите Tonkeeper (через TonConnect). Можно выбрать Tonkeeper в модальном окне.</p>
-
-      <!-- Корень для TonConnect UI (если UI доступен, туда поместится кнопка) -->
-      <div id="walletConnectRoot" style="margin-top:12px;"></div>
-
-      <div style="display:flex;gap:8px;margin-top:12px;">
-        <button id="walletConnectBtn" class="btnPrimary">Подключиться (ручной)</button>
-        <button id="walletDisconnectBtn" class="btnGhost" style="display:none;">Отключить</button>
+    <!-- Bottom menu -->
+    <div class="bottom-menu">
+      <div class="left">
+        <button id="homeBtn">🏠 Главная</button>
+        <button id="shopBtn">🛒 Магазин</button>
       </div>
 
-      <div id="walletStatus" style="margin-top:10px;">
-        <div id="walletAddrBox" style="display:none;">
-          <div style="font-size:13px;color:var(--birch,#EDE4C8);">Адрес:</div>
-          <div id="walletAddress" class="addr">—</div>
+      <div class="right">
+        <!-- Кошелёк (вставляем, сюда будет обращаться скрипт) -->
+        <button id="walletBtn" class="wallet-btn">👛 Кошелёк</button>
+        <button id="settingsBtn">⚙️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet modal -->
+  <div id="walletModal" role="dialog" aria-hidden="true">
+    <div class="card" role="document" aria-label="Wallet connect">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3>Подключить TON-кошелек</h3>
+          <div class="desc">Поддерживаются TonKeeper и другие кошельки через TonConnect.</div>
+        </div>
+        <div>
+          <button id="closeWalletModal" class="btnGhost">Закрыть</button>
+        </div>
+      </div>
+
+      <div id="walletContent">
+        <p class="hint">Выберите кошелёк или нажмите «Подключиться». Если SDK не загружен, появится подсказка.</p>
+
+        <!-- Root для UI (если библиотека предоставляет) -->
+        <div id="walletConnectRoot" style="margin-top:8px;"></div>
+
+        <div class="row">
+          <button id="walletConnectBtn" class="btnPrimary">Подключиться</button>
+          <button id="walletDisconnectBtn" class="btnGhost" style="display:none;">Отключить</button>
+        </div>
+
+        <div id="walletStatus" style="margin-top:12px;">
+          <div id="walletAddrBox" style="display:none;">
+            <div style="font-size:13px;color:var(--muted);">Адрес:</div>
+            <div id="walletAddress" class="addr">—</div>
+          </div>
+          <div id="walletError" style="color:#ffb4b4;margin-top:10px;display:none;"></div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Добавим кнопку в нижнее меню (вставляется в существующий .bottom-menu) -->
-<script>
-  (function(){
-    // Добавляем кнопку (если ещё нет)
-    try {
-      const bottom = document.querySelector('.bottom-menu');
-      if (bottom && !document.getElementById('walletBtn')) {
-        const btn = document.createElement('button');
-        btn.id = 'walletBtn';
-        btn.className = 'btnGhost';
-        btn.title = 'Кошелек';
-        btn.textContent = '👛';
-        // Вставим перед последней кнопкой (чтобы не ломать порядок)
-        bottom.insertBefore(btn, bottom.lastElementChild);
+  <!-- TonConnect SDK + UI via CDN (если нет интернета, они не загрузятся - покажем предупреждение) -->
+  <script src="https://unpkg.com/@tonconnect/sdk@0.10.0/dist/tonconnect.min.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@0.6.1/dist/tonconnect-ui.min.js"></script>
+
+  <script>
+    (function(){
+      // DOM refs
+      const walletBtn = document.getElementById('walletBtn');
+      const walletModal = document.getElementById('walletModal');
+      const closeWalletModal = document.getElementById('closeWalletModal');
+      const walletConnectBtn = document.getElementById('walletConnectBtn');
+      const walletDisconnectBtn = document.getElementById('walletDisconnectBtn');
+      const walletAddressEl = document.getElementById('walletAddress');
+      const walletAddrBox = document.getElementById('walletAddrBox');
+      const walletError = document.getElementById('walletError');
+      const walletConnectRoot = document.getElementById('walletConnectRoot');
+
+      let connector = null;
+      let tonConnectUI = null;
+
+      function showModal(){
+        walletModal.style.display = 'flex';
+        walletModal.setAttribute('aria-hidden','false');
+        walletError.style.display = 'none';
+        initTon();
       }
-    } catch(e){ console.warn('walletBtn insert failed', e); }
+      function hideModal(){
+        walletModal.style.display = 'none';
+        walletModal.setAttribute('aria-hidden','true');
+      }
 
-    // DOM refs
-    const walletBtn = document.getElementById('walletBtn');
-    const walletModal = document.getElementById('walletModal');
-    const closeWalletModal = document.getElementById('closeWalletModal');
-    const walletConnectBtn = document.getElementById('walletConnectBtn');
-    const walletDisconnectBtn = document.getElementById('walletDisconnectBtn');
-    const walletAddressEl = document.getElementById('walletAddress');
-    const walletAddrBox = document.getElementById('walletAddrBox');
-    const walletConnectRoot = document.getElementById('walletConnectRoot');
+      walletBtn.addEventListener('click', showModal);
+      closeWalletModal.addEventListener('click', hideModal);
 
-    // TonConnect instances (if available)
-    let connector = null;
-    let tonConnectUI = null;
-
-    // safe init (if SDKs are loaded)
-    function initTon() {
-      try {
-        if (window.TonConnectSDK && !connector) {
-          // manifestUrl рекомендуется положить в корень сайта: tonconnect-manifest.json
-          connector = new TonConnectSDK.TonConnect({ manifestUrl: window.location.origin + '/tonconnect-manifest.json' });
-          // слушаем изменения статуса
-          connector.onStatusChange((payload) => {
-            // payload может содержать connected, account, permissions
-            try {
+      // Safe init TonConnect (non-blocking)
+      function initTon(){
+        try {
+          // If TonConnect SDK is available at window.TonConnect (depends on the loaded bundle)
+          const TonConnect = window.TonConnect || (window.TonConnectSDK && window.TonConnectSDK.TonConnect) || (window.tonconnect && window.tonconnect.TonConnect);
+          if (TonConnect && !connector) {
+            // manifestUrl improves UX — see manifest file instructions below
+            const manifestUrl = window.location.origin + '/tonconnect-manifest.json';
+            connector = new TonConnect({ manifestUrl });
+            // restore previous connection if posible
+            try { connector.restoreConnection(); } catch(e){}
+            // Listen for account changes
+            connector.onStatusChange((payload) => {
+              // payload may include account info
               if (payload?.account) {
-                showAddress(payload.account);
+                displayAddress(payload.account);
               } else if (connector?.account) {
-                showAddress(connector.account);
+                displayAddress(connector.account);
               } else {
                 hideAddress();
               }
-            } catch(e){ console.warn('statusChange err', e); }
-          });
-          // попытка восстановить предыдущее подключение
-          try { connector.restoreConnection(); } catch(e){}
+            });
+            // if already connected:
+            if (connector.connected && connector.account) {
+              displayAddress(connector.account);
+            }
+          } else {
+            // SDK not loaded
+            walletError.textContent = 'SDK TonConnect не загружен (нет доступа к CDN). Подключение через TonKeeper возможно только при наличии интернета и доступности CDN.';
+            walletError.style.display = 'block';
+          }
+        } catch(e){
+          console.warn('initTon error', e);
+          walletError.textContent = 'Ошибка инициализации TonConnect (см. консоль).';
+          walletError.style.display = 'block';
         }
-      } catch(e){ console.warn('initTon connector error', e); }
 
-      try {
-        if (window.TON_CONNECT_UI && !tonConnectUI) {
-          // Инициализируем UI (он сам поместит кнопку в #walletConnectRoot)
-          tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: window.location.origin + '/tonconnect-manifest.json',
-            buttonRootId: 'walletConnectRoot'
-          });
-          // Если UI предоставляет метод open/pop, можно вызвать его. Прикрепление обработчика ниже.
+        // Try to init TonConnect UI if available (optional)
+        try {
+          const TonConnectUI = window.TonConnectUI || window.TON_CONNECT_UI || (window.tonconnectui && window.tonconnectui.TonConnectUI);
+          if (TonConnectUI && !tonConnectUI) {
+            tonConnectUI = new TonConnectUI({
+              manifestUrl: window.location.origin + '/tonconnect-manifest.json',
+              buttonRootId: 'walletConnectRoot'
+            });
+            // TonConnectUI usually auto-renders buttons into the root
+          }
+        } catch(e){
+          // not critical
+          console.warn('initTon UI err', e);
         }
-      } catch(e){ console.warn('initTon UI error', e); }
-    }
+      }
 
-    function openModal() {
-      walletModal.style.display = 'flex';
-      walletModal.setAttribute('aria-hidden','false');
-      initTon();
-      // обновляем отображение
-      if (connector && connector.connected) {
-        if (connector.account) showAddress(connector.account);
-      } else {
+      function displayAddress(account){
+        walletAddrBox.style.display = 'block';
+        walletDisconnectBtn.style.display = 'inline-block';
+        walletAddressEl.textContent = account?.address || (typeof account === 'string' ? account : JSON.stringify(account));
+      }
+      function hideAddress(){
+        walletAddrBox.style.display = 'none';
+        walletDisconnectBtn.style.display = 'none';
+        walletAddressEl.textContent = '—';
+      }
+
+      async function connectWallet(){
+        walletError.style.display = 'none';
+        try {
+          // Prefer UI open when available
+          if (tonConnectUI && typeof tonConnectUI.open === 'function') {
+            tonConnectUI.open();
+            return;
+          }
+          // Fallback: use connector.connect
+          if (!connector){
+            walletError.textContent = 'TonConnect SDK не инициализирован.';
+            walletError.style.display = 'block';
+            return;
+          }
+          // Example: try to connect using universalLink hint for Tonkeeper
+          const walletSource = { universalLink: 'https://tonkeeper.com' };
+          const maybeLink = connector.connect(walletSource);
+          if (typeof maybeLink === 'string') {
+            // open in new tab/window to trigger mobile wallet / extension
+            window.open(maybeLink, '_blank');
+          } else if (maybeLink && typeof maybeLink.then === 'function') {
+            // If returns promise, await it (some SDK builds do)
+            await maybeLink;
+          }
+        } catch (e) {
+          console.error('connectWallet err', e);
+          walletError.textContent = 'Ошибка при попытке подключить кошелёк. Посмотрите консоль.';
+          walletError.style.display = 'block';
+        }
+      }
+
+      async function disconnectWallet(){
+        try {
+          if (connector && typeof connector.disconnect === 'function') await connector.disconnect();
+        } catch(e){ console.warn('disconnect err', e); }
         hideAddress();
       }
-    }
-    function closeModal() {
-      walletModal.style.display = 'none';
-      walletModal.setAttribute('aria-hidden','true');
-    }
 
-    function showAddress(addr) {
-      walletAddrBox.style.display = 'block';
-      walletDisconnectBtn.style.display = 'inline-block';
-      walletAddressEl.textContent = (addr?.address) ? addr.address : (typeof addr === 'string' ? addr : JSON.stringify(addr));
-    }
-    function hideAddress() {
-      walletAddrBox.style.display = 'none';
-      walletDisconnectBtn.style.display = 'none';
-      walletAddressEl.textContent = '—';
-    }
+      walletConnectBtn.addEventListener('click', connectWallet);
+      walletDisconnectBtn.addEventListener('click', disconnectWallet);
 
-    // Try to connect using TonConnect UI if available, else use SDK fallback to open universal link / qr
-    async function connectWallet() {
-      try {
-        // If TonConnect UI available, prefer it (it will show wallet selector & QR)
-        if (tonConnectUI && typeof tonConnectUI.open === 'function') {
-          try { tonConnectUI.open(); return; } catch(e){ /* fallthrough */ }
-        }
-        // Fallback: use TonConnect SDK directly
-        if (connector) {
-          // Try to connect: the connect() expects a wallet source object OR will show UI via built-in bridges.
-          // Minimal walletSource for Tonkeeper (universal link) - using Tonkeeper website as universalLink (wallet will handle it)
-          const walletSource = { universalLink: 'https://tonkeeper.com' };
-          const link = connector.connect(walletSource);
-          // connector.connect returns universal link (string) or promise — if string, open it, else handle promise
-          if (typeof link === 'string') {
-            // open as window (for browser extension/system will catch)
-            window.open(link, '_blank');
-          } else if (link && typeof link.then === 'function') {
-            const result = await link;
-            // result may contain info; wait for onStatusChange to update address
-          }
-        } else {
-          alert('TonConnect SDK не загружен. Проверьте подключение CDN скриптов.');
-        }
-      } catch (e) {
-        console.warn('connectWallet err', e);
-        alert('Ошибка при подключении кошелька (см. console).');
-      }
-    }
+      // Init on open
+      // Also attempt a delayed init in case CDN loads after page load
+      setTimeout(() => { if (walletModal.style.display==='flex') initTon(); }, 700);
+      // Try init once on page load for faster UX
+      setTimeout(initTon, 500);
+    })();
+  </script>
 
-    async function disconnectWallet() {
-      try {
-        if (connector && typeof connector.disconnect === 'function') {
-          await connector.disconnect();
-        }
-      } catch(e){ console.warn('disconnect err', e); }
-      hideAddress();
-    }
-
-    // handlers
-    walletBtn && walletBtn.addEventListener('click', openModal);
-    closeWalletModal && closeWalletModal.addEventListener('click', closeModal);
-    walletConnectBtn && walletConnectBtn.addEventListener('click', connectWallet);
-    walletDisconnectBtn && walletDisconnectBtn.addEventListener('click', disconnectWallet);
-
-    // init on load (non-blocking)
-    setTimeout(initTon, 500);
-  })();
-</script>
-<!-- === /TON WALLET === -->
+  <!--
+    === tonconnect-manifest.json (пример) ===
+    Сохраните этот JSON как файл "tonconnect-manifest.json" в корне сайта (рядом с index.html), если запускаете из веб-сервера.
+    Это улучшит интеграцию с TonConnect / TonKeeper (необязательно при локальной загрузке файла через file://, но желательно на реальном сервере).
+  -->
+  <!--
+  {
+    "name": "My Cool TON App",
+    "description": "Demo app for TonConnect integration",
+    "icons": ["https://example.com/icon-192.png"],
+    "start_url": "/",
+    "display": "standalone",
+    "theme_color": "#0f1113"
+  }
+  -->
+</body>
+</html>
