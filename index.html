@@ -984,31 +984,16 @@ header{
 
     if (startWithdrawBtn) startWithdrawBtn.addEventListener('click', ()=>{
       const a = loadBoundAddr();
-      const actionSection = document.querySelector('[aria-label="withdraw-action-section"]');
-      const paymentContainer = document.getElementById('paymentContainer');
       if(!a){ if(withdrawStatus) withdrawStatus.textContent = 'Укажите адрес.'; return; }
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(currentTon < 7){ if(withdrawStatus) withdrawStatus.textContent = 'Недостаточно TON.'; return; }
-      // заменяем правый контейнер на экран оплаты комиссии
-      if(actionSection) actionSection.style.display = 'none';
-      if(paymentContainer) paymentContainer.style.display = 'block';
+      if(withdrawInstruction) withdrawInstruction.style.display = 'block';
     });
 
     if (iPaidBtn) iPaidBtn.addEventListener('click', ()=>{
-      // НЕ списываем TON — только краткий статус
-      const actionSection = document.querySelector('[aria-label="withdraw-action-section"]');
-      const paymentContainer = document.getElementById('paymentContainer');
-      if(paymentContainer) paymentContainer.style.display = 'none';
-      if(actionSection) actionSection.style.display = 'block';
+      // НЕ списываем TON — только уведомление
+      if(withdrawInstruction) withdrawInstruction.style.display = 'none';
       if(withdrawStatus){ withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Платёж не обнаружен.'; }
-    });
-
-    if (withdrawCancelBtn) withdrawCancelBtn.addEventListener('click', ()=>{
-      const actionSection = document.querySelector('[aria-label="withdraw-action-section"]');
-      const paymentContainer = document.getElementById('paymentContainer');
-      if(paymentContainer) paymentContainer.style.display = 'none';
-      if(actionSection) actionSection.style.display = 'block';
-      if(withdrawStatus) withdrawStatus.textContent = 'Вывод отменён.';
     });
 
     if (withdrawCancelBtn) withdrawCancelBtn.addEventListener('click', ()=>{ if(withdrawInstruction) withdrawInstruction.style.display = 'none'; if(withdrawStatus) withdrawStatus.textContent = 'Вывод отменён.'; });
