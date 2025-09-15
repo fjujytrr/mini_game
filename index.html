@@ -489,67 +489,48 @@ header{
     <div class="withdraw-card" role="document">
       <div class="withdraw-header">
         <div style="font-size:20px;font-weight:900">💸 Вывод средств</div>
-        <div style="font-size:13px;color:var(--birch);">Платежи проходят через TON-кошелёк</div>
+        <div style="font-size:13px;color:var(--birch);">Платежи через TON</div>
       </div>
 
       <div class="withdraw-body">
         <div class="withdraw-col">
-          <div class="small-note">Укажите ваш TON-адрес для выплат. После привязки адрес сохраняется и по умолчанию используется при выводе. Изменить адрес можно отдельной кнопкой "Сменить".</div>
-          <div style="height:8px"></div>
-
+          <div class="small-note">Укажите TON-адрес для выплат. После сохранения адрес привязывается.</div>
           <input id="withdrawAddressInput" class="addr-input" placeholder="UQ..." aria-label="TON address input" />
-          <div style="height:8px"></div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button id="saveWithdrawAddr" class="btnPrimary">Сохранить адрес</button>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="saveWithdrawAddr" class="btnPrimary">Сохранить</button>
             <button id="changeWithdrawAddr" class="btnGhost">Сменить</button>
             <button id="copyAddrBtn" class="copy-btn" style="margin-left:auto;">Копировать</button>
           </div>
-
-          <div style="height:12px"></div>
+          <div style="height:10px;"></div>
           <div id="boundAddrInfo" class="small-note"></div>
         </div>
 
         <div class="withdraw-col">
-          <div class="small-note">Проверка баланса и инструкции.</div>
+          <div class="small-note">Минимум для вывода: <strong>7 TON</strong></div>
           <div style="height:8px"></div>
-
-          <div id="withdrawStatus" class="withdraw-warning">Минимальный порог вывода — <strong>7 TON</strong>.</div>
-          <div style="height:10px"></div>
-
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button id="checkBalanceBtn" class="btnPrimary">Проверить баланс</button>
-            <button id="startWithdrawBtn" class="btnGhost">Начать вывод</button>
+          <div id="withdrawStatus" class="withdraw-warning">Проверьте баланс</div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="checkBalanceBtn" class="btnPrimary">Проверить</button>
+            <button id="startWithdrawBtn" class="btnGhost">Вывести</button>
           </div>
 
-          <div style="height:12px"></div>
-          <div class="small-note">При успешной проверке вы получите инструкцию: отправить комиссию <strong>4 TON</strong> на адрес ниже.</div>
-
-          <div style="height:12px"></div>
-          <div id="withdrawInstruction" style="display:none;">
-            <div style="font-weight:900;margin-bottom:6px">Адрес для оплаты комиссии:</div>
+          <div id="withdrawInstruction" style="display:none;margin-top:12px;">
+            <div style="font-weight:900;margin-bottom:6px">Оплатите комиссию 4 TON:</div>
             <div style="display:flex;gap:8px;align-items:center;">
               <div id="commissionAddr" style="font-weight:800;">UQDjvimtMSWjeqMx5zIE17Z8uUTL-bfRGLGOi7Trr92YLZxz</div>
               <button id="copyCommissionBtn" class="copy-btn">Копировать</button>
             </div>
-            <div style="height:10px"></div>
-            <div class="small-note">Отправьте 4 TON на указанный адрес, затем нажмите «Я оплатил». В этой версии платёж проверяется вручную.</div>
             <div style="height:10px"></div>
             <div style="display:flex;gap:8px;justify-content:flex-end;">
               <button id="iPaidBtn" class="btnPrimary">Я оплатил</button>
               <button id="withdrawCancelBtn" class="btnGhost">Отмена</button>
             </div>
           </div>
-
-          <div id="withdrawLog" style="margin-top:10px;font-size:13px;color:var(--birch);" style="margin-top:10px;font-size:13px;color:var(--birch);" style="margin-top:10px;font-size:13px;color:var(--birch);"></div>
-
         </div>
       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-        <div style="font-size:12px;color:var(--birch);">Доверие: все выплаты оформляются вручную администратором. Эта страница — интерфейс для создания запроса вывода.</div>
-        <div style="display:flex;gap:8px;">
-          <button id="closeWithdraw" class="btnGhost">Закрыть</button>
-        </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+        <button id="closeWithdraw" class="btnGhost">Закрыть</button>
       </div>
     </div>
   </div>
@@ -897,39 +878,32 @@ header{
     const copyCommissionBtn = document.getElementById('copyCommissionBtn');
     const iPaidBtn = document.getElementById('iPaidBtn');
     const withdrawCancelBtn = document.getElementById('withdrawCancelBtn');
-    const withdrawLogEl = document.getElementById('withdrawLog');
     const withdrawStatus = document.getElementById('withdrawStatus');
     const closeWithdraw = document.getElementById('closeWithdraw');
 
     const COMMISSION_ADDR = 'UQDjvimtMSWjeqMx5zIE17Z8uUTL-bfRGLGOi7Trr92YLZxz';
-    commissionAddrEl.textContent = COMMISSION_ADDR;
+    if (commissionAddrEl) commissionAddrEl.textContent = COMMISSION_ADDR;
 
-    function loadBoundAddr(){
-      return localStorage.getItem(LS_WITHDRAW_ADDR) || '';
-    }
-    function saveBoundAddr(addr){
-      try{ localStorage.setItem(LS_WITHDRAW_ADDR, addr); }catch(e){}
-    }
-    function maskAddr(a){
-      if(!a) return '';
-      if(a.length <= 10) return a;
-      return a.slice(0,6) + '...' + a.slice(-6);
-    }
+    const LS_WITHDRAW_ADDR = 'player_withdraw_ton_addr_v1';
+
+    function loadBoundAddr(){ return localStorage.getItem(LS_WITHDRAW_ADDR) || ''; }
+    function saveBoundAddr(addr){ try{ localStorage.setItem(LS_WITHDRAW_ADDR, addr); }catch(e){} }
+    function maskAddr(a){ if(!a) return ''; if(a.length <= 10) return a; return a.slice(0,6) + '...' + a.slice(-6); }
+
     function renderBoundInfo(){
       const a = loadBoundAddr();
       if(a){
         boundInfo.textContent = 'Привязанный адрес: ' + maskAddr(a);
-        withdrawInput.value = '';
-        withdrawInput.style.display = 'none';
-        saveAddrBtn.style.display = 'none';
-        changeAddrBtn.style.display = 'inline-block';
-        copyAddrBtn.style.display = 'inline-block';
+        if(withdrawInput) withdrawInput.style.display = 'none';
+        if(saveAddrBtn) saveAddrBtn.style.display = 'none';
+        if(changeAddrBtn) changeAddrBtn.style.display = 'inline-block';
+        if(copyAddrBtn) copyAddrBtn.style.display = 'inline-block';
       } else {
         boundInfo.textContent = 'Адрес не привязан.';
-        withdrawInput.style.display = 'block';
-        saveAddrBtn.style.display = 'inline-block';
-        changeAddrBtn.style.display = 'none';
-        copyAddrBtn.style.display = 'none';
+        if(withdrawInput) withdrawInput.style.display = 'block';
+        if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
+        if(changeAddrBtn) changeAddrBtn.style.display = 'none';
+        if(copyAddrBtn) copyAddrBtn.style.display = 'none';
       }
     }
 
@@ -937,9 +911,8 @@ header{
       withdrawModal.style.display = 'flex';
       withdrawModal.setAttribute('aria-hidden','false');
       renderBoundInfo();
-      withdrawInstruction.style.display = 'none';
-      withdrawLogEl.textContent = '';
       updateWithdrawStatus();
+      if(withdrawInstruction) withdrawInstruction.style.display = 'none';
     }
 
     function closeWithdrawModal(){
@@ -947,100 +920,62 @@ header{
       withdrawModal.setAttribute('aria-hidden','true');
     }
 
-    withdrawBtn.addEventListener('click', ()=>{
-      openWithdraw();
-    });
+    if (withdrawBtn) withdrawBtn.addEventListener('click', openWithdraw);
+    if (closeWithdraw) closeWithdraw.addEventListener('click', closeWithdrawModal);
 
-    closeWithdraw.addEventListener('click', ()=>{ closeWithdrawModal(); });
-
-    saveAddrBtn.addEventListener('click', ()=>{
+    if (saveAddrBtn) saveAddrBtn.addEventListener('click', ()=>{
       const v = (withdrawInput.value || '').trim();
-      if(!v){ alert('Введите корректный TON-адрес'); return; }
+      if(!v){ alert('Введите адрес'); return; }
       saveBoundAddr(v);
       renderBoundInfo();
-      save();
-      withdrawLogEl.textContent = 'Адрес сохранён и привязан к вашему аккаунту.';
+      if(withdrawStatus) withdrawStatus.textContent = 'Адрес сохранён.';
     });
 
-    changeAddrBtn.addEventListener('click', ()=>{
-      // allow user to change address — show input
-      withdrawInput.style.display = 'block';
-      withdrawInput.value = '';
-      saveAddrBtn.style.display = 'inline-block';
-      changeAddrBtn.style.display = 'none';
-      copyAddrBtn.style.display = 'none';
-      boundInfo.textContent = 'Введите новый адрес и нажмите Сохранить.';
+    if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
+      if(withdrawInput) withdrawInput.style.display = 'block';
+      if(withdrawInput) withdrawInput.value = '';
+      if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
+      if(changeAddrBtn) changeAddrBtn.style.display = 'none';
+      if(copyAddrBtn) copyAddrBtn.style.display = 'none';
+      if(boundInfo) boundInfo.textContent = 'Введите новый адрес.';
     });
 
-    copyAddrBtn.addEventListener('click', ()=>{
+    if (copyAddrBtn) copyAddrBtn.addEventListener('click', ()=>{
       const a = loadBoundAddr();
       if(!a) return;
-      navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{
-        withdrawLogEl.textContent = 'Адрес скопирован в буфер обмена.';
-      }).catch(()=>{ withdrawLogEl.textContent = 'Копирование не поддерживается.'; });
+      navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
     });
 
-    copyCommissionBtn.addEventListener('click', ()=>{
-      navigator.clipboard && navigator.clipboard.writeText(COMMISSION_ADDR).then(()=>{
-        withdrawLogEl.textContent = 'Адрес комиссии скопирован.';
-      }).catch(()=>{ withdrawLogEl.textContent = 'Копирование не поддерживается.'; });
+    if (copyCommissionBtn) copyCommissionBtn.addEventListener('click', ()=>{
+      navigator.clipboard && navigator.clipboard.writeText(COMMISSION_ADDR).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес комиссии скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
     });
 
     function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
-      if(currentTon >= 7){
-        withdrawStatus.className = 'withdraw-success';
-        withdrawStatus.textContent = '✅ Доступно для вывода: у вас ' + formatTon(currentTon) + ' TON';
-      } else {
-        withdrawStatus.className = 'withdraw-warning';
-        withdrawStatus.textContent = 'Минимальный порог вывода — 7 TON. У вас: ' + formatTon(currentTon) + ' TON';
-      }
+      if(!withdrawStatus) return;
+      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = 'Доступно: ' + formatTon(currentTon) + ' TON'; }
+      else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Недостаточно TON: ' + formatTon(currentTon); }
     }
 
-    checkBalanceBtn.addEventListener('click', ()=>{
-      updateWithdrawStatus();
-    });
+    if (checkBalanceBtn) checkBalanceBtn.addEventListener('click', updateWithdrawStatus);
 
-    startWithdrawBtn.addEventListener('click', ()=>{
+    if (startWithdrawBtn) startWithdrawBtn.addEventListener('click', ()=>{
       const a = loadBoundAddr();
-      if(!a){ withdrawLogEl.textContent = 'Сначала укажите и сохраните TON-адрес.'; return; }
+      if(!a){ if(withdrawStatus) withdrawStatus.textContent = 'Укажите адрес.'; return; }
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
-      if(currentTon < 7){ withdrawLogEl.textContent = 'На балансе недостаточно TON для вывода.'; return; }
-      withdrawInstruction.style.display = 'block';
-      withdrawLogEl.textContent = 'Следуйте инструкции: оплатите комиссию 4 TON на указанный адрес.';
+      if(currentTon < 7){ if(withdrawStatus) withdrawStatus.textContent = 'Недостаточно TON.'; return; }
+      if(withdrawInstruction) withdrawInstruction.style.display = 'block';
     });
 
-    iPaidBtn.addEventListener('click', ()=>{
-      const a = loadBoundAddr();
-      if(!a){ withdrawLogEl.textContent = 'Адрес не привязан.'; return; }
-      // В этой сборке — автоматической проверки платежа нет.
-      withdrawLogEl.textContent = 'Платёж не обнаружен. Пожалуйста, проверьте перевод — проверка проводится вручную.';
-      withdrawInstruction.style.display = 'none';
-      renderWithdrawLog();
+    if (iPaidBtn) iPaidBtn.addEventListener('click', ()=>{
+      // НЕ списываем TON — только уведомление
+      if(withdrawInstruction) withdrawInstruction.style.display = 'none';
+      if(withdrawStatus){ withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Платёж не обнаружен.'; }
     });
 
-    withdrawCancelBtn.addEventListener('click', ()=>{
-      withdrawInstruction.style.display = 'none';
-      withdrawLogEl.textContent = 'Вывод отменён.';
-    });
+    if (withdrawCancelBtn) withdrawCancelBtn.addEventListener('click', ()=>{ if(withdrawInstruction) withdrawInstruction.style.display = 'none'; if(withdrawStatus) withdrawStatus.textContent = 'Вывод отменён.'; });
 
-    function renderWithdrawLog(){
-      let log = [];
-      try{ log = JSON.parse(localStorage.getItem(LS_WITHDRAW_LOG) || '[]') || []; }catch(e){ log = []; }
-      if(!log.length){ withdrawLogEl.textContent = 'История вывода пуста.'; return; }
-      withdrawLogEl.innerHTML = '';
-      log.slice(-5).reverse().forEach(r=>{
-        const el = document.createElement('div');
-        el.style.marginBottom = '6px';
-        el.textContent = `${new Date(r.id).toLocaleString()} — ${r.status.toUpperCase()} — адрес ${maskAddr(r.addr)} — комиссия ${r.commission} TON`;
-        withdrawLogEl.appendChild(el);
-      });
-    }
-
-    // initial render
     renderBoundInfo();
-    renderWithdrawLog();
-
   })();
 
   // ========== Balances & coins helpers (ensure withdraw UI updates) ==========
