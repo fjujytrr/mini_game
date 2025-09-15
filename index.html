@@ -264,6 +264,34 @@ header{
   .coin-panel{min-width:100px;max-width:220px;padding:6px 6px}
   .coin-panel .val{font-size:12px}
 }
+
+/* ===========================
+   New rules to prevent withdraw instruction expanding modal
+   =========================== */
+
+/* Constrain withdraw-card so modal won't grow beyond viewport */
+.withdraw-card {
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+/* Constrain the instruction section so it becomes scrollable instead of expanding card */
+#withdrawInstruction {
+  display: none; /* kept default hidden */
+  max-height: 200px; /* limit height */
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding-right: 6px;
+}
+
+/* Prevent commission address from stretching layout */
+#commissionAddr {
+  display: block;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
   </style>
 </head>
 <body>
@@ -954,7 +982,7 @@ header{
       if(withdrawStatus) withdrawStatus.textContent = 'Адрес сохранён.';
     });
 
-    if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
+if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
       if(withdrawInput) withdrawInput.style.display = 'block';
       if(withdrawInput) withdrawInput.value = '';
       if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
@@ -987,7 +1015,12 @@ header{
       if(!a){ if(withdrawStatus) withdrawStatus.textContent = 'Укажите адрес.'; return; }
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(currentTon < 7){ if(withdrawStatus) withdrawStatus.textContent = 'Недостаточно TON.'; return; }
-      if(withdrawInstruction) withdrawInstruction.style.display = 'block';
+      if(withdrawInstruction){
+        withdrawInstruction.style.display = 'block';
+        // apply constraints explicitly (CSS also enforces this)
+        withdrawInstruction.style.maxHeight = '200px';
+        withdrawInstruction.style.overflowY = 'auto';
+      }
     });
 
     if (iPaidBtn) iPaidBtn.addEventListener('click', ()=>{
