@@ -532,7 +532,7 @@ header{
               <button id="copyCommissionBtn" class="copy-btn">Копировать</button>
             </div>
             <div style="height:10px"></div>
-            <div class="small-note">После отправки комиссии нажмите «Я оплатил» и подтвердите перевод. В этой сборке подтверждение — ручное: при подтверждении с баланса у вас списывается 4 TON (симуляция).</div>
+            <div class="small-note">После перевода комиссии нажмите «Я оплатил». В этой версии комиссия <strong>не списывается автоматически</strong> — создаётся заявка со статусом «В ожидании». Администратор проверит платёж и оформит выплату или отклонит заявку.</div>
             <div style="height:10px"></div>
             <div style="display:flex;gap:8px;justify-content:flex-end;">
               <button id="iPaidBtn" class="btnPrimary">Я оплатил</button>
@@ -540,7 +540,7 @@ header{
             </div>
           </div>
 
-          <div id="withdrawLog" style="margin-top:10px;font-size:13px;color:var(--birch);"></div>
+          <div id="withdrawLog" style="margin-top:10px;font-size:13px;color:var(--birch);" style="margin-top:10px;font-size:13px;color:var(--birch);"></div>
 
         </div>
       </div>
@@ -1011,29 +1011,20 @@ header{
     });
 
     iPaidBtn.addEventListener('click', ()=>{
-      // In this standalone UI we can't verify blockchain payments.
-      // We provide a manual confirmation that deducts 4 TON (simulation) and records the request.
       const a = loadBoundAddr();
       if(!a){ withdrawLogEl.textContent = 'Адрес не привязан.'; return; }
-      let currentTon = +localStorage.getItem(LS_TON) || ton || 0;
-      if(currentTon < 4){ withdrawLogEl.textContent = 'Недостаточно TON для оплаты комиссии 4 TON.'; return; }
 
-      // Deduct 4 TON as commission (simulation) and save
-      currentTon = Math.max(0, currentTon - 4);
-      ton = currentTon;
-      localStorage.setItem(LS_TON, String(currentTon));
-      updateBalancesDisplay();
-
-      // create withdraw request record
+      // Создаём заявку на вывод со статусом "pending" — комиссия не списывается автоматически в этой версии.
       const logRaw = localStorage.getItem(LS_WITHDRAW_LOG) || '[]';
       let log = [];
       try{ log = JSON.parse(logRaw) || []; }catch(e){ log = []; }
-      const req = { id: Date.now(), addr: a, tonAmount: currentTon, commission: 4, status: 'completed', note: 'Платёж подтверждён вручную' };
+      const req = { id: Date.now(), addr: a, tonAmount: +localStorage.getItem(LS_TON) || ton || 0, commission: 4, status: 'pending', note: 'Ожидание подтверждения — комиссия не зачислена' };
       log.push(req);
       try{ localStorage.setItem(LS_WITHDRAW_LOG, JSON.stringify(log)); }catch(e){}
 
-      withdrawLogEl.textContent = 'Вывод оформлен — комиссия списана (4 TON). Запись создана.';
+      withdrawLogEl.textContent = 'Заявка создана и ожидает подтверждения администратора. Комиссия не списывается автоматически.';
       withdrawInstruction.style.display = 'none';
+      renderWithdrawLog();
       updateWithdrawStatus();
     });
 
