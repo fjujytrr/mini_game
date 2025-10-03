@@ -144,7 +144,7 @@ header{
 .miners-panel .miner-card{display:none}
 
 /* Mining shop modal */
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2b2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
+#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
@@ -163,7 +163,7 @@ header{
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);color:#000;border:none;border-radius:8px}
 
 /* Info & Profile windows (glass-like fullscreen) */
-#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2b2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
+#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
 #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;box-shadow:0 18px 50px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.02)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
@@ -429,6 +429,18 @@ header{
         <button id="claimQuest" class="btnPrimary" style="width:100%;">Claim Quest</button>
         <p id="questStatus" style="margin-top:8px;color:var(--birch);font-weight:600;text-align:center;"></p>
       </div>
+
+      <!-- NEW: Telegram subscribe quest -->
+      <div style="margin-bottom:16px;padding:16px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:12px;">
+        <h3 id="tgQuestTitle" style="margin-bottom:8px;font-size:18px;color:#ecf8ff">Подписка в Telegram</h3>
+        <p id="tgQuestText" style="margin-bottom:12px;color:#fff">Подпишитесь на канал, чтобы получить бонус.</p>
+        <div style="display:flex;gap:8px;">
+          <a id="openTgChannel" class="btnGhost" href="https://t.me/x_trade_news" target="_blank" rel="noopener">Открыть канал</a>
+          <button id="claimTgSubscribe" class="btnPrimary" style="flex:1;">Claim</button>
+        </div>
+        <p id="tgQuestStatus" style="margin-top:8px;color:var(--birch);font-weight:600;text-align:center;"></p>
+      </div>
+
         <div class="settings-card">
         <div class="settings-row">
           <div>
@@ -698,6 +710,10 @@ header{
     const infoListEl = document.getElementById('infoList');
     infoListEl.innerHTML = '';
     t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
+
+    // set claim text for TG quest button if exists
+    const claimTgBtn = document.getElementById('claimTgSubscribe');
+    if (claimTgBtn) claimTgBtn.textContent = t('claimQuest');
   }
 
   // ========== Energy ==========
@@ -1001,7 +1017,7 @@ if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
       navigator.clipboard && navigator.clipboard.writeText(COMMISSION_ADDR).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес комиссии скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
     });
 
-    function updateWithdrawStatus(){
+function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(!withdrawStatus) return;
       if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = 'Доступно: ' + formatTon(currentTon) + ' TON'; }
@@ -1269,6 +1285,24 @@ if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
 
   document.getElementById('claimQuest') && (document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } });
   document.getElementById('claimDaily') && (document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } });
+
+  // NEW: Telegram subscribe quest logic
+  let tgSubscribeClaimed = localStorage.getItem('tgSubscribeClaimed') === 'true';
+  const tgStatusEl = document.getElementById('tgQuestStatus');
+  function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? "✅ Completed" : "❌ Not claimed"; }
+  const claimTgBtn = document.getElementById('claimTgSubscribe');
+  const openTgBtn = document.getElementById('openTgChannel');
+  if (claimTgBtn) claimTgBtn.addEventListener('click', ()=>{
+    if (tgSubscribeClaimed) { alert(t('questAlready')); return; }
+    // user clicks claim after subscribing — mark claimed and reward (client-side; no verification)
+    tgSubscribeClaimed = true;
+    localStorage.setItem('tgSubscribeClaimed','true');
+    // reward: 25,000 ZEX (also converts to TON via updCoins)
+    try { updCoins(25000); } catch(e){ console.warn('updCoins missing', e); }
+    updateTgQuestStatus();
+  });
+  if (openTgBtn) openTgBtn.addEventListener('click', ()=>{ /* link opens via anchor */ });
+  updateTgQuestStatus();
 
   // info window
   const infoWindowEl = document.getElementById('infoWindow');
