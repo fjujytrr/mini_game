@@ -479,7 +479,7 @@ header{
   </div>
 
   <!-- Rewards modal -->
-  <div id="wsModalOverlay" aria-hidden="false" role="dialog" aria-label="Daily rewards modal">
+  <div id="wsModalOverlay" aria-hidden="true" class="hidden" role="dialog" aria-label="Daily rewards modal">
     <div class="bgLayer" aria-hidden="true">
       <div class="bgImage" aria-hidden="true"></div>
     </div>
@@ -1604,7 +1604,6 @@ function updateWithdrawStatus(){
       alert('Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
     });
 
-    hideMainUI();
     renderCards();
     syncCoinsDisplay();
 
