@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Hide & Seek — Premium Emoji (Updated)</title>
   <style>
+/* Profile layout improvements (added) */
+.profile-grid{display:grid;grid-template-columns:1fr;gap:12px;width:95%;max-width:980px;margin:10px auto}
+.profile-section{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 36px rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:10px}
+.profile-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.profile-meta{font-weight:800;color:var(--wm-accentC)}
+.profile-body{display:flex;flex-direction:column;gap:8px}
+.profile-actions{display:flex;gap:8px}
+.profile-note{font-size:13px;color:var(--birch);font-weight:700}
+
 :root{
   --wm-accentA:#1b1b1f;
   --wm-accentB:#2b2b2f;
@@ -311,11 +320,11 @@ header{
     <!-- Coin panel (уменьшён) -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="coin-logo" title="ZEX">
-          <img src="logo.png" alt="ZEX logo" />
+        <div class="coin-logo" title="XTR">
+          <img src="logo.png" alt="XTR logo" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
-          <div style="font-size:11px;color:var(--birch);font-weight:800">ZEX</div>
+          <div style="font-size:11px;color:var(--birch);font-weight:800">XTR</div>
           <div class="val" id="coinsVal">0</div>
         </div>
       </div>
@@ -462,7 +471,7 @@ header{
 
   <div class="bottom-menu">
     <button id="infoBtn" class="btnGhost">ℹ</button>
-    <button id="shopBtn" class="btnGhost">🛒</button>
+    <!-- shop button removed per request -->
     <button id="miningBtn" class="btnGhost">⛏</button>
     <button id="profileBtn" class="btnGhost">👤</button>
     <button id="withdrawBtn" class="btnGhost" title="Вывод">💸</button>
@@ -485,7 +494,7 @@ header{
           </div>
         </div>
         <div style="text-align:right">
-          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 ZEX • 0.00 TON</div>
+          <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 XTR • 0.00 TON</div>
           <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
         </div>
       </div>
@@ -516,7 +525,7 @@ header{
           <div style="font-size:20px;font-weight:900">🎰 Casino</div>
           <div style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
         </div>
-        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 ZEX • 0.00 TON</div>
+        <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 XTR • 0.00 TON</div>
       </div>
 
       <div class="casino-body">
@@ -614,9 +623,9 @@ header{
   const LS_WITHDRAW_ADDR = 'player_withdraw_ton_addr_v1';
   const LS_WITHDRAW_LOG = 'player_withdraw_log_v1';
 
-  // Conversion: 1 ZEX -> 0.000001 TON  (so 1000 ZEX = 0.001 TON)
+  // Conversion: 1 XTR -> 0.000001 TON  (so 1000 XTR = 0.001 TON)
   const ZEX_TO_TON = 0.000001;
-  const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 ZEX
+  const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 XTR
 
   // ========== Localization ==========
   const i18n = {
@@ -846,7 +855,7 @@ header{
   }
   let selectedRoom = null;
 
-  // coins (ZEX) and ton are separate now
+  // coins (XTR) and ton are separate now
   let coins = +localStorage.getItem(LS_COINS) || 0;
   let maxCoins = +localStorage.getItem(LS_MAXCOINS) || coins;
   let ton = +localStorage.getItem(LS_TON) || 0; // TON stored independently
@@ -1060,11 +1069,11 @@ function updateWithdrawStatus(){
     const wsZex = document.getElementById('wsModalCoinsDisplay');
     if (wsZex) {
       const wsTon = formatTon(ton);
-      wsZex.textContent = format(coins) + ' ZEX • ' + wsTon + ' TON';
+      wsZex.textContent = format(coins) + ' XTR • ' + wsTon + ' TON';
     }
     const casinoBalance = document.getElementById('casinoBalance');
     if (casinoBalance) {
-      casinoBalance.textContent = format(coins) + ' ZEX • ' + formatTon(ton) + ' TON';
+      casinoBalance.textContent = format(coins) + ' XTR • ' + formatTon(ton) + ' TON';
     }
   }
 
@@ -1073,7 +1082,7 @@ function updateWithdrawStatus(){
   function updCoins(v = 0) {
     if (typeof v !== 'number') v = Number(v) || 0;
     if (v > 0) {
-      // earn coins -> also convert earned ZEX to TON (so TON only rises on gains)
+      // earn coins -> also convert earned XTR to TON (so TON only rises on gains)
       const tonGain = v * ZEX_TO_TON;
       ton += tonGain;
     }
@@ -1297,7 +1306,7 @@ function updateWithdrawStatus(){
     // user clicks claim after subscribing — mark claimed and reward (client-side; no verification)
     tgSubscribeClaimed = true;
     localStorage.setItem('tgSubscribeClaimed','true');
-    // reward: 25,000 ZEX (also converts to TON via updCoins)
+    // reward: 25,000 XTR (also converts to TON via updCoins)
     try { updCoins(25000); } catch(e){ console.warn('updCoins missing', e); }
     updateTgQuestStatus();
   });
@@ -1440,7 +1449,7 @@ function updateWithdrawStatus(){
           localStorage.setItem(LS_COINS, String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
-          // also increase TON when gaining ZEX
+          // also increase TON when gaining XTR
           let storedTon = +localStorage.getItem(LS_TON) || 0;
           storedTon += amount * ZEX_TO_TON;
           localStorage.setItem(LS_TON, String(storedTon));
@@ -1579,7 +1588,7 @@ function updateWithdrawStatus(){
     function syncCoinsDisplay(){
       const coinsLocal = +localStorage.getItem(LS_COINS) || 0;
       const tonLocal = +localStorage.getItem(LS_TON) || 0;
-      coinsDisplayEl.textContent = formatNum(coinsLocal) + ' ZEX • ' + formatTon(tonLocal) + ' TON';
+      coinsDisplayEl.textContent = formatNum(coinsLocal) + ' XTR • ' + formatTon(tonLocal) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if (mainEl) mainEl.textContent = formatNum(coinsLocal);
       const tonEl = document.getElementById('tonVal');
@@ -1614,7 +1623,7 @@ function updateWithdrawStatus(){
   /* ===========================
      Casino modal & logic
      Adjusted to credit TON separately (TON prizes increase TON balance directly;
-     ZEX prizes increase coins which ALSO increases TON by conversion for positive ZEX)
+     XTR prizes increase coins which ALSO increases TON by conversion for positive XTR)
   =========================== */
   (function(){
     const casinoBtn = document.getElementById('casinoBtn');
@@ -1628,15 +1637,15 @@ function updateWithdrawStatus(){
     const ctx = wheelCanvas.getContext('2d');
 
     const segments = [
-      { label: '100K ZEX', type: 'zex', value: 100000 },
+      { label: '100K XTR', type: 'zex', value: 100000 },
       { label: '0.10 TON', type: 'ton', value: 0.10 },
-      { label: '5K ZEX', type: 'zex', value: 5000 },
+      { label: '5K XTR', type: 'zex', value: 5000 },
       { label: '0.50 TON', type: 'ton', value: 0.50 },
-      { label: '10K ZEX', type: 'zex', value: 10000 },
+      { label: '10K XTR', type: 'zex', value: 10000 },
       { label: '1 TON', type: 'ton', value: 1 },
-      { label: '50K ZEX', type: 'zex', value: 50000 },
+      { label: '50K XTR', type: 'zex', value: 50000 },
       { label: '0.20 TON', type: 'ton', value: 0.20 },
-      { label: '1K ZEX', type: 'zex', value: 1000 },
+      { label: '1K XTR', type: 'zex', value: 1000 },
       { label: '2 TON', type: 'ton', value: 2 }
     ];
 
@@ -1747,7 +1756,7 @@ function updateWithdrawStatus(){
             let cur = +localStorage.getItem(LS_COINS) || 0;
             cur += amount;
             localStorage.setItem(LS_COINS, String(cur));
-            // TON increases on positive ZEX gain
+            // TON increases on positive XTR gain
             let storedTon = +localStorage.getItem(LS_TON) || 0;
             storedTon += amount * ZEX_TO_TON;
             localStorage.setItem(LS_TON, String(storedTon));
@@ -1761,10 +1770,10 @@ function updateWithdrawStatus(){
           storedTon += amount * ZEX_TO_TON;
           localStorage.setItem(LS_TON, String(storedTon));
         }
-        text = `+${format(amount)} ZEX`;
+        text = `+${format(amount)} XTR`;
       } else {
         const tonAmount = seg.value;
-        // credit TON directly (do NOT deduct TON when spending ZEX)
+        // credit TON directly (do NOT deduct TON when spending XTR)
         try{
           ton += tonAmount;
           // persist
@@ -1788,7 +1797,7 @@ function updateWithdrawStatus(){
     function updateCasinoBalanceDisplay(){
       const c = +localStorage.getItem(LS_COINS) || coins || 0;
       const tLocal = +localStorage.getItem(LS_TON) || ton || 0;
-      casinoBalanceEl.textContent = format(c) + ' ZEX • ' + formatTon(tLocal) + ' TON';
+      casinoBalanceEl.textContent = format(c) + ' XTR • ' + formatTon(tLocal) + ' TON';
       const mainEl = document.getElementById('coinsVal');
       if(mainEl) mainEl.textContent = format(c);
       const tonEl = document.getElementById('tonVal');
