@@ -471,7 +471,7 @@ header{
 
   <div class="bottom-menu">
     <button id="infoBtn" class="btnGhost">ℹ</button>
-    <!-- shop button removed per request -->
+    <button id="rewardsBtn" class="btnGhost" title="Rewards">💎</button>
     <button id="miningBtn" class="btnGhost">⛏</button>
     <button id="profileBtn" class="btnGhost">👤</button>
     <button id="withdrawBtn" class="btnGhost" title="Вывод">💸</button>
@@ -1860,6 +1860,63 @@ function updateWithdrawStatus(){
       lastSpin: ()=>+localStorage.getItem(COOL_KEY) || 0
     };
   })();
+
+  // Extra UI handlers to ensure buttons open windows/modal reliably
+  (function attachExtraHandlers(){
+    const rewardsBtn = document.getElementById('rewardsBtn');
+    function openRewardsModal(){
+      if(window._wsModal && typeof window._wsModal.open==='function'){
+        try{ window._wsModal.open(); }catch(e){ console.warn(e); }
+        return;
+      }
+      // retry for a short while in case modal initialized later
+      let tries = 0;
+      const id = setInterval(()=>{
+        if(window._wsModal && typeof window._wsModal.open==='function'){
+          try{ window._wsModal.open(); }catch(e){}
+          clearInterval(id);
+        } else if(++tries > 25) clearInterval(id);
+      }, 200);
+    }
+    if(rewardsBtn) rewardsBtn.addEventListener('click', openRewardsModal);
+
+    // Allow clicking overlay outside glass to close rewards modal
+    const overlayEl = document.getElementById('wsModalOverlay');
+    if(overlayEl){
+      overlayEl.addEventListener('click', function(e){
+        if(e.target === overlayEl && window._wsModal && typeof window._wsModal.close==='function'){
+          try{ window._wsModal.close(); }catch(e){}
+        }
+      });
+    }
+
+    // ESC to close any modal
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        const pw = document.getElementById('profileWindow');
+        if(pw && pw.style.display === 'block'){ pw.style.display='none'; pw.setAttribute('aria-hidden','true'); return; }
+        if(miningShop && miningShop.style.display==='block'){ miningShop.style.display='none'; miningShop.setAttribute('aria-hidden','true'); return; }
+        const cm = document.getElementById('casinoModal');
+        if(cm && cm.style.display==='flex'){ cm.style.display='none'; cm.setAttribute('aria-hidden','true'); return; }
+        const wm = document.getElementById('withdrawModal');
+        if(wm && wm.style.display==='flex'){ wm.style.display='none'; wm.setAttribute('aria-hidden','true'); return; }
+        if(window._wsModal && typeof window._wsModal.close==='function'){ try{ window._wsModal.close(); }catch(e){} }
+      }
+    });
+
+    // Ensure bottom-menu buttons open corresponding windows (fallbacks if not bound earlier)
+    const infoB = document.getElementById('infoBtn');
+    if(infoB) infoB.addEventListener('click', ()=>{ const iw=document.getElementById('infoWindow'); if(iw){ iw.style.display='block'; iw.setAttribute('aria-hidden','false'); }});
+    const miningB = document.getElementById('miningBtn');
+    if(miningB) miningB.addEventListener('click', ()=>{ if(miningShop){ miningShop.style.display='block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); }});
+    const profileB = document.getElementById('profileBtn');
+    if(profileB) profileB.addEventListener('click', ()=>{ const pw=document.getElementById('profileWindow'); if(pw){ pw.style.display='block'; pw.setAttribute('aria-hidden','false'); }});
+    const withdrawB = document.getElementById('withdrawBtn');
+    if(withdrawB) withdrawB.addEventListener('click', ()=>{ const wm=document.getElementById('withdrawModal'); if(wm){ wm.style.display='flex'; wm.setAttribute('aria-hidden','false'); renderBoundInfo && renderBoundInfo(); }});
+    const casinoB = document.getElementById('casinoBtn');
+    if(casinoB) casinoB.addEventListener('click', ()=>{ const cm=document.getElementById('casinoModal'); if(cm){ cm.style.display='flex'; cm.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay && updateCasinoBalanceDisplay(); updateCooldownDisplay && updateCooldownDisplay(); }});
+  })();
+
   </script>
 </body>
 </html>
