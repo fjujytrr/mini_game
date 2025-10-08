@@ -149,7 +149,8 @@ header{
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
 #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(0,0,0,0.75)}
-#miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--purple-frame);background:#fff;box-shadow:0 8px 24px rgba(122,75,255,0.06)}
+/* Changed: make miner card logo border white as requested */
+#miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff;box-shadow:0 8px 24px rgba(122,75,255,0.06)}
 #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff}
 #miningShop .miner-card .income{color:var(--birch);font-weight:900}
 #miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:900;font-size:14px;margin-top:6px}
@@ -210,7 +211,7 @@ header{
 }
 
 /* Casino modal (keeps readable look) */
-.casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(27,27,31,0.88), rgba(43,43,47,0.92));backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
+.casino-modal{Display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(27,27,31,0.88), rgba(43,43,47,0.92));backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
 .casino-modal .card{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(28,28,30,0.98), rgba(36,36,38,0.98));border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.02);display:flex;gap:12px;flex-direction:column}
 .casino-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .casino-body{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
@@ -505,7 +506,7 @@ header{
         <div class="title">
           <div class="coinIcon">💎</div>
           <div>
-            <div style="font-size:18px">Premium Gifts</div>
+            <div style="font-size:18px" id="wsTitle">Premium Gifts</div>
             <div class="sub">7 days of rewards — claim one per day</div>
           </div>
         </div>
@@ -538,8 +539,8 @@ header{
     <div class="card" role="document">
       <div class="casino-header">
         <div>
-          <div style="font-size:20px;font-weight:900">🎰 Casino</div>
-          <div style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
+          <div id="casinoTitle" style="font-size:20px;font-weight:900">🎰 Casino</div>
+          <div id="casinoSubtitle" style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
         </div>
         <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 XTR • 0.00 TON</div>
       </div>
@@ -626,7 +627,8 @@ header{
 <script>
   /* ===========================
      Объединённый и отредактированный JS
-     (с изменениями: XTR вместо ZEX, удалена кнопка 🛒, улучшен профиль)
+     (с изменениями: XTR вместо ZEX, удалена кнопка 🛒, улучшен профиль,
+      miner logo border set to white, expanded language switching)
   =========================== */
 
   // ======= Constants & storage keys =======
@@ -674,7 +676,22 @@ header{
     buy: 'Купить',
     cancel: 'Отмена',
     profitHr: 'Прибыль/ч:',
-    noEnergy: 'Нет энергии!'
+    noEnergy: 'Нет энергии!',
+    // New keys for wider translation coverage
+    startBtn: '🏠 Начать',
+    resetBtn: '🔍 Охота',
+    wsTitle: 'Премиум подарки',
+    wsSub: '7 дней наград — забирайте по одному в день',
+    wsBtnClose: 'Вернуться завтра',
+    wsBtnRules: 'Как это работает',
+    dayLabel: 'День',
+    claimed: 'Забрано',
+    casinoTitle: '🎰 Казино',
+    casinoSubtitle: 'Вращайте колесо — раз в 2 часа',
+    spin: 'КРУТИТЬ',
+    ready: 'Готово',
+    full: 'Полный',
+    coinsBalance: 'Баланс монет'
   },
   en: {
     pickRoomFirst: 'Pick a room first!',
@@ -705,40 +722,89 @@ header{
     buy: 'Buy',
     cancel: 'Cancel',
     profitHr: 'Profit/hr:',
-    noEnergy: 'No energy!'
+    noEnergy: 'No energy!',
+    // New keys for wider translation coverage
+    startBtn: '🏠 Start',
+    resetBtn: '🔍 Hunt',
+    wsTitle: 'Premium Gifts',
+    wsSub: '7 days of rewards — claim one per day',
+    wsBtnClose: 'Come back tomorrow',
+    wsBtnRules: 'How it works',
+    dayLabel: 'Day',
+    claimed: 'Claimed',
+    casinoTitle: '🎰 Casino',
+    casinoSubtitle: 'Spin the wheel — once every 2 hours',
+    spin: 'SPIN',
+    ready: 'Ready',
+    full: 'Full',
+    coinsBalance: 'Coins balance'
   } };
   let lang = localStorage.getItem('lang') || 'ru';
   function t(key, vars = {}) {
-    const val = i18n[lang][key];
+    const val = i18n[lang] && i18n[lang][key];
     if (typeof val === 'string') {
       return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
     }
-    return val;
+    return val || '';
   }
   function applyLang() {
-    document.getElementById('miningLabel').textContent = t('miningIncome');
+    // UI pieces translated
+    document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
     document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
     document.getElementById('closeMiningShop') && (document.getElementById('closeMiningShop').textContent = t('close'));
     const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
     if (cb) cb.textContent = t('buy');
     if (canc) canc.textContent = t('cancel');
-    document.getElementById('infoTitle').textContent = t('howToPlay');
-    document.getElementById('profileTitle').textContent = t('profile');
-    document.getElementById('dailyTitle').textContent = t('dailyReward');
-    document.getElementById('dailyText').textContent = t('dailyText');
+    document.getElementById('infoTitle') && (document.getElementById('infoTitle').textContent = t('howToPlay'));
+    document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
+    document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
+    document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
     document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
-    document.getElementById('questTitle').textContent = t('quest');
+    document.getElementById('questTitle') && (document.getElementById('questTitle').textContent = t('quest'));
     document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest'));
-    document.getElementById('settingsTitle').textContent = t('settings');
-    document.getElementById('settingsText').textContent = t('settingsText');
+    document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
+    document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
 
+    // Info list
     const infoListEl = document.getElementById('infoList');
-    infoListEl.innerHTML = '';
-    t('infoList').forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
+    if (infoListEl) {
+      infoListEl.innerHTML = '';
+      (t('infoList') || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
+    }
 
-    // set claim text for TG quest button if exists
+    // TG claim button (profile)
     const claimTgBtn = document.getElementById('claimTgSubscribe');
     if (claimTgBtn) claimTgBtn.textContent = t('claimQuest');
+
+    // Start / Hunt buttons
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) startBtn.textContent = t('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) resetBtn.textContent = t('resetBtn');
+
+    // Rewards modal title/sub/buttons
+    const wsTitleEl = document.getElementById('wsTitle');
+    if (wsTitleEl) wsTitleEl.textContent = t('wsTitle');
+    const wsSubEl = document.querySelector('#wsModalOverlay .sub');
+    if (wsSubEl) wsSubEl.textContent = t('wsSub');
+    const btnClose = document.getElementById('wsBtnClose');
+    if (btnClose) btnClose.textContent = t('wsBtnClose');
+    const btnRules = document.getElementById('wsBtnRules');
+    if (btnRules) btnRules.textContent = t('wsBtnRules');
+
+    // Casino translations
+    const casinoTitleEl = document.getElementById('casinoTitle');
+    if (casinoTitleEl) casinoTitleEl.textContent = t('casinoTitle');
+    const casinoSubtitleEl = document.getElementById('casinoSubtitle');
+    if (casinoSubtitleEl) casinoSubtitleEl.textContent = t('casinoSubtitle');
+    const spinBtn = document.getElementById('spinBtn');
+    if (spinBtn) spinBtn.textContent = t('spin');
+
+    // Update coins balance label if exists
+    const coinsBalanceCaption = document.querySelector('#wsModalOverlay .header div:last-child div:last-child');
+    if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
+
+    // Make sure reward cards and other dynamic labels will use translations via t() when rendered
   }
 
   // ========== Energy ==========
@@ -804,7 +870,7 @@ header{
     if (el) el.textContent = String(energy);
     if (timerEl) {
       if (energy >= MAX_ENERGY) {
-        timerEl.textContent = 'Full';
+        timerEl.textContent = t('full') || 'Full';
       } else {
         const now = Date.now();
         const delta = now - (energyLastTick || now);
@@ -1025,7 +1091,7 @@ header{
       if(withdrawStatus) withdrawStatus.textContent = 'Адрес сохранён.';
     });
 
-    if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{
+    if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{ 
       if(withdrawInput) withdrawInput.style.display = 'block';
       if(withdrawInput) withdrawInput.value = '';
       if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
@@ -1346,7 +1412,7 @@ header{
   const langSelect = document.getElementById('langSelect');
   if (langSelect) {
     langSelect.value = lang;
-    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
+    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); renderCards && renderCards(); };
   }
 
   // init
@@ -1507,7 +1573,7 @@ header{
 
         card.innerHTML = `
           <div class="coinIconSmall">💰</div>
-          <div class="dayLabel">Day ${day}</div>
+          <div class="dayLabel">${t('dayLabel') || 'Day'} ${day}</div>
           <div class="amount">${formatNum(amount)}</div>
         `;
 
@@ -1518,7 +1584,7 @@ header{
           card.classList.add('claimed');
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
-          badge.textContent = 'Claimed';
+          badge.textContent = t('claimed') || 'Claimed';
           card.appendChild(badge);
         } else if(isUnlocked){
           card.classList.add('unlocked');
@@ -1559,7 +1625,7 @@ header{
 
           const badge = document.createElement('div');
           badge.className = 'claimBadge';
-          badge.textContent = 'Claimed';
+          badge.textContent = t('claimed') || 'Claimed';
           card.appendChild(badge);
           card.classList.remove('unlocked');
           card.classList.add('claimed');
@@ -1598,7 +1664,7 @@ header{
     });
 
     if (btnRules) btnRules.addEventListener('click', function(){
-      alert('Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
+      alert(t('wsBtnRules') ? t('wsBtnRules') + ': ' + (t('wsSub') || '') : 'Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
     });
 
     hideMainUI();
@@ -1801,7 +1867,7 @@ header{
       const now = Date.now();
       const diff = now - last;
       if(last === 0 || diff >= COOLDOWN_MS){
-        casinoCooldownEl.textContent = 'Ready';
+        casinoCooldownEl.textContent = t('ready') || 'Ready';
         spinBtn.disabled = false;
       } else {
         const rem = COOLDOWN_MS - diff;
