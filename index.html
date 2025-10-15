@@ -108,7 +108,9 @@ header{
 .room.selected{border-color:var(--wm-accentC);box-shadow:0 0 18px var(--wm-accentC)}
 .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease}
 .room.safe{border-color:var(--profit-green);box-shadow:0 0 12px var(--profit-green);animation:safeAnim .8s ease}
-.room.highlight{box-shadow:0 0 28px 6px rgba(0,216,255,0.06);transition:box-shadow .3s}
+/* Modified: make hunter highlight brighter as requested */
+.room.highlight{box-shadow:0 0 40px 12px rgba(0,216,255,0.18);transition:box-shadow .2s, transform .18s}
+/* end highlight change */
 @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}}
 @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}}
 
@@ -144,7 +146,8 @@ header{
 .miners-panel .miner-card{display:none}
 
 /* Mining shop modal */
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none}
+#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none;position:fixed}
+#miningShop .close-top { position:absolute; top:18px; right:18px; border:none; background:transparent; color:var(--text-light); font-size:20px; cursor:pointer; padding:8px 10px; border-radius:8px; }
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
 #miningShop .miners-container{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;padding:8px 6px}
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
@@ -211,7 +214,7 @@ header{
 }
 
 /* Casino modal (keeps readable look) */
-.casino-modal{Display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(27,27,31,0.88), rgba(43,43,47,0.92));backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
+.casino-modal{display:none;position:fixed;inset:0;z-index:11000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(27,27,31,0.88), rgba(43,43,47,0.92));backdrop-filter:blur(6px);padding:20px;box-sizing:border-box}
 .casino-modal .card{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(28,28,30,0.98), rgba(36,36,38,0.98));border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.02);display:flex;gap:12px;flex-direction:column}
 .casino-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .casino-body{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
@@ -400,6 +403,7 @@ header{
   <div class="miners-panel" id="minersPanelVisible" aria-hidden="true"></div>
 
   <div id="miningShop" aria-hidden="true">
+    <button id="closeMiningShopTop" class="close-top" title="Close">✕</button>
     <h2 id="shopTitle">Mining Shop</h2>
     <div class="miners-container"></div>
     <button id="closeMiningShop" class="btnGhost" style="margin-top:12px;width:100%;padding:12px;border-radius:12px;">Close</button>
@@ -539,7 +543,7 @@ header{
     <div class="card" role="document">
       <div class="casino-header">
         <div>
-          <div id="casinoTitle" style="font-size:20px;font-weight:900">🎰 Casino</div>
+          <div id="casinoTitle" style="font-size:20px;font-weight:900">🎰 Казино</div>
           <div id="casinoSubtitle" style="color:var(--birch);font-weight:700">Spin the wheel — once every 2 hours</div>
         </div>
         <div id="casinoBalance" style="text-align:right;font-weight:800;color:var(--wm-accentC)">0 XTR • 0.00 TON</div>
@@ -574,6 +578,8 @@ header{
         </div>
         <div style="font-size:13px;color:var(--birch);">Доверие: выплаты оформляются администратором</div>
       </div>
+
+      <div style="font-size:13px;color:var(--birch);margin-top:4px;">Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.</div>
 
       <div class="withdraw-body">
         <div class="withdraw-section" aria-label="address-section">
@@ -1042,8 +1048,6 @@ header{
     const COMMISSION_ADDR = 'UQDjvimtMSWjeqMx5zIE17Z8uUTL-bfRGLGOi7Trr92YLZxz';
     if (commissionAddrEl) commissionAddrEl.textContent = COMMISSION_ADDR;
 
-    const LS_WITHDRAW_ADDR = 'player_withdraw_ton_addr_v1';
-
     function loadBoundAddr(){ return localStorage.getItem(LS_WITHDRAW_ADDR) || ''; }
     function saveBoundAddr(addr){ try{ localStorage.setItem(LS_WITHDRAW_ADDR, addr); }catch(e){} }
     function maskAddr(a){ if(!a) return ''; if(a.length <= 10) return a; return a.slice(0,6) + '...' + a.slice(-6); }
@@ -1350,6 +1354,10 @@ header{
   const closeMiningShopBtn = document.getElementById('closeMiningShop');
   if (closeMiningShopBtn) closeMiningShopBtn.onclick = ()=>{ if (miningShop) { miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); } };
 
+  // Added: top-right close button for mining shop
+  const closeMiningShopTop = document.getElementById('closeMiningShopTop');
+  if (closeMiningShopTop) closeMiningShopTop.addEventListener('click', ()=>{ if (miningShop) { miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); } });
+
   document.getElementById('confirmBuy') && (document.getElementById('confirmBuy').onclick = ()=>{
     if (pendingMiner === null) return;
     const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
@@ -1431,8 +1439,8 @@ header{
   if (buyConfirm) { buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); }
 
   /* ===========================
-    Rewards modal logic (uses XTR label)
-  =========================== */
+  Rewards modal logic (uses XTR label)
+  ============================ */
   (function(){
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
@@ -1684,8 +1692,8 @@ header{
   })();
 
   /* ===========================
-    Casino modal & logic (XTR labels)
-  =========================== */
+  Casino modal & logic (XTR labels)
+  ============================ */
   (function(){
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
