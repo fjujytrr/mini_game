@@ -147,35 +147,19 @@ header{
 
 /* Mining shop modal */
 /* Mining shop modal — full-screen background image fixed, miners scroll on top */
-#miningShop{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  z-index:900;
-  color:var(--text-light);
-  padding:28px;
-  box-sizing:border-box;
-  overflow-y:auto;       /* make modal content scrollable */
-  border:none;
-
-  /* Background image stretched to cover entire viewport and fixed in place */
-  background-image: url('fon.png');
-  background-size: cover;             /* stretch/crop to fill */
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;       /* keep image fixed while content scrolls */
-
-  /* overlay to darken image for readability */
-  background-blend-mode: overlay;
-  background-color: rgba(6,10,14,0.56);
-
-  /* maintain glass aesthetic for the interior */
-  -webkit-backdrop-filter: blur(6px) saturate(1.05);
-  backdrop-filter: blur(6px) saturate(1.05);
+#miningShop .miners-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
+
 
 #miningShop .close-top { position:absolute; top:18px; right:18px; border:none; background:transparent; color:var(--text-light); font-size:20px; cursor:pointer; padding:8px 10px; border-radius:8px; }
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
