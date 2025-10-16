@@ -146,9 +146,40 @@ header{
 .miners-panel .miner-card{display:none}
 
 /* Mining shop modal */
-#miningShop{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto;border:none;position:fixed}
+/* Mining shop modal — full-screen background image fixed, miners scroll on top */
+#miningShop{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:900;
+  color:var(--text-light);
+  padding:28px;
+  box-sizing:border-box;
+  overflow-y:auto;       /* make modal content scrollable */
+  border:none;
+
+  /* Background image stretched to cover entire viewport and fixed in place */
+  background-image: url('fon.png');
+  background-size: cover;             /* stretch/crop to fill */
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;       /* keep image fixed while content scrolls */
+
+  /* overlay to darken image for readability */
+  background-blend-mode: overlay;
+  background-color: rgba(6,10,14,0.56);
+
+  /* maintain glass aesthetic for the interior */
+  -webkit-backdrop-filter: blur(6px) saturate(1.05);
+  backdrop-filter: blur(6px) saturate(1.05);
+}
+
 #miningShop .close-top { position:absolute; top:18px; right:18px; border:none; background:transparent; color:var(--text-light); font-size:20px; cursor:pointer; padding:8px 10px; border-radius:8px; }
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
+/* Miners container: transparent so background shows through, but cards remain readable */
 #miningShop .miners-container{
   display:flex;
   flex-wrap:wrap;
@@ -157,21 +188,18 @@ header{
   padding:20px 12px;
   box-sizing:border-box;
 
-  /* Background image: fon.png (place fon.png next to this HTML file or adjust path) */
-  background-image:
-    linear-gradient(180deg, rgba(6,10,14,0.42), rgba(6,10,14,0.55)), /* dark glass overlay for contrast */
-    url('fon.png');
-  background-size: cover;        /* cover entire area */
-  background-position: center center;
-  background-repeat: no-repeat;
+  background: transparent; /* do not add own bg so global fon.png is visible */
+  border-radius: 12px;
 
-  border-radius:12px;
-  /* optional subtle inner shadow to separate cards from bg */
-  box-shadow: inset 0 10px 30px rgba(0,0,0,0.35), 0 18px 40px rgba(0,0,0,0.55);
-  /* ensure miners container stays readable on small screens */
-  min-height: 220px;
-  backdrop-filter: blur(6px) saturate(1.05); /* soft blur behind content (if browser supports) */
-  -webkit-backdrop-filter: blur(6px) saturate(1.05);
+  /* let the container itself scroll independently if needed on smaller areas,
+     but modal already handles page scrolling — this ensures smooth internal scroll */
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+
+  /* subtle inner separation so cards are readable over the image */
+  box-shadow: inset 0 6px 18px rgba(0,0,0,0.35);
+  padding-bottom: 40px; /* space at bottom for comfortable scroll */
 }
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
 #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(0,0,0,0.75)}
