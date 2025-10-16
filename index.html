@@ -146,37 +146,59 @@ header{
 .miners-panel .miner-card{display:none}
 
 /* Mining shop modal */
-/* Mining shop modal — full-screen background image fixed, miners scroll on top */
-/* Miners container: transparent so background shows through, but cards remain readable */
-#miningShop .miners-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  background: none !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+/* = A1 = Mining shop modal — fixed blurred background via pseudo-element */
+#miningShop{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:900;
+  color:var(--text-light);
+  padding:28px;
+  box-sizing:border-box;
+  overflow-y:auto; /* content scrolls, background stays fixed */
 }
 
+/* Fixed background with blur — stays in place while content scrolls */
+#miningShop::before{
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('fon.png'); /* положи fon.png рядом с HTML или укажи путь */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* затемняющая накладка для читаемости карточек */
+  background-color: rgba(6,10,14,0.56);
+  background-blend-mode: overlay;
 
-  /* let the container itself scroll independently if needed on smaller areas,
-     but modal already handles page scrolling — this ensures smooth internal scroll */
-  max-height: calc(100vh - 160px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-
-  /* subtle inner separation so cards are readable over the image */
-  box-shadow: inset 0 6px 18px rgba(0,0,0,0.35);
-  padding-bottom: 40px; /* space at bottom for comfortable scroll */
+  /* размытие фона */
+  filter: blur(8px) saturate(1.02);
+  -webkit-filter: blur(8px) saturate(1.02);
 }
-
-
 
 #miningShop .close-top { position:absolute; top:18px; right:18px; border:none; background:transparent; color:var(--text-light); font-size:20px; cursor:pointer; padding:8px 10px; border-radius:8px; }
 #miningShop h2{color:#ecf8ff;text-align:center;margin-bottom:10px}
+/* = A2 = Make container visually gone — transparent and scrollable */
+#miningShop .miners-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  justify-content:center;
+  padding:18px 12px;
+  margin:0;
+
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  max-height: calc(100vh - 200px); /* контейнер скроллится внутри модалки */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 40px;
+}
+
 #miningShop .miner-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;border-radius:14px;padding:12px;width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,0.7);cursor:pointer;transition:transform .18s,box-shadow .18s;border:1px solid rgba(255,255,255,0.02)}
 #miningShop .miner-card:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(0,0,0,0.75)}
 /* Changed: make miner card logo border white as requested */
