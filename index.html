@@ -417,7 +417,7 @@ async function connectWallet(){
       signer = provider.getSigner();
       userAddress = await signer.getAddress();
       const network = await provider.getNetwork();
-      walletBadge.textContent = ${userAddress.slice(0,6)}...${userAddress.slice(-4)} • ${network.name || network.chainId};
+      walletBadge.textContent = `${userAddress.slice(0,6)}...${userAddress.slice(-4)} • ${network.name || network.chainId}`;
       connectWalletBtn.textContent = 'Disconnect';
       connectWalletBtn.onclick = disconnectWallet;
     } catch(e){
@@ -632,7 +632,7 @@ function updateEnergyDisplay() {
       const secs = Math.ceil(rem / 1000);
       const mm = Math.floor(secs / 60);
       const ss = secs % 60;
-      timerEl.textContent = ${mm>0?mm+'m ':''}${ss}s;
+      timerEl.textContent = `${mm>0?mm+'m ':''}${ss}s`;
     }
   }
 }
@@ -908,7 +908,7 @@ function updUpg() {
     let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
     let price = base * Math.pow(2,count);
     let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price);
-    const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? Lvl ${count} : 'New';
+    const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New';
   });
 }
 document.querySelectorAll('.upgrade').forEach(u=>{
@@ -975,7 +975,7 @@ document.getElementById('resetBtn').onclick = ()=>{
   document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe','highlight'));
   let delay = 0;
   picks.forEach(i=>{
-    let room = document.querySelector(.room[data-idx="${i}"]);
+    let room = document.querySelector(`.room[data-idx="${i}"]`);
     setTimeout(()=>{ room.classList.add('highlight'); }, delay);
     setTimeout(()=>{ room.classList.remove('highlight'); }, delay+600);
     delay += 700;
@@ -983,7 +983,7 @@ document.getElementById('resetBtn').onclick = ()=>{
   setTimeout(()=>{
     let prize = 1000, loss = -2000;
     if (upgrades.x2Prize > 0) { prize *= Math.pow(2, upgrades.x2Prize); loss *= Math.pow(2, upgrades.x2Prize); }
-    const roomEl = document.querySelector(.room[data-idx="${selectedRoom}"]);
+    const roomEl = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
     if (picks.includes(selectedRoom)) {
       if (shieldExpire > Date.now()) {
         roomEl.classList.add('safe');
@@ -992,12 +992,12 @@ document.getElementById('resetBtn').onclick = ()=>{
         roomEl.classList.add('safe');
         updCoins(prize);
       } else {
-        const room = document.querySelector(.room[data-idx="${selectedRoom}"]);
+        const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
         room.classList.add('found');
         updCoins(loss);
       }
     } else {
-      const room = document.querySelector(.room[data-idx="${selectedRoom}"]);
+      const room = document.querySelector(`.room[data-idx="${selectedRoom}"]`);
       room.classList.add('safe');
       updCoins(prize);
     }
@@ -1104,7 +1104,7 @@ const questStatusEl = document.getElementById('questStatus');
 const dailyStatusEl = document.getElementById('dailyStatus');
 
 function updateQuestStatus(){ if (questStatusEl) questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; }
-function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = Next in ${hours}h ${minutes}m; } } }
+function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } }
 setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
 document.getElementById('claimQuest') && (document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } });
@@ -1430,7 +1430,7 @@ if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.
 
       ctx.save();
       const textAngle = start + anglePer/2;
-      ctx.translate(cx + Math.cos(textAngle)(radius*0.66), cy + Math.sin(textAngle)(radius*0.66));
+      ctx.translate(cx + Math.cos(textAngle)*(radius*0.66), cy + Math.sin(textAngle)*(radius*0.66));
       ctx.rotate(textAngle + Math.PI/2);
       ctx.fillStyle = '#ecf8ff';
       ctx.font = 'bold 18px Inter, system-ui, Arial';
@@ -1448,7 +1448,7 @@ if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.
   }
 
   function render(){
-    wheelCanvas.style.transform = rotate(${rotation}deg);
+    wheelCanvas.style.transform = `rotate(${rotation}deg)`;
   }
 
   function getRandomSegmentIndex(){
@@ -1518,7 +1518,7 @@ if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.
         storedTon += amount * ZEX_TO_TON;
         localStorage.setItem(LS_TON, String(storedTon));
       }
-      text = +${format(amount)} XTR;
+      text = `+${format(amount)} XTR`;
     } else {
       const tonAmount = seg.value;
       try{
@@ -1526,4 +1526,143 @@ if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.
         localStorage.setItem(LS_TON, String(ton));
       }catch(e){
         let storedTon = +localStorage.getItem(LS_TON) || 0;
-        storedTon
+        storedTon += tonAmount;
+        localStorage.setItem(LS_TON, String(storedTon));
+      }
+      text = `+${tonAmount.toFixed(2)} TON`;
+    }
+    casinoResultEl.textContent = text;
+    updateCasinoBalanceDisplay();
+    localStorage.setItem(COOL_KEY, String(Date.now()));
+    updateCooldownDisplay();
+    localStorage.setItem(LS_COINS, String(coins));
+    localStorage.setItem(LS_TON, String(ton));
+  }
+
+  function updateCasinoBalanceDisplay(){
+    const c = +localStorage.getItem(LS_COINS) || coins || 0;
+    const tLocal = +localStorage.getItem(LS_TON) || ton || 0;
+    if (casinoBalanceEl) casinoBalanceEl.textContent = format(c) + ' XTR • ' + formatTon(tLocal) + ' TON';
+    const mainEl = document.getElementById('coinsVal');
+    if(mainEl) mainEl.textContent = format(c);
+    const tonEl = document.getElementById('tonVal');
+    if(tonEl) tonEl.textContent = formatTon(tLocal);
+  }
+
+  function updateCooldownDisplay(){
+    const last = +localStorage.getItem(COOL_KEY) || 0;
+    const now = Date.now();
+    const diff = now - last;
+    if(last === 0 || diff >= COOLDOWN_MS){
+      casinoCooldownEl.textContent = t('ready') || 'Ready';
+      spinBtn.disabled = false;
+    } else {
+      const rem = COOLDOWN_MS - diff;
+      const hours = Math.floor(rem / (1000*60*60));
+      const minutes = Math.floor((rem % (1000*60*60)) / (1000*60));
+      const seconds = Math.floor((rem % (1000*60)) / 1000);
+      casinoCooldownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+      spinBtn.disabled = true;
+    }
+  }
+
+  if (casinoBtn) casinoBtn.addEventListener('click', ()=>{
+    if (casinoModal) { casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); }
+  });
+  if (closeCasino) closeCasino.addEventListener('click', ()=>{ if (casinoModal) { casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); } });
+
+  if (spinBtn) spinBtn.addEventListener('click', ()=>{
+    const last = +localStorage.getItem(COOL_KEY) || 0;
+    const now = Date.now();
+    if(last && now - last < COOLDOWN_MS){
+      updateCooldownDisplay();
+      return;
+    }
+    const idx = getRandomSegmentIndex();
+    spinToIndex(idx);
+  });
+
+  drawWheel();
+  render();
+  setInterval(updateCooldownDisplay, 1000);
+
+  window._casino = {
+    open: ()=>{ if (casinoModal) { casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); } },
+    close: ()=>{ if (casinoModal) { casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); } },
+    lastSpin: ()=>+localStorage.getItem(COOL_KEY) || 0
+  };
+})();
+
+/* ===== UI bindings & init ===== */
+document.getElementById('wsBtnSmall').onclick = ()=>{ window._wsModal && window._wsModal.open(); };
+document.getElementById('infoBtn').onclick = ()=>{ document.getElementById('infoWindow').style.display = 'flex'; };
+document.getElementById('closeInfo') && (document.getElementById('closeInfo').onclick = ()=>{ document.getElementById('infoWindow').style.display = 'none'; });
+
+const langSelect = document.getElementById('langSelect');
+if (langSelect) {
+  langSelect.value = lang;
+  langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); };
+}
+
+function applyLang() {
+  document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
+  document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
+  document.getElementById('closeMiningShop') && (document.getElementById('closeMiningShop').textContent = t('close'));
+  const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
+  if (cb) cb.textContent = t('buy');
+  if (canc) canc.textContent = t('cancel');
+  document.getElementById('infoTitle') && (document.getElementById('infoTitle').textContent = t('howToPlay'));
+  document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
+  document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
+  document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
+  document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
+  document.getElementById('questTitle') && (document.getElementById('questTitle').textContent = t('quest'));
+  document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest'));
+  document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
+  document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
+
+  const infoListEl = document.getElementById('infoList');
+  if (infoListEl) {
+    infoListEl.innerHTML = '';
+    (t('infoList') || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
+  }
+
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) startBtn.textContent = t('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.textContent = t('resetBtn');
+
+  const wsTitleEl = document.getElementById('wsTitle'); if (wsTitleEl) wsTitleEl.textContent = t('wsTitle');
+  const wsSubEl = document.querySelector('#wsModalOverlay .sub'); if (wsSubEl) wsSubEl.textContent = t('wsSub');
+  const btnClose = document.getElementById('wsBtnClose'); if (btnClose) btnClose.textContent = t('wsBtnClose');
+  const btnRules = document.getElementById('wsBtnRules'); if (btnRules) btnRules.textContent = t('wsBtnRules');
+  const casinoTitleEl = document.getElementById('casinoTitle'); if (casinoTitleEl) casinoTitleEl.textContent = t('casinoTitle');
+  const casinoSubtitleEl = document.getElementById('casinoSubtitle'); if (casinoSubtitleEl) casinoSubtitleEl.textContent = t('casinoSubtitle');
+  const spinBtn = document.getElementById('spinBtn'); if (spinBtn) spinBtn.textContent = t('spin');
+  const coinsBalanceCaption = document.getElementById('wsModalCoinsDisplay'); if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
+}
+
+applyLang();
+
+/* init UI and state */
+loadEnergy();
+updateBalancesDisplay();
+updUpg();
+updIncome();
+updTimers();
+renderMiners();
+
+/* hide modals initially */
+document.querySelectorAll('.modal').forEach(m=>m.style.display = 'none');
+
+/* small polish: info content */
+const infoListEl = document.getElementById('infoList');
+if (infoListEl && infoListEl.children.length === 0) {
+  (i18n[lang].infoList || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
+}
+
+/* finalize */
+save();
+</script>
+</body>
+</html>
