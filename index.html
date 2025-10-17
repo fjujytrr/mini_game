@@ -2028,46 +2028,142 @@ header{
       questsModal.setAttribute('aria-hidden','true');
     }
 
-    function renderQuests(){
-      if(!questsContainer) return;
-      questsContainer.innerHTML = '';
-      questsData.forEach(q => {
-        const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
-        const desc = t(`quest_${q.key}_desc`) || '';
-        const card = document.createElement('div');
-        card.className = 'quest-card';
-        card.innerHTML = `
-          <div class="quest-left" role="button" tabindex="0">
-            <div class="quest-meta">
-              <div class="quest-title">${title}</div>
-              <div class="quest-desc">${desc}</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;">
-            <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
-          </div>
-        `;
-        const arrow = card.querySelector('.quest-arrow');
-        arrow.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          handleQuestAction(q);
-        });
-        card.querySelector('.quest-left').addEventListener('click', ()=> handleQuestAction(q));
-        questsContainer.appendChild(card);
-      });
+   // --- заменить старые renderQuests() и handleQuestAction(q) на этот код ---
+
+// настроиваем вознаграждения (можно поменять значения)
+const questRewards = { tg: 100000, yt: 100000 };
+
+// состояние уже полученных квестов (персистится в localStorage)
+let questClaimedMap = {
+  tg: localStorage.getItem('quest_tg_claimed') === 'true',
+  yt: localStorage.getItem('quest_yt_claimed') === 'true'
+};
+
+function renderQuests(){
+  if(!questsContainer) return;
+  questsContainer.innerHTML = '';
+
+  questsData.forEach(q => {
+    const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
+    const desc = t(`quest_${q.key}_desc`) || '';
+    const card = document.createElement('div');
+    card.className = 'quest-card';
+    card.dataset.key = q.key;
+
+    card.innerHTML = `
+      <div class="quest-left" role="button" tabindex="0">
+        <div class="quest-meta">
+          <div class="quest-title">${title}</div>
+          <div class="quest-desc">${desc}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
+      </div>
+    `;
+
+    // если уже получено — отметим карточку и добавим бейдж
+    if (questClaimedMap[q.key]) {
+      card.classList.add('claimed');
+      const badge = document.createElement('div');
+      badge.className = 'claimBadge';
+      badge.textContent = t('claimed') || 'Claimed';
+      card.appendChild(badge);
+      const arrow = card.querySelector('.quest-arrow');
+      if (arrow) arrow.disabled = true;
     }
 
-    function handleQuestAction(q){
-      if(!q || !q.action) return;
-      // if action is URL — open in new tab
-      if(typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
-        window.open(q.action, '_blank', 'noopener');
-        return;
+    // клики
+    const arrow = card.querySelector('.quest-arrow');
+    if (arrow) arrow.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      handleQuestAction(q);
+    });
+    const left = card.querySelector('.quest-left');
+    if (left) left.addEventListener('click', ()=> handleQuestAction(q));
+
+    questsContainer.appendChild(card);
+  });
+}
+
+function handleQuestAction(q){
+  if(!q || !q.key) return;
+
+  // если уже взяли — ничего не даём
+  if (questClaimedMap[q.key]) {
+    alert(t('questAlready') || 'Quest already claimed!');
+    return;
+  }
+
+  // Если действие — ссылка, открываем её
+  if (typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
+    // Откроем в новой вкладке
+    window.open(q.action, '_blank', 'noopener');
+
+    // Награда — выдаём сразу после открытия (можно изменить логику)
+    const reward = questRewards[q.key] || 0;
+    if (reward > 0) {
+      try {
+        if (typeof window.updCoins === 'function') {
+          window.updCoins(reward);
+        } else if (typeof window.updCoinsPublic === 'function') {
+          window.updCoinsPublic(reward);
+        } else {
+          // fallback: напрямую в localStorage
+          let cur = +localStorage.getItem(LS_COINS) || 0;
+          cur += reward;
+          localStorage.setItem(LS_COINS, String(cur));
+          // TON тоже увеличивается пропорционально
+          let storedTon = +localStorage.getItem(LS_TON) || 0;
+          storedTon += reward * ZEX_TO_TON;
+          localStorage.setItem(LS_TON, String(storedTon));
+        }
+      } catch(e){
+        console.warn('Reward give failed', e);
       }
-      // fallback to other handlers if needed
-      if(typeof window[q.action] === 'function') { return window[q.action](q); }
-      alert(q.action);
     }
+
+    // пометить как полученный и сохранить
+    questClaimedMap[q.key] = true;
+    localStorage.setItem(`quest_${q.key}_claimed`, 'true');
+
+    // обновить UI карточки (добавить бейдж)
+    const card = questsContainer && questsContainer.querySelector(`.quest-card[data-key="${q.key}"]`);
+    if (card) {
+      card.classList.add('claimed');
+      if (!card.querySelector('.claimBadge')) {
+        const badge = document.createElement('div');
+        badge.className = 'claimBadge';
+        badge.textContent = t('claimed') || 'Claimed';
+        card.appendChild(badge);
+      }
+      const arrowBtn = card.querySelector('.quest-arrow');
+      if (arrowBtn) arrowBtn.disabled = true;
+    }
+
+    // обновить глобальные статусы (если есть)
+    if (q.key === 'tg') {
+      tgSubscribeClaimed = true;
+      localStorage.setItem('tgSubscribeClaimed','true');
+      updateTgQuestStatus && updateTgQuestStatus();
+    }
+    if (q.key === 'yt') {
+      localStorage.setItem('ytSubscribeClaimed','true');
+    }
+    updateQuestStatus && updateQuestStatus();
+    updateBalancesDisplay && updateBalancesDisplay();
+    return;
+  }
+
+  // fallback: если action — имя функции
+  if (typeof q.action === 'string' && typeof window[q.action] === 'function') {
+    window[q.action](q);
+    return;
+  }
+
+  alert(q.action || 'No action');
+}
+
 
     if(openQuestsBtn) openQuestsBtn.addEventListener('click', openQuestsModal);
     if(closeQuests) closeQuests.addEventListener('click', closeQuestsModal);
