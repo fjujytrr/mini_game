@@ -1384,13 +1384,6 @@ header{
   if (openTgBtn) openTgBtn.addEventListener('click', ()=>{ /* anchor handles */ });
   updateTgQuestStatus();
 
-  // info window
-  const infoWindowEl = document.getElementById('infoWindow');
-  const infoBtn = document.getElementById('infoBtn');
-  if (infoBtn) infoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); } };
-  const closeInfoBtn = document.getElementById('closeInfo');
-  if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); } };
-
   // shop toggle & UI init
   const upgradePanel = document.getElementById('upgradePanel');
   if (minersPanelVisible) minersPanelVisible.style.display = 'none';
