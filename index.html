@@ -212,8 +212,15 @@ header{
 #infoWindow h2, Window h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
 #infoWindow ul li::before{content:'• ';color:var(--wm-accentC);font-weight:600}
-#infoWindow button, #profileWindow button{width:100%;margin-top:12px;padding:12px;font-size:18px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);color:#000;cursor:pointer;font-weight:900}
-
+#infoWindow button,     
+    #profileModal {
+  background: url('fon.png') no-repeat center center;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-color: transparent !important;
+}
+   
 /* Profile sections improved */
 .profile-section{
   margin-bottom:16px;
@@ -228,13 +235,7 @@ header{
 .profile-section .row{display:flex;gap:8px;align-items:center}
 .profile-section .meta{font-weight:700;color:var(--birch);font-size:13px}
 .profile-section .sep{height:1px;background:rgba(255,255,255,0.03);margin:12px 0;border-radius:1px}
-    #profileModal {
-  background: url('fon.png') no-repeat center center;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-color: transparent !important;
-}
+
 
 
 /* Withdraw modal (new) */
