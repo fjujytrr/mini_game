@@ -19,7 +19,7 @@
   --bg-dark: linear-gradient(120deg,#1f2023,#2a2c31);
   --text-light: #ecf2ff;
   --profit-green: #39FF14;
-  --logo-border-light: #dcdcdc; /* светло-серая обводка для логотипов */
+  --logo-border-light: #dcdcdc;
 }
 
 /* Base page */
@@ -108,7 +108,6 @@ header{
 .room.selected{border-color:var(--wm-accentC);box-shadow:0 0 18px var(--wm-accentC)}
 .room.found{border-color:#FF0054;box-shadow:0 0 12px #FF0054;animation:foundAnim 1s ease}
 .room.safe{border-color:var(--profit-green);box-shadow:0 0 12px var(--profit-green);animation:safeAnim .8s ease}
-/* Modified: make hunter highlight brighter as requested */
 .room.highlight{box-shadow:0 0 40px 12px rgba(0,216,255,0.18);transition:box-shadow .2s, transform .18s}
 @keyframes foundAnim{0%{transform:scale(1)}50%{transform:rotate(10deg) scale(1.15)}100%{transform:scale(1)}}
 @keyframes safeAnim{0%{transform:scale(1)}50%{transform:rotate(-10deg) scale(0.95)}100%{transform:scale(1)}}
@@ -132,7 +131,7 @@ header{
 .upgrade-panel{display:flex;gap:12px;margin:10px 0;overflow-x:auto;padding:14px 12px;width:95%;justify-content:flex-start;align-items:stretch}
 .upgrade{flex:0 0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));padding:16px;border-radius:16px;text-align:left;min-width:220px;cursor:pointer;box-shadow:0 14px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02);transition:transform .18s}
 .upgrade:hover{transform:translateY(-8px)}
-.upgrade h3{margin:0 0 8px;font-size:16px;color:var(--wm-accentC)}
+.upgrade h3{Margin:0 0 8px;font-size:16px;color:var(--wm-accentC)}
 .upgrade p{margin:0;font-size:14px;color:#eaf5ff}
 .upgrade .price{margin-top:10px;font-weight:900;color:var(--birch);font-size:16px}
 .upgrade .badge{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.12);font-weight:700;color:#fff;font-size:12px}
@@ -208,7 +207,7 @@ header{
 #buyConfirm button{margin:6px 6px;padding:8px 12px;font-weight:700;background:linear-gradient(90deg,var(--wm-accentC),#00A8FF);color:#000;border:none;border-radius:8px}
 
 /* Info & Profile windows (glass-like fullscreen) */
-#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;Overflow-y:auto}
+#infoWindow, #profileWindow{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;background:linear-gradient(120deg,#1b1b1f,#2b2c2f);color:var(--text-light);padding:28px;box-sizing:border-box;overflow-y:auto}
 #infoWindow .content, #profileWindow .content{max-width:1100px;margin:24px auto;border-radius:16px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));color:#fff;box-shadow:0 18px 50px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.02)}
 #infoWindow h2, #profileWindow h2{color:#ecf8ff;margin-bottom:10px}
 #infoWindow ul{color:#eaf2ff;padding-left:20px}
@@ -234,7 +233,7 @@ header{
 .withdraw-modal{display:none;position:fixed;inset:0;z-index:12000;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(10,10,12,0.75), rgba(20,20,24,0.85));backdrop-filter:blur(8px);padding:20px;box-sizing:border-box}
 .withdraw-card{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(18,18,20,0.98), rgba(34,34,36,0.98));border-radius:14px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,0.65);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:14px}
 .withdraw-header{display:flex;justify-content:space-between;align-items:center;color:#ecf8ff}
-.withdraw-header .title{display:flex;align-items:center;gap:12px}
+.withdraw-header .title{display:flex;align-items:center;gap:12px;margin-right:12px}
 .withdraw-header .title .icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--wm-accentC),#7adcff);display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#000}
 .withdraw-body{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
 .withdraw-section{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 30px rgba(0,0,0,0.45)}
@@ -429,7 +428,6 @@ header{
 .quest-arrow:active{ transform:scale(.98); }
 .quest-arrow:hover{ background: rgba(255,255,255,0.02); }
 
-/* small screens */
 @media (max-width:700px){
   .quest-card{ padding:10px; gap:8px; }
   .quest-title{ font-size:14px; max-width:220px; }
@@ -443,7 +441,7 @@ header{
     <div class="energy-panel" id="energyPanel" aria-live="polite" aria-atomic="true">
       <div class="icon">⚡</div>
       <div style="display:flex;flex-direction:column;align-items:flex-start;">
-        <div style="font-size:11px;color:var(--birch);font-weight:800">Energy</div>
+        <div id="energyLabel" style="font-size:11px;color:var(--birch);font-weight:800">Energy</div>
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="val" id="energyVal">50</div>
           <div class="timer" id="energyTimer">—</div>
@@ -561,10 +559,10 @@ header{
       <div class="profile-section" id="profile-quests-entry" style="display:flex;align-items:center;justify-content:space-between;">
         <div>
           <h3>Quests</h3>
-          <p class="meta" style="margin:0;color:var(--birch);">Откройте все доступные квесты и получите награды.</p>
+          <p class="meta" style="margin:0;color:var(--birch);">Open available quests to get rewards.</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <button id="openQuestsBtn" class="btnPrimarySmall" style="padding:8px 12px;">Открыть</button>
+          <button id="openQuestsBtn" class="btnPrimarySmall" style="padding:8px 12px;">Open</button>
         </div>
       </div>
 
@@ -667,20 +665,20 @@ header{
         <div class="title">
           <div class="icon">💸</div>
           <div>
-            <div style="font-size:18px;font-weight:900">Вывод средств</div>
-            <div style="font-size:13px;color:var(--birch)">Платежи проходят через TON</div>
+            <div id="withdrawTitle" style="font-size:18px;font-weight:900">Вывод средств</div>
+            <div id="withdrawSub" style="font-size:13px;color:var(--birch)">Платежи проходят через TON</div>
           </div>
         </div>
-        <div style="font-size:13px;color:var(--birch);">Доверие: выплаты оформляются администратором</div>
+        <div id="withdrawTrust" style="font-size:13px;color:var(--birch);">Доверие: выплаты оформляются администратором</div>
       </div>
 
-      <div style="font-size:13px;color:var(--birch);margin-top:4px;">Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.</div>
+      <div id="withdrawDateText" style="font-size:13px;color:var(--birch);margin-top:4px;">Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.</div>
 
       <div class="withdraw-body">
         <!-- KEEP: only address / wallet connect container -->
         <div class="withdraw-section" aria-label="address-section">
-          <div class="sec-title">📫 Адрес для выплат</div>
-          <div class="sec-desc">Укажите TON-адрес. После сохранения адрес будет привязан.</div>
+          <div class="sec-title">📫 <span id="withdrawAddrTitle">Адрес для выплат</span></div>
+          <div class="sec-desc" id="withdrawAddrDesc">Укажите TON-адрес. После сохранения адрес будет привязан.</div>
 
           <input id="withdrawAddressInput" class="addr-input" placeholder="UQ..." aria-label="TON address input" />
           <div style="height:10px"></div>
@@ -737,99 +735,152 @@ header{
 
   // ========== Localization ==========
   const i18n = {
-  ru: {
-    pickRoomFirst: 'Сначала выберите комнату!',
-    notEnough: 'Недостаточно монет!',
-    dailyAlready: 'Ежедневная награда уже получена!',
-    questAlready: 'Квест уже выполнен!',
-    miningIncome: 'Доход майнинга:',
-    miningShop: 'Магазин майнинга',
-    close: 'Закрыть',
-    howToPlay: 'Как играть',
-    infoList: [
-      'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
-      'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
-      'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
-      'Если вы избежали охоты, вы получаете монеты (показываются зеленым).',
-      'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
-      'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
-    ],
-    profile: 'Профиль',
-    dailyReward: 'Ежедневная награда',
-    dailyText: 'Получите 30 000 XTR раз в день!',
-    claimDaily: 'Забрать',
-    quest: 'Квест',
-    claimQuest: 'Взять',
-    settings: 'Настройки',
-    settingsText: 'Смените язык и другие параметры.',
-    buyFor: 'Купить {name} за {price}?',
-    buy: 'Купить',
-    cancel: 'Отмена',
-    profitHr: 'Прибыль/ч:',
-    noEnergy: 'Нет энергии!',
-    startBtn: '🏠 Начать',
-    resetBtn: '🔍 Охота',
-    wsTitle: 'Премиум подарки',
-    wsSub: '7 дней наград — забирайте по одному в день',
-    wsBtnClose: 'Вернуться завтра',
-    wsBtnRules: 'Как это работает',
-    dayLabel: 'День',
-    claimed: 'Забрано',
-    casinoTitle: '🎰 Казино',
-    casinoSubtitle: 'Вращайте колесо — раз в 2 часа',
-    spin: 'КРУТИТЬ',
-    ready: 'Готово',
-    full: 'Полный',
-    coinsBalance: 'Баланс монет'
-  },
-  en: {
-    pickRoomFirst: 'Pick a room first!',
-    notEnough: 'Not enough coins!',
-    dailyAlready: 'Daily reward already claimed!',
-    questAlready: 'Quest already claimed!',
-    miningIncome: 'Mining Income:',
-    miningShop: 'Mining Shop',
-    close: 'Close',
-    howToPlay: 'How to Play',
-    infoList: [
-      'Select a room and then click the 🔍 button to hunt.',
-      'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
-      'If your room is found, you lose coins (shown in red).',
-      'If you evade the hunt, you gain coins (shown in green).',
-      'Buy upgrades or miners to improve your chances and income.',
-      'Claim daily rewards and complete quests for bonus coins.'
-    ],
-    profile: 'Profile',
-    dailyReward: 'Daily Reward',
-    dailyText: 'Get 30,000 XTR once a day!',
-    claimDaily: 'Claim Daily',
-    quest: 'Quest',
-    claimQuest: 'Claim Quest',
-    settings: 'Settings',
-    settingsText: 'Change language and other preferences.',
-    buyFor: 'Buy {name} for {price}?',
-    buy: 'Buy',
-    cancel: 'Cancel',
-    profitHr: 'Profit/hr:',
-    noEnergy: 'No energy!',
-    startBtn: '🏠 Start',
-    resetBtn: '🔍 Hunt',
-    wsTitle: 'Premium Gifts',
-    wsSub: '7 days of rewards — claim one per day',
-    wsBtnClose: 'Come back tomorrow',
-    wsBtnRules: 'How it works',
-    dayLabel: 'Day',
-    claimed: 'Claimed',
-    casinoTitle: '🎰 Casino',
-    casinoSubtitle: 'Spin the wheel — once every 2 hours',
-    spin: 'SPIN',
-    ready: 'Ready',
-    full: 'Full',
-    coinsBalance: 'Coins balance'
-  } };
+    ru: {
+      pickRoomFirst: 'Сначала выберите комнату!',
+      notEnough: 'Недостаточно монет!',
+      dailyAlready: 'Ежедневная награда уже получена!',
+      questAlready: 'Квест уже выполнен!',
+      miningIncome: 'Доход майнинга:',
+      miningShop: 'Магазин майнинга',
+      close: 'Закрыть',
+      howToPlay: 'Как играть',
+      infoList: [
+        'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
+        'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
+        'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
+        'Если вы избежали охоты, вы получаете монеты (показываются зеленым).',
+        'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
+        'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
+      ],
+      profile: 'Профиль',
+      dailyReward: 'Ежедневная награда',
+      dailyText: 'Получите 30 000 XTR раз в день!',
+      claimDaily: 'Забрать',
+      quest: 'Квест',
+      claimQuest: 'Забрать',
+      settings: 'Настройки',
+      settingsText: 'Смените язык и другие параметры.',
+      buyFor: 'Купить {name} за {price}?',
+      buy: 'Купить',
+      cancel: 'Отмена',
+      profitHr: 'Прибыль/ч:',
+      noEnergy: 'Нет энергии!',
+      startBtn: '🏠 Начать',
+      resetBtn: '🔍 Охота',
+      wsTitle: 'Премиум подарки',
+      wsSub: '7 дней наград — забирайте по одному в день',
+      wsBtnClose: 'Вернуться завтра',
+      wsBtnRules: 'Как это работает',
+      dayLabel: 'День',
+      claimed: 'Забрано',
+      casinoTitle: '🎰 Казино',
+      casinoSubtitle: 'Вращайте колесо — раз в 2 часа',
+      spin: 'КРУТИТЬ',
+      ready: 'Готово',
+      full: 'Полный',
+      coinsBalance: 'Баланс монет',
+
+      // withdraw translations
+      withdrawTitle: 'Вывод средств',
+      withdrawSub: 'Платежи проходят через TON',
+      withdrawTrust: 'Доверие: выплаты оформляются администратором',
+      withdrawDateText: 'Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.',
+      enterAddressAlert: 'Введите адрес',
+      boundAddress: 'Привязанный адрес: ',
+      addressNotBound: 'Адрес не привязан.',
+      addressSaved: 'Адрес сохранён.',
+      checkAddress: 'Проверьте адрес',
+      addressCopied: 'Адрес скопирован.',
+      addressCopyFailed: 'Не удалось скопировать.',
+
+      // quests
+      questsTitle: 'Квесты',
+      quest_tg_title: 'Подписаться в Telegram',
+      quest_tg_desc: 'Подпишитесь на наш Telegram-канал и получите бонус.',
+      quest_yt_title: 'Подписаться на YouTube',
+      quest_yt_desc: 'Подпишитесь на наш YouTube-канал и получите бонус.',
+      questsOpenBtn: 'Открыть',
+
+      // other small bits
+      withdrawAddrTitle: 'Адрес для выплат',
+      withdrawAddrDesc: 'Укажите TON-адрес. После сохранения адрес будет привязан.',
+      questsOpenProfileBtn: 'Открыть квесты'
+    },
+    en: {
+      pickRoomFirst: 'Pick a room first!',
+      notEnough: 'Not enough coins!',
+      dailyAlready: 'Daily reward already claimed!',
+      questAlready: 'Quest already claimed!',
+      miningIncome: 'Mining Income:',
+      miningShop: 'Mining Shop',
+      close: 'Close',
+      howToPlay: 'How to Play',
+      infoList: [
+        'Select a room and then click the 🔍 button to hunt.',
+        'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
+        'If your room is found, you lose coins (shown in red).',
+        'If you evade the hunt, you gain coins (shown in green).',
+        'Buy upgrades or miners to improve your chances and income.',
+        'Claim daily rewards and complete quests for bonus coins.'
+      ],
+      profile: 'Profile',
+      dailyReward: 'Daily Reward',
+      dailyText: 'Get 30,000 XTR once a day!',
+      claimDaily: 'Claim Daily',
+      quest: 'Quest',
+      claimQuest: 'Claim Quest',
+      settings: 'Settings',
+      settingsText: 'Change language and other preferences.',
+      buyFor: 'Buy {name} for {price}?',
+      buy: 'Buy',
+      cancel: 'Cancel',
+      profitHr: 'Profit/hr:',
+      noEnergy: 'No energy!',
+      startBtn: '🏠 Start',
+      resetBtn: '🔍 Hunt',
+      wsTitle: 'Premium Gifts',
+      wsSub: '7 days of rewards — claim one per day',
+      wsBtnClose: 'Come back tomorrow',
+      wsBtnRules: 'How it works',
+      dayLabel: 'Day',
+      claimed: 'Claimed',
+      casinoTitle: '🎰 Casino',
+      casinoSubtitle: 'Spin the wheel — once every 2 hours',
+      spin: 'SPIN',
+      ready: 'Ready',
+      full: 'Full',
+      coinsBalance: 'Coins balance',
+
+      // withdraw
+      withdrawTitle: 'Withdraw funds',
+      withdrawSub: 'Payouts are processed via TON',
+      withdrawTrust: 'Trust: payouts are processed by admin',
+      withdrawDateText: 'All tokens will be automatically sent to the specified address on the coin listing date — <strong>December 15, 2025</strong>.',
+      enterAddressAlert: 'Enter address',
+      boundAddress: 'Bound address: ',
+      addressNotBound: 'Address not bound.',
+      addressSaved: 'Address saved.',
+      checkAddress: 'Check the address',
+      addressCopied: 'Address copied.',
+      addressCopyFailed: 'Failed to copy.',
+
+      // quests
+      questsTitle: 'Quests',
+      quest_tg_title: 'Subscribe on Telegram',
+      quest_tg_desc: 'Subscribe to our Telegram channel and get a reward.',
+      quest_yt_title: 'Subscribe on YouTube',
+      quest_yt_desc: 'Subscribe to our YouTube channel and get a reward.',
+      questsOpenBtn: 'Open',
+
+      withdrawAddrTitle: 'Payout address',
+      withdrawAddrDesc: 'Enter a TON address. It will be bound after saving.',
+      questsOpenProfileBtn: 'Open quests'
+    }
+  };
+
   let lang = localStorage.getItem('lang') || 'ru';
   function t(key, vars = {}) {
-    const val = i18n[lang] && i18n[lang][key];
+    const val = (i18n[lang] && i18n[lang][key]) || (i18n.ru && i18n.ru[key]) || '';
     if (typeof val === 'string') {
       return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
     }
@@ -857,9 +908,6 @@ header{
       (t('infoList') || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
     }
 
-    const claimTgBtn = document.getElementById('claimTgSubscribe');
-    if (claimTgBtn) claimTgBtn.textContent = t('claimQuest');
-
     const startBtn = document.getElementById('startBtn');
     if (startBtn) startBtn.textContent = t('startBtn');
     const resetBtn = document.getElementById('resetBtn');
@@ -883,6 +931,30 @@ header{
 
     const coinsBalanceCaption = document.querySelector('#wsModalOverlay .header div:last-child div:last-child');
     if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
+
+    // withdraw translations
+    const wTitle = document.getElementById('withdrawTitle');
+    if (wTitle) wTitle.textContent = t('withdrawTitle');
+    const wSub = document.getElementById('withdrawSub');
+    if (wSub) wSub.textContent = t('withdrawSub');
+    const wTrust = document.getElementById('withdrawTrust');
+    if (wTrust) wTrust.textContent = t('withdrawTrust');
+    const wDate = document.getElementById('withdrawDateText');
+    if (wDate) wDate.innerHTML = t('withdrawDateText');
+    const wAddrTitle = document.getElementById('withdrawAddrTitle');
+    if (wAddrTitle) wAddrTitle.textContent = t('withdrawAddrTitle');
+    const wAddrDesc = document.getElementById('withdrawAddrDesc');
+    if (wAddrDesc) wAddrDesc.textContent = t('withdrawAddrDesc');
+    const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    if (closeWithdrawBtn) closeWithdrawBtn.textContent = t('close');
+
+    // profile quests button
+    const openQuestsBtn = document.getElementById('openQuestsBtn');
+    if (openQuestsBtn) openQuestsBtn.textContent = t('questsOpenBtn');
+
+    // quests title
+    const questsTitleEl = document.getElementById('questsTitle');
+    if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
   }
 
   // ========== Energy ==========
@@ -1117,13 +1189,13 @@ header{
     function renderBoundInfo(){
       const a = loadBoundAddr();
       if(a){
-        boundInfo.textContent = 'Привязанный адрес: ' + maskAddr(a);
+        boundInfo.textContent = t('boundAddress') + maskAddr(a);
         if(withdrawInput) withdrawInput.style.display = 'none';
         if(saveAddrBtn) saveAddrBtn.style.display = 'none';
         if(changeAddrBtn) changeAddrBtn.style.display = 'inline-block';
         if(copyAddrBtn) copyAddrBtn.style.display = 'inline-block';
       } else {
-        boundInfo.textContent = 'Адрес не привязан.';
+        boundInfo.textContent = t('addressNotBound');
         if(withdrawInput) withdrawInput.style.display = 'block';
         if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
         if(changeAddrBtn) changeAddrBtn.style.display = 'none';
@@ -1150,10 +1222,10 @@ header{
 
     if (saveAddrBtn) saveAddrBtn.addEventListener('click', ()=>{
       const v = (withdrawInput.value || '').trim();
-      if(!v){ alert('Введите адрес'); return; }
+      if(!v){ alert(t('enterAddressAlert')); return; }
       saveBoundAddr(v);
       renderBoundInfo();
-      if(withdrawStatus) withdrawStatus.textContent = 'Адрес сохранён.';
+      if(withdrawStatus) withdrawStatus.textContent = t('addressSaved');
       save();
     });
 
@@ -1163,20 +1235,20 @@ header{
       if(saveAddrBtn) saveAddrBtn.style.display = 'inline-block';
       if(changeAddrBtn) changeAddrBtn.style.display = 'none';
       if(copyAddrBtn) copyAddrBtn.style.display = 'none';
-      if(boundInfo) boundInfo.textContent = 'Введите новый адрес.';
+      if(boundInfo) boundInfo.textContent = t('enterAddressAlert');
     });
 
     if (copyAddrBtn) copyAddrBtn.addEventListener('click', ()=>{
       const a = loadBoundAddr();
       if(!a) return;
-      navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Адрес скопирован.'; }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = 'Не удалось скопировать.'; });
+      navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = t('addressCopied'); }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = t('addressCopyFailed'); });
     });
 
     function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(!withdrawStatus) return;
-      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = 'Доступно: ' + formatTon(currentTon) + ' TON'; }
-      else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = 'Недостаточно TON: ' + formatTon(currentTon); }
+      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = t('available') || (t('withdrawStatus') || (t('withdrawStatus') && t('withdrawStatus'))); }
+      else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = (t('checkAddress') || t('checkAddress')) + ': ' + formatTon(currentTon); }
     }
 
     renderBoundInfo();
@@ -1415,13 +1487,13 @@ header{
   const questStatusEl = document.getElementById('questStatus');
   const dailyStatusEl = document.getElementById('dailyStatus');
   function updateQuestStatus(){ if (questStatusEl) questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; }
-  function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 Available!"; else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } }
+  function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 " + (lang === 'ru' ? 'Доступно!' : 'Available!'); else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } }
   setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
   document.getElementById('claimQuest') && (document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } });
   document.getElementById('claimDaily') && (document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } });
 
-  // NEW: Telegram subscribe quest logic
+  // NEW: Telegram subscribe quest logic (kept but quests now open links)
   let tgSubscribeClaimed = localStorage.getItem('tgSubscribeClaimed') === 'true';
   const tgStatusEl = document.getElementById('tgQuestStatus');
   function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? "✅ Completed" : "❌ Not claimed"; }
@@ -1445,7 +1517,7 @@ header{
   const langSelect = document.getElementById('langSelect');
   if (langSelect) {
     langSelect.value = lang;
-    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); renderCards && renderCards(); };
+    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); renderCards && renderCards(); window._questsModal && window._questsModal.render && window._questsModal.render(); };
   }
 
   /* ===========================
@@ -1703,7 +1775,7 @@ header{
 
   /* ===========================
   Casino modal & logic (XTR labels)
-  ============================ */
+  =========================== */
   (function(){
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
@@ -1931,18 +2003,19 @@ header{
     };
   })();
 
-  /* ========== Quests modal logic (render cards + handlers) ========== */
+  /* ========== Quests modal logic (render cards + handlers) ==========
+     Now: only two quests: Telegram and YouTube (open links).
+  ========== */
   (function(){
     const questsModal = document.getElementById('questsModal');
     const questsContainer = document.getElementById('questsContainer');
     const openQuestsBtn = document.getElementById('openQuestsBtn');
     const closeQuests = document.getElementById('closeQuests');
 
-    // define quests: key,title,desc,action (url or functionName)
+    // Only two quests — actions are URLs
     const questsData = [
-      { key: 'daily', title: 'Daily Reward', desc: 'Заберите ежедневную награду.', action: 'claimDaily' },
-      { key: 'main_quest', title: 'Основной квест', desc: 'Выполните основное задание и получите 50K XTR.', action: 'openQuestPage' },
-      { key: 'tg', title: 'Подписка в Telegram', desc: 'Подпишитесь на канал и получите бонус.', action: 'claimTg' }
+      { key: 'tg', action: 'https://t.me/xtr_monkey' },
+      { key: 'yt', action: 'https://youtube.com/@xtr_monkey?si=wCkg9jAlFKSpm8XL' }
     ];
 
     function openQuestsModal(){
@@ -1961,17 +2034,19 @@ header{
       if(!questsContainer) return;
       questsContainer.innerHTML = '';
       questsData.forEach(q => {
+        const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
+        const desc = t(`quest_${q.key}_desc`) || '';
         const card = document.createElement('div');
         card.className = 'quest-card';
         card.innerHTML = `
           <div class="quest-left" role="button" tabindex="0">
             <div class="quest-meta">
-              <div class="quest-title">${q.title}</div>
-              <div class="quest-desc">${q.desc}</div>
+              <div class="quest-title">${title}</div>
+              <div class="quest-desc">${desc}</div>
             </div>
           </div>
           <div style="display:flex;align-items:center;">
-            <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${q.title}">→</button>
+            <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
           </div>
         `;
         const arrow = card.querySelector('.quest-arrow');
@@ -1986,27 +2061,14 @@ header{
 
     function handleQuestAction(q){
       if(!q || !q.action) return;
-      if(q.action === 'claimDaily') {
-        const claimBtn = document.getElementById('claimDaily');
-        if(claimBtn) claimBtn.click();
-        closeQuestsModal();
-        return;
-      }
-      if(q.action === 'claimTg') {
-        const claimTg = document.getElementById('claimTgSubscribe');
-        if(claimTg) claimTg.click();
-        closeQuestsModal();
-        return;
-      }
-      if(q.action === 'openQuestPage') {
-        if(typeof window.openQuestPage === 'function') return window.openQuestPage(q.key);
-        alert('Открыть страницу квеста: ' + q.title);
-        return;
-      }
+      // if action is URL — open in new tab
       if(typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
-        window.open(q.action, '_blank', 'noopener'); return;
+        window.open(q.action, '_blank', 'noopener');
+        return;
       }
+      // fallback to other handlers if needed
       if(typeof window[q.action] === 'function') { return window[q.action](q); }
+      alert(q.action);
     }
 
     if(openQuestsBtn) openQuestsBtn.addEventListener('click', openQuestsModal);
