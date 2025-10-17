@@ -452,20 +452,20 @@ header{
     <!-- Coin panel (уменьшён) -->
     <div class="coin-panel" aria-live="polite" aria-atomic="true">
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="coin-logo" title="XTR">
+        <div class="coin-logo" id="coinLogo" title="XTR">
           <img src="logo.png" alt="XTR logo" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
-          <div style="font-size:11px;color:var(--birch);font-weight:800">XTR</div>
+          <div id="coinLabel" style="font-size:11px;color:var(--birch);font-weight:800">XTR</div>
           <div class="val" id="coinsVal">0</div>
         </div>
       </div>
        <div class="ton-panel" style="margin-left:6px;">
-        <div class="ton-logo" title="TON">
+        <div class="ton-logo" id="tonLogo" title="TON">
           <img src="ton.png" alt="TON logo" />
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1;">
-          <div style="font-size:11px;color:var(--birch);font-weight:800">TON</div>
+          <div id="tonLabel" style="font-size:11px;color:var(--birch);font-weight:800">TON</div>
           <div class="ton-val" id="tonVal">0.00</div>
         </div>
       </div>
@@ -481,37 +481,37 @@ header{
 
   <div class="upgrade-panel" id="upgradePanel">
     <div class="upgrade" data-key="x2Prize" data-base-price="20000">
-      <h3>x2 Prize / x2 Loss</h3>
-      <p>Double rewards & penalties</p>
+      <h3 data-i18n="upg_x2_title">x2 Prize / x2 Loss</h3>
+      <p data-i18n="upg_x2_desc">Double rewards & penalties</p>
       <div class="price">20,000</div>
       <div class="badge">Boost</div>
     </div>
     <div class="upgrade" data-key="check1" data-base-price="20000">
-      <h3>Check 1 Room Only</h3>
-      <p>Hunter checks 1 room only (1 min)</p>
+      <h3 data-i18n="upg_check1_title">Check 1 Room Only</h3>
+      <p data-i18n="upg_check1_desc">Hunter checks 1 room only (1 min)</p>
       <div class="price">20,000</div>
       <div class="timer" id="check1Timer"></div>
     </div>
 
     <div class="upgrade" data-key="shield" data-base-price="25000">
-      <h3>Shield (1m)</h3>
-      <p>Protects you from loss for 1 minute</p>
+      <h3 data-i18n="upg_shield_title">Shield (1m)</h3>
+      <p data-i18n="upg_shield_desc">Protects you from loss for 1 minute</p>
       <div class="price">25,000</div>
       <div class="timer" id="shieldTimer"></div>
       <div class="badge">Defence</div>
     </div>
 
     <div class="upgrade" data-key="incBoost" data-base-price="30000">
-      <h3>Double Income (1m)</h3>
-      <p>Mining income ×2 for 1 minute</p>
+      <h3 data-i18n="upg_inc_title">Double Income (1m)</h3>
+      <p data-i18n="upg_inc_desc">Mining income ×2 for 1 minute</p>
       <div class="price">30,000</div>
       <div class="timer" id="incTimer"></div>
       <div class="badge">Income</div>
     </div>
 
     <div class="upgrade" data-key="luck" data-base-price="22000">
-      <h3>Lucky Escape (1m)</h3>
-      <p>50% chance to evade if hunted (1 minute)</p>
+      <h3 data-i18n="upg_luck_title">Lucky Escape (1m)</h3>
+      <p data-i18n="upg_luck_desc">50% chance to evade if hunted (1 minute)</p>
       <div class="price">22,000</div>
       <div class="timer" id="luckTimer"></div>
       <div class="badge">Chance</div>
@@ -586,8 +586,8 @@ header{
   </div>
 
   <div class="bottom-menu">
-    <button id="miningBtn" class="btnGhost">⛏</button>
-    <button id="profileBtn" class="btnGhost">👤</button>
+    <button id="miningBtn" class="btnGhost" title="Mining">⛏</button>
+    <button id="profileBtn" class="btnGhost" title="Profile">👤</button>
     <button id="withdrawBtn" class="btnGhost" title="Вывод">💸</button>
     <button id="casinoBtn" class="btnGhost" title="Casino">🎰</button>
   </div>
@@ -716,8 +716,8 @@ header{
 
 <script>
   /* ===========================
-     Объединённый и отредактированный JS
-  =========================== */
+     Объединённый и отредактированный JS (локализация: полностью рабочая)
+  ============================ */
 
   // ======= Constants & storage keys =======
   const LS_COINS = 'coins';
@@ -731,9 +731,9 @@ header{
 
   // Conversion: 1 XTR -> 0.000001 TON  (so 1000 XTR = 0.001 TON)
   const ZEX_TO_TON = 0.000001;
-  const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 XTR
+  const TON_TO_ZEX = 1 / ZEX_TO_TON;
 
-  // ========== Localization ==========
+  // ========== Localization (keys for every UI string) ==========
   const i18n = {
     ru: {
       pickRoomFirst: 'Сначала выберите комнату!',
@@ -779,12 +779,9 @@ header{
       ready: 'Готово',
       full: 'Полный',
       coinsBalance: 'Баланс монет',
-
-      // withdraw translations
-      withdrawTitle: 'Вывод средств',
-      withdrawSub: 'Платежи проходят через TON',
-      withdrawTrust: 'Доверие: выплаты оформляются администратором',
-      withdrawDateText: 'Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.',
+      available: 'Доступно',
+      withdrawAvailable: 'Доступно к выводу',
+      withdrawStatus: 'Статус вывода',
       enterAddressAlert: 'Введите адрес',
       boundAddress: 'Привязанный адрес: ',
       addressNotBound: 'Адрес не привязан.',
@@ -792,19 +789,39 @@ header{
       checkAddress: 'Проверьте адрес',
       addressCopied: 'Адрес скопирован.',
       addressCopyFailed: 'Не удалось скопировать.',
-
-      // quests
       questsTitle: 'Квесты',
       quest_tg_title: 'Подписаться в Telegram',
-      quest_tg_desc: 'Получите бонус 100к',
+      quest_tg_desc: 'Получите бонус 100k XTR',
       quest_yt_title: 'Подписаться на YouTube',
-       quest_yt_desc: 'Получите бонус 100к',
+      quest_yt_desc: 'Получите бонус 100k XTR',
       questsOpenBtn: 'Открыть',
-
-      // other small bits
+      withdrawTitle: 'Вывод средств',
+      withdrawSub: 'Платежи проходят через TON',
+      withdrawTrust: 'Доверие: выплаты оформляются администратором',
+      withdrawDateText: 'Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.',
       withdrawAddrTitle: 'Адрес для выплат',
       withdrawAddrDesc: 'Укажите TON-адрес. После сохранения адрес будет привязан.',
-      questsOpenProfileBtn: 'Открыть квесты'
+      claimedBadge: 'Забрано',
+      completed: 'Выполнено',
+      notClaimed: 'Не получено',
+      availableNow: 'Доступно!',
+      nextIn: 'Следующая через {hours}ч {minutes}м',
+      lvl: 'Ур. {n}',
+      new: 'Новое',
+      miner_1: 'Майнер 1',
+      miner_2: 'Майнер 2',
+      miner_3: 'Майнер 3',
+      miner_4: 'Майнер 4',
+      miner_5: 'Майнер 5',
+      miner_6: 'Майнер 6',
+      miner_7: 'Майнер 7',
+      miner_8: 'Майнер 8',
+      miner_9: 'Майнер 9',
+      miner_10: 'Майнер 10',
+      roomSymbol: '+',
+      coinsLabel: 'XTR',
+      tonLabel: 'TON',
+      minerIncomeLabel: '+{inc} / ч'
     },
     en: {
       pickRoomFirst: 'Pick a room first!',
@@ -850,12 +867,9 @@ header{
       ready: 'Ready',
       full: 'Full',
       coinsBalance: 'Coins balance',
-
-      // withdraw
-      withdrawTitle: 'Withdraw funds',
-      withdrawSub: 'Payouts are processed via TON',
-      withdrawTrust: 'Trust: payouts are processed by admin',
-      withdrawDateText: 'All tokens will be automatically sent to the specified address on the coin listing date — <strong>December 15, 2025</strong>.',
+      available: 'Available',
+      withdrawAvailable: 'Available to withdraw',
+      withdrawStatus: 'Withdraw status',
       enterAddressAlert: 'Enter address',
       boundAddress: 'Bound address: ',
       addressNotBound: 'Address not bound.',
@@ -863,16 +877,39 @@ header{
       checkAddress: 'Check the address',
       addressCopied: 'Address copied.',
       addressCopyFailed: 'Failed to copy.',
-
-      // quests
       questsTitle: 'Quests',
       quest_tg_title: 'Subscribe on Telegram',
+      quest_tg_desc: 'Get 100k bonus',
       quest_yt_title: 'Subscribe on YouTube',
+      quest_yt_desc: 'Get 100k bonus',
       questsOpenBtn: 'Open',
-
+      withdrawTitle: 'Withdraw funds',
+      withdrawSub: 'Payouts are processed via TON',
+      withdrawTrust: 'Trust: payouts are processed by admin',
+      withdrawDateText: 'All tokens will be automatically sent to the specified address on the coin listing date — <strong>December 15, 2025</strong>.',
       withdrawAddrTitle: 'Payout address',
       withdrawAddrDesc: 'Enter a TON address. It will be bound after saving.',
-      questsOpenProfileBtn: 'Open quests'
+      claimedBadge: 'Claimed',
+      completed: 'Completed',
+      notClaimed: 'Not claimed',
+      availableNow: 'Available!',
+      nextIn: 'Next in {hours}h {minutes}m',
+      lvl: 'Lvl {n}',
+      new: 'New',
+      miner_1: 'Miner 1',
+      miner_2: 'Miner 2',
+      miner_3: 'Miner 3',
+      miner_4: 'Miner 4',
+      miner_5: 'Miner 5',
+      miner_6: 'Miner 6',
+      miner_7: 'Miner 7',
+      miner_8: 'Miner 8',
+      miner_9: 'Miner 9',
+      miner_10: 'Miner 10',
+      roomSymbol: '+',
+      coinsLabel: 'XTR',
+      tonLabel: 'TON',
+      minerIncomeLabel: '+{inc} / hr'
     }
   };
 
@@ -880,25 +917,36 @@ header{
   function t(key, vars = {}) {
     const val = (i18n[lang] && i18n[lang][key]) || (i18n.ru && i18n.ru[key]) || '';
     if (typeof val === 'string') {
-      return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
+      return val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
     }
     return val || '';
   }
+
+  // helper to set textContent/innerHTML safely
+  function setTextIfExists(id, text, useHTML = false){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(useHTML) el.innerHTML = text;
+    else el.textContent = text;
+  }
+
   function applyLang() {
-    document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
-    document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
+    // static labels
+    setTextIfExists('miningLabel', t('miningIncome'));
+    setTextIfExists('shopTitle', t('miningShop'));
     const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
     if (cb) cb.textContent = t('buy');
     if (canc) canc.textContent = t('cancel');
-    document.getElementById('infoTitle') && (document.getElementById('infoTitle').textContent = t('howToPlay'));
-    document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
-    document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
-    document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
-    document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
-    document.getElementById('questTitle') && (document.getElementById('questTitle').textContent = t('quest'));
-    document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest'));
-    document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
-    document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.dataset.i18n;
+      if(key) el.textContent = t(key);
+    });
+    setTextIfExists('profileTitle', t('profile'));
+    setTextIfExists('dailyTitle', t('dailyReward'));
+    setTextIfExists('dailyText', t('dailyText'));
+    setTextIfExists('claimDaily', t('claimDaily'));
+    setTextIfExists('settingsTitle', t('settings'));
+    setTextIfExists('settingsText', t('settingsText'));
 
     const infoListEl = document.getElementById('infoList');
     if (infoListEl) {
@@ -953,6 +1001,21 @@ header{
     // quests title
     const questsTitleEl = document.getElementById('questsTitle');
     if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
+
+    // coin labels
+    setTextIfExists('coinLabel', t('coinsLabel'));
+    setTextIfExists('tonLabel', t('tonLabel'));
+    const coinLogo = document.getElementById('coinLogo');
+    if(coinLogo) coinLogo.title = t('coinsLabel');
+    const tonLogo = document.getElementById('tonLogo');
+    if(tonLogo) tonLogo.title = t('tonLabel');
+
+    // update miners text render if visible
+    renderMiners();
+    // update rewards modal grid if open
+    if(window._wsModal && typeof window._wsModal.render === 'function') window._wsModal.render();
+    // update quests UI
+    if(window._questsModal && typeof window._questsModal.render === 'function') window._questsModal.render();
   }
 
   // ========== Energy ==========
@@ -1080,7 +1143,7 @@ header{
     const d = document.createElement('div');
     d.className = 'room';
     d.dataset.idx = i;
-    d.textContent = '+';
+    d.textContent = t('roomSymbol') || '+';
     roomsContainer.appendChild(d);
   }
   let selectedRoom = null;
@@ -1099,17 +1162,18 @@ header{
   let doubleIncomeExpire = +localStorage.getItem('doubleIncomeExpire') || 0;
   let luckExpire = +localStorage.getItem('luckExpire') || 0;
 
+  // minersData: include translation key nKey for miner names
   const minersData = [
-    { n: "Miner 1", i: 500, p: 7000 },
-    { n: "Miner 2", i: 1788, p: 12000 },
-    { n: "Miner 3", i: 2358, p: 15000 },
-    { n: "Miner 4", i: 3000, p: 20000 },
-    { n: "Miner 5", i: 4500, p: 25000 },
-    { n: "Miner 6", i: 5200, p: 30000 },
-    { n: "Miner 7", i: 6100, p: 35000 },
-    { n: "Miner 8", i: 7200, p: 40000 },
-    { n: "Miner 9", i: 8500, p: 45000 },
-    { n: "Miner 10", i: 9500, p: 50000 }
+    { key: "miner_1", i: 500, p: 7000, nKey: 'miner_1' },
+    { key: "miner_2", i: 1788, p: 12000, nKey: 'miner_2' },
+    { key: "miner_3", i: 2358, p: 15000, nKey: 'miner_3' },
+    { key: "miner_4", i: 3000, p: 20000, nKey: 'miner_4' },
+    { key: "miner_5", i: 4500, p: 25000, nKey: 'miner_5' },
+    { key: "miner_6", i: 5200, p: 30000, nKey: 'miner_6' },
+    { key: "miner_7", i: 6100, p: 35000, nKey: 'miner_7' },
+    { key: "miner_8", i: 7200, p: 40000, nKey: 'miner_8' },
+    { key: "miner_9", i: 8500, p: 45000, nKey: 'miner_9' },
+    { key: "miner_10", i: 9500, p: 50000, nKey: 'miner_10' }
   ];
 
   let minersState;
@@ -1218,7 +1282,7 @@ header{
     if (withdrawBtn) withdrawBtn.addEventListener('click', openWithdraw);
     if (closeWithdraw) closeWithdraw.addEventListener('click', closeWithdrawModal);
 
-    if (saveAddrBtn) saveAddrBtn.addEventListener('click', ()=>{
+    if (saveAddrBtn) saveAddrBtn.addEventListener('click', ()=>{ 
       const v = (withdrawInput.value || '').trim();
       if(!v){ alert(t('enterAddressAlert')); return; }
       saveBoundAddr(v);
@@ -1236,7 +1300,7 @@ header{
       if(boundInfo) boundInfo.textContent = t('enterAddressAlert');
     });
 
-    if (copyAddrBtn) copyAddrBtn.addEventListener('click', ()=>{
+    if (copyAddrBtn) copyAddrBtn.addEventListener('click', ()=>{ 
       const a = loadBoundAddr();
       if(!a) return;
       navigator.clipboard && navigator.clipboard.writeText(a).then(()=>{ if(withdrawStatus) withdrawStatus.textContent = t('addressCopied'); }).catch(()=>{ if(withdrawStatus) withdrawStatus.textContent = t('addressCopyFailed'); });
@@ -1245,8 +1309,14 @@ header{
     function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(!withdrawStatus) return;
-      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = t('available') || (t('withdrawStatus') || (t('withdrawStatus') && t('withdrawStatus'))); }
-      else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = (t('checkAddress') || t('checkAddress')) + ': ' + formatTon(currentTon); }
+      if(currentTon >= 7){ 
+        withdrawStatus.className = 'withdraw-success'; 
+        withdrawStatus.textContent = t('withdrawAvailable') || t('available') || 'Available'; 
+      }
+      else { 
+        withdrawStatus.className = 'withdraw-warning'; 
+        withdrawStatus.textContent = (t('checkAddress') || t('checkAddress')) + ': ' + formatTon(currentTon); 
+      }
     }
 
     renderBoundInfo();
@@ -1254,17 +1324,17 @@ header{
 
   // ========== Balances & coins helpers (ensure withdraw UI updates) ==========
   function updateBalancesDisplay(){
-    if (coinsVal) coinsVal.textContent = format(coins);
+    if (coinsVal) coinsVal.textContent = format(Math.floor(coins));
     const tonEl = document.getElementById('tonVal');
     if (tonEl) tonEl.textContent = formatTon(ton);
     const wsZex = document.getElementById('wsModalCoinsDisplay');
     if (wsZex) {
       const wsTon = formatTon(ton);
-      wsZex.textContent = format(coins) + ' XTR • ' + wsTon + ' TON';
+      wsZex.textContent = format(Math.floor(coins)) + ' XTR • ' + wsTon + ' TON';
     }
     const casinoBalance = document.getElementById('casinoBalance');
     if (casinoBalance) {
-      casinoBalance.textContent = format(coins) + ' XTR • ' + formatTon(ton) + ' TON';
+      casinoBalance.textContent = format(Math.floor(coins)) + ' XTR • ' + formatTon(ton) + ' TON';
     }
   }
 
@@ -1317,12 +1387,12 @@ header{
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
       let price = base * Math.pow(2,count);
       let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price);
-      const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New';
+      const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? t('lvl',{n:count}) : t('new');
     });
   }
 
   document.querySelectorAll('.upgrade').forEach(u=>{
-    u.onclick = ()=>{
+    u.onclick = ()=>{ 
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key]||0;
       let price = base * Math.pow(2,count);
       if (coins >= price) {
@@ -1369,12 +1439,12 @@ header{
     };
   });
 
-  document.getElementById('startBtn').onclick = ()=>{
+  document.getElementById('startBtn').onclick = ()=>{ 
     if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
     document.querySelectorAll('.room').forEach(r=>r.classList.remove('found','safe'));
   };
 
-  document.getElementById('resetBtn').onclick = ()=>{
+  document.getElementById('resetBtn').onclick = ()=>{ 
     if (selectedRoom == null) { alert(t('pickRoomFirst')); return; }
     if (!consumeEnergyOne()) return;
     roundInProgress = true;
@@ -1425,23 +1495,24 @@ header{
       const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
       const price = m.p * Math.pow(2, st.count);
       const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
+      const name = (t(m.nKey) || m.nKey || m.key || `Miner ${i+1}`);
 
       const card = document.createElement('div'); card.className = 'miner-card';
       card.innerHTML = `
         <img class="card-logo" src="logo.png" alt="logo" />
-        <h3>${m.n}</h3>
-        <div class="income">+${format(income)} / hr</div>
+        <h3>${name}</h3>
+        <div class="income">${t('minerIncomeLabel', { inc: format(income) })}</div>
         <div class="bottom">
-          <span class="lvl">Lvl ${st.count}</span>
+          <span class="lvl">${t('lvl',{n:st.count})}</span>
           <span class="price-pill">${format(price)}</span>
         </div>
       `;
-      card.onclick = ()=>{
+      card.onclick = ()=>{ 
         const currentSt = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
         const currentPrice = m.p * Math.pow(2, currentSt.count);
         if (coins >= currentPrice) {
           pendingMiner = i;
-          buyText.textContent = t('buyFor', { name: m.n, price: format(currentPrice) });
+          buyText.textContent = t('buyFor', { name, price: format(currentPrice) });
           buyConfirm.classList.add('show'); buyConfirm.style.display = 'block'; buyConfirm.setAttribute('aria-hidden','false');
         } else { alert(t('notEnough')); }
       };
@@ -1484,8 +1555,23 @@ header{
   let lastDaily = +localStorage.getItem('lastDaily') || 0;
   const questStatusEl = document.getElementById('questStatus');
   const dailyStatusEl = document.getElementById('dailyStatus');
-  function updateQuestStatus(){ if (questStatusEl) questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; }
-  function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 " + (lang === 'ru' ? 'Доступно!' : 'Available!'); else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } }
+
+  function updateQuestStatus(){ 
+    if (questStatusEl) questStatusEl.textContent = questClaimed ? (t('completed') || '✅ Completed') : (t('notClaimed') || '❌ Not claimed'); 
+  }
+  function updateDailyStatus(){ 
+    if (dailyStatusEl) { 
+      const now = Date.now(); 
+      const nextAvailable = lastDaily + 24*60*60*1000; 
+      if (now >= nextAvailable) dailyStatusEl.textContent = t('availableNow') || '💰 Available!'; 
+      else { 
+        const diff = nextAvailable - now; 
+        const hours = Math.floor(diff / (1000*60*60)); 
+        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); 
+        dailyStatusEl.textContent = t('nextIn',{hours, minutes}); 
+      } 
+    } 
+  }
   setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
   document.getElementById('claimQuest') && (document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } });
@@ -1494,7 +1580,7 @@ header{
   // NEW: Telegram subscribe quest logic (kept but quests now open links)
   let tgSubscribeClaimed = localStorage.getItem('tgSubscribeClaimed') === 'true';
   const tgStatusEl = document.getElementById('tgQuestStatus');
-  function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? "✅ Completed" : "❌ Not claimed"; }
+  function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? (t('completed') || '✅ Completed') : (t('notClaimed') || '❌ Not claimed'); }
   const claimTgBtn = document.getElementById('claimTgSubscribe');
   const openTgBtn = document.getElementById('openTgChannel');
   if (claimTgBtn) claimTgBtn.addEventListener('click', ()=>{
@@ -1515,7 +1601,7 @@ header{
   const langSelect = document.getElementById('langSelect');
   if (langSelect) {
     langSelect.value = lang;
-    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); renderCards && renderCards(); window._questsModal && window._questsModal.render && window._questsModal.render(); };
+    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); if(window._questsModal && window._questsModal.render) window._questsModal.render(); if(window._wsModal && window._wsModal.render) window._wsModal.render(); };
   }
 
   /* ===========================
@@ -1752,7 +1838,7 @@ header{
     });
 
     if (btnRules) btnRules.addEventListener('click', function(){
-      alert(t('wsBtnRules') ? t('wsBtnRules') + ': ' + (t('wsSub') || '') : 'Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
+      alert((t('wsBtnRules') ? t('wsBtnRules') : 'How it works') + ': ' + (t('wsSub') || 'Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.'));
     });
 
     hideMainUI();
@@ -2030,139 +2116,139 @@ header{
 
    // --- заменить старые renderQuests() и handleQuestAction(q) на этот код ---
 
-// настроиваем вознаграждения (можно поменять значения)
-const questRewards = { tg: 100000, yt: 100000 };
+    // настроиваем вознаграждения (можно поменять значения)
+    const questRewards = { tg: 100000, yt: 100000 };
 
-// состояние уже полученных квестов (персистится в localStorage)
-let questClaimedMap = {
-  tg: localStorage.getItem('quest_tg_claimed') === 'true',
-  yt: localStorage.getItem('quest_yt_claimed') === 'true'
-};
+    // состояние уже полученных квестов (персистится в localStorage)
+    let questClaimedMap = {
+      tg: localStorage.getItem('quest_tg_claimed') === 'true',
+      yt: localStorage.getItem('quest_yt_claimed') === 'true'
+    };
 
-function renderQuests(){
-  if(!questsContainer) return;
-  questsContainer.innerHTML = '';
+    function renderQuests(){
+      if(!questsContainer) return;
+      questsContainer.innerHTML = '';
 
-  questsData.forEach(q => {
-    const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
-    const desc = t(`quest_${q.key}_desc`) || '';
-    const card = document.createElement('div');
-    card.className = 'quest-card';
-    card.dataset.key = q.key;
+      questsData.forEach(q => {
+        const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
+        const desc = t(`quest_${q.key}_desc`) || '';
+        const card = document.createElement('div');
+        card.className = 'quest-card';
+        card.dataset.key = q.key;
 
-    card.innerHTML = `
-      <div class="quest-left" role="button" tabindex="0">
-        <div class="quest-meta">
-          <div class="quest-title">${title}</div>
-          <div class="quest-desc">${desc}</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;">
-        <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
-      </div>
-    `;
+        card.innerHTML = `
+          <div class="quest-left" role="button" tabindex="0">
+            <div class="quest-meta">
+              <div class="quest-title">${title}</div>
+              <div class="quest-desc">${desc}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;">
+            <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
+          </div>
+        `;
 
-    // если уже получено — отметим карточку и добавим бейдж
-    if (questClaimedMap[q.key]) {
-      card.classList.add('claimed');
-      const badge = document.createElement('div');
-      badge.className = 'claimBadge';
-      badge.textContent = t('claimed') || 'Claimed';
-      card.appendChild(badge);
-      const arrow = card.querySelector('.quest-arrow');
-      if (arrow) arrow.disabled = true;
-    }
-
-    // клики
-    const arrow = card.querySelector('.quest-arrow');
-    if (arrow) arrow.addEventListener('click', (ev)=>{
-      ev.stopPropagation();
-      handleQuestAction(q);
-    });
-    const left = card.querySelector('.quest-left');
-    if (left) left.addEventListener('click', ()=> handleQuestAction(q));
-
-    questsContainer.appendChild(card);
-  });
-}
-
-function handleQuestAction(q){
-  if(!q || !q.key) return;
-
-  // если уже взяли — ничего не даём
-  if (questClaimedMap[q.key]) {
-    alert(t('questAlready') || 'Quest already claimed!');
-    return;
-  }
-
-  // Если действие — ссылка, открываем её
-  if (typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
-    // Откроем в новой вкладке
-    window.open(q.action, '_blank', 'noopener');
-
-    // Награда — выдаём сразу после открытия (можно изменить логику)
-    const reward = questRewards[q.key] || 0;
-    if (reward > 0) {
-      try {
-        if (typeof window.updCoins === 'function') {
-          window.updCoins(reward);
-        } else if (typeof window.updCoinsPublic === 'function') {
-          window.updCoinsPublic(reward);
-        } else {
-          // fallback: напрямую в localStorage
-          let cur = +localStorage.getItem(LS_COINS) || 0;
-          cur += reward;
-          localStorage.setItem(LS_COINS, String(cur));
-          // TON тоже увеличивается пропорционально
-          let storedTon = +localStorage.getItem(LS_TON) || 0;
-          storedTon += reward * ZEX_TO_TON;
-          localStorage.setItem(LS_TON, String(storedTon));
+        // если уже получено — отметим карточку и добавим бейдж
+        if (questClaimedMap[q.key]) {
+          card.classList.add('claimed');
+          const badge = document.createElement('div');
+          badge.className = 'claimBadge';
+          badge.textContent = t('claimed') || 'Claimed';
+          card.appendChild(badge);
+          const arrow = card.querySelector('.quest-arrow');
+          if (arrow) arrow.disabled = true;
         }
-      } catch(e){
-        console.warn('Reward give failed', e);
+
+        // клики
+        const arrow = card.querySelector('.quest-arrow');
+        if (arrow) arrow.addEventListener('click', (ev)=>{
+          ev.stopPropagation();
+          handleQuestAction(q);
+        });
+        const left = card.querySelector('.quest-left');
+        if (left) left.addEventListener('click', ()=> handleQuestAction(q));
+
+        questsContainer.appendChild(card);
+      });
+    }
+
+    function handleQuestAction(q){
+      if(!q || !q.key) return;
+
+      // если уже взяли — ничего не даём
+      if (questClaimedMap[q.key]) {
+        alert(t('questAlready') || 'Quest already claimed!');
+        return;
       }
-    }
 
-    // пометить как полученный и сохранить
-    questClaimedMap[q.key] = true;
-    localStorage.setItem(`quest_${q.key}_claimed`, 'true');
+      // Если действие — ссылка, открываем её
+      if (typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
+        // Откроем в новой вкладке
+        window.open(q.action, '_blank', 'noopener');
 
-    // обновить UI карточки (добавить бейдж)
-    const card = questsContainer && questsContainer.querySelector(`.quest-card[data-key="${q.key}"]`);
-    if (card) {
-      card.classList.add('claimed');
-      if (!card.querySelector('.claimBadge')) {
-        const badge = document.createElement('div');
-        badge.className = 'claimBadge';
-        badge.textContent = t('claimed') || 'Claimed';
-        card.appendChild(badge);
+        // Награда — выдаём сразу после открытия (можно изменить логику)
+        const reward = questRewards[q.key] || 0;
+        if (reward > 0) {
+          try {
+            if (typeof window.updCoins === 'function') {
+              window.updCoins(reward);
+            } else if (typeof window.updCoinsPublic === 'function') {
+              window.updCoinsPublic(reward);
+            } else {
+              // fallback: напрямую в localStorage
+              let cur = +localStorage.getItem(LS_COINS) || 0;
+              cur += reward;
+              localStorage.setItem(LS_COINS, String(cur));
+              // TON тоже увеличивается пропорционально
+              let storedTon = +localStorage.getItem(LS_TON) || 0;
+              storedTon += reward * ZEX_TO_TON;
+              localStorage.setItem(LS_TON, String(storedTon));
+            }
+          } catch(e){
+            console.warn('Reward give failed', e);
+          }
+        }
+
+        // пометить как полученный и сохранить
+        questClaimedMap[q.key] = true;
+        localStorage.setItem(`quest_${q.key}_claimed`, 'true');
+
+        // обновить UI карточки (добавить бейдж)
+        const card = questsContainer && questsContainer.querySelector(`.quest-card[data-key="${q.key}"]`);
+        if (card) {
+          card.classList.add('claimed');
+          if (!card.querySelector('.claimBadge')) {
+            const badge = document.createElement('div');
+            badge.className = 'claimBadge';
+            badge.textContent = t('claimed') || 'Claimed';
+            card.appendChild(badge);
+          }
+          const arrowBtn = card.querySelector('.quest-arrow');
+          if (arrowBtn) arrowBtn.disabled = true;
+        }
+
+        // обновить глобальные статусы (если есть)
+        if (q.key === 'tg') {
+          tgSubscribeClaimed = true;
+          localStorage.setItem('tgSubscribeClaimed','true');
+          updateTgQuestStatus && updateTgQuestStatus();
+        }
+        if (q.key === 'yt') {
+          localStorage.setItem('ytSubscribeClaimed','true');
+        }
+        updateQuestStatus && updateQuestStatus();
+        updateBalancesDisplay && updateBalancesDisplay();
+        return;
       }
-      const arrowBtn = card.querySelector('.quest-arrow');
-      if (arrowBtn) arrowBtn.disabled = true;
-    }
 
-    // обновить глобальные статусы (если есть)
-    if (q.key === 'tg') {
-      tgSubscribeClaimed = true;
-      localStorage.setItem('tgSubscribeClaimed','true');
-      updateTgQuestStatus && updateTgQuestStatus();
-    }
-    if (q.key === 'yt') {
-      localStorage.setItem('ytSubscribeClaimed','true');
-    }
-    updateQuestStatus && updateQuestStatus();
-    updateBalancesDisplay && updateBalancesDisplay();
-    return;
-  }
+      // fallback: если action — имя функции
+      if (typeof q.action === 'string' && typeof window[q.action] === 'function') {
+        window[q.action](q);
+        return;
+      }
 
-  // fallback: если action — имя функции
-  if (typeof q.action === 'string' && typeof window[q.action] === 'function') {
-    window[q.action](q);
-    return;
-  }
-
-  alert(q.action || 'No action');
-}
+      alert(q.action || 'No action');
+    }
 
 
     if(openQuestsBtn) openQuestsBtn.addEventListener('click', openQuestsModal);
