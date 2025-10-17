@@ -468,6 +468,20 @@ header{
     </div>
   </div>
 
+  <div id="infoWindow" aria-hidden="true">
+    <div class="content">
+      <h2 id="infoTitle">How to Play</h2>
+      <ul id="infoList">
+        <li>Select a room and then click the 🔍 button to hunt.</li>
+        <li>The hunter searches 2 random rooms (1 if "Check 1 Room" is active).</li>
+        <li>If your room is found, you lose coins (shown in red).</li>
+        <li>If you evade the hunt, you gain coins (shown in green).</li>
+        <li>Buy upgrades or miners to improve your chances and income.</li>
+        <li>Claim daily rewards and complete quests for bonus coins.</li>
+      </ul>
+      <button id="closeInfo" class="btnPrimary">Close</button>
+    </div>
+  </div>
 
   <div id="profileWindow" aria-hidden="true">
     <div class="content">
@@ -1383,6 +1397,13 @@ header{
   });
   if (openTgBtn) openTgBtn.addEventListener('click', ()=>{ /* anchor handles */ });
   updateTgQuestStatus();
+
+  // info window
+  const infoWindowEl = document.getElementById('infoWindow');
+  const infoBtn = document.getElementById('infoBtn');
+  if (infoBtn) infoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.style.display = 'block'; infoWindowEl.setAttribute('aria-hidden','false'); } };
+  const closeInfoBtn = document.getElementById('closeInfo');
+  if (closeInfoBtn) closeInfoBtn.onclick = ()=>{ if (infoWindowEl) { infoWindowEl.style.display = 'none'; infoWindowEl.setAttribute('aria-hidden','true'); } };
 
   // shop toggle & UI init
   const upgradePanel = document.getElementById('upgradePanel');
