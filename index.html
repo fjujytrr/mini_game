@@ -558,8 +558,8 @@ header{
       <!-- Replaced quest + tg blocks with a single entry that opens modal -->
       <div class="profile-section" id="profile-quests-entry" style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <h3>Quests</h3>
-          <p class="meta" style="margin:0;color:var(--birch);">Open available quests to get rewards.</p>
+          <h3 id="questsTitle">Quests</h3>
+          <p class="meta" id="profileQuestsDesc" style="margin:0;color:var(--birch);">Open available quests to get rewards.</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <button id="openQuestsBtn" class="btnPrimarySmall" style="padding:8px 12px;">Open</button>
@@ -604,12 +604,12 @@ header{
           <div class="coinIcon">💎</div>
           <div>
             <div style="font-size:18px" id="wsTitle">Premium Gifts</div>
-            <div class="sub">7 days of rewards — claim one per day</div>
+            <div class="sub" id="wsSub">7 days of rewards — claim one per day</div>
           </div>
         </div>
         <div style="text-align:right">
           <div style="font-weight:800;color:var(--wm-accentC);font-size:18px" id="wsModalCoinsDisplay">0 XTR • 0.00 TON</div>
-          <div style="font-size:12px;color:var(--wm-birch)">Coins balance</div>
+          <div style="font-size:12px;color:var(--wm-birch)" id="coinsBalanceLabel">Coins balance</div>
         </div>
       </div>
 
@@ -649,9 +649,10 @@ header{
         </div>
 
         <div class="casino-controls">
-          <div class="casino-note">Next spin in: <span id="casinoCooldown">Ready</span></div>
+          <div class="casino-note" id="casinoNote">Next spin in: <span id="casinoCooldown">Ready</span></div>
           <button id="spinBtn" class="spin-btn">SPIN</button>
-          <div>Result: <span id="casinoResult" class="casino-result">—</span></div>
+          <div id="casinoResultLabel">Result: <span id="casinoResult" class="casino-result">—</span></div>
+          <div>Result: <span id="casinoResultText" style="display:none">—</span></div>
           <button id="closeCasino" class="btnGhost" style="padding:8px 12px;border-radius:10px;">Close</button>
         </div>
       </div>
@@ -734,9 +735,6 @@ header{
   const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 XTR
 
   // ========== Localization ==========
-
-// === i18n patch: replace the existing i18n / t / applyLang block with this file ===
-// Usage: this block replaces the old i18n object and the t()/applyLang() functions
 
 const i18n = {
   ru: {
@@ -825,7 +823,12 @@ const i18n = {
     notClaimed: 'Не взято',
     nextIn: 'След: {h}ч {m}м',
     withdrawStatusAvailable: 'Доступно для вывода',
-    roomLabel: 'Комната'
+    roomLabel: 'Комната',
+    // --- added keys requested ---
+    energy: 'Энергия',
+    openAvailableQuests: 'Откройте доступные квесты, чтобы получить награды.',
+    nextSpinIn: 'Следующее вращение:',
+    resultLabel: 'Результат:',
   },
   en: {
     pickRoomFirst: 'Pick a room first!',
@@ -913,7 +916,12 @@ const i18n = {
     notClaimed: 'Not claimed',
     nextIn: 'Next in {h}h {m}m',
     withdrawStatusAvailable: 'Available to withdraw',
-    roomLabel: 'Room'
+    roomLabel: 'Room',
+    // added keys mirrored in English
+    energy: 'Energy',
+    openAvailableQuests: 'Open available quests to get rewards.',
+    nextSpinIn: 'Next spin in:',
+    resultLabel: 'Result:',
   }
 };
 
@@ -966,7 +974,12 @@ function applyLang(){
     'withdrawAddrTitle': 'boundAddress',
     'withdrawAddrDesc': 'withdrawSub',
     'withdrawDateText': 'withdrawDateText',
-    'closeWithdraw': 'close'
+    'closeWithdraw': 'close',
+    // added mappings
+    'energyLabel': 'energy',
+    'profileQuestsDesc': 'openAvailableQuests',
+    'coinsBalanceLabel': 'coinsBalance',
+    'wsSub': 'wsSub'
   };
 
   Object.keys(mapText).forEach(id=>{
@@ -976,8 +989,22 @@ function applyLang(){
     if(!key) return; // skip numeric values
     // withdrawDateText needs HTML
     if(id === 'withdrawDateText') { el.innerHTML = t(key); return; }
+    // casinoNote and casinoResultLabel handled separately below if present
     el.textContent = t(key);
   });
+
+  // special handling for casino note (keep the inner span for cooldown)
+  const casinoNoteEl = document.getElementById('casinoNote');
+  if (casinoNoteEl) {
+    casinoNoteEl.innerHTML = `${t('nextSpinIn')} <span id="casinoCooldown">${document.getElementById('casinoCooldown') ? document.getElementById('casinoCooldown').textContent : 'Ready'}</span>`;
+  }
+
+  // special handling for casino result label (keep the inner span)
+  const casinoResultLabelEl = document.getElementById('casinoResultLabel');
+  if (casinoResultLabelEl) {
+    const resultText = document.getElementById('casinoResult') ? document.getElementById('casinoResult').textContent : '—';
+    casinoResultLabelEl.innerHTML = `${t('resultLabel')} <span id="casinoResult" class="casino-result">${resultText}</span>`;
+  }
 
   // handle lists (infoList)
   const infoListEl = document.getElementById('infoList');
@@ -1085,6 +1112,8 @@ if (typeof module !== 'undefined') module.exports = { i18n, t, applyLang };
   function updateEnergyDisplay() {
     const el = document.getElementById('energyVal');
     const timerEl = document.getElementById('energyTimer');
+    const labelEl = document.getElementById('energyLabel');
+    if (labelEl) labelEl.textContent = t('energy') || labelEl.textContent;
     if (el) el.textContent = String(energy);
     if (timerEl) {
       if (energy >= MAX_ENERGY) {
@@ -1238,7 +1267,7 @@ if (typeof module !== 'undefined') module.exports = { i18n, t, applyLang };
     }
   }
 
-// ========== Withdraw UI implementation (simplified) ==========
+  // ========== Withdraw UI implementation (simplified) ==========
   (function(){
     const withdrawBtn = document.getElementById('withdrawBtn');
     const withdrawModal = document.getElementById('withdrawModal');
@@ -2001,7 +2030,9 @@ if (typeof module !== 'undefined') module.exports = { i18n, t, applyLang };
         }
         text = `+${tonAmount.toFixed(2)} TON`;
       }
-      casinoResultEl.textContent = text;
+      const casinoResultDisplay = document.getElementById('casinoResult');
+      if (casinoResultDisplay) casinoResultDisplay.textContent = text;
+      casinoResultEl && (casinoResultEl.textContent = text);
       updateCasinoBalanceDisplay();
       localStorage.setItem(COOL_KEY, String(Date.now()));
       updateCooldownDisplay();
