@@ -715,11 +715,10 @@ header{
   </div>
 
 <script>
-  /* ===========================
-     Объединённый и отредактированный JS
-  =========================== */
+  <script>
+/* ========== Полностью локализованный скрипт (заменяет ваш старый <script>) ========== */
 
-  // ======= Constants & storage keys =======
+  // ===== Constants & LS keys (оставлены ваши оригинальные) =====
   const LS_COINS = 'coins';
   const LS_MAXCOINS = 'maxCoins';
   const LS_UPGRADES = 'upgrades';
@@ -728,27 +727,26 @@ header{
   const LS_TON = 'player_ton_v1';
   const LS_WITHDRAW_ADDR = 'player_withdraw_ton_addr_v1';
   const LS_WITHDRAW_LOG = 'player_withdraw_log_v1';
-
-  // Conversion: 1 XTR -> 0.000001 TON  (so 1000 XTR = 0.001 TON)
   const ZEX_TO_TON = 0.000001;
-  const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 XTR
+  const TON_TO_ZEX = 1 / ZEX_TO_TON;
 
-  // ========== Localization ==========
+  // ===== i18n: добавьте любые ключи сюда, всё UI использует эти строки =====
   const i18n = {
     ru: {
+      // generic / UI
       pickRoomFirst: 'Сначала выберите комнату!',
       notEnough: 'Недостаточно монет!',
       dailyAlready: 'Ежедневная награда уже получена!',
-      questAlready: 'Квест уже выполнен!',
+      questAlready: 'Квест уже получен!',
       miningIncome: 'Доход майнинга:',
       miningShop: 'Магазин майнинга',
       close: 'Закрыть',
       howToPlay: 'Как играть',
       infoList: [
         'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
-        'Охотник ищет 2 случайные комнаты (1, если активен "Check 1 Room").',
+        'Охотник ищет 2 случайные комнаты (1, если активен "Проверка 1 комнаты").',
         'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
-        'Если вы избежали охоты, вы получаете монеты (показываются зеленым).',
+        'Если вы избежали охоты, вы получаете монеты (показываются зелёным).',
         'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
         'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
       ],
@@ -780,7 +778,7 @@ header{
       full: 'Полный',
       coinsBalance: 'Баланс монет',
 
-      // withdraw translations
+      // withdraw
       withdrawTitle: 'Вывод средств',
       withdrawSub: 'Платежи проходят через TON',
       withdrawTrust: 'Доверие: выплаты оформляются администратором',
@@ -792,21 +790,48 @@ header{
       checkAddress: 'Проверьте адрес',
       addressCopied: 'Адрес скопирован.',
       addressCopyFailed: 'Не удалось скопировать.',
+      withdrawPlaceholder: 'UQ...',
 
       // quests
       questsTitle: 'Квесты',
       quest_tg_title: 'Подписаться в Telegram',
-      quest_tg_desc: 'Получите бонус 100к',
+      quest_tg_desc: 'Получите бонус 100k XTR',
       quest_yt_title: 'Подписаться на YouTube',
-       quest_yt_desc: 'Получите бонус 100к',
+      quest_yt_desc: 'Получите бонус 100k XTR',
       questsOpenBtn: 'Открыть',
 
-      // other small bits
-      withdrawAddrTitle: 'Адрес для выплат',
-      withdrawAddrDesc: 'Укажите TON-адрес. После сохранения адрес будет привязан.',
-      questsOpenProfileBtn: 'Открыть квесты'
+      // upgrades specific
+      upgrade_x2Prize_title: 'x2 Приз / x2 Потеря',
+      upgrade_x2Prize_desc: 'Удваивает награду и штрафы.',
+      upgrade_check1_title: 'Проверка 1 комнаты',
+      upgrade_check1_desc: 'Охотник проверяет только 1 комнату (1 мин).',
+      upgrade_shield_title: 'Щит (1м)',
+      upgrade_shield_desc: 'Защищает от потерь на 1 минуту.',
+      upgrade_incBoost_title: 'Двойной доход (1м)',
+      upgrade_incBoost_desc: 'Доход майнинга ×2 на 1 минуту.',
+      upgrade_luck_title: 'Удачное спасение (1м)',
+      upgrade_luck_desc: '50% шанс избежать если найден (1 мин).',
+      upgrade_badge_boost: 'Буст',
+      upgrade_badge_defence: 'Защита',
+      upgrade_badge_income: 'Доход',
+      upgrade_badge_chance: 'Шанс',
+
+      // misc small bits
+      available: 'Доступно!',
+      new: 'Новое',
+      lvl: 'Ур.',
+      perHour: '/ч',
+      incomePerHour: '+{val} /ч',
+      plusSign: '+',
+      completed: 'Выполнено',
+      notClaimed: 'Не взято',
+      nextIn: 'След: {h}ч {m}м',
+      withdrawStatusAvailable: 'Доступно для вывода',
+      roomLabel: 'Комната'
     },
+
     en: {
+      // generic / UI
       pickRoomFirst: 'Pick a room first!',
       notEnough: 'Not enough coins!',
       dailyAlready: 'Daily reward already claimed!',
@@ -863,106 +888,96 @@ header{
       checkAddress: 'Check the address',
       addressCopied: 'Address copied.',
       addressCopyFailed: 'Failed to copy.',
+      withdrawPlaceholder: 'UQ...',
 
       // quests
       questsTitle: 'Quests',
       quest_tg_title: 'Subscribe on Telegram',
+      quest_tg_desc: 'Get 100k XTR bonus',
       quest_yt_title: 'Subscribe on YouTube',
+      quest_yt_desc: 'Get 100k XTR bonus',
       questsOpenBtn: 'Open',
 
-      withdrawAddrTitle: 'Payout address',
-      withdrawAddrDesc: 'Enter a TON address. It will be bound after saving.',
-      questsOpenProfileBtn: 'Open quests'
+      // upgrades specific
+      upgrade_x2Prize_title: 'x2 Prize / x2 Loss',
+      upgrade_x2Prize_desc: 'Double rewards & penalties.',
+      upgrade_check1_title: 'Check 1 Room Only',
+      upgrade_check1_desc: 'Hunter checks only 1 room (1 min).',
+      upgrade_shield_title: 'Shield (1m)',
+      upgrade_shield_desc: 'Protects you from loss for 1 minute.',
+      upgrade_incBoost_title: 'Double Income (1m)',
+      upgrade_incBoost_desc: 'Mining income ×2 for 1 minute.',
+      upgrade_luck_title: 'Lucky Escape (1m)',
+      upgrade_luck_desc: '50% chance to evade if hunted (1 minute).',
+      upgrade_badge_boost: 'Boost',
+      upgrade_badge_defence: 'Defence',
+      upgrade_badge_income: 'Income',
+      upgrade_badge_chance: 'Chance',
+
+      // misc small bits
+      available: 'Available!',
+      new: 'New',
+      lvl: 'Lvl',
+      perHour: '/hr',
+      incomePerHour: '+{val} /hr',
+      plusSign: '+',
+      completed: 'Completed',
+      notClaimed: 'Not claimed',
+      nextIn: 'Next in {h}h {m}m',
+      withdrawStatusAvailable: 'Available to withdraw',
+      roomLabel: 'Room'
     }
   };
 
+  // ===== language state & helper t() =====
   let lang = localStorage.getItem('lang') || 'ru';
   function t(key, vars = {}) {
-    const val = (i18n[lang] && i18n[lang][key]) || (i18n.ru && i18n.ru[key]) || '';
-    if (typeof val === 'string') {
-      return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
+    const dict = (i18n[lang] && i18n[lang][key]) || (i18n['ru'] && i18n['ru'][key]);
+    if (typeof dict === 'string') {
+      return dict.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
     }
-    return val || '';
-  }
-  function applyLang() {
-    document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
-    document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
-    const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
-    if (cb) cb.textContent = t('buy');
-    if (canc) canc.textContent = t('cancel');
-    document.getElementById('infoTitle') && (document.getElementById('infoTitle').textContent = t('howToPlay'));
-    document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
-    document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
-    document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
-    document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
-    document.getElementById('questTitle') && (document.getElementById('questTitle').textContent = t('quest'));
-    document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest'));
-    document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
-    document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
-
-    const infoListEl = document.getElementById('infoList');
-    if (infoListEl) {
-      infoListEl.innerHTML = '';
-      (t('infoList') || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
-    }
-
-    const startBtn = document.getElementById('startBtn');
-    if (startBtn) startBtn.textContent = t('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) resetBtn.textContent = t('resetBtn');
-
-    const wsTitleEl = document.getElementById('wsTitle');
-    if (wsTitleEl) wsTitleEl.textContent = t('wsTitle');
-    const wsSubEl = document.querySelector('#wsModalOverlay .sub');
-    if (wsSubEl) wsSubEl.textContent = t('wsSub');
-    const btnClose = document.getElementById('wsBtnClose');
-    if (btnClose) btnClose.textContent = t('wsBtnClose');
-    const btnRules = document.getElementById('wsBtnRules');
-    if (btnRules) btnRules.textContent = t('wsBtnRules');
-
-    const casinoTitleEl = document.getElementById('casinoTitle');
-    if (casinoTitleEl) casinoTitleEl.textContent = t('casinoTitle');
-    const casinoSubtitleEl = document.getElementById('casinoSubtitle');
-    if (casinoSubtitleEl) casinoSubtitleEl.textContent = t('casinoSubtitle');
-    const spinBtn = document.getElementById('spinBtn');
-    if (spinBtn) spinBtn.textContent = t('spin');
-
-    const coinsBalanceCaption = document.querySelector('#wsModalOverlay .header div:last-child div:last-child');
-    if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
-
-    // withdraw translations
-    const wTitle = document.getElementById('withdrawTitle');
-    if (wTitle) wTitle.textContent = t('withdrawTitle');
-    const wSub = document.getElementById('withdrawSub');
-    if (wSub) wSub.textContent = t('withdrawSub');
-    const wTrust = document.getElementById('withdrawTrust');
-    if (wTrust) wTrust.textContent = t('withdrawTrust');
-    const wDate = document.getElementById('withdrawDateText');
-    if (wDate) wDate.innerHTML = t('withdrawDateText');
-    const wAddrTitle = document.getElementById('withdrawAddrTitle');
-    if (wAddrTitle) wAddrTitle.textContent = t('withdrawAddrTitle');
-    const wAddrDesc = document.getElementById('withdrawAddrDesc');
-    if (wAddrDesc) wAddrDesc.textContent = t('withdrawAddrDesc');
-    const closeWithdrawBtn = document.getElementById('closeWithdraw');
-    if (closeWithdrawBtn) closeWithdrawBtn.textContent = t('close');
-
-    // profile quests button
-    const openQuestsBtn = document.getElementById('openQuestsBtn');
-    if (openQuestsBtn) openQuestsBtn.textContent = t('questsOpenBtn');
-
-    // quests title
-    const questsTitleEl = document.getElementById('questsTitle');
-    if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
+    if (Array.isArray(dict)) return dict;
+    return '';
   }
 
-  // ========== Energy ==========
+  // ====== Helper formatters (reuse your formatters) =====
+  function format(n) {
+    if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
+    if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
+    return String(n);
+  }
+  function formatTon(n){
+    if (!isFinite(n)) return '0.00';
+    return Number(n).toFixed(2);
+  }
+  window.formatTon = formatTon;
+
+  // ====== DOM refs used throughout ======
+  const roomsContainer = document.querySelector('.house');
+  const coinsVal = document.getElementById('coinsVal');
+  const miningIncomeValEl = document.getElementById('miningIncomeVal');
+  const minersContainerEl = document.querySelector('.miners-container');
+  const minersPanelVisible = document.getElementById('minersPanelVisible');
+  const miningShop = document.getElementById('miningShop');
+  const buyConfirm = document.getElementById('buyConfirm');
+  const buyText = document.getElementById('buyText');
+  const withdrawModal = document.getElementById('withdrawModal');
+  const withdrawInput = document.getElementById('withdrawAddressInput');
+  const saveAddrBtn = document.getElementById('saveWithdrawAddr');
+  const changeAddrBtn = document.getElementById('changeWithdrawAddr');
+  const copyAddrBtn = document.getElementById('copyAddrBtn');
+  const boundInfo = document.getElementById('boundAddrInfo');
+  const withdrawStatus = document.getElementById('withdrawStatus');
+  const withdrawBtn = document.getElementById('withdrawBtn');
+  const closeWithdraw = document.getElementById('closeWithdraw');
+
+  // ===== energy =====
   const MAX_ENERGY = 50;
   const REGEN_INTERVAL_MS = 30 * 1000;
   const LS_ENERGY = 'player_energy_v1';
   const LS_ENERGY_TICK = 'player_energy_tick_v1';
-
-  let energy;
-  let energyLastTick;
+  let energy, energyLastTick;
   (function initEnergyStorage(){
     const raw = localStorage.getItem(LS_ENERGY);
     if (raw === null) {
@@ -978,10 +993,6 @@ header{
       energyLastTick = +localStorage.getItem(LS_ENERGY_TICK) || Date.now();
     }
     if (energy >= MAX_ENERGY) energyLastTick = Date.now();
-    try {
-      localStorage.setItem(LS_ENERGY, String(energy));
-      localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
-    } catch(e){}
   })();
 
   function loadEnergy() {
@@ -990,7 +1001,6 @@ header{
     if (stored !== null) energy = +stored;
     if (!Number.isFinite(energy)) energy = MAX_ENERGY;
     energyLastTick = +storedTick || Date.now();
-
     const now = Date.now();
     if (now > energyLastTick && energy < MAX_ENERGY) {
       const delta = now - energyLastTick;
@@ -1009,7 +1019,7 @@ header{
     try {
       localStorage.setItem(LS_ENERGY, String(energy));
       localStorage.setItem(LS_ENERGY_TICK, String(energyLastTick));
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
   }
 
   function updateEnergyDisplay() {
@@ -1074,27 +1084,24 @@ header{
     }
   }, 1000);
 
-  // ========== UI & State ==========
-  const roomsContainer = document.querySelector('.house');
+  // ===== UI state & storage =====
   for (let i = 0; i < 8; i++) {
     const d = document.createElement('div');
     d.className = 'room';
     d.dataset.idx = i;
     d.textContent = '+';
+    d.setAttribute('aria-label', `${t('roomLabel')} ${i+1}`);
     roomsContainer.appendChild(d);
   }
   let selectedRoom = null;
 
-  // coins (XTR) and ton are separate now
   let coins = +localStorage.getItem(LS_COINS) || 0;
   let maxCoins = +localStorage.getItem(LS_MAXCOINS) || coins;
-  let ton = +localStorage.getItem(LS_TON) || 0; // TON stored independently
+  let ton = +localStorage.getItem(LS_TON) || 0;
 
-  const coinsVal = document.getElementById('coinsVal');
-  let upgrades = JSON.parse(localStorage.getItem(LS_UPGRADES)) || { x2Prize: 0, check1: 0 };
+  let upgrades = JSON.parse(localStorage.getItem(LS_UPGRADES)) || { x2Prize: 0, check1: 0, shield: 0, incBoost: 0, luck: 0 };
   let check1Expire = +localStorage.getItem('check1Expire') || 0;
   let roundInProgress = false;
-
   let shieldExpire = +localStorage.getItem('shieldExpire') || 0;
   let doubleIncomeExpire = +localStorage.getItem('doubleIncomeExpire') || 0;
   let luckExpire = +localStorage.getItem('luckExpire') || 0;
@@ -1121,34 +1128,8 @@ header{
         if (s && typeof s.count === 'number') return { count: s.count };
         return { count: 0 };
       });
-    } else {
-      minersState = minersData.map(_ => ({ count: 0 }));
-    }
-  } catch (e) {
-    minersState = minersData.map(_ => ({ count: 0 }));
-  }
-
-  const miningIncomeValEl = document.getElementById('miningIncomeVal');
-  const minersContainerEl = document.querySelector('.miners-container');
-  const minersPanelVisible = document.getElementById('minersPanelVisible');
-  const miningShop = document.getElementById('miningShop');
-  const buyConfirm = document.getElementById('buyConfirm');
-  const buyText = document.getElementById('buyText');
-  let pendingMiner = null;
-
-  function format(n) {
-    return n >= 1e9 ? (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B' :
-           n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M' :
-           n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K' : String(n);
-  }
-
-  // TON formatting: always 2 decimals
-  function formatTon(n){
-    if (!isFinite(n)) return '0.00';
-    return Number(n).toFixed(2);
-  }
-  // expose globally so other modules inside page can use
-  window.formatTon = formatTon;
+    } else minersState = minersData.map(_ => ({ count: 0 }));
+  } catch (e) { minersState = minersData.map(_ => ({ count: 0 })); }
 
   function save() {
     try {
@@ -1163,23 +1144,11 @@ header{
       localStorage.setItem('doubleIncomeExpire', doubleIncomeExpire);
       localStorage.setItem('luckExpire', luckExpire);
       localStorage.setItem(LS_TON, String(ton));
-    } catch (e) {
-      console.warn('Save failed', e);
-    }
+    } catch (e) { console.warn('Save failed', e); }
   }
 
-  // ========== Withdraw UI implementation (simplified) ==========
+  // ===== Withdraw UI (localized) =====
   (function(){
-    const withdrawBtn = document.getElementById('withdrawBtn');
-    const withdrawModal = document.getElementById('withdrawModal');
-    const withdrawInput = document.getElementById('withdrawAddressInput');
-    const saveAddrBtn = document.getElementById('saveWithdrawAddr');
-    const changeAddrBtn = document.getElementById('changeWithdrawAddr');
-    const copyAddrBtn = document.getElementById('copyAddrBtn');
-    const boundInfo = document.getElementById('boundAddrInfo');
-    const withdrawStatus = document.getElementById('withdrawStatus');
-    const closeWithdraw = document.getElementById('closeWithdraw');
-
     function loadBoundAddr(){ return localStorage.getItem(LS_WITHDRAW_ADDR) || ''; }
     function saveBoundAddr(addr){ try{ localStorage.setItem(LS_WITHDRAW_ADDR, addr); }catch(e){} }
     function maskAddr(a){ if(!a) return ''; if(a.length <= 10) return a; return a.slice(0,6) + '...' + a.slice(-6); }
@@ -1245,14 +1214,17 @@ header{
     function updateWithdrawStatus(){
       const currentTon = +localStorage.getItem(LS_TON) || ton || 0;
       if(!withdrawStatus) return;
-      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = t('available') || (t('withdrawStatus') || (t('withdrawStatus') && t('withdrawStatus'))); }
+      if(currentTon >= 7){ withdrawStatus.className = 'withdraw-success'; withdrawStatus.textContent = t('withdrawStatusAvailable') || t('withdrawStatusAvailable'); }
       else { withdrawStatus.className = 'withdraw-warning'; withdrawStatus.textContent = (t('checkAddress') || t('checkAddress')) + ': ' + formatTon(currentTon); }
     }
+
+    // placeholder localization
+    if (withdrawInput) withdrawInput.placeholder = t('withdrawPlaceholder');
 
     renderBoundInfo();
   })();
 
-  // ========== Balances & coins helpers (ensure withdraw UI updates) ==========
+  // ===== Balances & helpers (localized where needed) =====
   function updateBalancesDisplay(){
     if (coinsVal) coinsVal.textContent = format(coins);
     const tonEl = document.getElementById('tonVal');
@@ -1268,7 +1240,6 @@ header{
     }
   }
 
-  // When updCoins is called with positive v, we increase coins and also increase TON proportionally.
   function updCoins(v = 0) {
     if (typeof v !== 'number') v = Number(v) || 0;
     if (v > 0) {
@@ -1294,7 +1265,7 @@ header{
   }
   function updIncome() { if (miningIncomeValEl) miningIncomeValEl.textContent = format(getIncome()); }
 
-  // ===== offline gains & income tick =====
+  // offline & tick
   function addOfflineCoins() {
     const last = +localStorage.getItem(LS_LASTTIME) || Date.now();
     const now = Date.now();
@@ -1307,17 +1278,49 @@ header{
     localStorage.setItem(LS_LASTTIME, now);
   }
   addOfflineCoins();
-
-  // income per second (approx)
   setInterval(()=>{ updCoins(Math.floor(getIncome()/3600)); }, 1000);
 
-  // ===== upgrades UI =====
+  // ===== Upgrades UI (localized) =====
   function updUpg() {
     document.querySelectorAll('.upgrade').forEach(u => {
       let key = u.dataset.key; let base = +u.dataset.basePrice; let count = upgrades[key] || 0;
       let price = base * Math.pow(2,count);
       let priceEl = u.querySelector('.price'); if (priceEl) priceEl.textContent = format(price);
-      const badge = u.querySelector('.badge'); if (badge) badge.textContent = count > 0 ? `Lvl ${count}` : 'New';
+      const badge = u.querySelector('.badge');
+      if (badge) {
+        if (count > 0) {
+          const lvlLabel = (i18n[lang] && i18n[lang].lvl) || (i18n['ru'] && i18n['ru'].lvl) || 'Lvl';
+          badge.textContent = `${lvlLabel} ${count}`;
+        } else {
+          badge.textContent = (t('new') || 'New');
+        }
+      }
+    });
+  }
+
+  // localize upgrade titles/descriptions/badges
+  function localizeUpgrades(){
+    document.querySelectorAll('.upgrade').forEach(u=>{
+      const key = u.dataset.key;
+      if(!key) return;
+      const h = u.querySelector('h3');
+      const descEl = u.querySelector('p');
+      const badgeEl = u.querySelector('.badge');
+      const titleKey = `upgrade_${key}_title`;
+      const descKey = `upgrade_${key}_desc`;
+      if(h){
+        const txt = t(titleKey);
+        if(txt) h.textContent = txt;
+      }
+      if(descEl){
+        const d = t(descKey);
+        if(d) descEl.textContent = d;
+      }
+      if(badgeEl){
+        const map = { x2Prize: 'upgrade_badge_boost', shield: 'upgrade_badge_defence', incBoost: 'upgrade_badge_income', luck: 'upgrade_badge_chance', check1: 'upgrade_badge_boost' };
+        const bk = map[key];
+        if (bk) badgeEl.textContent = t(bk) || badgeEl.textContent;
+      }
     });
   }
 
@@ -1331,7 +1334,7 @@ header{
         if (key === 'shield') shieldExpire = Date.now()+60000;
         if (key === 'incBoost') doubleIncomeExpire = Date.now()+60000;
         if (key === 'luck') luckExpire = Date.now()+60000;
-        save(); updUpg();
+        save(); updUpg(); localizeUpgrades();
       } else alert(t('notEnough'));
     };
   });
@@ -1360,6 +1363,7 @@ header{
   }
   setInterval(updTimers, 1000);
 
+  // ===== Rooms selection and game buttons =====
   document.querySelectorAll('.room').forEach(r => {
     r.onclick = () => {
       if (roundInProgress) return;
@@ -1417,7 +1421,8 @@ header{
     }, delay+700);
   };
 
-  // render miners
+  // ===== Miners rendering (localized) =====
+  let pendingMiner = null;
   function renderMiners(){
     if (!minersContainerEl) return;
     minersContainerEl.innerHTML = '';
@@ -1425,14 +1430,15 @@ header{
       const st = (minersState[i] && typeof minersState[i].count === 'number') ? minersState[i] : { count: 0 };
       const price = m.p * Math.pow(2, st.count);
       const income = st.count > 0 ? Math.floor(m.i * Math.pow(1.5, st.count - 1)) : 0;
-
       const card = document.createElement('div'); card.className = 'miner-card';
+      const incomeText = t('incomePerHour', { val: format(income) }) || ('+'+format(income)+' /hr');
+      const lvlLabel = `${t('lvl')} ${st.count}`;
       card.innerHTML = `
-        <img class="card-logo" src="logo.png" alt="logo" />
+        <img class="card-logo" src="logo.png" alt="${m.n}" />
         <h3>${m.n}</h3>
-        <div class="income">+${format(income)} / hr</div>
+        <div class="income">${incomeText}</div>
         <div class="bottom">
-          <span class="lvl">Lvl ${st.count}</span>
+          <span class="lvl">${lvlLabel}</span>
           <span class="price-pill">${format(price)}</span>
         </div>
       `;
@@ -1449,65 +1455,74 @@ header{
     });
   }
 
+  // mining shop open/close
   const miningBtn = document.getElementById('miningBtn');
-  const shopBtn = document.getElementById('shopBtn'); // may be null (we removed the button)
-  if (miningBtn) miningBtn.onclick = () => { if (miningShop) { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); } };
-  if (shopBtn) shopBtn.onclick = () => { if (miningShop) { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); } };
-  const closeMiningShopBtn = document.getElementById('closeMiningShop');
-  if (closeMiningShopBtn) closeMiningShopBtn.onclick = ()=>{ if (miningShop) { miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); } };
-
-  // Added: top-right close button for mining shop
   const closeMiningShopTop = document.getElementById('closeMiningShopTop');
+  if (miningBtn) miningBtn.onclick = () => { if (miningShop) { miningShop.style.display = 'block'; miningShop.setAttribute('aria-hidden','false'); renderMiners(); } };
   if (closeMiningShopTop) closeMiningShopTop.addEventListener('click', ()=>{ if (miningShop) { miningShop.style.display = 'none'; miningShop.setAttribute('aria-hidden','true'); } });
 
-  document.getElementById('confirmBuy') && (document.getElementById('confirmBuy').onclick = ()=>{
-    if (pendingMiner === null) return;
-    const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
-    const price = m.p * Math.pow(2, st.count);
-    if (coins >= price) {
-      coins -= price; minersState[i] = { count: (st.count || 0) + 1 }; updCoins(0); save(); renderMiners();
-    } else alert(t('notEnough'));
-    pendingMiner = null;
-    buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
-  });
-  document.getElementById('cancelBuy') && (document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); });
+  if (document.getElementById('confirmBuy')) {
+    document.getElementById('confirmBuy').onclick = ()=>{
+      if (pendingMiner === null) return;
+      const i = pendingMiner; const m = minersData[i]; const st = minersState[i] || { count: 0 };
+      const price = m.p * Math.pow(2, st.count);
+      if (coins >= price) {
+        coins -= price; minersState[i] = { count: (st.count || 0) + 1 }; updCoins(0); save(); renderMiners();
+      } else alert(t('notEnough'));
+      pendingMiner = null;
+      buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true');
+    };
+  }
+  if (document.getElementById('cancelBuy')) {
+    document.getElementById('cancelBuy').onclick = ()=>{ pendingMiner = null; buyConfirm.classList.remove('show'); buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); };
+  }
 
-  // profile window
+  // ===== Profile window open/close localized =====
   const profileWindowEl = document.getElementById('profileWindow');
   const profileBtnEl = document.getElementById('profileBtn');
   if (profileBtnEl) profileBtnEl.onclick = ()=>{ if (profileWindowEl) { profileWindowEl.style.display = 'block'; profileWindowEl.setAttribute('aria-hidden','false'); } };
   const closeProfileBtn = document.getElementById('closeProfile');
   if (closeProfileBtn) closeProfileBtn.onclick = ()=>{ if (profileWindowEl) { profileWindowEl.style.display = 'none'; profileWindowEl.setAttribute('aria-hidden','true'); } };
 
-  // daily & quest
+  // ===== daily & quests =====
   let questClaimed = localStorage.getItem('questClaimed') === 'true';
   let lastDaily = +localStorage.getItem('lastDaily') || 0;
   const questStatusEl = document.getElementById('questStatus');
   const dailyStatusEl = document.getElementById('dailyStatus');
-  function updateQuestStatus(){ if (questStatusEl) questStatusEl.textContent = questClaimed ? "✅ Completed" : "❌ Not claimed"; }
-  function updateDailyStatus(){ if (dailyStatusEl) { const now = Date.now(); const nextAvailable = lastDaily + 24*60*60*1000; if (now >= nextAvailable) dailyStatusEl.textContent = "💰 " + (lang === 'ru' ? 'Доступно!' : 'Available!'); else { const diff = nextAvailable - now; const hours = Math.floor(diff / (1000*60*60)); const minutes = Math.floor((diff % (1000*60*60)) / (1000*60)); dailyStatusEl.textContent = `Next in ${hours}h ${minutes}m`; } } }
+  function updateQuestStatus(){ if (questStatusEl) questStatusEl.textContent = questClaimed ? t('completed') : t('notClaimed'); }
+  function updateDailyStatus(){
+    if (!dailyStatusEl) return;
+    const now = Date.now();
+    const nextAvailable = lastDaily + 24*60*60*1000;
+    if (now >= nextAvailable) dailyStatusEl.textContent = '💰 ' + t('available');
+    else {
+      const diff = nextAvailable - now;
+      const hours = Math.floor(diff / (1000*60*60));
+      const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const tpl = t('nextIn') || '{h}h {m}m';
+      dailyStatusEl.textContent = tpl.replace('{h}', hours).replace('{m}', minutes);
+    }
+  }
   setInterval(updateDailyStatus, 60000); updateDailyStatus(); updateQuestStatus();
 
-  document.getElementById('claimQuest') && (document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } });
-  document.getElementById('claimDaily') && (document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } });
+  if (document.getElementById('claimQuest')) {
+    document.getElementById('claimQuest').onclick = ()=>{ if (questClaimed) alert(t('questAlready')); else { updCoins(50000); questClaimed = true; localStorage.setItem('questClaimed','true'); updateQuestStatus(); } };
+  }
+  if (document.getElementById('claimDaily')) {
+    document.getElementById('claimDaily').onclick = ()=>{ const now = Date.now(); if (now - lastDaily < 24*60*60*1000) alert(t('dailyAlready')); else { updCoins(30000); lastDaily = now; localStorage.setItem('lastDaily', now); updateDailyStatus(); } };
+  }
 
-  // NEW: Telegram subscribe quest logic (kept but quests now open links)
+  // Telegram quest etc.
   let tgSubscribeClaimed = localStorage.getItem('tgSubscribeClaimed') === 'true';
   const tgStatusEl = document.getElementById('tgQuestStatus');
-  function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? "✅ Completed" : "❌ Not claimed"; }
+  function updateTgQuestStatus(){ if (tgStatusEl) tgStatusEl.textContent = tgSubscribeClaimed ? t('completed') : t('notClaimed'); }
   const claimTgBtn = document.getElementById('claimTgSubscribe');
   const openTgBtn = document.getElementById('openTgChannel');
-  if (claimTgBtn) claimTgBtn.addEventListener('click', ()=>{
-    if (tgSubscribeClaimed) { alert(t('questAlready')); return; }
-    tgSubscribeClaimed = true;
-    localStorage.setItem('tgSubscribeClaimed','true');
-    try { updCoins(25000); } catch(e){ console.warn('updCoins missing', e); }
-    updateTgQuestStatus();
-  });
+  if (claimTgBtn) claimTgBtn.addEventListener('click', ()=>{ if (tgSubscribeClaimed) { alert(t('questAlready')); return; } tgSubscribeClaimed = true; localStorage.setItem('tgSubscribeClaimed','true'); try { updCoins(25000); } catch(e){ console.warn('updCoins missing', e); } updateTgQuestStatus(); });
   if (openTgBtn) openTgBtn.addEventListener('click', ()=>{ /* anchor handles */ });
   updateTgQuestStatus();
 
- // shop toggle & UI init
+  // shop toggle UI init
   const upgradePanel = document.getElementById('upgradePanel');
   if (minersPanelVisible) minersPanelVisible.style.display = 'none';
   if (upgradePanel) upgradePanel.style.display = 'flex';
@@ -1515,12 +1530,10 @@ header{
   const langSelect = document.getElementById('langSelect');
   if (langSelect) {
     langSelect.value = lang;
-    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); renderCards && renderCards(); window._questsModal && window._questsModal.render && window._questsModal.render(); };
+    langSelect.onchange = ()=>{ lang = langSelect.value; localStorage.setItem('lang', lang); applyLang(); renderMiners(); if (window._wsModal && window._wsModal.render) window._wsModal.render(); if (window._questsModal && window._questsModal.render) window._questsModal.render(); };
   }
 
-  /* ===========================
-  Rewards modal logic (uses XTR label)
-  ============================ */
+  // ===== Rewards modal (localized) =====
   (function(){
     const LS_FIRST = 'ws_first_seen_v2';
     const LS_CLAIMED = 'ws_claimed_v2';
@@ -1575,7 +1588,6 @@ header{
         localStorage.setItem(LS_COINS, String(cur));
         const el = document.getElementById('coinsVal');
         if(el) el.textContent = formatFallback(cur);
-        // TON: when gaining coins, we also increase TON proportionally here
         let storedTon = +localStorage.getItem(LS_TON) || 0;
         if (v > 0) storedTon += v * ZEX_TO_TON;
         localStorage.setItem(LS_TON, String(storedTon));
@@ -1595,7 +1607,6 @@ header{
 
     function claimRewardFromModalPublic(amount){
       try{
-        // use general updCoins if present
         if (typeof window.updCoins === 'function') {
           window.updCoins(amount);
         } else {
@@ -1604,7 +1615,6 @@ header{
           localStorage.setItem(LS_COINS, String(cur));
           const cv = document.getElementById('coinsVal');
           if(cv) cv.textContent = formatFallback(cur);
-          // also increase TON when gaining XTR
           let storedTon = +localStorage.getItem(LS_TON) || 0;
           storedTon += amount * ZEX_TO_TON;
           localStorage.setItem(LS_TON, String(storedTon));
@@ -1647,11 +1657,9 @@ header{
 
     function renderCards(){
       claimed = safeGetJSON(LS_CLAIMED, claimed) || claimed;
-
       const avail = availableCount();
       gridTop.innerHTML = '';
       gridBottom.innerHTML = '';
-
       for(let i=0;i<MAX_DAYS;i++){
         const day = i+1;
         const amount = amounts[i] || 0;
@@ -1661,7 +1669,7 @@ header{
 
         card.innerHTML = `
           <div class="coinIconSmall">💰</div>
-          <div class="dayLabel">${t('dayLabel') || 'Day'} ${day}</div>
+          <div class="dayLabel">${t('dayLabel')} ${day}</div>
           <div class="amount">${formatNum(amount)}</div>
         `;
 
@@ -1694,11 +1702,9 @@ header{
           safeSetJSON(LS_CLAIMED, claimed);
 
           try {
-            if (typeof claimRewardFromModal === 'function') {
-              claimRewardFromModal(amounts[i]);
-            } else if (typeof updCoins === 'function') {
-              updCoins(amounts[i]);
-            } else {
+            if (typeof claimRewardFromModal === 'function') claimRewardFromModal(amounts[i]);
+            else if (typeof updCoins === 'function') updCoins(amounts[i]);
+            else {
               let cur = +localStorage.getItem(LS_COINS) || 0;
               cur += amounts[i];
               localStorage.setItem(LS_COINS, String(cur));
@@ -1752,13 +1758,12 @@ header{
     });
 
     if (btnRules) btnRules.addEventListener('click', function(){
-      alert(t('wsBtnRules') ? t('wsBtnRules') + ': ' + (t('wsSub') || '') : 'Rewards unlock one per day since first visit. Click an unlocked card to claim its coins.');
+      alert((t('wsBtnRules') ? t('wsBtnRules') + ': ' : '') + (t('wsSub') || ''));
     });
 
     hideMainUI();
     renderCards();
     syncCoinsDisplay();
-
     setInterval(()=>{ renderCards(); syncCoinsDisplay(); }, 60*1000);
 
     window._wsModal = {
@@ -1771,9 +1776,7 @@ header{
     overlay.tabIndex = -1;
   })();
 
-  /* ===========================
-  Casino modal & logic (XTR labels)
-  =========================== */
+  // ===== Casino modal & logic (labels localized via t where needed) =====
   (function(){
     const casinoBtn = document.getElementById('casinoBtn');
     const casinoModal = document.getElementById('casinoModal');
@@ -1783,29 +1786,29 @@ header{
     const casinoResultEl = document.getElementById('casinoResult');
     const casinoBalanceEl = document.getElementById('casinoBalance');
     const wheelCanvas = document.getElementById('wheelCanvas');
-    const ctx = wheelCanvas.getContext('2d');
+    const ctx = wheelCanvas && wheelCanvas.getContext ? wheelCanvas.getContext('2d') : null;
 
     const segments = [
-      { label: '100K XTR', type: 'zex', value: 100000 },
-      { label: '0.10 TON', type: 'ton', value: 0.10 },
-      { label: '5K XTR', type: 'zex', value: 5000 },
-      { label: '0.50 TON', type: 'ton', value: 0.50 },
-      { label: '10K XTR', type: 'zex', value: 10000 },
-      { label: '1 TON', type: 'ton', value: 1 },
-      { label: '50K XTR', type: 'zex', value: 50000 },
-      { label: '0.20 TON', type: 'ton', value: 0.20 },
-      { label: '1K XTR', type: 'zex', value: 1000 },
-      { label: '2 TON', type: 'ton', value: 2 }
+      { type: 'zex', value: 100000 },
+      { type: 'ton', value: 0.10 },
+      { type: 'zex', value: 5000 },
+      { type: 'ton', value: 0.50 },
+      { type: 'zex', value: 10000 },
+      { type: 'ton', value: 1 },
+      { type: 'zex', value: 50000 },
+      { type: 'ton', value: 0.20 },
+      { type: 'zex', value: 1000 },
+      { type: 'ton', value: 2 }
     ];
 
     const SEG_COUNT = segments.length;
     const COOL_KEY = 'casino_last_spin_v2';
     const COOLDOWN_MS = 2 * 60 * 60 * 1000;
-
     let rotation = 0;
     let isSpinning = false;
 
     function drawWheel(){
+      if(!ctx || !wheelCanvas) return;
       const w = wheelCanvas.width;
       const h = wheelCanvas.height;
       const cx = w/2;
@@ -1834,7 +1837,9 @@ header{
         ctx.font = 'bold 22px Inter, system-ui, Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(segments[i].label, 0, 0);
+        const seg = segments[i];
+        const label = seg.type === 'zex' ? (format(seg.value) + ' XTR') : (formatTon(seg.value) + ' TON');
+        ctx.fillText(label, 0, 0);
         ctx.restore();
       }
 
@@ -1847,7 +1852,7 @@ header{
     }
 
     function render(){
-      wheelCanvas.style.transform = `rotate(${rotation}deg)`;
+      if(wheelCanvas) wheelCanvas.style.transform = `rotate(${rotation}deg)`;
     }
 
     function getRandomSegmentIndex(){
@@ -1863,7 +1868,7 @@ header{
     function spinToIndex(i){
       if (isSpinning) return;
       isSpinning = true;
-      spinBtn.disabled = true;
+      if (spinBtn) spinBtn.disabled = true;
       const baseSpins = 6;
       const targetAngle = angleForIndex(i);
       const randomOffset = (Math.random()*15) - 7.5;
@@ -1882,7 +1887,7 @@ header{
         if(p < 1) requestAnimationFrame(step);
         else {
           isSpinning = false;
-          spinBtn.disabled = false;
+          if (spinBtn) spinBtn.disabled = false;
           const landed = ((360 - (rotation % 360)) + 360) % 360;
           const anglePerDeg = 360 / SEG_COUNT;
           let idx = Math.floor((landed) / anglePerDeg);
@@ -1905,7 +1910,6 @@ header{
             let cur = +localStorage.getItem(LS_COINS) || 0;
             cur += amount;
             localStorage.setItem(LS_COINS, String(cur));
-            // TON increases on positive XTR gain
             let storedTon = +localStorage.getItem(LS_TON) || 0;
             storedTon += amount * ZEX_TO_TON;
             localStorage.setItem(LS_TON, String(storedTon));
@@ -1918,7 +1922,7 @@ header{
           storedTon += amount * ZEX_TO_TON;
           localStorage.setItem(LS_TON, String(storedTon));
         }
-        text = `+${format(amount)} XTR`;
+        text = '+' + format(amount) + ' XTR';
       } else {
         const tonAmount = seg.value;
         try{
@@ -1929,9 +1933,9 @@ header{
           storedTon += tonAmount;
           localStorage.setItem(LS_TON, String(storedTon));
         }
-        text = `+${tonAmount.toFixed(2)} TON`;
+        text = '+' + formatTon(tonAmount) + ' TON';
       }
-      casinoResultEl.textContent = text;
+      if (casinoResultEl) casinoResultEl.textContent = text;
       updateCasinoBalanceDisplay();
       localStorage.setItem(COOL_KEY, String(Date.now()));
       updateCooldownDisplay();
@@ -1955,29 +1959,24 @@ header{
       const diff = now - last;
       if(last === 0 || diff >= COOLDOWN_MS){
         casinoCooldownEl.textContent = t('ready') || 'Ready';
-        spinBtn.disabled = false;
+        if (spinBtn) spinBtn.disabled = false;
       } else {
         const rem = COOLDOWN_MS - diff;
         const hours = Math.floor(rem / (1000*60*60));
         const minutes = Math.floor((rem % (1000*60*60)) / (1000*60));
         const seconds = Math.floor((rem % (1000*60)) / 1000);
         casinoCooldownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
-        spinBtn.disabled = true;
+        if (spinBtn) spinBtn.disabled = true;
       }
     }
 
-    if (casinoBtn) casinoBtn.addEventListener('click', ()=>{
-      if (casinoModal) { casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); }
-    });
+    if (casinoBtn) casinoBtn.addEventListener('click', ()=>{ if (casinoModal) { casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); } });
     if (closeCasino) closeCasino.addEventListener('click', ()=>{ if (casinoModal) { casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); } });
 
     if (spinBtn) spinBtn.addEventListener('click', ()=>{
       const last = +localStorage.getItem(COOL_KEY) || 0;
       const now = Date.now();
-      if(last && now - last < COOLDOWN_MS){
-        updateCooldownDisplay();
-        return;
-      }
+      if(last && now - last < COOLDOWN_MS){ updateCooldownDisplay(); return; }
       const idx = getRandomSegmentIndex();
       spinToIndex(idx);
     });
@@ -1986,14 +1985,6 @@ header{
     render();
     setInterval(updateCooldownDisplay, 1000);
 
-    function format(n){
-      if(typeof window.format === 'function') return window.format(n);
-      if(n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'') + 'B';
-      if(n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'') + 'M';
-      if(n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
-      return String(n);
-    }
-
     window._casino = {
       open: ()=>{ if (casinoModal) { casinoModal.style.display = 'flex'; casinoModal.setAttribute('aria-hidden','false'); updateCasinoBalanceDisplay(); updateCooldownDisplay(); } },
       close: ()=>{ if (casinoModal) { casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); } },
@@ -2001,169 +1992,119 @@ header{
     };
   })();
 
-  /* ========== Quests modal logic (render cards + handlers) ==========
-     Now: only two quests: Telegram and YouTube (open links).
-  ========== */
+  // ===== Quests modal (localized) =====
   (function(){
     const questsModal = document.getElementById('questsModal');
     const questsContainer = document.getElementById('questsContainer');
     const openQuestsBtn = document.getElementById('openQuestsBtn');
     const closeQuests = document.getElementById('closeQuests');
 
-    // Only two quests — actions are URLs
     const questsData = [
       { key: 'tg', action: 'https://t.me/xtr_monkey' },
       { key: 'yt', action: 'https://youtube.com/@xtr_monkey?si=wCkg9jAlFKSpm8XL' }
     ];
+    const questRewards = { tg: 100000, yt: 100000 };
 
-    function openQuestsModal(){
-      if(!questsModal) return;
-      questsModal.style.display = 'flex';
-      questsModal.setAttribute('aria-hidden','false');
-      renderQuests();
-    }
-    function closeQuestsModal(){
-      if(!questsModal) return;
-      questsModal.style.display = 'none';
-      questsModal.setAttribute('aria-hidden','true');
-    }
+    let questClaimedMap = {
+      tg: localStorage.getItem('quest_tg_claimed') === 'true',
+      yt: localStorage.getItem('quest_yt_claimed') === 'true'
+    };
 
-   // --- заменить старые renderQuests() и handleQuestAction(q) на этот код ---
+    function openQuestsModal(){ if(!questsModal) return; questsModal.style.display = 'flex'; questsModal.setAttribute('aria-hidden','false'); renderQuests(); }
+    function closeQuestsModal(){ if(!questsModal) return; questsModal.style.display = 'none'; questsModal.setAttribute('aria-hidden','true'); }
 
-// настроиваем вознаграждения (можно поменять значения)
-const questRewards = { tg: 100000, yt: 100000 };
-
-// состояние уже полученных квестов (персистится в localStorage)
-let questClaimedMap = {
-  tg: localStorage.getItem('quest_tg_claimed') === 'true',
-  yt: localStorage.getItem('quest_yt_claimed') === 'true'
-};
-
-function renderQuests(){
-  if(!questsContainer) return;
-  questsContainer.innerHTML = '';
-
-  questsData.forEach(q => {
-    const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
-    const desc = t(`quest_${q.key}_desc`) || '';
-    const card = document.createElement('div');
-    card.className = 'quest-card';
-    card.dataset.key = q.key;
-
-    card.innerHTML = `
-      <div class="quest-left" role="button" tabindex="0">
-        <div class="quest-meta">
-          <div class="quest-title">${title}</div>
-          <div class="quest-desc">${desc}</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;">
-        <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
-      </div>
-    `;
-
-    // если уже получено — отметим карточку и добавим бейдж
-    if (questClaimedMap[q.key]) {
-      card.classList.add('claimed');
-      const badge = document.createElement('div');
-      badge.className = 'claimBadge';
-      badge.textContent = t('claimed') || 'Claimed';
-      card.appendChild(badge);
-      const arrow = card.querySelector('.quest-arrow');
-      if (arrow) arrow.disabled = true;
-    }
-
-    // клики
-    const arrow = card.querySelector('.quest-arrow');
-    if (arrow) arrow.addEventListener('click', (ev)=>{
-      ev.stopPropagation();
-      handleQuestAction(q);
-    });
-    const left = card.querySelector('.quest-left');
-    if (left) left.addEventListener('click', ()=> handleQuestAction(q));
-
-    questsContainer.appendChild(card);
-  });
-}
-
-function handleQuestAction(q){
-  if(!q || !q.key) return;
-
-  // если уже взяли — ничего не даём
-  if (questClaimedMap[q.key]) {
-    alert(t('questAlready') || 'Quest already claimed!');
-    return;
-  }
-
-  // Если действие — ссылка, открываем её
-  if (typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
-    // Откроем в новой вкладке
-    window.open(q.action, '_blank', 'noopener');
-
-    // Награда — выдаём сразу после открытия (можно изменить логику)
-    const reward = questRewards[q.key] || 0;
-    if (reward > 0) {
-      try {
-        if (typeof window.updCoins === 'function') {
-          window.updCoins(reward);
-        } else if (typeof window.updCoinsPublic === 'function') {
-          window.updCoinsPublic(reward);
-        } else {
-          // fallback: напрямую в localStorage
-          let cur = +localStorage.getItem(LS_COINS) || 0;
-          cur += reward;
-          localStorage.setItem(LS_COINS, String(cur));
-          // TON тоже увеличивается пропорционально
-          let storedTon = +localStorage.getItem(LS_TON) || 0;
-          storedTon += reward * ZEX_TO_TON;
-          localStorage.setItem(LS_TON, String(storedTon));
+    function renderQuests(){
+      if(!questsContainer) return;
+      questsContainer.innerHTML = '';
+      questsData.forEach(q => {
+        const title = t(`quest_${q.key}_title`) || (q.key === 'tg' ? 'Telegram' : 'YouTube');
+        const desc = t(`quest_${q.key}_desc`) || '';
+        const card = document.createElement('div');
+        card.className = 'quest-card';
+        card.dataset.key = q.key;
+        card.innerHTML = `
+          <div class="quest-left" role="button" tabindex="0">
+            <div class="quest-meta">
+              <div class="quest-title">${title}</div>
+              <div class="quest-desc">${desc}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;">
+            <button class="quest-arrow" data-action="${q.action}" aria-label="Open ${title}">→</button>
+          </div>
+        `;
+        if (questClaimedMap[q.key]) {
+          card.classList.add('claimed');
+          const badge = document.createElement('div');
+          badge.className = 'claimBadge';
+          badge.textContent = t('claimed') || 'Claimed';
+          card.appendChild(badge);
+          const arrow = card.querySelector('.quest-arrow'); if (arrow) arrow.disabled = true;
         }
-      } catch(e){
-        console.warn('Reward give failed', e);
+        const arrow = card.querySelector('.quest-arrow');
+        if (arrow) arrow.addEventListener('click', (ev)=>{ ev.stopPropagation(); handleQuestAction(q); });
+        const left = card.querySelector('.quest-left');
+        if (left) left.addEventListener('click', ()=> handleQuestAction(q));
+        questsContainer.appendChild(card);
+      });
+    }
+
+    function handleQuestAction(q){
+      if(!q || !q.key) return;
+      if (questClaimedMap[q.key]) { alert(t('questAlready')); return; }
+
+      if (typeof q.action === 'string' && (q.action.startsWith('http://') || q.action.startsWith('https://'))) {
+        window.open(q.action, '_blank', 'noopener');
+        const reward = questRewards[q.key] || 0;
+        if (reward > 0) {
+          try {
+            if (typeof window.updCoins === 'function') window.updCoins(reward);
+            else if (typeof window.updCoinsPublic === 'function') window.updCoinsPublic(reward);
+            else {
+              let cur = +localStorage.getItem(LS_COINS) || 0;
+              cur += reward;
+              localStorage.setItem(LS_COINS, String(cur));
+              let storedTon = +localStorage.getItem(LS_TON) || 0;
+              storedTon += reward * ZEX_TO_TON;
+              localStorage.setItem(LS_TON, String(storedTon));
+            }
+          } catch(e){ console.warn('Reward give failed', e); }
+        }
+
+        questClaimedMap[q.key] = true;
+        localStorage.setItem(`quest_${q.key}_claimed`, 'true');
+
+        const card = questsContainer && questsContainer.querySelector(`.quest-card[data-key="${q.key}"]`);
+        if (card) {
+          card.classList.add('claimed');
+          if (!card.querySelector('.claimBadge')) {
+            const badge = document.createElement('div');
+            badge.className = 'claimBadge';
+            badge.textContent = t('claimed') || 'Claimed';
+            card.appendChild(badge);
+          }
+          const arrowBtn = card.querySelector('.quest-arrow'); if (arrowBtn) arrowBtn.disabled = true;
+        }
+
+        if (q.key === 'tg') {
+          tgSubscribeClaimed = true;
+          localStorage.setItem('tgSubscribeClaimed','true');
+          updateTgQuestStatus && updateTgQuestStatus();
+        }
+        if (q.key === 'yt') localStorage.setItem('ytSubscribeClaimed','true');
+
+        updateQuestStatus && updateQuestStatus();
+        updateBalancesDisplay && updateBalancesDisplay();
+        return;
       }
-    }
 
-    // пометить как полученный и сохранить
-    questClaimedMap[q.key] = true;
-    localStorage.setItem(`quest_${q.key}_claimed`, 'true');
-
-    // обновить UI карточки (добавить бейдж)
-    const card = questsContainer && questsContainer.querySelector(`.quest-card[data-key="${q.key}"]`);
-    if (card) {
-      card.classList.add('claimed');
-      if (!card.querySelector('.claimBadge')) {
-        const badge = document.createElement('div');
-        badge.className = 'claimBadge';
-        badge.textContent = t('claimed') || 'Claimed';
-        card.appendChild(badge);
+      if (typeof q.action === 'string' && typeof window[q.action] === 'function') {
+        window[q.action](q);
+        return;
       }
-      const arrowBtn = card.querySelector('.quest-arrow');
-      if (arrowBtn) arrowBtn.disabled = true;
+
+      alert(q.action || 'No action');
     }
-
-    // обновить глобальные статусы (если есть)
-    if (q.key === 'tg') {
-      tgSubscribeClaimed = true;
-      localStorage.setItem('tgSubscribeClaimed','true');
-      updateTgQuestStatus && updateTgQuestStatus();
-    }
-    if (q.key === 'yt') {
-      localStorage.setItem('ytSubscribeClaimed','true');
-    }
-    updateQuestStatus && updateQuestStatus();
-    updateBalancesDisplay && updateBalancesDisplay();
-    return;
-  }
-
-  // fallback: если action — имя функции
-  if (typeof q.action === 'string' && typeof window[q.action] === 'function') {
-    window[q.action](q);
-    return;
-  }
-
-  alert(q.action || 'No action');
-}
-
 
     if(openQuestsBtn) openQuestsBtn.addEventListener('click', openQuestsModal);
     if(closeQuests) closeQuests.addEventListener('click', closeQuestsModal);
@@ -2172,7 +2113,88 @@ function handleQuestAction(q){
     window._questsModal = { open: openQuestsModal, close: closeQuestsModal, render: renderQuests };
   })();
 
-  // init
+  // ===== applyLang: central function to translate the whole UI =====
+  function applyLang() {
+    // main labels and buttons
+    document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
+    document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
+    const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
+    if (cb) cb.textContent = t('buy');
+    if (canc) canc.textContent = t('cancel');
+    document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
+    document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
+    document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
+    document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
+    document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
+    document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
+
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) startBtn.textContent = t('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) resetBtn.textContent = t('resetBtn');
+
+    const wsTitleEl = document.getElementById('wsTitle');
+    if (wsTitleEl) wsTitleEl.textContent = t('wsTitle');
+    const wsSubEl = document.querySelector('#wsModalOverlay .sub');
+    if (wsSubEl) wsSubEl.textContent = t('wsSub');
+    const btnClose = document.getElementById('wsBtnClose');
+    if (btnClose) btnClose.textContent = t('wsBtnClose');
+    const btnRules = document.getElementById('wsBtnRules');
+    if (btnRules) btnRules.textContent = t('wsBtnRules');
+
+    const casinoTitleEl = document.getElementById('casinoTitle');
+    if (casinoTitleEl) casinoTitleEl.textContent = t('casinoTitle');
+    const casinoSubtitleEl = document.getElementById('casinoSubtitle');
+    if (casinoSubtitleEl) casinoSubtitleEl.textContent = t('casinoSubtitle');
+    const spinBtn = document.getElementById('spinBtn');
+    if (spinBtn) spinBtn.textContent = t('spin');
+
+    const coinsBalanceCaption = document.querySelector('#wsModalOverlay .header div:last-child div:last-child');
+    if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
+
+    // withdraw
+    const wTitle = document.getElementById('withdrawTitle');
+    if (wTitle) wTitle.textContent = t('withdrawTitle');
+    const wSub = document.getElementById('withdrawSub');
+    if (wSub) wSub.textContent = t('withdrawSub');
+    const wTrust = document.getElementById('withdrawTrust');
+    if (wTrust) wTrust.textContent = t('withdrawTrust');
+    const wDate = document.getElementById('withdrawDateText');
+    if (wDate) wDate.innerHTML = t('withdrawDateText');
+    const wAddrTitle = document.getElementById('withdrawAddrTitle');
+    if (wAddrTitle) wAddrTitle.textContent = t('withdrawAddrTitle');
+    const wAddrDesc = document.getElementById('withdrawAddrDesc');
+    if (wAddrDesc) wAddrDesc.textContent = t('withdrawAddrDesc');
+    const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    if (closeWithdrawBtn) closeWithdrawBtn.textContent = t('close');
+
+    // inputs
+    const withdrawInputEl = document.getElementById('withdrawAddressInput');
+    if (withdrawInputEl) withdrawInputEl.placeholder = t('withdrawPlaceholder');
+
+    // profile quests button + quests title
+    const openQuestsBtn = document.getElementById('openQuestsBtn');
+    if (openQuestsBtn) openQuestsBtn.textContent = t('questsOpenBtn');
+    const questsTitleEl = document.getElementById('questsTitle');
+    if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
+
+    // miners, upgrades, rewards & quests re-render (so dynamic strings updated)
+    renderMiners();
+    updUpg();
+    localizeUpgrades();
+    if (window._wsModal && window._wsModal.render) window._wsModal.render();
+    if (window._questsModal && window._questsModal.render) window._questsModal.render();
+
+    // update various status displays that use translations
+    updateDailyStatus();
+    updateQuestStatus();
+    updateTgQuestStatus();
+    updateBalancesDisplay();
+    updIncome();
+    updTimers();
+  }
+
+  // ===== init: run on load =====
   loadEnergy();
   updateBalancesDisplay();
   updUpg();
@@ -2186,6 +2208,10 @@ function handleQuestAction(q){
   document.getElementById('profileWindow') && (document.getElementById('profileWindow').style.display = 'none');
   document.getElementById('profileWindow') && (document.getElementById('profileWindow').setAttribute('aria-hidden','true'));
   if (buyConfirm) { buyConfirm.style.display = 'none'; buyConfirm.setAttribute('aria-hidden','true'); }
+
+  // ensure localized badges on initial load
+  localizeUpgrades();
+
 </script>
 </body>
 </html>
