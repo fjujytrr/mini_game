@@ -196,7 +196,7 @@ header{
 #miningShop .card-logo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff;box-shadow:0 8px 24px rgba(122,75,255,0.06)}
 #miningShop .miner-card h3{margin:6px 0 2px;font-size:16px;color:#f0fbff}
 #miningShop .miner-card .income{color:var(--birch);font-weight:900}
-#miningShop .miner-card .bottom{width:100%;Display:flex;justify-content:space-between;font-weight:900;font-size:14px;margin-top:6px}
+#miningShop .miner-card .bottom{width:100%;display:flex;justify-content:space-between;font-weight:900;font-size:14px;margin-top:6px}
 #miningShop .price-pill{background:rgba(0,0,0,0.12);padding:6px 8px;border-radius:10px;font-weight:900}
 
 /* Buy confirm */
@@ -734,283 +734,296 @@ header{
   const TON_TO_ZEX = 1 / ZEX_TO_TON; // 1 TON = 1,000,000 XTR
 
   // ========== Localization ==========
-  const i18n = {
-    ru: {
-      pickRoomFirst: 'Сначала выберите комнату!',
-      notEnough: 'Недостаточно монет!',
-      dailyAlready: 'Ежедневная награда уже получена!',
-      questAlready: 'Квест уже получен!',
-      miningIncome: 'Доход майнинга:',
-      miningShop: 'Магазин майнинга',
-      close: 'Закрыть',
-      howToPlay: 'Как играть',
-      infoList: [
-        'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
-        'Охотник ищет 2 случайные комнаты (1, если активен "Проверка 1 комнаты").',
-        'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
-        'Если вы избежали охоты, вы получаете монеты (показываются зелёным).',
-        'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
-        'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
-      ],
-      profile: 'Профиль',
-      dailyReward: 'Ежедневная награда',
-      dailyText: 'Получите 30 000 XTR раз в день!',
-      claimDaily: 'Забрать',
-      quest: 'Квест',
-      claimQuest: 'Забрать',
-      settings: 'Настройки',
-      settingsText: 'Смените язык и другие параметры.',
-      buyFor: 'Купить {name} за {price}?',
-      buy: 'Купить',
-      cancel: 'Отмена',
-      profitHr: 'Прибыль/ч:',
-      noEnergy: 'Нет энергии!',
-      startBtn: '🏠 Начать',
-      resetBtn: '🔍 Охота',
-      wsTitle: 'Премиум подарки',
-      wsSub: '7 дней наград — забирайте по одному в день',
-      wsBtnClose: 'Вернуться завтра',
-      wsBtnRules: 'Как это работает',
-      dayLabel: 'День',
-      claimed: 'Забрано',
-      casinoTitle: '🎰 Казино',
-      casinoSubtitle: 'Вращайте колесо — раз в 2 часа',
-      spin: 'КРУТИТЬ',
-      ready: 'Готово',
-      full: 'Полный',
-      coinsBalance: 'Баланс монет',
 
-      // withdraw
-      withdrawTitle: 'Вывод средств',
-      withdrawSub: 'Платежи проходят через TON',
-      withdrawTrust: 'Доверие: выплаты оформляются администратором',
-      withdrawDateText: 'Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.',
-      enterAddressAlert: 'Введите адрес',
-      boundAddress: 'Привязанный адрес: ',
-      addressNotBound: 'Адрес не привязан.',
-      addressSaved: 'Адрес сохранён.',
-      checkAddress: 'Проверьте адрес',
-      addressCopied: 'Адрес скопирован.',
-      addressCopyFailed: 'Не удалось скопировать.',
-      withdrawPlaceholder: 'UQ...',
+// === i18n patch: replace the existing i18n / t / applyLang block with this file ===
+// Usage: this block replaces the old i18n object and the t()/applyLang() functions
 
-      // quests
-      questsTitle: 'Квесты',
-      quest_tg_title: 'Подписаться в Telegram',
-      quest_tg_desc: 'Получите бонус 100k XTR',
-      quest_yt_title: 'Подписаться на YouTube',
-      quest_yt_desc: 'Получите бонус 100k XTR',
-      questsOpenBtn: 'Открыть',
+const i18n = {
+  ru: {
+    pickRoomFirst: 'Сначала выберите комнату!',
+    notEnough: 'Недостаточно монет!',
+    dailyAlready: 'Ежедневная награда уже получена!',
+    questAlready: 'Квест уже получен!',
+    miningIncome: 'Доход майнинга:',
+    miningShop: 'Магазин майнинга',
+    close: 'Закрыть',
+    howToPlay: 'Как играть',
+    infoList: [
+      'Выберите комнату, затем нажмите кнопку 🔍 для охоты.',
+      'Охотник проверяет 2 случайные комнаты (1 — если включена "Проверка 1 комнаты").',
+      'Если вашу комнату нашли, вы теряете монеты (показываются красным).',
+      'Если вы избежали охоты, вы получаете монеты (показываются зелёным).',
+      'Покупайте апгрейды или майнеров, чтобы улучшить шансы и доход.',
+      'Забирайте ежедневные награды и выполняйте квесты для бонусных монет.'
+    ],
+    profile: 'Профиль',
+    dailyReward: 'Ежедневная награда',
+    dailyText: 'Получите 30 000 XTR раз в день!',
+    claimDaily: 'Забрать',
+    quest: 'Квест',
+    claimQuest: 'Забрать',
+    settings: 'Настройки',
+    settingsText: 'Смените язык и другие параметры.',
+    buyFor: 'Купить {name} за {price}?',
+    buy: 'Купить',
+    cancel: 'Отмена',
+    profitHr: 'Прибыль/ч:',
+    noEnergy: 'Нет энергии!',
+    startBtn: '🏠 Начать',
+    resetBtn: '🔍 Охота',
+    wsTitle: 'Премиум подарки',
+    wsSub: '7 дней наград — забирайте по одному в день',
+    wsBtnClose: 'Вернуться завтра',
+    wsBtnRules: 'Как это работает',
+    dayLabel: 'День',
+    claimed: 'Забрано',
+    casinoTitle: '🎰 Казино',
+    casinoSubtitle: 'Вращайте колесо — раз в 2 часа',
+    spin: 'КРУТИТЬ',
+    ready: 'Готово',
+    full: 'Полный',
+    coinsBalance: 'Баланс монет',
+    withdrawTitle: 'Вывод средств',
+    withdrawSub: 'Платежи проходят через TON',
+    withdrawTrust: 'Доверие: выплаты оформляются администратором',
+    withdrawDateText: 'Все токены будут автоматически отправлены на указанный выше адрес в дату листинга монеты — <strong>15 декабря 2025</strong>.',
+    enterAddressAlert: 'Введите адрес',
+    boundAddress: 'Привязанный адрес: ',
+    addressNotBound: 'Адрес не привязан.',
+    addressSaved: 'Адрес сохранён.',
+    checkAddress: 'Проверьте адрес',
+    addressCopied: 'Адрес скопирован.',
+    addressCopyFailed: 'Не удалось скопировать.',
+    withdrawPlaceholder: 'UQ...',
+    questsTitle: 'Квесты',
+    quest_tg_title: 'Подписаться в Telegram',
+    quest_tg_desc: 'Получите бонус 100k XTR',
+    quest_yt_title: 'Подписаться на YouTube',
+    quest_yt_desc: 'Получите бонус 100k XTR',
+    questsOpenBtn: 'Открыть',
+    upgrade_x2Prize_title: 'x2 Приз / x2 Потеря',
+    upgrade_x2Prize_desc: 'Удваивает награду и штрафы.',
+    upgrade_check1_title: 'Проверка 1 комнаты',
+    upgrade_check1_desc: 'Охотник проверяет только 1 комнату (1 мин).',
+    upgrade_shield_title: 'Щит (1м)',
+    upgrade_shield_desc: 'Защищает от потерь на 1 минуту.',
+    upgrade_incBoost_title: 'Двойной доход (1м)',
+    upgrade_incBoost_desc: 'Доход майнинга ×2 на 1 минуту.',
+    upgrade_luck_title: 'Удачное спасение (1м)',
+    upgrade_luck_desc: '50% шанс избежать если найден (1 мин).',
+    upgrade_badge_boost: 'Буст',
+    upgrade_badge_defence: 'Защита',
+    upgrade_badge_income: 'Доход',
+    upgrade_badge_chance: 'Шанс',
+    available: 'Доступно!',
+    new: 'Новое',
+    lvl: 'Ур.',
+    perHour: '/ч',
+    incomePerHour: '+{val} /ч',
+    plusSign: '+',
+    completed: 'Выполнено',
+    notClaimed: 'Не взято',
+    nextIn: 'След: {h}ч {m}м',
+    withdrawStatusAvailable: 'Доступно для вывода',
+    roomLabel: 'Комната'
+  },
+  en: {
+    pickRoomFirst: 'Pick a room first!',
+    notEnough: 'Not enough coins!',
+    dailyAlready: 'Daily reward already claimed!',
+    questAlready: 'Quest already claimed!',
+    miningIncome: 'Mining Income:',
+    miningShop: 'Mining Shop',
+    close: 'Close',
+    howToPlay: 'How to Play',
+    infoList: [
+      'Select a room and then click the 🔍 button to hunt.',
+      'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
+      'If your room is found, you lose coins (shown in red).',
+      'If you evade the hunt, you gain coins (shown in green).',
+      'Buy upgrades or miners to improve your chances and income.',
+      'Claim daily rewards and complete quests for bonus coins.'
+    ],
+    profile: 'Profile',
+    dailyReward: 'Daily Reward',
+    dailyText: 'Get 30,000 XTR once a day!',
+    claimDaily: 'Claim Daily',
+    quest: 'Quest',
+    claimQuest: 'Claim Quest',
+    settings: 'Settings',
+    settingsText: 'Change language and other preferences.',
+    buyFor: 'Buy {name} for {price}?',
+    buy: 'Buy',
+    cancel: 'Cancel',
+    profitHr: 'Profit/hr:',
+    noEnergy: 'No energy!',
+    startBtn: '🏠 Start',
+    resetBtn: '🔍 Hunt',
+    wsTitle: 'Premium Gifts',
+    wsSub: '7 days of rewards — claim one per day',
+    wsBtnClose: 'Come back tomorrow',
+    wsBtnRules: 'How it works',
+    dayLabel: 'Day',
+    claimed: 'Claimed',
+    casinoTitle: '🎰 Casino',
+    casinoSubtitle: 'Spin the wheel — once every 2 hours',
+    spin: 'SPIN',
+    ready: 'Ready',
+    full: 'Full',
+    coinsBalance: 'Coins balance',
+    withdrawTitle: 'Withdraw funds',
+    withdrawSub: 'Payouts are processed via TON',
+    withdrawTrust: 'Trust: payouts are processed by admin',
+    withdrawDateText: 'All tokens will be automatically sent to the specified address on the coin listing date — <strong>December 15, 2025</strong>.',
+    enterAddressAlert: 'Enter address',
+    boundAddress: 'Bound address: ',
+    addressNotBound: 'Address not bound.',
+    addressSaved: 'Address saved.',
+    checkAddress: 'Check the address',
+    addressCopied: 'Address copied.',
+    addressCopyFailed: 'Failed to copy.',
+    withdrawPlaceholder: 'UQ...',
+    questsTitle: 'Quests',
+    quest_tg_title: 'Subscribe on Telegram',
+    quest_tg_desc: 'Get 100k XTR bonus',
+    quest_yt_title: 'Subscribe on YouTube',
+    quest_yt_desc: 'Get 100k XTR bonus',
+    questsOpenBtn: 'Open',
+    upgrade_x2Prize_title: 'x2 Prize / x2 Loss',
+    upgrade_x2Prize_desc: 'Double rewards & penalties.',
+    upgrade_check1_title: 'Check 1 Room Only',
+    upgrade_check1_desc: 'Hunter checks only 1 room (1 min).',
+    upgrade_shield_title: 'Shield (1m)',
+    upgrade_shield_desc: 'Protects you from loss for 1 minute.',
+    upgrade_incBoost_title: 'Double Income (1m)',
+    upgrade_incBoost_desc: 'Mining income ×2 for 1 minute.',
+    upgrade_luck_title: 'Lucky Escape (1m)',
+    upgrade_luck_desc: '50% chance to evade if hunted (1 minute).',
+    upgrade_badge_boost: 'Boost',
+    upgrade_badge_defence: 'Defence',
+    upgrade_badge_income: 'Income',
+    upgrade_badge_chance: 'Chance',
+    available: 'Available!',
+    new: 'New',
+    lvl: 'Lvl',
+    perHour: '/hr',
+    incomePerHour: '+{val} /hr',
+    plusSign: '+',
+    completed: 'Completed',
+    notClaimed: 'Not claimed',
+    nextIn: 'Next in {h}h {m}m',
+    withdrawStatusAvailable: 'Available to withdraw',
+    roomLabel: 'Room'
+  }
+};
 
-      // upgrades specific
-      upgrade_x2Prize_title: 'x2 Приз / x2 Потеря',
-      upgrade_x2Prize_desc: 'Удваивает награду и штрафы.',
-      upgrade_check1_title: 'Проверка 1 комнаты',
-      upgrade_check1_desc: 'Охотник проверяет только 1 комнату (1 мин).',
-      upgrade_shield_title: 'Щит (1м)',
-      upgrade_shield_desc: 'Защищает от потерь на 1 минуту.',
-      upgrade_incBoost_title: 'Двойной доход (1м)',
-      upgrade_incBoost_desc: 'Доход майнинга ×2 на 1 минуту.',
-      upgrade_luck_title: 'Удачное спасение (1м)',
-      upgrade_luck_desc: '50% шанс избежать если найден (1 мин).',
-      upgrade_badge_boost: 'Буст',
-      upgrade_badge_defence: 'Защита',
-      upgrade_badge_income: 'Доход',
-      upgrade_badge_chance: 'Шанс',
+// current language pref
+let lang = localStorage.getItem('lang') || 'ru';
 
-      // misc small bits
-      available: 'Доступно!',
-      new: 'Новое',
-      lvl: 'Ур.',
-      perHour: '/ч',
-      incomePerHour: '+{val} /ч',
-      plusSign: '+',
-      completed: 'Выполнено',
-      notClaimed: 'Не взято',
-      nextIn: 'След: {h}ч {m}м',
-      withdrawStatusAvailable: 'Доступно для вывода',
-      roomLabel: 'Комната'
-    },
-    en: {
-      // generic / UI
-      pickRoomFirst: 'Pick a room first!',
-      notEnough: 'Not enough coins!',
-      dailyAlready: 'Daily reward already claimed!',
-      questAlready: 'Quest already claimed!',
-      miningIncome: 'Mining Income:',
-      miningShop: 'Mining Shop',
-      close: 'Close',
-      howToPlay: 'How to Play',
-      infoList: [
-        'Select a room and then click the 🔍 button to hunt.',
-        'The hunter searches 2 random rooms (1 if "Check 1 Room" is active).',
-        'If your room is found, you lose coins (shown in red).',
-        'If you evade the hunt, you gain coins (shown in green).',
-        'Buy upgrades or miners to improve your chances and income.',
-        'Claim daily rewards and complete quests for bonus coins.'
-      ],
-      profile: 'Profile',
-      dailyReward: 'Daily Reward',
-      dailyText: 'Get 30,000 XTR once a day!',
-      claimDaily: 'Claim Daily',
-      quest: 'Quest',
-      claimQuest: 'Claim Quest',
-      settings: 'Settings',
-      settingsText: 'Change language and other preferences.',
-      buyFor: 'Buy {name} for {price}?',
-      buy: 'Buy',
-      cancel: 'Cancel',
-      profitHr: 'Profit/hr:',
-      noEnergy: 'No energy!',
-      startBtn: '🏠 Start',
-      resetBtn: '🔍 Hunt',
-      wsTitle: 'Premium Gifts',
-      wsSub: '7 days of rewards — claim one per day',
-      wsBtnClose: 'Come back tomorrow',
-      wsBtnRules: 'How it works',
-      dayLabel: 'Day',
-      claimed: 'Claimed',
-      casinoTitle: '🎰 Casino',
-      casinoSubtitle: 'Spin the wheel — once every 2 hours',
-      spin: 'SPIN',
-      ready: 'Ready',
-      full: 'Full',
-      coinsBalance: 'Coins balance',
+// robust translator: returns string or array
+function t(key, vars = {}){
+  if(!key) return '';
+  const bucket = i18n[lang] || i18n['ru'] || {};
+  let val = bucket[key];
+  if (val === undefined) {
+    // fallback to english then russian
+    val = (i18n['en'] && i18n['en'][key]) ?? (i18n['ru'] && i18n['ru'][key]) ?? '';
+  }
+  // if it's an array, return array (caller should handle)
+  if (Array.isArray(val)) return val.map(v => interpolate(v, vars));
+  if (typeof val === 'string') return interpolate(val, vars);
+  return '';
+}
 
-      // withdraw
-      withdrawTitle: 'Withdraw funds',
-      withdrawSub: 'Payouts are processed via TON',
-      withdrawTrust: 'Trust: payouts are processed by admin',
-      withdrawDateText: 'All tokens will be automatically sent to the specified address on the coin listing date — <strong>December 15, 2025</strong>.',
-      enterAddressAlert: 'Enter address',
-      boundAddress: 'Bound address: ',
-      addressNotBound: 'Address not bound.',
-      addressSaved: 'Address saved.',
-      checkAddress: 'Check the address',
-      addressCopied: 'Address copied.',
-      addressCopyFailed: 'Failed to copy.',
-      withdrawPlaceholder: 'UQ...',
+function interpolate(str, vars){
+  return str.replace(/\{(\w+)\}/g, (_, k)=> (vars[k] !== undefined ? vars[k] : `{${k}}`));
+}
 
-      // quests
-      questsTitle: 'Quests',
-      quest_tg_title: 'Subscribe on Telegram',
-      quest_tg_desc: 'Get 100k XTR bonus',
-      quest_yt_title: 'Subscribe on YouTube',
-      quest_yt_desc: 'Get 100k XTR bonus',
-      questsOpenBtn: 'Open',
-
-      // upgrades specific
-      upgrade_x2Prize_title: 'x2 Prize / x2 Loss',
-      upgrade_x2Prize_desc: 'Double rewards & penalties.',
-      upgrade_check1_title: 'Check 1 Room Only',
-      upgrade_check1_desc: 'Hunter checks only 1 room (1 min).',
-      upgrade_shield_title: 'Shield (1m)',
-      upgrade_shield_desc: 'Protects you from loss for 1 minute.',
-      upgrade_incBoost_title: 'Double Income (1m)',
-      upgrade_incBoost_desc: 'Mining income ×2 for 1 minute.',
-      upgrade_luck_title: 'Lucky Escape (1m)',
-      upgrade_luck_desc: '50% chance to evade if hunted (1 minute).',
-      upgrade_badge_boost: 'Boost',
-      upgrade_badge_defence: 'Defence',
-      upgrade_badge_income: 'Income',
-      upgrade_badge_chance: 'Chance',
-
-      // misc small bits
-      available: 'Available!',
-      new: 'New',
-      lvl: 'Lvl',
-      perHour: '/hr',
-      incomePerHour: '+{val} /hr',
-      plusSign: '+',
-      completed: 'Completed',
-      notClaimed: 'Not claimed',
-      nextIn: 'Next in {h}h {m}m',
-      withdrawStatusAvailable: 'Available to withdraw',
-      roomLabel: 'Room'
-    }
+// applyLang: updates known element IDs (textContent or innerHTML where appropriate)
+function applyLang(){
+  // simple id->translationKey mapping
+  const mapText = {
+    'miningLabel': 'miningIncome',
+    'shopTitle': 'miningShop',
+    'confirmBuy': 'buy',
+    'cancelBuy': 'cancel',
+    'profileTitle': 'profile',
+    'dailyTitle': 'dailyReward',
+    'dailyText': 'dailyText',
+    'claimDaily': 'claimDaily',
+    'settingsText': 'settingsText',
+    'wsTitle': 'wsTitle',
+    'wsBtnClose': 'wsBtnClose',
+    'wsBtnRules': 'wsBtnRules',
+    'casinoTitle': 'casinoTitle',
+    'casinoSubtitle': 'casinoSubtitle',
+    'spinBtn': 'spin',
+    'coinsVal': null, // coinsVal is numeric, don't overwrite
+    'tonVal': null,
+    'withdrawTitle': 'withdrawTitle',
+    'withdrawSub': 'withdrawSub',
+    'withdrawTrust': 'withdrawTrust',
+    'withdrawAddrTitle': 'boundAddress',
+    'withdrawAddrDesc': 'withdrawSub',
+    'withdrawDateText': 'withdrawDateText',
+    'closeWithdraw': 'close'
   };
 
-  let lang = localStorage.getItem('lang') || 'ru';
-  function t(key, vars = {}) {
-    const val = (i18n[lang] && i18n[lang][key]) || (i18n.ru && i18n.ru[key]) || '';
-    if (typeof val === 'string') {
-      return val.replace(/\{(\w+)\}/g, (_, k) => vars[k] || '');
+  Object.keys(mapText).forEach(id=>{
+    const key = mapText[id];
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(!key) return; // skip numeric values
+    // withdrawDateText needs HTML
+    if(id === 'withdrawDateText') { el.innerHTML = t(key); return; }
+    el.textContent = t(key);
+  });
+
+  // handle lists (infoList)
+  const infoListEl = document.getElementById('infoList');
+  if (infoListEl) {
+    const items = t('infoList');
+    if (Array.isArray(items)){
+      infoListEl.innerHTML = items.map(it=>`<li>${it}</li>`).join('');
     }
-    return val || '';
   }
-  function applyLang() {
-    document.getElementById('miningLabel') && (document.getElementById('miningLabel').textContent = t('miningIncome'));
-    document.getElementById('shopTitle') && (document.getElementById('shopTitle').textContent = t('miningShop'));
-    const cb = document.getElementById('confirmBuy'); const canc = document.getElementById('cancelBuy');
-    if (cb) cb.textContent = t('buy');
-    if (canc) canc.textContent = t('cancel');
-    document.getElementById('infoTitle') && (document.getElementById('infoTitle').textContent = t('howToPlay'));
-    document.getElementById('profileTitle') && (document.getElementById('profileTitle').textContent = t('profile'));
-    document.getElementById('dailyTitle') && (document.getElementById('dailyTitle').textContent = t('dailyReward'));
-    document.getElementById('dailyText') && (document.getElementById('dailyText').textContent = t('dailyText'));
-    document.getElementById('claimDaily') && (document.getElementById('claimDaily').textContent = t('claimDaily'));
-    document.getElementById('questTitle') && (document.getElementById('questTitle').textContent = t('quest'));
-    document.getElementById('claimQuest') && (document.getElementById('claimQuest').textContent = t('claimQuest'));
-    document.getElementById('settingsTitle') && (document.getElementById('settingsTitle').textContent = t('settings'));
-    document.getElementById('settingsText') && (document.getElementById('settingsText').textContent = t('settingsText'));
 
-    const infoListEl = document.getElementById('infoList');
-    if (infoListEl) {
-      infoListEl.innerHTML = '';
-      (t('infoList') || []).forEach(li => { const el = document.createElement('li'); el.textContent = li; infoListEl.appendChild(el); });
-    }
+  // button placeholders
+  const start = document.getElementById('startBtn'); if (start) start.textContent = t('startBtn');
+  const reset = document.getElementById('resetBtn'); if (reset) reset.textContent = t('resetBtn');
+  const openQuestsBtn = document.getElementById('openQuestsBtn'); if (openQuestsBtn) openQuestsBtn.textContent = t('questsOpenBtn');
 
-    const startBtn = document.getElementById('startBtn');
-    if (startBtn) startBtn.textContent = t('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) resetBtn.textContent = t('resetBtn');
+  // quests titles
+  const questsTitleEl = document.getElementById('questsTitle'); if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
 
-    const wsTitleEl = document.getElementById('wsTitle');
-    if (wsTitleEl) wsTitleEl.textContent = t('wsTitle');
-    const wsSubEl = document.querySelector('#wsModalOverlay .sub');
-    if (wsSubEl) wsSubEl.textContent = t('wsSub');
-    const btnClose = document.getElementById('wsBtnClose');
-    if (btnClose) btnClose.textContent = t('wsBtnClose');
-    const btnRules = document.getElementById('wsBtnRules');
-    if (btnRules) btnRules.textContent = t('wsBtnRules');
+  // placeholders and inputs
+  const withdrawInput = document.getElementById('withdrawAddressInput');
+  if (withdrawInput) withdrawInput.placeholder = t('withdrawPlaceholder') || withdrawInput.placeholder;
 
-    const casinoTitleEl = document.getElementById('casinoTitle');
-    if (casinoTitleEl) casinoTitleEl.textContent = t('casinoTitle');
-    const casinoSubtitleEl = document.getElementById('casinoSubtitle');
-    if (casinoSubtitleEl) casinoSubtitleEl.textContent = t('casinoSubtitle');
-    const spinBtn = document.getElementById('spinBtn');
-    if (spinBtn) spinBtn.textContent = t('spin');
+  // upgrade labels: try to set titles/descriptions if present
+  document.querySelectorAll('.upgrade').forEach(u=>{
+    const key = u.dataset.key;
+    if(!key) return;
+    const titleKey = `upgrade_${key}_title`;
+    const descKey = `upgrade_${key}_desc`;
+    const h3 = u.querySelector('h3');
+    const p = u.querySelector('p');
+    if(h3 && i18n[lang] && i18n[lang][titleKey]) h3.textContent = t(titleKey);
+    if(p && i18n[lang] && i18n[lang][descKey]) p.textContent = t(descKey);
+  });
+}
 
-    const coinsBalanceCaption = document.querySelector('#wsModalOverlay .header div:last-child div:last-child');
-    if (coinsBalanceCaption) coinsBalanceCaption.textContent = t('coinsBalance');
+// attach to window so other scripts can call
+window.i18n = i18n;
+window.t = t;
+window.applyLang = applyLang;
 
-    // withdraw translations
-    const wTitle = document.getElementById('withdrawTitle');
-    if (wTitle) wTitle.textContent = t('withdrawTitle');
-    const wSub = document.getElementById('withdrawSub');
-    if (wSub) wSub.textContent = t('withdrawSub');
-    const wTrust = document.getElementById('withdrawTrust');
-    if (wTrust) wTrust.textContent = t('withdrawTrust');
-    const wDate = document.getElementById('withdrawDateText');
-    if (wDate) wDate.innerHTML = t('withdrawDateText');
-    const wAddrTitle = document.getElementById('withdrawAddrTitle');
-    if (wAddrTitle) wAddrTitle.textContent = t('withdrawAddrTitle');
-    const wAddrDesc = document.getElementById('withdrawAddrDesc');
-    if (wAddrDesc) wAddrDesc.textContent = t('withdrawAddrDesc');
-    const closeWithdrawBtn = document.getElementById('closeWithdraw');
-    if (closeWithdrawBtn) closeWithdrawBtn.textContent = t('close');
+// ensure language saved and applied immediately
+localStorage.setItem('lang', lang);
+applyLang();
 
-    // profile quests button
-    const openQuestsBtn = document.getElementById('openQuestsBtn');
-    if (openQuestsBtn) openQuestsBtn.textContent = t('questsOpenBtn');
-
-    // quests title
-    const questsTitleEl = document.getElementById('questsTitle');
-    if (questsTitleEl) questsTitleEl.textContent = t('questsTitle');
-
-    const withdrawInput = document.getElementById('withdrawAddressInput');
-    if (withdrawInput) withdrawInput.placeholder = t('withdrawPlaceholder') || withdrawInput.placeholder;
-  }
+// Export helper if using modules (optional)
+if (typeof module !== 'undefined') module.exports = { i18n, t, applyLang };
 
   // ========== Energy ==========
   const MAX_ENERGY = 50;
@@ -1225,7 +1238,7 @@ header{
     }
   }
 
-  // ========== Withdraw UI implementation (simplified) ==========
+// ========== Withdraw UI implementation (simplified) ==========
   (function(){
     const withdrawBtn = document.getElementById('withdrawBtn');
     const withdrawModal = document.getElementById('withdrawModal');
@@ -1759,6 +1772,8 @@ header{
               let cur = +localStorage.getItem(LS_COINS) || 0;
               cur += amounts[i];
               localStorage.setItem(LS_COINS, String(cur));
+              const mainEl = document.getElementById('coinsVal');
+              if (mainEl) mainEl.textContent = formatNum(cur);
             }
             saveGameStatePublic();
           } catch(e){
