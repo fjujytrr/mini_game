@@ -2063,15 +2063,21 @@ if (typeof module !== 'undefined') module.exports = { i18n, t, applyLang };
     if (closeCasino) closeCasino.addEventListener('click', ()=>{ if (casinoModal) { casinoModal.style.display = 'none'; casinoModal.setAttribute('aria-hidden','true'); } });
 
     if (spinBtn) spinBtn.addEventListener('click', ()=>{
-      const last = +localStorage.getItem(COOL_KEY) || 0;
-      const now = Date.now();
-      if(last && now - last < COOLDOWN_MS){
-        updateCooldownDisplay();
-        return;
-      }
-      const idx = getRandomSegmentIndex();
-      spinToIndex(idx);
-    });
+  const last = +localStorage.getItem(COOL_KEY) || 0;
+  const now = Date.now();
+  if (last && now - last < COOLDOWN_MS) {
+    updateCooldownDisplay();
+    return;
+  }
+
+  // Запустить отсчёт КУЛДАУНА немедленно (2 часа)
+  localStorage.setItem(COOL_KEY, String(Date.now()));
+  updateCooldownDisplay();
+
+  const idx = getRandomSegmentIndex();
+  spinToIndex(idx);
+});
+
 
     drawWheel();
     render();
