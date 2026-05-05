@@ -1,277 +1,311 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Panfani</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
+body{
+background:#05070d;
+color:#fff;
+padding:16px;
 }
 
-body {
-  background: #050507;
-  color: white;
+.container{
+max-width:420px;
+margin:auto;
 }
 
-/* ЭКРАНЫ */
-.screen {
-  display: none;
-  height: 100vh;
-  overflow-y: auto;
-  padding: 16px;
+.card{
+background:linear-gradient(145deg,#0c0f1c,#070913);
+border-radius:20px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 0 40px rgba(128,0,255,.15);
 }
 
-.active {
-  display: block;
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
 }
 
-/* HEADER */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-.balance {
-  background: rgba(255,255,255,0.05);
-  padding: 12px 16px;
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
+.logo-circle{
+width:48px;height:48px;border-radius:50%;
+background:linear-gradient(45deg,#9f0,#a0f);
 }
 
-/* HERO */
-.hero {
-  position: relative;
-  border-radius: 24px;
-  padding: 20px;
-  overflow: hidden;
-  background: radial-gradient(circle at 70% 30%, #6a00ff, #0b0b12);
+.balance{
+text-align:right;
 }
 
-.hero img {
-  position: absolute;
-  right: -40px;
-  bottom: -20px;
-  width: 250px;
-  opacity: 0.9;
+.balance h3{font-size:20px}
+.balance span{opacity:.6;font-size:12px}
+
+.hero{
+background:linear-gradient(120deg,#1a0d2e,#0b0c19);
+border-radius:20px;
+padding:20px;
+margin-bottom:20px;
 }
 
-.hero h1 {
-  font-size: 26px;
-  line-height: 1.2;
+.hero h1{
+font-size:24px;
+margin-bottom:10px;
 }
 
-.hero span {
-  color: #8b5cf6;
+.hero p{
+opacity:.7;
+font-size:14px;
+margin-bottom:20px;
 }
 
-/* BUTTON */
-.btn {
-  margin-top: 16px;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  width: 100%;
-  font-size: 16px;
-  cursor: pointer;
+.btn{
+background:linear-gradient(90deg,#b5ff00,#a0ff55);
+color:#000;
+padding:14px;
+border:none;
+border-radius:12px;
+font-weight:600;
+width:100%;
+cursor:pointer;
 }
 
-.btn-primary {
-  background: linear-gradient(90deg,#7c3aed,#a855f7);
-  color: white;
+.tokens{
+display:flex;
+gap:10px;
 }
 
-.btn-green {
-  background: #c6ff00;
-  color: black;
+.token{
+flex:1;
+background:#0d1020;
+border-radius:14px;
+padding:10px;
+text-align:center;
 }
 
-/* TOKEN LIST */
-.tokens {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
+.token small{opacity:.6}
+
+/* modal */
+.modal{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.8);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
-.token {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  border-radius: 18px;
-  padding: 14px;
-  text-align: center;
+.modal.active{display:flex}
+
+.modal-content{
+background:#0c0f1c;
+padding:20px;
+border-radius:20px;
+width:100%;
 }
 
-/* CREATE */
-.input {
-  background: rgba(255,255,255,0.05);
-  border: none;
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  color: white;
-  margin-top: 10px;
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+border:none;
+background:#12152a;
+color:#fff;
 }
 
-/* SELL */
-.sell-card {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 20px;
-  background: linear-gradient(145deg,#0c0c16,#1a1030);
+.sell-screen{
+display:none;
 }
 
-.big {
-  font-size: 48px;
-  text-align: center;
-  color: #00ff88;
+.stat{
+background:#0d1020;
+padding:10px;
+border-radius:10px;
+margin-top:10px;
 }
 
-.percent {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
+.sell-buttons{
+display:flex;
+gap:10px;
+margin-top:10px;
 }
 
-.percent button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: #111;
-  color: white;
+.sell-buttons button{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:none;
+background:#1b1f3d;
+color:#fff;
+cursor:pointer;
 }
 
-.percent .active {
-  background: #7c3aed;
+.sell-buttons button.active{
+background:#8a2cff;
 }
 
-/* FOOTER */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  background: #0b0b12;
-  border-top: 1px solid rgba(255,255,255,0.05);
+.footer{
+margin-top:20px;
+text-align:center;
+opacity:.5;
+font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
-<div id="home" class="screen active">
+<div class="container">
 
-  <div class="header">
-    <h2>Panfani</h2>
-    <div class="balance">
-      0.678 SOL
-    </div>
-  </div>
+<div class="header">
+<div class="logo">
+<div class="logo-circle"></div>
+<div>
+<b>Panfani</b><br>
+<small style="opacity:.6">Create. Trade. Own.</small>
+</div>
+</div>
 
-  <div class="hero">
-    <h1>Твой токен.<br>Твои правила.<br><span>Твой успех.</span></h1>
+<div class="balance">
+<h3 id="balance">0.678 SOL</h3>
+<span>≈ $67.80</span>
+</div>
+</div>
 
-    <!-- ВСТАВЬ СВОЮ КАРТИНКУ КОТА -->
-    <img src="https://i.imgur.com/7QZ7Z7B.png">
+<div class="hero">
+<h1>Твой токен. Твои правила.</h1>
+<p>Создавай токены и торгуй ими мгновенно.</p>
+<button class="btn" onclick="openModal()">Создать токен</button>
+</div>
 
-    <button class="btn btn-green" onclick="go('create')">
-      Создать токен +
-    </button>
-  </div>
+<div class="tokens">
+<div class="token">
+<p>MYTOKEN</p>
+<small>$12,456</small>
+</div>
+<div class="token">
+<p>CATCOIN</p>
+<small>$8,732</small>
+</div>
+<div class="token">
+<p>PANFANI</p>
+<small>$3,211</small>
+</div>
+</div>
 
-  <div class="tokens">
-    <div class="token">
-      MYTOKEN<br>
-      <small>+18.6%</small>
-    </div>
-
-    <div class="token" onclick="go('sell')">
-      CATCOIN<br>
-      <small style="color:red">-4.2%</small>
-    </div>
-
-    <div class="token">
-      PANFANI<br>
-      <small>+6.7%</small>
-    </div>
-  </div>
+<div class="footer">Panfani UI Demo</div>
 
 </div>
 
-<!-- CREATE -->
-<div id="create" class="screen">
+<!-- MODAL CREATE -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<h2>Создать токен</h2>
 
-  <h2>Создать токен</h2>
+<input id="name" placeholder="Название токена"/>
+<input id="ticker" placeholder="Тикер ($CAT)"/>
+<input id="amount" type="number" placeholder="Стартовая покупка (SOL)"/>
 
-  <input class="input" placeholder="Название">
-  <input class="input" placeholder="Тикер">
-  <input class="input" placeholder="Стартовая покупка">
-
-  <button class="btn btn-primary">Создать токен</button>
-
-  <button class="btn" onclick="go('home')">Назад</button>
-
+<button class="btn" onclick="createToken()">Создать</button>
+</div>
 </div>
 
-<!-- SELL -->
-<div id="sell" class="screen">
+<!-- SELL SCREEN -->
+<div class="container sell-screen" id="sell">
 
-  <h2>Panfani Cat</h2>
+<h2 id="tokenTitle"></h2>
 
-  <div class="sell-card">
-
-    <div class="big">+72%</div>
-
-    <p style="text-align:center;">12,500 CAT</p>
-
-    <div class="percent">
-      <button onclick="setP(25)">25%</button>
-      <button onclick="setP(75)">75%</button>
-      <button onclick="setP(100)" class="active">100%</button>
-    </div>
-
-    <h3 id="res" style="text-align:center;margin-top:10px;">
-      0.4192 SOL
-    </h3>
-
-    <button class="btn btn-primary">Продать</button>
-  </div>
-
-  <button class="btn" onclick="go('home')">Назад</button>
-
+<div class="card">
+<h1 id="profit">+72%</h1>
+<p>Прибыль</p>
 </div>
 
-<div class="footer">
-  <div>🏠</div>
-  <div>📈</div>
-  <div>💼</div>
-  <div>👤</div>
+<div class="card">
+<p>Ваши токены: <b id="tokensAmount">0</b></p>
+<p>Цена: <b>0.01289 SOL</b></p>
+</div>
+
+<div class="sell-buttons">
+<button onclick="setSell(25)">25%</button>
+<button onclick="setSell(75)">75%</button>
+<button onclick="setSell(100)" class="active">100%</button>
+</div>
+
+<div class="card">
+<p>Вы получите:</p>
+<h2 id="receive">0.0 SOL</h2>
+</div>
+
+<button class="btn" onclick="sell()">Продать</button>
+
 </div>
 
 <script>
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+let balance = 0.678;
+let currentToken = null;
+
+function openModal(){
+document.getElementById("modal").classList.add("active");
 }
 
-function setP(p){
-  let base = 0.4192;
-  let val = (base * p / 100).toFixed(4);
+function createToken(){
+let name = document.getElementById("name").value;
+let ticker = document.getElementById("ticker").value;
+let amount = parseFloat(document.getElementById("amount").value || 0);
 
-  document.getElementById('res').innerText = val + " SOL";
+if(!name || !ticker) return alert("Заполни поля");
 
-  document.querySelectorAll('.percent button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+currentToken = {
+name,
+ticker,
+amount: 12500
+};
+
+document.getElementById("modal").classList.remove("active");
+
+document.querySelector(".container").style.display="none";
+document.getElementById("sell").style.display="block";
+
+document.getElementById("tokenTitle").innerText = name + " $" + ticker;
+document.getElementById("tokensAmount").innerText = currentToken.amount;
+
+calcReceive(100);
+}
+
+function setSell(p){
+calcReceive(p);
+
+document.querySelectorAll(".sell-buttons button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
+}
+
+function calcReceive(percent){
+let receive = (0.4192 * percent / 100).toFixed(4);
+document.getElementById("receive").innerText = receive + " SOL";
+}
+
+function sell(){
+alert("Продано!");
+balance = 0.678; // фикс
+document.getElementById("balance").innerText = balance + " SOL";
+
+document.getElementById("sell").style.display="none";
+document.querySelector(".container").style.display="block";
 }
 </script>
 
