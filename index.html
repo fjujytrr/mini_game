@@ -1605,7 +1605,7 @@
         const profitUsd = usd(Math.abs(profitSol));
         const profitPct = avgValueSol > 0 ? ((currentValueSol - avgValueSol) / avgValueSol) * 100 : 0;
         const sellAmount = Math.max(1, Math.round(token.amount * (selectedSellPct / 100)));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
+        const receiveSol = +(sellAmount * token.currentPriceSol).toFixed(4);
 
         els.tokenDetailName.textContent = token.name;
         els.tokenDetailTicker.textContent = "$" + token.ticker;
@@ -1708,7 +1708,7 @@
         if(!token.amount){ toast("Продавать нечего"); return; }
 
         const sellAmount = Math.max(1, Math.round(token.amount * selectedSellPct / 100));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
+        const receiveSol = +(sellAmount * token.currentPriceSol).toFixed(4);
         const fee = +(receiveSol * 0.01).toFixed(4);
         const net = +(receiveSol - fee).toFixed(4);
 
