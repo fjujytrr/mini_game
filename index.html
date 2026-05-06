@@ -16,7 +16,6 @@
       --purple:#8f34ff;
       --green:#65ef70;
       --red:#ff5252;
-      --yellow:#d6f53a;
       --line:rgba(255,255,255,.06);
       --shadow:0 18px 60px rgba(0,0,0,.55);
       --shadow2:0 12px 30px rgba(0,0,0,.33);
@@ -25,7 +24,6 @@
       --maxw:430px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --sol-usd: 89;
       --create-fee-sol: 0.35;
     }
 
@@ -955,7 +953,7 @@
           </div>
           <div>
             <div class="brand-title" style="font-size:20px">Профиль</div>
-            <div class="brand-sub">Настройки и доступ</div>
+            <div class="brand-sub">Адрес кошелька</div>
           </div>
         </div>
         <div class="balance-card" style="min-width:132px">
@@ -976,7 +974,7 @@
 
       <div class="section-card" style="margin-top:14px">
         <div class="section-head">
-          <h2 class="section-title">Окошко кошелька</h2>
+          <h2 class="section-title">О кошельке</h2>
         </div>
         <div class="mini-card">
           <div class="title">Пустой стартовый кошелёк</div>
@@ -1143,7 +1141,7 @@
           </div>
         </div>
 
-        <button class="create-btn" id="createTokenBtn">Создать токен</button>
+        <button class="create-btn" id="createTokenBtn" type="button">Создать токен</button>
         <div class="tiny-text" style="margin-top:10px;text-align:center;">Если на создание не хватает денег, появится сообщение.</div>
       </div>
     </div>
@@ -1154,19 +1152,19 @@
     </div>
 
     <nav class="bottom-nav" aria-label="Навигация">
-      <button class="nav-item active" data-screen="home">
+      <button class="nav-item active" data-screen="home" type="button">
         <svg viewBox="0 0 24 24"><path d="M12 3.1a1 1 0 0 1 .66.25l8 7A1 1 0 0 1 21 11v9a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5H10v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 .34-.75l8-7A1 1 0 0 1 12 3.1Z"/></svg>
         <span>Главная</span>
       </button>
-      <button class="nav-item" data-screen="trade">
+      <button class="nav-item" data-screen="trade" type="button">
         <svg viewBox="0 0 24 24"><path d="M4 17a1 1 0 0 1 1-1h3.1l2.2-4.8a1 1 0 0 1 1.82.04l1.56 3.34L16 8.5a1 1 0 0 1 1.77-.1L20 12H23a1 1 0 1 1 0 2h-3.6a1 1 0 0 1-.84-.46l-1.4-2.1-2.96 7.1a1 1 0 0 1-1.84.05l-1.65-3.53-1.57 3.43A1 1 0 0 1 9.2 19H5a1 1 0 0 1-1-1Z"/></svg>
         <span>Торговля</span>
       </button>
-      <button class="nav-item" data-screen="portfolio">
+      <button class="nav-item" data-screen="portfolio" type="button">
         <svg viewBox="0 0 24 24"><path d="M10 4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1h5a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2h5V4Zm11 7H3v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7Z"/></svg>
         <span>Портфель</span>
       </button>
-      <button class="nav-item" data-screen="profile">
+      <button class="nav-item" data-screen="profile" type="button">
         <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2c-4.42 0-8 2.46-8 5.5V22h16v-2.5c0-3.04-3.58-5.5-8-5.5Z"/></svg>
         <span>Профиль</span>
       </button>
@@ -1175,9 +1173,8 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "panfani_app_state_v3";
-      const SOL_USD = 89;
-      const CREATE_FEE_SOL = 0.35;
+      const STORAGE_KEY = "panfani_app_state_v4";
+      let solUsd = 89;
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -1300,7 +1297,7 @@
       }
 
       function usd(sol){
-        return Number(sol || 0) * SOL_USD;
+        return Number(sol || 0) * solUsd;
       }
 
       function solText(sol, d=4){
@@ -1392,16 +1389,7 @@
       }
 
       function emptyCardHtml(){
-        return `
-          <div class="empty-state">Токенов пока нет. Создай первый токен через кнопку сверху.</div>
-        `;
-      }
-
-      function createSellData(token){
-        const pct = selectedSellPct / 100;
-        const sellAmount = Math.max(1, Math.round(token.amount * pct));
-        const receiveSol = +(token.currentValueSol * pct * 0.99).toFixed(4);
-        return { sellAmount, receiveSol };
+        return `<div class="empty-state">Токенов пока нет. Создай первый токен через кнопку сверху.</div>`;
       }
 
       function renderHome(){
@@ -1507,6 +1495,13 @@
         els.sell100.textContent = `${fmtInt(token.amount)} ${token.ticker}`;
       }
 
+      function createSellData(token){
+        const pct = selectedSellPct / 100;
+        const sellAmount = Math.max(1, Math.round(token.amount * pct));
+        const receiveSol = +(token.currentValueSol * pct * 0.99).toFixed(4);
+        return { sellAmount, receiveSol };
+      }
+
       function openToken(id){
         state.selectedTokenId = id;
         saveState();
@@ -1517,7 +1512,7 @@
         const name = els.tokenNameInput.value.trim();
         const ticker = els.tokenTickerInput.value.trim().toUpperCase();
         const buyAmount = parseFloat(els.buyAmountInput.value || "0") || 0;
-        const totalCost = CREATE_FEE_SOL + buyAmount;
+        const totalCost = 0.35 + buyAmount;
 
         if(!name){
           toast("Введите название токена");
@@ -1529,16 +1524,21 @@
           els.tokenTickerInput.focus();
           return;
         }
+        if(buyAmount <= 0){
+          toast("Введите сумму покупки");
+          els.buyAmountInput.focus();
+          return;
+        }
         if(state.balanceSol < totalCost){
           toast("Сейчас денег нет на создание токена");
           return;
         }
 
         const id = "tok_" + Math.random().toString(36).slice(2, 10);
-        const amount = Math.max(1, Math.floor((buyAmount || 0.5) * 10000));
+        const amount = Math.max(1, Math.floor(buyAmount * 10000));
         const investedSol = +buyAmount.toFixed(4);
 
-        const growthFactor = +(1 + (0.7 + Math.random() * 0.6)).toFixed(4); // +70%..+130% at start
+        const growthFactor = +(1 + (0.7 + Math.random() * 0.6)).toFixed(4);
         const currentValueSol = +(investedSol * growthFactor).toFixed(4);
         const currentPriceSol = +(currentValueSol / amount).toFixed(8);
         const averagePriceSol = +(investedSol / amount).toFixed(8);
@@ -1569,6 +1569,7 @@
         state.draft = { name:"", ticker:"", image:"", buyAmount:"0.0" };
         draftImageData = "";
         saveState();
+
         closeModal();
         renderAll();
         openToken(token.id);
@@ -1632,12 +1633,15 @@
           return;
         }
         state.tokens = state.tokens.map(t => {
-          const driftPct = (Math.random() * 0.24) - 0.08; // -8%..+16%
-          const nextFactor = Math.max(1.05, (t.currentValueSol / Math.max(t.investedSol, 0.0001)) * (1 + driftPct));
-          const currentValueSol = +(t.investedSol * nextFactor).toFixed(4);
+          const driftPct = (Math.random() * 0.08) - 0.02; // аккуратное движение
+          const nextInvested = Math.max(0.0001, t.investedSol);
+          const currentFactor = t.currentValueSol / nextInvested;
+          const nextFactor = Math.max(1.05, currentFactor * (1 + driftPct));
+          const currentValueSol = +(nextInvested * nextFactor).toFixed(4);
           const currentPriceSol = t.amount > 0 ? +(currentValueSol / t.amount).toFixed(8) : 0;
-          const profitSol = +(currentValueSol - t.investedSol).toFixed(4);
-          const profitPct = t.investedSol > 0 ? +(((currentValueSol - t.investedSol) / t.investedSol) * 100).toFixed(1) : 0;
+          const profitSol = +(currentValueSol - nextInvested).toFixed(4);
+          const profitPct = +(((currentValueSol - nextInvested) / nextInvested) * 100).toFixed(1);
+
           return {
             ...t,
             currentValueSol,
@@ -1645,9 +1649,11 @@
             profitSol,
             profitPct,
             mcap: Math.max(0, Math.round(currentValueSol * 22000 + Math.random() * 500)),
-            volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.18)))
+            volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.45) * 0.12)))
           };
         });
+
+        solUsd = Math.max(72, Math.min(118, +(solUsd * (1 + (Math.random() - 0.45) * 0.02)).toFixed(2)));
         saveState();
         renderAll();
         toast("Рынок обновлён");
@@ -1660,29 +1666,6 @@
           .replaceAll(">","&gt;")
           .replaceAll('"',"&quot;")
           .replaceAll("'","&#039;");
-      }
-
-      function updateProfitTicker(){
-        state.tokens = state.tokens.map(t => {
-          if(t.investedSol <= 0) return t;
-          const currentFactor = t.currentValueSol / t.investedSol;
-          const drift = (Math.random() - 0.45) * 0.30; // active, but still logical
-          const nextFactor = Math.max(1.05, currentFactor + drift);
-          const currentValueSol = +(t.investedSol * nextFactor).toFixed(4);
-          const currentPriceSol = t.amount > 0 ? +(currentValueSol / t.amount).toFixed(8) : 0;
-          const profitSol = +(currentValueSol - t.investedSol).toFixed(4);
-          const profitPct = t.investedSol > 0 ? +(((currentValueSol - t.investedSol) / t.investedSol) * 100).toFixed(1) : 0;
-          return {
-            ...t,
-            currentValueSol,
-            currentPriceSol,
-            profitSol,
-            profitPct,
-            mcap: Math.max(0, Math.round(currentValueSol * 22000))
-          };
-        });
-        saveState();
-        renderAll();
       }
 
       function renderAll(){
@@ -1766,7 +1749,15 @@
         updateBuyEstimate();
         renderAll();
 
-        setInterval(updateProfitTicker, 3500);
+        setInterval(() => {
+          if(state.tokens.length) randomizeMarket();
+          else {
+            solUsd = Math.max(72, Math.min(118, +(solUsd * (1 + (Math.random() - 0.45) * 0.01)).toFixed(2)));
+            renderHome();
+            renderTrade();
+            renderPortfolio();
+          }
+        }, 4200);
       }
 
       init();
