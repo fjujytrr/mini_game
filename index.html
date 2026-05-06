@@ -10,23 +10,18 @@
       --bg:#050507;
       --bg2:#0a0a0f;
       --bg3:#12121a;
-      --card:#101018;
-      --line:rgba(255,255,255,.06);
-      --line2:rgba(160,80,255,.22);
       --text:#f5f5fb;
       --muted:rgba(255,255,255,.64);
       --muted2:rgba(255,255,255,.42);
       --purple:#8f34ff;
-      --purple2:#6f19ff;
-      --purple3:#b444ff;
       --green:#65ef70;
-      --green2:#d6f53a;
       --red:#ff5252;
-      --radius:22px;
-      --radius2:18px;
-      --radius3:14px;
+      --yellow:#d6f53a;
+      --line:rgba(255,255,255,.06);
       --shadow:0 18px 60px rgba(0,0,0,.55);
       --shadow2:0 12px 30px rgba(0,0,0,.33);
+      --radius:22px;
+      --radius2:18px;
       --maxw:430px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -71,6 +66,7 @@
       animation:fade .18s ease-out;
     }
     .screen.active{display:block}
+
     @keyframes fade{
       from{opacity:.4;transform:translateY(8px)}
       to{opacity:1;transform:translateY(0)}
@@ -344,39 +340,9 @@
 
     .token-grid{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:1fr;
       gap:12px;
     }
-
-    .token-card,.empty-card{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.05);
-      background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(11,11,16,.98));
-      padding:14px;
-      min-height:175px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      cursor:pointer;
-      transition:transform .16s ease, border-color .16s ease;
-    }
-    .token-card:hover,.empty-card:hover{transform:translateY(-2px);border-color:rgba(171,89,255,.22)}
-    .token-top{display:flex;align-items:center;gap:12px}
-    .token-ico{
-      width:60px;height:60px;border-radius:999px;flex:0 0 auto;
-      background:linear-gradient(180deg, rgba(122,31,255,.84), rgba(58,8,141,.78));
-      border:1px solid rgba(255,255,255,.08);
-      display:grid;place-items:center;overflow:hidden;box-shadow:0 0 0 4px rgba(138,44,255,.08);
-    }
-    .token-ico img{width:100%;height:100%;object-fit:cover;display:block}
-    .paw{width:28px;height:28px;color:#dbbdff}
-    .token-name{font-weight:900;font-size:18px;line-height:1.06;letter-spacing:-.03em;margin:0 0 6px}
-    .token-ticker{color:rgba(255,255,255,.58);font-size:13px;font-weight:600}
-    .label{font-size:12px;color:var(--muted2);margin-bottom:4px}
-    .value{font-size:18px;font-weight:900;letter-spacing:-.02em}
-    .change{margin-top:8px;font-size:14px;font-weight:900}
-    .up{color:var(--green)}
-    .down{color:var(--red)}
 
     .create-new-card{
       border-radius:18px;
@@ -461,7 +427,12 @@
       display:inline-grid;place-items:center;font-size:11px;font-weight:900;line-height:1;color:rgba(255,255,255,.8)
     }
     .profit-value{
-      font-size:72px;line-height:.92;margin:10px 0 8px;font-weight:900;letter-spacing:-.06em;color:#60ea55;
+      font-size:72px;
+      line-height:.92;
+      margin:10px 0 8px;
+      font-weight:900;
+      letter-spacing:-.06em;
+      color:#60ea55;
     }
     .profit-sub{color:#6df06b;font-weight:900;font-size:22px;letter-spacing:-.02em}
 
@@ -754,18 +725,38 @@
     .profile-name{font-size:20px;font-weight:900;margin:0 0 5px;letter-spacing:-.03em}
     .profile-desc{color:rgba(255,255,255,.55);font-size:13px;margin:0}
 
-    .settings-grid{display:grid;gap:12px;margin-top:12px}
-    .setting-item{
-      border-radius:18px;padding:15px;border:1px solid rgba(255,255,255,.05);
+    .wallet-panel{
+      border-radius:18px;
+      padding:16px;
+      border:1px solid rgba(255,255,255,.05);
       background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-top:12px;
     }
-    .setting-item .left{min-width:0}
-    .setting-item .name{font-size:15px;font-weight:900;margin:0 0 4px}
-    .setting-item .desc{font-size:13px;color:rgba(255,255,255,.56);margin:0}
-    .pill{
-      padding:9px 12px;border-radius:999px;background:rgba(138,44,255,.14);
-      border:1px solid rgba(138,44,255,.22);color:#d5b5ff;font-size:12px;font-weight:900;white-space:nowrap
+    .wallet-title{font-size:16px;font-weight:900;margin:0 0 8px}
+    .wallet-address{
+      word-break:break-all;
+      font-size:13px;
+      color:rgba(255,255,255,.75);
+      line-height:1.5;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+    }
+    .copy-row{display:flex;gap:10px;margin-top:10px}
+    .copy-btn{
+      flex:1;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      background:linear-gradient(180deg, #7c2cff, #4f16c2);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .copy-btn.secondary{
+      background:linear-gradient(180deg, rgba(26,26,36,.98), rgba(14,14,19,.98));
+      border:1px solid rgba(255,255,255,.06);
     }
 
     .toast{
@@ -803,45 +794,11 @@
       line-height:1.5;
     }
 
-    .wallet-panel{
-      border-radius:18px;
-      padding:16px;
-      border:1px solid rgba(255,255,255,.05);
-      background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
-      margin-top:12px;
-    }
-    .wallet-title{font-size:16px;font-weight:900;margin:0 0 8px}
-    .wallet-address{
-      word-break:break-all;
-      font-size:13px;
-      color:rgba(255,255,255,.75);
-      line-height:1.5;
-      padding:12px;
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.04);
-    }
-    .copy-row{display:flex;gap:10px;margin-top:10px}
-    .copy-btn{
-      flex:1;
-      border:none;
-      border-radius:14px;
-      padding:14px 16px;
-      background:linear-gradient(180deg, #7c2cff, #4f16c2);
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
-    }
-    .copy-btn.secondary{
-      background:linear-gradient(180deg, rgba(26,26,36,.98), rgba(14,14,19,.98));
-      border:1px solid rgba(255,255,255,.06);
-    }
-
     .hidden{display:none !important}
   </style>
 </head>
 <body>
-  <div class="app" id="app">
+  <div class="app">
     <section class="screen active" id="screen-home">
       <div class="topbar">
         <div class="brand">
@@ -850,7 +807,7 @@
               <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
             </svg>
           </div>
-          <div class="brand-text">
+          <div>
             <div class="brand-title">Panfani</div>
             <div class="brand-sub">Create. Trade. Own.</div>
           </div>
@@ -894,9 +851,15 @@
         <div class="section-card">
           <div class="section-head">
             <h2 class="section-title">Мои токены</h2>
-            <button class="link-btn" id="viewAllTokensBtn">Смотреть все</button>
           </div>
-          <div class="token-grid" id="homeTokenGrid"></div>
+          <div class="token-grid">
+            <div class="create-new-card" id="createNewCardHome">
+              <div>
+                <div class="create-new-plus">+</div>
+                <div class="create-new-text">Создать<br>новый токен</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -909,7 +872,7 @@
               <path fill="currentColor" d="M4 20V8l8-5 8 5v12h-6v-7H10v7H4Z"/>
             </svg>
           </div>
-          <div class="brand-text">
+          <div>
             <div class="brand-title" style="font-size:20px">Торговля</div>
             <div class="brand-sub">Купить / продать мгновенно</div>
           </div>
@@ -938,7 +901,7 @@
         </div>
         <div class="mini-card">
           <div class="title">Лента движения</div>
-          <p class="text">Здесь показываются твои токены и их состояние. Пока портфель пустой — никаких активов нет.</p>
+          <p class="text">Здесь показываются твои токены и их состояние.</p>
         </div>
       </div>
     </section>
@@ -951,7 +914,7 @@
               <path fill="currentColor" d="M10 4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1h5a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2h5V4Zm11 7H3v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7Z"/>
             </svg>
           </div>
-          <div class="brand-text">
+          <div>
             <div class="brand-title" style="font-size:20px">Портфель</div>
             <div class="brand-sub">Управление активами</div>
           </div>
@@ -990,7 +953,7 @@
               <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2c-4.42 0-8 2.46-8 5.5V22h16v-2.5c0-3.04-3.58-5.5-8-5.5Z"/>
             </svg>
           </div>
-          <div class="brand-text">
+          <div>
             <div class="brand-title" style="font-size:20px">Профиль</div>
             <div class="brand-sub">Настройки и доступ</div>
           </div>
@@ -999,18 +962,6 @@
           <div class="balance-label">Кошелёк</div>
           <div class="balance-value">New</div>
           <div class="balance-fiat">Address ready</div>
-        </div>
-      </div>
-
-      <div class="profile-header">
-        <div class="profile-avatar" id="profileAvatar">
-          <svg viewBox="0 0 24 24" style="width:34px;height:34px;fill:#d5b5ff">
-            <path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
-          </svg>
-        </div>
-        <div>
-          <h3 class="profile-name">Panfani</h3>
-          <p class="profile-desc">Новый кошелёк пользователя</p>
         </div>
       </div>
 
@@ -1023,40 +974,13 @@
         </div>
       </div>
 
-      <div class="settings-grid">
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Баланс</div>
-            <p class="desc">Стартовый баланс: 2.5 SOL</p>
-          </div>
-          <div class="pill" id="profileBalancePill">2.50 SOL</div>
-        </div>
-
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Курс SOL</div>
-            <p class="desc">Фиксированный курс во всём интерфейсе</p>
-          </div>
-          <div class="pill">$89</div>
-        </div>
-
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Хранилище</div>
-            <p class="desc">Состояние сохраняется в браузере</p>
-          </div>
-          <div class="pill">LocalStorage</div>
-        </div>
-      </div>
-
       <div class="section-card" style="margin-top:14px">
         <div class="section-head">
-          <h2 class="section-title">Служебное</h2>
-          <button class="link-btn" id="resetBtn">Сбросить демо</button>
+          <h2 class="section-title">Окошко кошелька</h2>
         </div>
         <div class="mini-card">
-          <div class="title">Telegram WebApp</div>
-          <p class="text">Эта версия готова для GitHub Pages и запуска внутри Telegram WebView.</p>
+          <div class="title">Пустой стартовый кошелёк</div>
+          <p class="text">Баланс пользователя начинается с 2.5 SOL и пополняется по адресу выше.</p>
         </div>
       </div>
     </section>
@@ -1251,7 +1175,7 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "panfani_app_state_v2";
+      const STORAGE_KEY = "panfani_app_state_v3";
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
 
@@ -1268,12 +1192,10 @@
         portfolioCount: $("#portfolioCount"),
         portfolioMcap: $("#portfolioMcap"),
         portfolioSummary: $("#portfolioSummary"),
-        homeTokenGrid: $("#homeTokenGrid"),
         tradeList: $("#tradeList"),
         portfolioList: $("#portfolioList"),
         profileAvatar: $("#profileAvatar"),
         walletAddressText: $("#walletAddressText"),
-        profileBalancePill: $("#profileBalancePill"),
         tokenDetailIcon: $("#tokenDetailIcon"),
         tokenDetailName: $("#tokenDetailName"),
         tokenDetailTicker: $("#tokenDetailTicker"),
@@ -1300,9 +1222,9 @@
         overlay: $("#overlay"),
         modal: $("#createModal"),
         openCreateBtn: $("#openCreateBtn"),
+        createNewCardHome: $("#createNewCardHome"),
         createFromTradeBtn: $("#createFromTradeBtn"),
         portfolioCreateBtn: $("#portfolioCreateBtn"),
-        viewAllTokensBtn: $("#viewAllTokensBtn"),
         refreshMarketBtn: $("#refreshMarketBtn"),
         walletBtn: $("#walletBtn"),
         backFromTokenBtn: $("#backFromTokenBtn"),
@@ -1319,7 +1241,6 @@
         tickerCount: $("#tickerCount"),
         copyAddressBtn: $("#copyAddressBtn"),
         newAddressBtn: $("#newAddressBtn"),
-        resetBtn: $("#resetBtn"),
         sell25: $("#sell25"),
         sell50: $("#sell50"),
         sell75: $("#sell75"),
@@ -1462,17 +1383,6 @@
         els.buyEstimate.textContent = "≈ " + usdText(usd(val));
       }
 
-      function emptyTokenCardHtml(){
-        return `
-          <div class="empty-card" id="emptyTokenCard">
-            <div>
-              <div class="create-new-plus">+</div>
-              <div class="create-new-text">Пока нет токенов<br>Создай первый</div>
-            </div>
-          </div>
-        `;
-      }
-
       function tokenIcon(token){
         return token.image
           ? `<img src="${token.image}" alt="${escapeHtml(token.ticker)}">`
@@ -1481,56 +1391,29 @@
             </svg>`;
       }
 
+      function emptyCardHtml(){
+        return `
+          <div class="empty-state">Токенов пока нет. Создай первый токен через кнопку сверху.</div>
+        `;
+      }
+
+      function createSellData(token){
+        const pct = selectedSellPct / 100;
+        const sellAmount = Math.max(1, Math.round(token.amount * pct));
+        const receiveSol = +(token.currentValueSol * pct * 0.99).toFixed(4);
+        return { sellAmount, receiveSol };
+      }
+
       function renderHome(){
         els.homeBalanceSol.textContent = solText(state.balanceSol, 2);
         els.homeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
-        const tokens = state.tokens.slice(0, 3);
-        if(!tokens.length){
-          els.homeTokenGrid.innerHTML = emptyTokenCardHtml() + `
-            <div class="create-new-card" id="createNewCard">
-              <div>
-                <div class="create-new-plus">+</div>
-                <div class="create-new-text">Создать<br>новый токен</div>
-              </div>
-            </div>`;
-          $("#emptyTokenCard")?.addEventListener("click", openModal);
-          $("#createNewCard")?.addEventListener("click", openModal);
-          return;
-        }
-
-        els.homeTokenGrid.innerHTML = tokens.map(token => `
-          <div class="token-card" data-token-id="${token.id}">
-            <div class="token-top">
-              <div class="token-ico">${tokenIcon(token)}</div>
-              <div>
-                <div class="token-name">${escapeHtml(token.name)}</div>
-                <div class="token-ticker">${escapeHtml(token.ticker)}</div>
-              </div>
-            </div>
-            <div>
-              <div class="label">Рыночная капитализация</div>
-              <div class="value">$${fmtInt(token.mcap)}</div>
-              <div class="change ${token.priceChange >= 0 ? "up" : "down"}">${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%</div>
-            </div>
-          </div>
-        `).join("") + `
-          <div class="create-new-card" id="createNewCard">
-            <div>
-              <div class="create-new-plus">+</div>
-              <div class="create-new-text">Создать<br>новый токен</div>
-            </div>
-          </div>
-        `;
-
-        $$(".token-card", els.homeTokenGrid).forEach(card => card.addEventListener("click", () => openToken(card.dataset.tokenId)));
-        $("#createNewCard")?.addEventListener("click", openModal);
       }
 
       function renderTrade(){
         els.tradeBalanceSol.textContent = solText(state.balanceSol, 2);
         els.tradeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
         if(!state.tokens.length){
-          els.tradeList.innerHTML = `<div class="empty-state">Токенов пока нет. Создай первый токен, и он появится здесь.</div>`;
+          els.tradeList.innerHTML = emptyCardHtml();
           return;
         }
         els.tradeList.innerHTML = state.tokens.map(token => `
@@ -1542,8 +1425,8 @@
                 <div class="trade-sub">${escapeHtml(token.ticker)} · ${fmtInt(token.amount)} шт · ${solText(token.currentPriceSol,5)}</div>
               </div>
             </div>
-            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
-              ${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%
+            <div class="trade-badge ${token.profitPct >= 0 ? "up" : "down"}">
+              ${token.profitPct >= 0 ? "+" : ""}${fmt(token.profitPct,1)}%
               <span class="small">MCAP $${fmtInt(token.mcap)}</span>
             </div>
           </div>
@@ -1559,21 +1442,21 @@
           els.portfolioList.innerHTML = `<div class="empty-state">Ваши токены пока пустые.</div>`;
           return;
         }
-        const avgChange = state.tokens.reduce((a,t)=>a + (t.priceChange || 0), 0) / state.tokens.length;
-        const best = [...state.tokens].sort((a,b)=>(b.priceChange||0)-(a.priceChange||0))[0];
-        els.portfolioSummary.textContent = `Активов: ${state.tokens.length}. Средний рост: ${avgChange >= 0 ? "+" : ""}${fmt(avgChange,1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
+        const avgChange = state.tokens.reduce((a,t)=>a + (t.profitPct || 0), 0) / state.tokens.length;
+        const best = [...state.tokens].sort((a,b)=>(b.profitPct||0)-(a.profitPct||0))[0];
+        els.portfolioSummary.textContent = `Активов: ${state.tokens.length}. Средняя прибыль: ${avgChange >= 0 ? "+" : ""}${fmt(avgChange,1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
         els.portfolioList.innerHTML = state.tokens.map(token => `
           <div class="trade-row" data-token-id="${token.id}">
             <div class="trade-left">
               <div class="token-ico" style="width:46px;height:46px">${tokenIcon(token)}</div>
               <div class="trade-meta">
                 <div class="trade-name">${escapeHtml(token.name)}</div>
-                <div class="trade-sub">${fmtInt(token.amount)} ${escapeHtml(token.ticker)} · ${solText(token.currentPriceSol,5)} · Liquidity ${solText(token.liquiditySol,2)}</div>
+                <div class="trade-sub">${fmtInt(token.amount)} ${escapeHtml(token.ticker)} · ${solText(token.currentPriceSol,5)} · ${solText(token.investedSol,2)} вложено</div>
               </div>
             </div>
-            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
-              ${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%
-              <span class="small">Vol ${fmtInt(token.volume24h)}</span>
+            <div class="trade-badge ${token.profitPct >= 0 ? "up" : "down"}">
+              ${token.profitPct >= 0 ? "+" : ""}${fmt(token.profitPct,1)}%
+              <span class="small">Profit ${solText(token.profitSol,4)}</span>
             </div>
           </div>
         `).join("");
@@ -1582,7 +1465,6 @@
 
       function renderProfile(){
         els.walletAddressText.textContent = state.walletAddress;
-        els.profileBalancePill.textContent = solText(state.balanceSol, 2);
         const imgToken = state.tokens.find(t => t.image);
         if(imgToken){
           els.profileAvatar.innerHTML = `<img src="${imgToken.image}" alt="avatar">`;
@@ -1598,34 +1480,26 @@
         const token = currentToken();
         if(!token) return;
 
-        const currentValueSol = token.amount * token.currentPriceSol;
-        const currentValueUsd = usd(currentValueSol);
-        const avgValueSol = token.amount * token.averagePriceSol;
-        const profitSol = currentValueSol - avgValueSol;
-        const profitUsd = usd(Math.abs(profitSol));
-        const profitPct = avgValueSol > 0 ? ((currentValueSol - avgValueSol) / avgValueSol) * 100 : 0;
-        const sellAmount = Math.max(1, Math.round(token.amount * (selectedSellPct / 100)));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
-
+        const data = createSellData(token);
         els.tokenDetailName.textContent = token.name;
         els.tokenDetailTicker.textContent = "$" + token.ticker;
         els.tokenDetailIcon.innerHTML = tokenIcon(token);
         els.detailAmount.textContent = `${fmtInt(token.amount)} ${token.ticker}`;
-        els.detailAmountUsd.textContent = `≈ ${usdText(currentValueUsd)}`;
+        els.detailAmountUsd.textContent = `≈ ${usdText(usd(token.currentValueSol))}`;
         els.detailCurrentPrice.textContent = solText(token.currentPriceSol,5);
         els.detailCurrentPriceUsd.textContent = `≈ ${usdText(usd(token.currentPriceSol))}`;
         els.detailAvgPrice.textContent = solText(token.averagePriceSol,5);
         els.detailAvgPriceUsd.textContent = `≈ ${usdText(usd(token.averagePriceSol))}`;
-        els.detailCurrentValue.textContent = solText(currentValueSol,4);
-        els.detailCurrentValueUsd.textContent = `≈ ${usdText(currentValueUsd)}`;
-        els.detailProfit.textContent = (profitSol >= 0 ? "+" : "") + solText(profitSol,4);
-        els.detailProfitUsd.textContent = `≈ ${usdText(profitUsd)}`;
-        els.profitValue.textContent = `${profitPct >= 0 ? "+" : ""}${Math.round(profitPct)}%`;
-        els.profitSub.textContent = `(${solText(Math.abs(profitSol),4)})`;
+        els.detailCurrentValue.textContent = solText(token.currentValueSol,4);
+        els.detailCurrentValueUsd.textContent = `≈ ${usdText(usd(token.currentValueSol))}`;
+        els.detailProfit.textContent = (token.profitSol >= 0 ? "+" : "") + solText(token.profitSol,4);
+        els.detailProfitUsd.textContent = `≈ ${usdText(Math.abs(usd(token.profitSol)))}`;
+        els.profitValue.textContent = `${token.profitPct >= 0 ? "+" : ""}${Math.round(token.profitPct)}%`;
+        els.profitSub.textContent = `(${solText(Math.abs(token.profitSol),4)})`;
         els.availableTokens.textContent = `Доступно: ${fmtInt(token.amount)} ${token.ticker}`;
-        els.receiveValue.textContent = solText(receiveSol,4);
-        els.receiveFiat.textContent = `≈ ${usdText(usd(receiveSol))}`;
-        els.sellLine.textContent = `${fmtInt(sellAmount)} ${token.ticker} → ${solText(receiveSol,4)}`;
+        els.receiveValue.textContent = solText(data.receiveSol,4);
+        els.receiveFiat.textContent = `≈ ${usdText(usd(data.receiveSol))}`;
+        els.sellLine.textContent = `${fmtInt(data.sellAmount)} ${token.ticker} → ${solText(data.receiveSol,4)}`;
         els.sellBtn.textContent = `Продать ${selectedSellPct}%`;
         els.sell25.textContent = `${fmtInt(Math.max(1, Math.round(token.amount * .25)))} ${token.ticker}`;
         els.sell50.textContent = `${fmtInt(Math.max(1, Math.round(token.amount * .50)))} ${token.ticker}`;
@@ -1660,14 +1534,16 @@
           return;
         }
 
-        const currentPrice = +(Math.max(0.0001, Math.random()*0.02 + 0.0015).toFixed(5));
-        const avgPrice = +(Math.max(0.00008, currentPrice * (0.52 + Math.random()*0.34)).toFixed(5));
-        const amount = Math.max(1, Math.floor((buyAmount || 0.4) * 1000 + 8200));
-        const priceChange = +(Math.max(0.4, 20 + Math.random()*24).toFixed(1));
         const id = "tok_" + Math.random().toString(36).slice(2, 10);
-        const mcap = Math.round((buyAmount || 0.45) * 15600 + Math.random()*12000 + 3000);
-        const liquiditySol = +(Math.max(0.2, (buyAmount || 0.5) * 0.7 + Math.random()*0.8).toFixed(2));
-        const volume24h = Math.round((buyAmount || 0.5) * 12000 + Math.random()*8000 + 1500);
+        const amount = Math.max(1, Math.floor((buyAmount || 0.5) * 10000));
+        const investedSol = +buyAmount.toFixed(4);
+
+        const growthFactor = +(1 + (0.7 + Math.random() * 0.6)).toFixed(4); // +70%..+130% at start
+        const currentValueSol = +(investedSol * growthFactor).toFixed(4);
+        const currentPriceSol = +(currentValueSol / amount).toFixed(8);
+        const averagePriceSol = +(investedSol / amount).toFixed(8);
+        const profitSol = +(currentValueSol - investedSol).toFixed(4);
+        const profitPct = investedSol > 0 ? +(((currentValueSol - investedSol) / investedSol) * 100).toFixed(1) : 0;
 
         const token = {
           id,
@@ -1675,12 +1551,15 @@
           ticker,
           image: draftImageData || "",
           amount,
-          currentPriceSol: currentPrice,
-          averagePriceSol: avgPrice,
-          priceChange,
-          mcap,
-          liquiditySol,
-          volume24h,
+          investedSol,
+          currentValueSol,
+          currentPriceSol,
+          averagePriceSol,
+          profitSol,
+          profitPct,
+          mcap: Math.round(currentValueSol * 22000 + Math.random() * 5000),
+          liquiditySol: +(Math.max(0.2, investedSol * 0.8 + Math.random() * 0.6).toFixed(2)),
+          volume24h: Math.round(investedSol * 15000 + Math.random() * 7000 + 1500),
           createdAt: Date.now()
         };
 
@@ -1696,28 +1575,28 @@
         toast("Токен создан");
       }
 
-      function selectSell(pct){
-        selectedSellPct = pct;
-        $$(".choice", els.sellChoices).forEach(btn => btn.classList.toggle("active", Number(btn.dataset.pct) === pct));
-        renderTokenDetail();
-      }
-
       function sellSelected(){
         const token = currentToken();
         if(!token){ toast("Токен не выбран"); return; }
         if(!token.amount){ toast("Продавать нечего"); return; }
 
-        const sellAmount = Math.max(1, Math.round(token.amount * selectedSellPct / 100));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
-        const fee = +(receiveSol * 0.01).toFixed(4);
-        const net = +(receiveSol - fee).toFixed(4);
+        const pct = selectedSellPct / 100;
+        const sellAmount = Math.max(1, Math.round(token.amount * pct));
+        const receiveSol = +(token.currentValueSol * pct * 0.99).toFixed(4);
 
-        state.balanceSol = +(state.balanceSol + net).toFixed(4);
+        state.balanceSol = +(state.balanceSol + receiveSol).toFixed(4);
+
         token.amount = Math.max(0, token.amount - sellAmount);
-        token.mcap = Math.max(0, Math.round(token.mcap * (1 - selectedSellPct * 0.00018)));
-        token.priceChange = +(token.priceChange - selectedSellPct * 0.03).toFixed(1);
+        token.investedSol = +(token.investedSol * (1 - pct)).toFixed(4);
+        token.currentValueSol = +(token.currentValueSol * (1 - pct)).toFixed(4);
+        token.currentPriceSol = token.amount > 0 ? +(token.currentValueSol / token.amount).toFixed(8) : 0;
+        token.averagePriceSol = token.amount > 0 ? +(token.investedSol / token.amount).toFixed(8) : 0;
+        token.profitSol = +(token.currentValueSol - token.investedSol).toFixed(4);
+        token.profitPct = token.investedSol > 0 ? +(((token.currentValueSol - token.investedSol) / token.investedSol) * 100).toFixed(1) : 0;
+        token.mcap = Math.max(0, Math.round(token.currentValueSol * 22000));
+        token.volume24h = Math.max(100, Math.round(token.volume24h * (1 - pct * 0.2)));
 
-        if(token.amount === 0){
+        if(token.amount === 0 || token.currentValueSol <= 0){
           state.tokens = state.tokens.filter(t => t.id !== token.id);
           state.selectedTokenId = state.tokens[0]?.id || null;
           toast("Токен полностью продан");
@@ -1747,30 +1626,26 @@
         toast("Новый адрес создан");
       }
 
-      function resetDemo(){
-        if(!confirm("Сбросить всё в ноль?")) return;
-        localStorage.removeItem(STORAGE_KEY);
-        state = loadState();
-        draftImageData = "";
-        selectedSellPct = 100;
-        renderUploadPreview();
-        renderAll();
-        toast("Демо сброшено");
-      }
-
       function randomizeMarket(){
         if(!state.tokens.length){
           toast("Пока нечего обновлять");
           return;
         }
         state.tokens = state.tokens.map(t => {
-          const drift = (Math.random() - 0.45) * 4.4;
+          const driftPct = (Math.random() * 0.24) - 0.08; // -8%..+16%
+          const nextFactor = Math.max(1.05, (t.currentValueSol / Math.max(t.investedSol, 0.0001)) * (1 + driftPct));
+          const currentValueSol = +(t.investedSol * nextFactor).toFixed(4);
+          const currentPriceSol = t.amount > 0 ? +(currentValueSol / t.amount).toFixed(8) : 0;
+          const profitSol = +(currentValueSol - t.investedSol).toFixed(4);
+          const profitPct = t.investedSol > 0 ? +(((currentValueSol - t.investedSol) / t.investedSol) * 100).toFixed(1) : 0;
           return {
             ...t,
-            currentPriceSol: +(Math.max(0.00008, t.currentPriceSol * (1 + drift / 120)).toFixed(5)),
-            priceChange: +(t.priceChange + drift).toFixed(1),
-            mcap: Math.max(0, Math.round(t.mcap * (1 + drift / 220))),
-            volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.22)))
+            currentValueSol,
+            currentPriceSol,
+            profitSol,
+            profitPct,
+            mcap: Math.max(0, Math.round(currentValueSol * 22000 + Math.random() * 500)),
+            volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.18)))
           };
         });
         saveState();
@@ -1787,6 +1662,29 @@
           .replaceAll("'","&#039;");
       }
 
+      function updateProfitTicker(){
+        state.tokens = state.tokens.map(t => {
+          if(t.investedSol <= 0) return t;
+          const currentFactor = t.currentValueSol / t.investedSol;
+          const drift = (Math.random() - 0.45) * 0.30; // active, but still logical
+          const nextFactor = Math.max(1.05, currentFactor + drift);
+          const currentValueSol = +(t.investedSol * nextFactor).toFixed(4);
+          const currentPriceSol = t.amount > 0 ? +(currentValueSol / t.amount).toFixed(8) : 0;
+          const profitSol = +(currentValueSol - t.investedSol).toFixed(4);
+          const profitPct = t.investedSol > 0 ? +(((currentValueSol - t.investedSol) / t.investedSol) * 100).toFixed(1) : 0;
+          return {
+            ...t,
+            currentValueSol,
+            currentPriceSol,
+            profitSol,
+            profitPct,
+            mcap: Math.max(0, Math.round(currentValueSol * 22000))
+          };
+        });
+        saveState();
+        renderAll();
+      }
+
       function renderAll(){
         renderHome();
         renderTrade();
@@ -1797,9 +1695,9 @@
 
       function bind(){
         els.openCreateBtn.addEventListener("click", openModal);
+        els.createNewCardHome.addEventListener("click", openModal);
         els.createFromTradeBtn.addEventListener("click", openModal);
         els.portfolioCreateBtn.addEventListener("click", openModal);
-        els.viewAllTokensBtn.addEventListener("click", () => screen("portfolio"));
         els.refreshMarketBtn.addEventListener("click", randomizeMarket);
         els.walletBtn.addEventListener("click", () => screen("profile"));
 
@@ -1810,16 +1708,17 @@
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
-        els.resetBtn.addEventListener("click", resetDemo);
 
         els.tokenNameInput.addEventListener("input", () => { updateCounters(); saveDraft(); });
         els.tokenTickerInput.addEventListener("input", () => {
           els.tokenTickerInput.value = els.tokenTickerInput.value.toUpperCase().replace(/[^A-Z0-9_]/g, "");
-          updateCounters(); saveDraft();
+          updateCounters();
+          saveDraft();
         });
         els.buyAmountInput.addEventListener("input", () => {
           els.buyAmountInput.value = els.buyAmountInput.value.replace(",", ".");
-          updateBuyEstimate(); saveDraft();
+          updateBuyEstimate();
+          saveDraft();
         });
 
         els.uploadBox.addEventListener("click", () => els.tokenImageInput.click());
@@ -1841,7 +1740,9 @@
         els.sellChoices.addEventListener("click", (e) => {
           const btn = e.target.closest(".choice");
           if(!btn) return;
-          selectSell(Number(btn.dataset.pct));
+          selectedSellPct = Number(btn.dataset.pct);
+          $$(".choice", els.sellChoices).forEach(x => x.classList.toggle("active", Number(x.dataset.pct) === selectedSellPct));
+          renderTokenDetail();
         });
 
         els.navItems.forEach(btn => btn.addEventListener("click", () => screen(btn.dataset.screen)));
@@ -1865,11 +1766,7 @@
         updateBuyEstimate();
         renderAll();
 
-        if(state.activeScreen === "token" && state.tokens.length) {
-          $("#screen-token").classList.add("active");
-          $$(".screen").forEach(s => s.classList.toggle("active", s.id === "screen-token"));
-          $$(".nav-item").forEach(b => b.classList.remove("active"));
-        }
+        setInterval(updateProfitTicker, 3500);
       }
 
       init();
