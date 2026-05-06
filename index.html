@@ -1,313 +1,2693 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Panfani</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Panfani</title>
+  <meta name="theme-color" content="#050507" />
+  <style>
+    :root{
+      --bg:#050507;
+      --bg2:#09090d;
+      --bg3:#0d0d13;
+      --card:#101018cc;
+      --card2:#11111acc;
+      --line:rgba(255,255,255,.08);
+      --line2:rgba(164,72,255,.35);
+      --text:#f4f4f8;
+      --muted:rgba(255,255,255,.62);
+      --muted2:rgba(255,255,255,.42);
+      --purple:#8a2cff;
+      --purple2:#6f19ff;
+      --purple3:#b23cff;
+      --green:#66f06d;
+      --green2:#2ce56b;
+      --red:#ff4e4e;
+      --yellow:#dff13d;
+      --shadow:0 18px 60px rgba(0,0,0,.55);
+      --shadow2:0 0 0 1px rgba(164,72,255,.10), 0 12px 40px rgba(0,0,0,.35);
+      --radius:22px;
+      --radius2:18px;
+      --radius3:14px;
+      --radius4:12px;
+      --blur: blur(16px);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --maxw: 430px;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0;
+      padding:0;
+      width:100%;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(141, 44, 255, .18), transparent 26%),
+        radial-gradient(circle at 100% 15%, rgba(255, 255, 255, .05), transparent 16%),
+        radial-gradient(circle at 20% 5%, rgba(116, 0, 255, .20), transparent 18%),
+        linear-gradient(180deg, #020203 0%, #050507 35%, #040406 100%);
+      color:var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x:hidden;
+    }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
-body{
-background:#05070d;
-color:#fff;
-padding:16px;
-}
+    body {
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      min-height:100vh;
+    }
 
-.container{
-max-width:420px;
-margin:auto;
-}
+    button, input, textarea, select {
+      font:inherit;
+    }
 
-.card{
-background:linear-gradient(145deg,#0c0f1c,#070913);
-border-radius:20px;
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 0 40px rgba(128,0,255,.15);
-}
+    ::selection {
+      background: rgba(138,44,255,.32);
+      color: #fff;
+    }
 
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
+    .app {
+      width:100%;
+      max-width: var(--maxw);
+      min-height:100vh;
+      position:relative;
+      padding-top: calc(12px + var(--safe-top));
+      padding-bottom: calc(18px + var(--safe-bottom) + 84px);
+    }
 
-.logo{
-display:flex;
-align-items:center;
-gap:10px;
-}
+    .screen {
+      display:none;
+      padding: 0 16px;
+      animation: fadeIn .22s ease-out;
+    }
 
-.logo-circle{
-width:48px;height:48px;border-radius:50%;
-background:linear-gradient(45deg,#9f0,#a0f);
-}
+    .screen.active {
+      display:block;
+    }
 
-.balance{
-text-align:right;
-}
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(10px); }
+      to { opacity:1; transform: translateY(0); }
+    }
 
-.balance h3{font-size:20px}
-.balance span{opacity:.6;font-size:12px}
+    .topbar {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin: 4px 0 18px;
+      padding: 0 2px;
+    }
 
-.hero{
-background:linear-gradient(120deg,#1a0d2e,#0b0c19);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-}
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
 
-.hero h1{
-font-size:24px;
-margin-bottom:10px;
-}
+    .avatar {
+      width:60px;
+      height:60px;
+      border-radius:999px;
+      flex:0 0 auto;
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,.15), transparent 18%),
+        radial-gradient(circle at 50% 50%, rgba(138,44,255,.55), rgba(0,0,0,.08)),
+        linear-gradient(180deg, #17171f, #0a0a0e);
+      box-shadow: 0 0 0 4px rgba(138,44,255,.06), 0 10px 24px rgba(0,0,0,.45);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
 
-.hero p{
-opacity:.7;
-font-size:14px;
-margin-bottom:20px;
-}
+    .avatar::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 30% 38%, rgba(255,255,255,.18), transparent 8%),
+        radial-gradient(circle at 69% 38%, rgba(255,255,255,.18), transparent 8%),
+        radial-gradient(circle at 50% 70%, rgba(255,255,255,.18), transparent 10%);
+      mix-blend-mode:screen;
+      opacity:.45;
+    }
 
-.btn{
-background:linear-gradient(90deg,#b5ff00,#a0ff55);
-color:#000;
-padding:14px;
-border:none;
-border-radius:12px;
-font-weight:600;
-width:100%;
-cursor:pointer;
-}
+    .brand-text {
+      min-width:0;
+      padding-top:2px;
+    }
 
-.tokens{
-display:flex;
-gap:10px;
-}
+    .brand-title {
+      font-weight:800;
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin:0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
-.token{
-flex:1;
-background:#0d1020;
-border-radius:14px;
-padding:10px;
-text-align:center;
-}
+    .brand-sub {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--purple);
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
 
-.token small{opacity:.6}
+    .balance-card {
+      min-width: 152px;
+      max-width: 166px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(180deg, #11111a, #0c0c11);
+      box-shadow: var(--shadow2);
+      border: 1px solid rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: var(--blur);
+    }
 
-/* modal */
-.modal{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.8);
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
+    .balance-label {
+      font-size: 12px;
+      color: var(--muted2);
+      margin-bottom: 6px;
+    }
 
-.modal.active{display:flex}
+    .balance-value {
+      font-size: 21px;
+      font-weight: 800;
+      line-height:1;
+      letter-spacing:-.03em;
+    }
 
-.modal-content{
-background:#0c0f1c;
-padding:20px;
-border-radius:20px;
-width:100%;
-}
+    .balance-fiat {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border-radius:10px;
-border:none;
-background:#12152a;
-color:#fff;
-}
+    .wallet-btn {
+      position:absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(179, 110, 255, .18);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.08), transparent 22%),
+        linear-gradient(180deg, rgba(144,62,255,.20), rgba(78,18,164,.16));
+      color:#d6b5ff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    }
 
-.sell-screen{
-display:none;
-}
+    .wallet-btn svg, .icon svg {
+      width:20px;
+      height:20px;
+      fill: currentColor;
+    }
 
-.stat{
-background:#0d1020;
-padding:10px;
-border-radius:10px;
-margin-top:10px;
-}
+    .hero-card {
+      position:relative;
+      overflow:hidden;
+      border-radius: 24px;
+      padding: 22px 18px 18px;
+      min-height: 366px;
+      background:
+        radial-gradient(circle at 70% 22%, rgba(188, 90, 255, .28), transparent 16%),
+        radial-gradient(circle at 64% 25%, rgba(97, 24, 255, .38), transparent 32%),
+        radial-gradient(circle at 85% 14%, rgba(255,255,255,.06), transparent 10%),
+        linear-gradient(180deg, rgba(17,17,27,.92), rgba(9,9,14,.95));
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+    }
 
-.sell-buttons{
-display:flex;
-gap:10px;
-margin-top:10px;
-}
+    .hero-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), transparent 12%),
+        radial-gradient(circle at 50% 120%, rgba(110,26,255,.18), transparent 32%);
+      pointer-events:none;
+    }
 
-.sell-buttons button{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-background:#1b1f3d;
-color:#fff;
-cursor:pointer;
-}
+    .hero-content {
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height: 330px;
+    }
 
-.sell-buttons button.active{
-background:#8a2cff;
-}
+    .hero-copy {
+      max-width: 210px;
+      padding-top: 6px;
+    }
 
-.footer{
-margin-top:20px;
-text-align:center;
-opacity:.5;
-font-size:12px;
-}
-</style>
+    .hero-title {
+      font-size: 30px;
+      line-height: .98;
+      letter-spacing:-.04em;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .hero-title .accent {
+      color: var(--purple);
+    }
+
+    .hero-desc {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 205px;
+    }
+
+    .hero-cta-row {
+      margin-top: 18px;
+      display:flex;
+      gap: 12px;
+      align-items:center;
+    }
+
+    .create-primary {
+      appearance:none;
+      border:none;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #d5f63d 0%, #bedf2d 100%);
+      color:#111;
+      font-weight: 800;
+      padding: 15px 18px;
+      min-height: 52px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 12px;
+      box-shadow: 0 10px 24px rgba(194, 233, 37, .10);
+      letter-spacing:-.01em;
+    }
+
+    .create-primary .plus {
+      width:22px;
+      height:22px;
+      border-radius: 8px;
+      display:grid;
+      place-items:center;
+      font-size: 22px;
+      line-height:1;
+      font-weight: 300;
+      margin-left:auto;
+    }
+
+    .hero-art {
+      position:absolute;
+      right:-10px;
+      bottom: 6px;
+      width: 224px;
+      height: 224px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(160, 36, 255, .45), rgba(70, 6, 164, .22) 45%, rgba(9,9,15,.02) 70%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.06), transparent 42%);
+      box-shadow: 0 0 50px rgba(132, 32, 255, .28);
+      filter: saturate(1.15);
+      opacity: 1;
+    }
+
+    .hero-art::before {
+      content:"";
+      position:absolute;
+      inset: 18px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 57% 35%, rgba(255,255,255,.06), transparent 10%),
+        radial-gradient(circle at 46% 46%, rgba(0,0,0,.95), rgba(0,0,0,.86) 38%, rgba(0,0,0,.35) 66%, transparent 67%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .hero-art::after {
+      content:"";
+      position:absolute;
+      left: 28px;
+      bottom: 24px;
+      width: 132px;
+      height: 160px;
+      border-radius: 50% 50% 42% 42%;
+      background:
+        radial-gradient(circle at 50% 26%, rgba(136,62,255,.98), rgba(10,10,16,0) 15%),
+        radial-gradient(circle at 28% 40%, rgba(255,255,255,.14), transparent 8%),
+        radial-gradient(circle at 72% 40%, rgba(255,255,255,.14), transparent 8%),
+        linear-gradient(180deg, rgba(0,0,0,.96), rgba(0,0,0,.90));
+      clip-path: polygon(50% 0%, 63% 4%, 73% 16%, 82% 29%, 84% 44%, 79% 61%, 72% 74%, 66% 86%, 54% 96%, 46% 96%, 34% 86%, 28% 74%, 21% 61%, 16% 44%, 18% 29%, 27% 16%, 37% 4%);
+      transform: rotate(-8deg);
+      box-shadow:
+        0 0 18px rgba(158, 57, 255, .48),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .coin {
+      position:absolute;
+      width: 44px;
+      height: 44px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,.45), transparent 15%),
+        linear-gradient(180deg, #8431ff, #5a18cb);
+      box-shadow:
+        0 0 0 5px rgba(139,44,255,.08),
+        0 10px 20px rgba(0,0,0,.35),
+        inset 0 0 0 1px rgba(255,255,255,.12);
+      display:grid;
+      place-items:center;
+      color: rgba(255,255,255,.88);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .coin::after{
+      content:"";
+      width: 16px;
+      height: 16px;
+      border-radius:50%;
+      border: 2px solid rgba(255,255,255,.95);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.08);
+    }
+
+    .coin.c1 { left: 214px; top: 24px; transform: rotate(18deg); }
+    .coin.c2 { left: 170px; top: 144px; transform: rotate(-20deg); }
+    .coin.c3 { left: 8px; top: 122px; transform: rotate(10deg); }
+    .coin.c4 { left: 54px; top: 40px; transform: rotate(-12deg); }
+
+    .hero-dots {
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top: 14px;
+      position:relative;
+      z-index:1;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius:999px;
+      background: rgba(255,255,255,.18);
+      transition: .18s ease;
+    }
+
+    .dot.active {
+      background: #a84bff;
+      box-shadow: 0 0 0 4px rgba(168,75,255,.15);
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    .section-card {
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(180deg, #101017, #0b0b10);
+      border: 1px solid rgba(255,255,255,.05);
+      box-shadow: var(--shadow2);
+      padding: 16px;
+      overflow:hidden;
+    }
+
+    .section-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      margin:0;
+      font-size: 20px;
+      line-height:1.05;
+      font-weight: 850;
+      letter-spacing:-.03em;
+    }
+
+    .link-btn {
+      border:none;
+      background:transparent;
+      color: rgba(255,255,255,.75);
+      cursor:pointer;
+      font-size: 14px;
+      padding: 6px 0;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .link-btn .arrow {
+      font-size: 16px;
+      opacity:.8;
+    }
+
+    .token-grid {
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .token-card {
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.05);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(125, 44, 255, .12), transparent 26%),
+        linear-gradient(180deg, rgba(18,18,26,.96), rgba(11,11,16,.98));
+      padding: 14px;
+      min-height: 175px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      cursor:pointer;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.015);
+    }
+
+    .token-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(171, 89, 255, .22);
+      box-shadow: 0 12px 28px rgba(0,0,0,.28), 0 0 0 1px rgba(169,84,255,.12);
+    }
+
+    .token-top {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .token-ico {
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.10), transparent 30%),
+        linear-gradient(180deg, rgba(122, 31, 255, .84), rgba(58, 8, 141, .78));
+      border:1px solid rgba(255,255,255,.08);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      box-shadow: 0 0 0 4px rgba(138,44,255,.08);
+      position:relative;
+    }
+
+    .token-ico img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .token-ico .paw {
+      width: 28px;
+      height: 28px;
+      color: #dbbdff;
+    }
+
+    .token-name {
+      font-weight: 850;
+      font-size: 18px;
+      line-height:1.06;
+      letter-spacing:-.03em;
+      margin:0 0 6px;
+    }
+
+    .token-ticker {
+      color: rgba(255,255,255,.58);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing:.01em;
+    }
+
+    .token-stats {
+      margin-top: 12px;
+      display:grid;
+      gap: 8px;
+    }
+
+    .label {
+      font-size: 12px;
+      color: var(--muted2);
+      margin-bottom:4px;
+    }
+
+    .value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing:-.02em;
+    }
+
+    .change {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .up { color: var(--green); }
+    .down { color: var(--red); }
+
+    .create-new-card {
+      border-radius: 18px;
+      border:1px dashed rgba(255,255,255,.14);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)),
+        linear-gradient(180deg, rgba(17,17,24,.92), rgba(10,10,15,.96));
+      min-height:175px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      cursor:pointer;
+      padding: 18px;
+      color: rgba(255,255,255,.82);
+      transition: .16s ease;
+    }
+
+    .create-new-card:hover {
+      border-color: rgba(168,75,255,.32);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(180deg, rgba(21,21,31,.95), rgba(10,10,15,.98));
+      transform: translateY(-1px);
+    }
+
+    .create-new-plus {
+      width: 62px;
+      height:62px;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(171,84,255,.2);
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.08), transparent 22%), linear-gradient(180deg, rgba(138,44,255,.26), rgba(90,24,203,.16));
+      color:#d6b5ff;
+      font-size: 48px;
+      line-height:1;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+
+    .create-new-text {
+      margin-top: 14px;
+      font-size: 15px;
+      line-height:1.35;
+      font-weight: 650;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left:50%;
+      transform: translateX(-50%);
+      bottom: calc(10px + var(--safe-bottom));
+      width: min(var(--maxw), calc(100vw - 18px));
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(21,21,31,.84), rgba(11,11,16,.92));
+      border: 1px solid rgba(255,255,255,.05);
+      box-shadow: 0 24px 56px rgba(0,0,0,.56), 0 0 0 1px rgba(255,255,255,.02);
+      backdrop-filter: var(--blur);
+      display:flex;
+      padding: 10px 8px 8px;
+      z-index: 40;
+    }
+
+    .nav-item {
+      flex:1;
+      border:none;
+      background:transparent;
+      color: rgba(255,255,255,.50);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+      padding: 8px 4px;
+      cursor:pointer;
+      border-radius: 16px;
+      transition:.16s ease;
+      min-height: 58px;
+    }
+
+    .nav-item .nav-ico {
+      width:24px;
+      height:24px;
+      display:grid;
+      place-items:center;
+    }
+
+    .nav-item svg {
+      width:24px;
+      height:24px;
+      fill: currentColor;
+    }
+
+    .nav-item span {
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing:-.01em;
+    }
+
+    .nav-item.active {
+      color: #a24dff;
+      background: linear-gradient(180deg, rgba(143,52,255,.12), rgba(143,52,255,.05));
+      box-shadow: inset 0 0 0 1px rgba(162,77,255,.08);
+    }
+
+    .panel {
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(180deg, #101017, #0b0b10);
+      border: 1px solid rgba(255,255,255,.05);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+
+    .big-profit {
+      padding: 24px 16px 20px;
+      text-align:center;
+      border-radius: 22px;
+      border: 1px solid rgba(153,80,255,.45);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(115, 31, 255, .18), transparent 40%),
+        linear-gradient(180deg, rgba(20,20,30,.98), rgba(9,9,13,.96));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02), 0 10px 30px rgba(0,0,0,.34);
+      margin-bottom: 12px;
+    }
+
+    .big-profit .caption {
+      color: rgba(255,255,255,.72);
+      font-size: 15px;
+      margin-bottom: 4px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .info-dot {
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.8);
+      display:inline-grid;
+      place-items:center;
+      font-size: 11px;
+      font-weight: 800;
+      line-height:1;
+    }
+
+    .profit-value {
+      font-size: 72px;
+      line-height: .92;
+      margin: 10px 0 8px;
+      font-weight: 900;
+      letter-spacing:-.06em;
+      color: #60ea55;
+      text-shadow: 0 0 18px rgba(81, 231, 85, .12);
+    }
+
+    .profit-sub {
+      color: #6df06b;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing:-.02em;
+    }
+
+    .token-view-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin: 4px 2px 14px;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(25,25,34,.95), rgba(12,12,17,.92));
+      color: #f2f2f7;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    }
+
+    .token-view-title {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+      flex:1;
+      justify-content:center;
+    }
+
+    .token-view-title .title-text {
+      min-width:0;
+      text-align:center;
+    }
+
+    .token-view-title .name {
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing:-.03em;
+      margin:0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .token-view-title .ticker {
+      margin-top: 3px;
+      color: var(--purple);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(25,25,34,.95), rgba(12,12,17,.92));
+      display:grid;
+      place-items:center;
+      color: #cbb3ff;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    }
+
+    .stats-grid {
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .stat-box {
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(19,19,27,.97), rgba(12,12,16,.96));
+      border:1px solid rgba(255,255,255,.05);
+      padding: 14px 12px;
+      min-height: 92px;
+    }
+
+    .stat-box.wide {
+      grid-column: 1 / -1;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+      align-items:center;
+      min-height:auto;
+    }
+
+    .stat-box .small-label {
+      color: var(--muted2);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .stat-box .small-value {
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing:-.02em;
+    }
+
+    .stat-sub {
+      color: rgba(255,255,255,.58);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .actions-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin: 16px 2px 10px;
+      color: rgba(255,255,255,.88);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing:-.03em;
+    }
+
+    .sell-choices {
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+    }
+
+    .choice {
+      flex:1;
+      min-height: 76px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(18,18,25,.96), rgba(11,11,15,.96));
+      color:#fff;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:2px;
+      transition:.16s ease;
+    }
+
+    .choice .pct {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing:-.04em;
+    }
+
+    .choice .amt {
+      font-size: 13px;
+      color: rgba(255,255,255,.52);
+      font-weight: 600;
+    }
+
+    .choice.active {
+      background: linear-gradient(180deg, #7c2cff, #5817d2);
+      box-shadow: 0 10px 22px rgba(109, 30, 255, .28);
+      border-color: rgba(255,255,255,.08);
+    }
+
+    .buy-sell-line {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top: 16px;
+      padding: 14px 0 0;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    .receive-box {
+      flex:1;
+    }
+
+    .receive-box .label {
+      margin-bottom: 8px;
+    }
+
+    .receive-box .receive-value {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing:-.04em;
+    }
+
+    .receive-fiat {
+      color: rgba(255,255,255,.56);
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .asset-switch {
+      min-width: 112px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.07);
+      background: linear-gradient(180deg, rgba(20,20,28,.98), rgba(11,11,16,.98));
+      color: #fff;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:space-between;
+      cursor:pointer;
+    }
+
+    .asset-switch .left {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .asset-ico {
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      flex:0 0 auto;
+      background: linear-gradient(180deg, #00d1ff, #8b2cff);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .primary-sell {
+      margin-top: 16px;
+      width:100%;
+      border:none;
+      border-radius: 16px;
+      padding: 16px 18px;
+      color:#fff;
+      font-weight: 900;
+      cursor:pointer;
+      background: linear-gradient(180deg, #7c2cff, #4f16c2);
+      box-shadow: 0 14px 30px rgba(122, 46, 255, .26);
+      font-size: 17px;
+      letter-spacing:-.02em;
+    }
+
+    .secondary-card {
+      margin-top: 12px;
+      border-radius: 18px;
+      padding: 16px;
+      border:1px solid rgba(255,255,255,.05);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(131, 39, 255, .15), transparent 22%),
+        linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
+    }
+
+    .secondary-card .title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .secondary-card .desc {
+      color: rgba(255,255,255,.62);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .form-overlay {
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.56);
+      backdrop-filter: blur(8px);
+      display:none;
+      z-index: 60;
+    }
+
+    .form-overlay.show {
+      display:block;
+    }
+
+    .modal {
+      position:fixed;
+      left:50%;
+      bottom:0;
+      transform: translateX(-50%) translateY(100%);
+      width: min(var(--maxw), 100vw);
+      border-radius: 26px 26px 0 0;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(133, 44, 255, .12), transparent 30%),
+        linear-gradient(180deg, rgba(18,18,26,.99), rgba(10,10,14,.99));
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 -24px 70px rgba(0,0,0,.55);
+      z-index: 70;
+      overflow:hidden;
+      transition: transform .24s ease;
+      max-height: 92vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .modal.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-handle {
+      width: 76px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(138,44,255,.78);
+      margin: 10px auto 0;
+      box-shadow: 0 0 0 4px rgba(138,44,255,.14);
+    }
+
+    .modal-body {
+      padding: 18px 18px 20px;
+      overflow:auto;
+    }
+
+    .modal-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 28px;
+      line-height:1.05;
+      letter-spacing:-.04em;
+      margin:0;
+      font-weight: 900;
+    }
+
+    .close-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border:none;
+      cursor:pointer;
+      color:#ddd;
+      background: linear-gradient(180deg, rgba(31,31,40,.98), rgba(17,17,24,.98));
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 20px rgba(0,0,0,.3);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display:block;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,.88);
+      font-weight: 750;
+      font-size: 15px;
+      letter-spacing:-.01em;
+    }
+
+    .input {
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(143,63,255,.44);
+      outline:none;
+      background: linear-gradient(180deg, rgba(17,17,25,.97), rgba(10,10,14,.98));
+      color: #fff;
+      padding: 16px 16px;
+      font-size: 16px;
+      transition: border-color .15s ease, box-shadow .15s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .input:focus {
+      border-color: rgba(166,91,255,.85);
+      box-shadow: 0 0 0 4px rgba(143,63,255,.13);
+    }
+
+    .input::placeholder {
+      color: rgba(255,255,255,.36);
+    }
+
+    .input-row {
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+
+    .counter {
+      text-align:right;
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+    }
+
+    .upload-box {
+      border-radius: 22px;
+      border: 1.5px dashed rgba(149,79,255,.64);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(144, 62, 255, .14), transparent 34%),
+        linear-gradient(180deg, rgba(17,17,25,.96), rgba(10,10,14,.97));
+      padding: 26px 16px 18px;
+      text-align:center;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      transition: .16s ease;
+    }
+
+    .upload-box:hover {
+      border-color: rgba(174, 108, 255, .9);
+      transform: translateY(-1px);
+    }
+
+    .upload-preview {
+      width: 72px;
+      height:72px;
+      border-radius: 999px;
+      margin: 0 auto 12px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(162, 77, 255, .5);
+      background: linear-gradient(180deg, rgba(120,36,255,.2), rgba(57,15,130,.18));
+      box-shadow: 0 0 0 6px rgba(138,44,255,.07);
+      overflow:hidden;
+      color: #d5b2ff;
+    }
+
+    .upload-preview img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .upload-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 4px 0 4px;
+    }
+
+    .upload-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.5);
+      line-height:1.4;
+    }
+
+    .recommend {
+      color: rgba(255,255,255,.48);
+      margin-top: 12px;
+      text-align:center;
+      font-size: 13px;
+    }
+
+    .info-card {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.05);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(135, 46, 255, .15), transparent 20%),
+        linear-gradient(180deg, rgba(17,17,25,.96), rgba(10,10,14,.96));
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      color:#d8baff;
+      background: linear-gradient(180deg, rgba(127,44,255,.24), rgba(94,27,205,.14));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+
+    .info-icon svg {
+      width:20px;
+      height:20px;
+      fill: currentColor;
+    }
+
+    .info-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0 0 4px;
+    }
+
+    .info-text {
+      color: rgba(255,255,255,.66);
+      font-size: 13px;
+      line-height: 1.45;
+      margin:0;
+    }
+
+    .create-btn {
+      width:100%;
+      margin-top: 16px;
+      border:none;
+      border-radius: 16px;
+      padding: 16px 18px;
+      color: rgba(255,255,255,.95);
+      font-weight: 900;
+      font-size: 17px;
+      cursor:pointer;
+      background: linear-gradient(180deg, #7c2cff, #4f16c2);
+      box-shadow: 0 14px 30px rgba(122, 46, 255, .24);
+      letter-spacing:-.02em;
+    }
+
+    .create-btn:disabled {
+      opacity:.55;
+      cursor:not-allowed;
+      filter:saturate(.72);
+    }
+
+    .tiny-text {
+      font-size:12px;
+      color: rgba(255,255,255,.46);
+      line-height:1.4;
+    }
+
+    .trade-list {
+      display:grid;
+      gap: 10px;
+    }
+
+    .trade-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-radius: 16px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(11,11,15,.96));
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .trade-left {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .trade-meta {
+      min-width:0;
+    }
+
+    .trade-name {
+      font-size: 15px;
+      font-weight: 850;
+      margin:0 0 4px;
+    }
+
+    .trade-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+    }
+
+    .trade-badge {
+      text-align:right;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .trade-badge .small {
+      display:block;
+      margin-top:4px;
+      font-weight:600;
+      color: rgba(255,255,255,.45);
+      font-size: 12px;
+    }
+
+    .portfolio-cards {
+      display:grid;
+      gap: 12px;
+    }
+
+    .mini-card {
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
+      border:1px solid rgba(255,255,255,.05);
+    }
+
+    .mini-card .title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .mini-card .text {
+      color: rgba(255,255,255,.64);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .profile-header {
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
+      border:1px solid rgba(255,255,255,.05);
+      padding: 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .profile-avatar {
+      width:68px;
+      height:68px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,.15), transparent 14%),
+        radial-gradient(circle at 50% 50%, rgba(138,44,255,.46), rgba(0,0,0,.08)),
+        linear-gradient(180deg, #17171f, #0a0a0e);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 0 4px rgba(138,44,255,.06);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    .profile-avatar img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 0 5px;
+      letter-spacing:-.03em;
+    }
+
+    .profile-desc {
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      margin:0;
+    }
+
+    .settings-grid {
+      display:grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .setting-item {
+      border-radius: 18px;
+      padding: 15px;
+      border:1px solid rgba(255,255,255,.05);
+      background: linear-gradient(180deg, rgba(18,18,26,.96), rgba(10,10,14,.96));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .setting-item .left {
+      min-width:0;
+    }
+
+    .setting-item .name {
+      font-size: 15px;
+      font-weight: 800;
+      margin:0 0 4px;
+    }
+
+    .setting-item .desc {
+      font-size: 13px;
+      color: rgba(255,255,255,.56);
+      margin:0;
+    }
+
+    .pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(138,44,255,.14);
+      border:1px solid rgba(138,44,255,.22);
+      color: #d5b5ff;
+      font-size: 12px;
+      font-weight: 800;
+      white-space:nowrap;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(104px + var(--safe-bottom));
+      transform: translateX(-50%) translateY(20px);
+      min-width: 220px;
+      max-width: calc(100vw - 28px);
+      background: linear-gradient(180deg, rgba(21,21,31,.98), rgba(11,11,16,.98));
+      border:1px solid rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 45px rgba(0,0,0,.4);
+      padding: 12px 14px;
+      opacity:0;
+      pointer-events:none;
+      z-index: 100;
+      transition: .22s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .toast.show {
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast .dot {
+      flex:0 0 auto;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background: #a74aff;
+      box-shadow: 0 0 0 4px rgba(167,74,255,.16);
+    }
+
+    .toast .msg {
+      font-size: 14px;
+      line-height:1.4;
+      font-weight: 650;
+    }
+
+    .hidden {
+      display:none !important;
+    }
+
+    .spacer {
+      height: 8px;
+    }
+
+    @media (min-width: 431px) {
+      body {
+        background:
+          radial-gradient(circle at 50% -10%, rgba(141, 44, 255, .08), transparent 26%),
+          linear-gradient(180deg, #020203 0%, #050507 35%, #040406 100%);
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app" id="app">
 
-<div class="container">
+    <!-- HOME -->
+    <section class="screen active" id="screen-home">
+      <div class="topbar">
+        <div class="brand">
+          <div class="avatar" title="Panfani">
+            <svg viewBox="0 0 24 24" class="paw" style="width:34px;height:34px;color:#0f0819;position:relative;z-index:1">
+              <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0ZM7.3 8.1c-1.1 0-1.9-.9-1.9-2.1 0-1.5 1.1-2.8 2.4-2.8 1.3 0 2.4 1.3 2.4 2.8 0 1.2-.8 2.1-1.9 2.1h-.2c-.2 0-.5 0-.8 0Zm9.4 0c-1.1 0-1.9-.9-1.9-2.1 0-1.5 1.1-2.8 2.4-2.8 1.3 0 2.4 1.3 2.4 2.8 0 1.2-.8 2.1-1.9 2.1h-.2c-.2 0-.5 0-.8 0Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">Panfani</div>
+            <div class="brand-sub">Create. Trade. Own.</div>
+          </div>
+        </div>
 
-<div class="header">
-<div class="logo">
-<div class="logo-circle"></div>
-<div>
-<b>Panfani</b><br>
-<small style="opacity:.6">Create. Trade. Own.</small>
-</div>
-</div>
+        <div class="balance-card">
+          <div class="balance-label">Баланс</div>
+          <div class="balance-value" id="homeBalanceSol">12.45 SOL</div>
+          <div class="balance-fiat" id="homeBalanceUsd">≈ $1,245.67</div>
+          <button class="wallet-btn" id="walletBtn" title="Кошелёк" aria-label="Кошелёк">
+            <svg viewBox="0 0 24 24"><path d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-1.5h-5.5a2.5 2.5 0 0 1 0-5H21V8a3 3 0 0 0-3-3H6Zm12 7.5H16.5a.5.5 0 0 0 0 1H18V12.5Zm0 0"/></svg>
+          </button>
+        </div>
+      </div>
 
-<div class="balance">
-<h3 id="balance">0.678 SOL</h3>
-<span>≈ $67.80</span>
-</div>
-</div>
+      <div class="hero-card">
+        <div class="hero-content">
+          <div class="hero-copy">
+            <h1 class="hero-title">Твой токен.<br>Твои правила.<br><span class="accent">Твой успех.</span></h1>
+            <p class="hero-desc">
+              Создавай токены на Panfani, торгуй ими мгновенно и управляй всем из одного экрана.
+            </p>
+            <div class="hero-cta-row">
+              <button class="create-primary" id="openCreateBtn">
+                Создать токен
+                <span class="plus">+</span>
+              </button>
+            </div>
+          </div>
 
-<div class="hero">
-<h1>Твой токен. Твои правила.</h1>
-<p>Создавай токены и торгуй ими мгновенно.</p>
-<button class="btn" onclick="openModal()">Создать токен</button>
-</div>
+          <div style="position:relative; min-height: 214px;">
+            <div class="hero-art" aria-hidden="true"></div>
+            <div class="coin c1" aria-hidden="true"></div>
+            <div class="coin c2" aria-hidden="true"></div>
+            <div class="coin c3" aria-hidden="true"></div>
+            <div class="coin c4" aria-hidden="true"></div>
+          </div>
 
-<div class="tokens">
-<div class="token">
-<p>MYTOKEN</p>
-<small>$12,456</small>
-</div>
-<div class="token">
-<p>CATCOIN</p>
-<small>$8,732</small>
-</div>
-<div class="token">
-<p>PANFANI</p>
-<small>$3,211</small>
-</div>
-</div>
+          <div class="hero-dots" aria-hidden="true">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
 
-<div class="footer">Panfani UI Demo</div>
+      <div class="section">
+        <div class="section-card">
+          <div class="section-head">
+            <h2 class="section-title">Мои токены</h2>
+            <button class="link-btn" id="viewAllTokensBtn">Смотреть все <span class="arrow">›</span></button>
+          </div>
 
-</div>
+          <div class="token-grid" id="homeTokenGrid"></div>
+        </div>
+      </div>
+    </section>
 
-<!-- MODAL CREATE -->
-<div class="modal" id="modal">
-<div class="modal-content">
-<h2>Создать токен</h2>
+    <!-- TRADE -->
+    <section class="screen" id="screen-trade">
+      <div class="topbar" style="margin-bottom:14px;">
+        <div class="brand">
+          <div class="avatar" style="width:56px;height:56px;">
+            <svg viewBox="0 0 24 24" class="paw" style="width:32px;height:32px;color:#0f0819;position:relative;z-index:1">
+              <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title" style="font-size:20px;">Торговля</div>
+            <div class="brand-sub">Купить / Продать мгновенно</div>
+          </div>
+        </div>
+        <div class="balance-card" style="min-width: 132px;">
+          <div class="balance-label">Баланс</div>
+          <div class="balance-value" id="tradeBalanceSol">12.45 SOL</div>
+          <div class="balance-fiat" id="tradeBalanceUsd">≈ $1,245.67</div>
+        </div>
+      </div>
 
-<input id="name" placeholder="Название токена"/>
-<input id="ticker" placeholder="Тикер ($CAT)"/>
-<input id="amount" type="number" placeholder="Стартовая покупка (SOL)"/>
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Активные токены</h2>
+          <button class="link-btn" id="createFromTradeBtn">Создать</button>
+        </div>
+        <div class="trade-list" id="tradeList"></div>
+      </div>
 
-<button class="btn" onclick="createToken()">Создать</button>
-</div>
-</div>
+      <div class="spacer"></div>
 
-<!-- SELL SCREEN -->
-<div class="container sell-screen" id="sell">
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Рынок</h2>
+          <button class="link-btn" id="refreshMarketBtn">Обновить</button>
+        </div>
+        <div class="mini-card">
+          <div class="title">Лента движения</div>
+          <div class="text">
+            Токены с твоего списка отображаются с изменением цены, капитализацией и объёмом. Здесь можно быстро открывать карточку токена и переходить к продаже.
+          </div>
+        </div>
+      </div>
+    </section>
 
-<h2 id="tokenTitle"></h2>
+    <!-- PORTFOLIO -->
+    <section class="screen" id="screen-portfolio">
+      <div class="topbar" style="margin-bottom:14px;">
+        <div class="brand">
+          <div class="avatar" style="width:56px;height:56px;">
+            <svg viewBox="0 0 24 24" class="paw" style="width:32px;height:32px;color:#0f0819;position:relative;z-index:1">
+              <path fill="currentColor" d="M4 20V8l8-5 8 5v12h-6v-7H10v7H4Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title" style="font-size:20px;">Портфель</div>
+            <div class="brand-sub">Управление активами</div>
+          </div>
+        </div>
+        <div class="balance-card" style="min-width: 132px;">
+          <div class="balance-label">MCAP</div>
+          <div class="balance-value" id="portfolioMcap">≈ $16,399</div>
+          <div class="balance-fiat" id="portfolioCount">3 токена</div>
+        </div>
+      </div>
 
-<div class="card">
-<h1 id="profit">+72%</h1>
-<p>Прибыль</p>
-</div>
+      <div class="portfolio-cards">
+        <div class="mini-card">
+          <div class="title">Сводка</div>
+          <div class="text" id="portfolioSummary">
+            Активов: 3. Средний рост: +10.3%. Самый прибыльный токен: MYTOKEN.
+          </div>
+        </div>
 
-<div class="card">
-<p>Ваши токены: <b id="tokensAmount">0</b></p>
-<p>Цена: <b>0.01289 SOL</b></p>
-</div>
+        <div class="mini-card">
+          <div class="title">Действия</div>
+          <div class="text">
+            Открывай карточку любого токена, смотри текущую цену, выбирай долю продажи и подтверждай сделку одной кнопкой.
+          </div>
+        </div>
 
-<div class="sell-buttons">
-<button onclick="setSell(25)">25%</button>
-<button onclick="setSell(75)">75%</button>
-<button onclick="setSell(100)" class="active">100%</button>
-</div>
+        <div class="section-card">
+          <div class="section-head">
+            <h2 class="section-title">Ваши токены</h2>
+            <button class="link-btn" id="portfolioCreateBtn">Новый токен</button>
+          </div>
+          <div class="trade-list" id="portfolioList"></div>
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-<p>Вы получите:</p>
-<h2 id="receive">0.0 SOL</h2>
-</div>
+    <!-- PROFILE -->
+    <section class="screen" id="screen-profile">
+      <div class="topbar" style="margin-bottom:14px;">
+        <div class="brand">
+          <div class="avatar" style="width:56px;height:56px;">
+            <svg viewBox="0 0 24 24" class="paw" style="width:30px;height:30px;color:#0f0819;position:relative;z-index:1">
+              <path fill="currentColor" d="M12 12.2a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Zm0 2.2c-4.2 0-8 2.3-8 5.5V22h16v-2.1c0-3.3-3.8-5.5-8-5.5Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title" style="font-size:20px;">Профиль</div>
+            <div class="brand-sub">Настройки и доступ</div>
+          </div>
+        </div>
+        <div class="balance-card" style="min-width: 132px;">
+          <div class="balance-label">Аккаунт</div>
+          <div class="balance-value">Panfani</div>
+          <div class="balance-fiat">Mini App ready</div>
+        </div>
+      </div>
 
-<button class="btn" onclick="sell()">Продать</button>
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">
+          <svg viewBox="0 0 24 24" style="width:34px;height:34px;fill:#d5b5ff">
+            <path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="profile-name">Panfani</h3>
+          <p class="profile-desc">Create. Trade. Own.</p>
+        </div>
+      </div>
 
-</div>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div class="left">
+            <div class="name">Кошелёк</div>
+            <p class="desc">Подключение и управление</p>
+          </div>
+          <div class="pill">12.45 SOL</div>
+        </div>
 
-<script>
-let balance = 0.678;
-let currentToken = null;
+        <div class="setting-item">
+          <div class="left">
+            <div class="name">Сеть</div>
+            <p class="desc">Solana / main design flow</p>
+          </div>
+          <div class="pill">SOL</div>
+        </div>
 
-function openModal(){
-document.getElementById("modal").classList.add("active");
-}
+        <div class="setting-item">
+          <div class="left">
+            <div class="name">Интерфейс</div>
+            <p class="desc">Тёмная тема, неоновый стиль</p>
+          </div>
+          <div class="pill">Dark</div>
+        </div>
 
-function createToken(){
-let name = document.getElementById("name").value;
-let ticker = document.getElementById("ticker").value;
-let amount = parseFloat(document.getElementById("amount").value || 0);
+        <div class="setting-item">
+          <div class="left">
+            <div class="name">Хранилище</div>
+            <p class="desc">Состояние сохраняется в браузере</p>
+          </div>
+          <div class="pill">LocalStorage</div>
+        </div>
+      </div>
 
-if(!name || !ticker) return alert("Заполни поля");
+      <div class="section-card" style="margin-top:14px;">
+        <div class="section-head">
+          <h2 class="section-title">Служебное</h2>
+          <button class="link-btn" id="resetBtn">Сбросить демо</button>
+        </div>
+        <div class="mini-card">
+          <div class="title">Telegram WebApp</div>
+          <div class="text">
+            Этот HTML уже готов для заливки на GitHub Pages и запуска внутри Telegram WebView. Кнопки и вкладки работают без внешних библиотек.
+          </div>
+        </div>
+      </div>
+    </section>
 
-currentToken = {
-name,
-ticker,
-amount: 12500
-};
+    <!-- TOKEN DETAIL -->
+    <section class="screen" id="screen-token">
+      <div class="token-view-header">
+        <button class="back-btn" id="backFromTokenBtn" aria-label="Назад">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M14.7 5.3a1 1 0 0 1 0 1.4L10.4 11H19a1 1 0 1 1 0 2h-8.6l4.3 4.3a1 1 0 1 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0Z"/></svg>
+        </button>
 
-document.getElementById("modal").classList.remove("active");
+        <div class="token-view-title">
+          <div class="token-ico" id="tokenDetailIcon" style="width:54px;height:54px;box-shadow:0 0 0 4px rgba(138,44,255,.09)">
+            <svg viewBox="0 0 24 24" class="paw" style="width:28px;height:28px;color:#0f0819">
+              <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
+            </svg>
+          </div>
+          <div class="title-text">
+            <div class="name" id="tokenDetailName">Panfani Cat</div>
+            <div class="ticker" id="tokenDetailTicker">$CAT</div>
+          </div>
+        </div>
 
-document.querySelector(".container").style.display="none";
-document.getElementById("sell").style.display="block";
+        <button class="icon-btn" id="favoriteBtn" aria-label="Избранное">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M12 17.3 6.8 20l1-5.8-4.2-4.1 5.8-.8L12 4l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 17.3Z"/></svg>
+        </button>
 
-document.getElementById("tokenTitle").innerText = name + " $" + ticker;
-document.getElementById("tokensAmount").innerText = currentToken.amount;
+        <button class="icon-btn" id="moreBtn" aria-label="Меню">
+          <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M5.5 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/></svg>
+        </button>
+      </div>
 
-calcReceive(100);
-}
+      <div class="big-profit">
+        <div class="caption">Нереализованная прибыль <span class="info-dot">i</span></div>
+        <div class="profit-value" id="profitValue">+72%</div>
+        <div class="profit-sub" id="profitSub">(0.4192 SOL)</div>
+      </div>
 
-function setSell(p){
-calcReceive(p);
+      <div class="panel" style="padding:12px;">
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="small-label">Мои токены</div>
+            <div class="small-value" id="detailAmount">12,500 CAT</div>
+            <div class="stat-sub" id="detailAmountUsd">≈ $161.23</div>
+          </div>
 
-document.querySelectorAll(".sell-buttons button").forEach(b=>b.classList.remove("active"));
-event.target.classList.add("active");
-}
+          <div class="stat-box">
+            <div class="small-label">Текущая цена</div>
+            <div class="small-value" id="detailCurrentPrice">0.01289 SOL</div>
+            <div class="stat-sub" id="detailCurrentPriceUsd">≈ $1.29</div>
+          </div>
 
-function calcReceive(percent){
-let receive = (0.4192 * percent / 100).toFixed(4);
-document.getElementById("receive").innerText = receive + " SOL";
-}
+          <div class="stat-box">
+            <div class="small-label">Средняя цена</div>
+            <div class="small-value" id="detailAvgPrice">0.00750 SOL</div>
+            <div class="stat-sub" id="detailAvgPriceUsd">≈ $0.75</div>
+          </div>
 
-function sell(){
-alert("Продано!");
-balance = 0.678; // фикс
-document.getElementById("balance").innerText = balance + " SOL";
+          <div class="stat-box wide">
+            <div>
+              <div class="small-label">Текущая стоимость</div>
+              <div class="small-value" id="detailCurrentValue">1.289 SOL</div>
+              <div class="stat-sub" id="detailCurrentValueUsd">≈ $166.12</div>
+            </div>
+            <div>
+              <div class="small-label">Прибыль</div>
+              <div class="small-value up" id="detailProfit">+0.4192 SOL</div>
+              <div class="stat-sub" id="detailProfitUsd">≈ $53.89</div>
+            </div>
+          </div>
+        </div>
 
-document.getElementById("sell").style.display="none";
-document.querySelector(".container").style.display="block";
-}
-</script>
+        <div class="actions-title">
+          <div>Продать</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:700" id="availableTokens">Доступно: 12,500 CAT</div>
+        </div>
 
+        <div class="sell-choices" id="sellChoices">
+          <button class="choice" data-pct="25">
+            <div class="pct">25%</div>
+            <div class="amt" id="sell25">3,125 CAT</div>
+          </button>
+          <button class="choice" data-pct="50">
+            <div class="pct">50%</div>
+            <div class="amt" id="sell50">6,250 CAT</div>
+          </button>
+          <button class="choice" data-pct="75">
+            <div class="pct">75%</div>
+            <div class="amt" id="sell75">9,375 CAT</div>
+          </button>
+          <button class="choice active" data-pct="100">
+            <div class="pct">100%</div>
+            <div class="amt" id="sell100">12,500 CAT</div>
+          </button>
+        </div>
+
+        <div class="buy-sell-line">
+          <div class="receive-box">
+            <div class="label">Вы получите</div>
+            <div class="receive-value" id="receiveValue">0.4192 SOL</div>
+            <div class="receive-fiat" id="receiveFiat">≈ $53.89</div>
+          </div>
+
+          <button class="asset-switch" id="receiveAssetBtn">
+            <div class="left">
+              <div class="asset-ico"></div>
+              <div style="font-weight:800">SOL</div>
+            </div>
+            <div style="color:rgba(255,255,255,.55)">▾</div>
+          </button>
+        </div>
+
+        <button class="primary-sell" id="sellBtn">Продать 100%</button>
+        <div class="tiny-text" id="sellLine" style="margin-top:8px;text-align:center;">12,500 CAT → 0.4192 SOL</div>
+      </div>
+
+      <div class="secondary-card">
+        <div class="title">Безопасная сделка</div>
+        <div class="desc">
+          Все сделки защищены смарт-контрактами. Комиссия платформы: 1%.
+        </div>
+      </div>
+    </section>
+
+    <!-- CREATE TOKEN MODAL -->
+    <div class="form-overlay" id="overlay"></div>
+    <div class="modal" id="createModal" aria-hidden="true">
+      <div class="modal-handle"></div>
+      <div class="modal-body">
+        <div class="modal-head">
+          <h2 class="modal-title">Создать токен</h2>
+          <button class="close-btn" id="closeModalBtn" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor"><path d="M6.3 5.3a1 1 0 0 1 1.4 0L12 9.6l4.3-4.3a1 1 0 1 1 1.4 1.4L13.4 11l4.3 4.3a1 1 0 0 1-1.4 1.4L12 12.4l-4.3 4.3a1 1 0 0 1-1.4-1.4l4.3-4.3-4.3-4.3a1 1 0 0 1 0-1.4Z"/></svg>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tokenNameInput">1. Название токена</label>
+          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Например: Panfani Cat" />
+          <div class="counter"><span id="nameCount">0</span>/32</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tokenTickerInput">2. $ТЕГ (тикер)</label>
+          <input class="input" id="tokenTickerInput" maxlength="10" placeholder="Например: CAT" />
+          <div class="counter"><span id="tickerCount">0</span>/10</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">3. Изображение токена</label>
+          <input id="tokenImageInput" type="file" accept="image/png,image/jpeg,image/gif" class="hidden" />
+          <div class="upload-box" id="uploadBox">
+            <div class="upload-preview" id="uploadPreview">
+              <svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:currentColor">
+                <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 12h14V7H5v10Zm3-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm-1.5 4.2h11l-3.8-4.8-2.7 3.4-1.7-2L6.5 15Z"/>
+              </svg>
+            </div>
+            <div class="upload-title">Загрузить изображение</div>
+            <div class="upload-sub">JPG, PNG, GIF. Макс. 5MB</div>
+          </div>
+          <div class="recommend">Рекомендуемый размер: 512×512px</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="buyAmountInput">4. Стартовая покупка</label>
+          <div class="input-row">
+            <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px;">
+              <option value="SOL">SOL</option>
+            </select>
+            <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.0" value="0.0" />
+            <div style="min-width:72px;text-align:right;color:rgba(255,255,255,.68);font-weight:700;" id="buyEstimate">≈ $0.00</div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 15h-2v-6h2Zm0-8h-2V7h2Z"/></svg>
+          </div>
+          <div>
+            <div class="info-title">Что такое стартовая покупка?</div>
+            <p class="info-text">
+              Стартовая покупка создаёт ликвидность для твоего токена и позволяет другим пользователям сразу начать торговать.
+            </p>
+          </div>
+        </div>
+
+        <button class="create-btn" id="createTokenBtn">Создать токен</button>
+        <div class="tiny-text" style="margin-top:10px;text-align:center;">
+          После создания токен появится в списке и откроется его карточка.
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+      <div class="dot"></div>
+      <div class="msg" id="toastMsg">Готово</div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" aria-label="Главная навигация">
+      <button class="nav-item active" data-screen="home" aria-label="Главная">
+        <div class="nav-ico">
+          <svg viewBox="0 0 24 24"><path d="M12 3.1a1 1 0 0 1 .66.25l8 7A1 1 0 0 1 21 11v9a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5H10v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 .34-.75l8-7A1 1 0 0 1 12 3.1Z"/></svg>
+        </div>
+        <span>Главная</span>
+      </button>
+      <button class="nav-item" data-screen="trade" aria-label="Торговля">
+        <div class="nav-ico">
+          <svg viewBox="0 0 24 24"><path d="M4 17a1 1 0 0 1 1-1h3.1l2.2-4.8a1 1 0 0 1 1.82.04l1.56 3.34L16 8.5a1 1 0 0 1 1.77-.1L20 12H23a1 1 0 1 1 0 2h-3.6a1 1 0 0 1-.84-.46l-1.4-2.1-2.96 7.1a1 1 0 0 1-1.84.05l-1.65-3.53-1.57 3.43A1 1 0 0 1 9.2 19H5a1 1 0 0 1-1-1Z"/></svg>
+        </div>
+        <span>Торговля</span>
+      </button>
+      <button class="nav-item" data-screen="portfolio" aria-label="Портфель">
+        <div class="nav-ico">
+          <svg viewBox="0 0 24 24"><path d="M10 4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1h5a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2h5V4Zm11 7H3v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7Z"/></svg>
+        </div>
+        <span>Портфель</span>
+      </button>
+      <button class="nav-item" data-screen="profile" aria-label="Профиль">
+        <div class="nav-ico">
+          <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2c-4.42 0-8 2.46-8 5.5V22h16v-2.5c0-3.04-3.58-5.5-8-5.5Z"/></svg>
+        </div>
+        <span>Профиль</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "panfani_app_state_v1";
+      const USD_PER_SOL = 100.03; // approximate demo rate; easy to change
+      const DEFAULT_STATE = {
+        balanceSol: 12.45,
+        favoriteTokenId: null,
+        selectedTokenId: null,
+        activeScreen: "home",
+        tokens: [
+          {
+            id: "mytoken",
+            name: "MYTOKEN",
+            ticker: "MYTOKEN",
+            image: "",
+            amount: 10000,
+            currentPriceSol: 0.00872,
+            averagePriceSol: 0.00618,
+            priceChange: 18.6,
+            mcap: 12456,
+            liquiditySol: 0.91,
+            volume24h: 18400,
+            createdAt: Date.now() - 1000 * 60 * 60 * 28
+          },
+          {
+            id: "catcoin",
+            name: "CATCOIN",
+            ticker: "CAT",
+            image: "",
+            amount: 12500,
+            currentPriceSol: 0.01289,
+            averagePriceSol: 0.0075,
+            priceChange: -4.2,
+            mcap: 8732,
+            liquiditySol: 1.34,
+            volume24h: 11200,
+            createdAt: Date.now() - 1000 * 60 * 60 * 18
+          },
+          {
+            id: "panfani",
+            name: "PANFANI",
+            ticker: "PANFANI",
+            image: "",
+            amount: 8200,
+            currentPriceSol: 0.00412,
+            averagePriceSol: 0.00386,
+            priceChange: 6.7,
+            mcap: 3211,
+            liquiditySol: 0.55,
+            volume24h: 5100,
+            createdAt: Date.now() - 1000 * 60 * 60 * 6
+          }
+        ],
+        draft: {
+          name: "",
+          ticker: "",
+          image: "",
+          buyAmount: 0
+        }
+      };
+
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+      const els = {
+        home: $("#screen-home"),
+        trade: $("#screen-trade"),
+        portfolio: $("#screen-portfolio"),
+        profile: $("#screen-profile"),
+        token: $("#screen-token"),
+        navItems: $$(".nav-item"),
+        openCreateBtn: $("#openCreateBtn"),
+        createFromTradeBtn: $("#createFromTradeBtn"),
+        portfolioCreateBtn: $("#portfolioCreateBtn"),
+        viewAllTokensBtn: $("#viewAllTokensBtn"),
+        refreshMarketBtn: $("#refreshMarketBtn"),
+        walletBtn: $("#walletBtn"),
+        backFromTokenBtn: $("#backFromTokenBtn"),
+        modal: $("#createModal"),
+        overlay: $("#overlay"),
+        closeModalBtn: $("#closeModalBtn"),
+        createTokenBtn: $("#createTokenBtn"),
+        tokenNameInput: $("#tokenNameInput"),
+        tokenTickerInput: $("#tokenTickerInput"),
+        tokenImageInput: $("#tokenImageInput"),
+        uploadBox: $("#uploadBox"),
+        uploadPreview: $("#uploadPreview"),
+        buyAmountInput: $("#buyAmountInput"),
+        buyAssetSelect: $("#buyAssetSelect"),
+        buyEstimate: $("#buyEstimate"),
+        nameCount: $("#nameCount"),
+        tickerCount: $("#tickerCount"),
+        homeTokenGrid: $("#homeTokenGrid"),
+        tradeList: $("#tradeList"),
+        portfolioList: $("#portfolioList"),
+        portfolioSummary: $("#portfolioSummary"),
+        portfolioMcap: $("#portfolioMcap"),
+        portfolioCount: $("#portfolioCount"),
+        homeBalanceSol: $("#homeBalanceSol"),
+        homeBalanceUsd: $("#homeBalanceUsd"),
+        tradeBalanceSol: $("#tradeBalanceSol"),
+        tradeBalanceUsd: $("#tradeBalanceUsd"),
+        profitValue: $("#profitValue"),
+        profitSub: $("#profitSub"),
+        tokenDetailName: $("#tokenDetailName"),
+        tokenDetailTicker: $("#tokenDetailTicker"),
+        tokenDetailIcon: $("#tokenDetailIcon"),
+        detailAmount: $("#detailAmount"),
+        detailAmountUsd: $("#detailAmountUsd"),
+        detailCurrentPrice: $("#detailCurrentPrice"),
+        detailCurrentPriceUsd: $("#detailCurrentPriceUsd"),
+        detailAvgPrice: $("#detailAvgPrice"),
+        detailAvgPriceUsd: $("#detailAvgPriceUsd"),
+        detailCurrentValue: $("#detailCurrentValue"),
+        detailCurrentValueUsd: $("#detailCurrentValueUsd"),
+        detailProfit: $("#detailProfit"),
+        detailProfitUsd: $("#detailProfitUsd"),
+        availableTokens: $("#availableTokens"),
+        receiveValue: $("#receiveValue"),
+        receiveFiat: $("#receiveFiat"),
+        sellLine: $("#sellLine"),
+        sellBtn: $("#sellBtn"),
+        sellChoices: $("#sellChoices"),
+        toast: $("#toast"),
+        toastMsg: $("#toastMsg"),
+        favoriteBtn: $("#favoriteBtn"),
+        moreBtn: $("#moreBtn"),
+        resetBtn: $("#resetBtn"),
+        profileAvatar: $("#profileAvatar"),
+      };
+
+      let state = loadState();
+      let selectedSellPct = 100;
+      let imageDataUrl = "";
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return structuredClone(DEFAULT_STATE);
+          const parsed = JSON.parse(raw);
+          return {
+            ...structuredClone(DEFAULT_STATE),
+            ...parsed,
+            draft: {
+              ...structuredClone(DEFAULT_STATE.draft),
+              ...(parsed.draft || {})
+            }
+          };
+        } catch (e) {
+          return structuredClone(DEFAULT_STATE);
+        }
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function escapeHtml(str) {
+        return String(str || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function formatNumber(n, digits = 2) {
+        const num = Number(n || 0);
+        return num.toLocaleString("en-US", {
+          minimumFractionDigits: digits,
+          maximumFractionDigits: digits
+        });
+      }
+
+      function formatInteger(n) {
+        return Math.round(Number(n || 0)).toLocaleString("en-US");
+      }
+
+      function solToUsd(sol) {
+        return Number(sol || 0) * USD_PER_SOL;
+      }
+
+      function usdFmt(n) {
+        return "$" + formatNumber(n, 2);
+      }
+
+      function solFmt(n, digits = 4) {
+        return formatNumber(n, digits) + " SOL";
+      }
+
+      function shortPct(n) {
+        const sign = Number(n) >= 0 ? "+" : "";
+        return sign + Number(n).toFixed(1) + "%";
+      }
+
+      function showToast(msg) {
+        els.toastMsg.textContent = msg;
+        els.toast.classList.add("show");
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => els.toast.classList.remove("show"), 2100);
+      }
+
+      function setScreen(screenName) {
+        state.activeScreen = screenName;
+        saveState();
+
+        $$(".screen").forEach(s => s.classList.remove("active"));
+        $("#screen-" + screenName).classList.add("active");
+
+        els.navItems.forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.screen === screenName);
+        });
+
+        if (screenName !== "token") {
+          state.selectedTokenId = state.selectedTokenId || state.tokens[1]?.id || state.tokens[0]?.id;
+        }
+
+        renderAll();
+      }
+
+      function openModal() {
+        els.overlay.classList.add("show");
+        els.modal.classList.add("show");
+        els.modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        const draft = state.draft || {};
+        els.tokenNameInput.value = draft.name || "";
+        els.tokenTickerInput.value = draft.ticker || "";
+        els.buyAmountInput.value = draft.buyAmount ?? 0;
+        imageDataUrl = draft.image || "";
+        renderUploadPreview();
+        updateCounters();
+        updateBuyEstimate();
+      }
+
+      function closeModal() {
+        els.overlay.classList.remove("show");
+        els.modal.classList.remove("show");
+        els.modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        saveDraftFromInputs();
+      }
+
+      function saveDraftFromInputs() {
+        state.draft = {
+          name: els.tokenNameInput.value.trim(),
+          ticker: els.tokenTickerInput.value.trim(),
+          buyAmount: parseFloat(els.buyAmountInput.value || "0"),
+          image: imageDataUrl || ""
+        };
+        saveState();
+      }
+
+      function renderUploadPreview() {
+        if (imageDataUrl) {
+          els.uploadPreview.innerHTML = `<img alt="preview" src="${imageDataUrl}" />`;
+        } else {
+          els.uploadPreview.innerHTML = `
+            <svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:currentColor">
+              <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 12h14V7H5v10Zm3-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm-1.5 4.2h11l-3.8-4.8-2.7 3.4-1.7-2L6.5 15Z"/>
+            </svg>`;
+        }
+      }
+
+      function updateCounters() {
+        els.nameCount.textContent = els.tokenNameInput.value.length;
+        els.tickerCount.textContent = els.tokenTickerInput.value.length;
+      }
+
+      function updateBuyEstimate() {
+        const value = parseFloat(els.buyAmountInput.value || "0");
+        els.buyEstimate.textContent = "≈ " + usdFmt(solToUsd(value));
+      }
+
+      function createToken() {
+        const name = els.tokenNameInput.value.trim();
+        const ticker = els.tokenTickerInput.value.trim().toUpperCase();
+        const buyAmount = parseFloat(els.buyAmountInput.value || "0") || 0;
+
+        if (!name) {
+          showToast("Введите название токена");
+          els.tokenNameInput.focus();
+          return;
+        }
+        if (!ticker) {
+          showToast("Введите тикер токена");
+          els.tokenTickerInput.focus();
+          return;
+        }
+
+        const currentPrice = +(Math.max(0.0001, Math.random() * 0.02 + 0.0015).toFixed(5));
+        const avgPrice = +(Math.max(0.00008, currentPrice * (0.52 + Math.random() * 0.34)).toFixed(5));
+        const amount = Math.max(1, Math.floor((buyAmount || 0.4) * 1000 + 8200));
+        const priceChange = +(Math.max(0.4, 20 + Math.random() * 24).toFixed(1));
+        const id = "tok_" + Math.random().toString(36).slice(2, 10);
+        const mcap = Math.round((buyAmount || 0.45) * 15600 + Math.random() * 12000 + 3000);
+        const liquiditySol = +(Math.max(0.2, (buyAmount || 0.5) * 0.7 + Math.random() * 0.8).toFixed(2));
+        const volume24h = Math.round((buyAmount || 0.5) * 12000 + Math.random() * 8000 + 1500);
+
+        const token = {
+          id,
+          name,
+          ticker,
+          image: imageDataUrl || "",
+          amount,
+          currentPriceSol: currentPrice,
+          averagePriceSol: avgPrice,
+          priceChange,
+          mcap,
+          liquiditySol,
+          volume24h,
+          createdAt: Date.now()
+        };
+
+        state.tokens.unshift(token);
+        state.selectedTokenId = token.id;
+        state.balanceSol = Math.max(0, +(state.balanceSol - buyAmount).toFixed(4));
+        state.draft = {
+          name: "",
+          ticker: "",
+          buyAmount: 0,
+          image: ""
+        };
+        imageDataUrl = "";
+        saveState();
+        closeModal();
+        renderAll();
+        openToken(token.id);
+        showToast("Токен создан");
+      }
+
+      function getSelectedToken() {
+        return state.tokens.find(t => t.id === state.selectedTokenId) || state.tokens[0];
+      }
+
+      function openToken(tokenId) {
+        state.selectedTokenId = tokenId;
+        saveState();
+        setScreen("token");
+      }
+
+      function backFromToken() {
+        setScreen("home");
+      }
+
+      function selectSellPct(pct) {
+        selectedSellPct = pct;
+        $$(".choice", els.sellChoices).forEach(btn => btn.classList.toggle("active", Number(btn.dataset.pct) === pct));
+        updateTokenDetailActions();
+      }
+
+      function updateTokenDetailActions() {
+        const token = getSelectedToken();
+        if (!token) return;
+        const sellAmount = Math.round(token.amount * (selectedSellPct / 100));
+        const receiveSol = token.currentPriceSol * sellAmount * 0.0329; // demo output relation
+        const receiveUsd = solToUsd(receiveSol);
+
+        els.receiveValue.textContent = solFmt(receiveSol, 4);
+        els.receiveFiat.textContent = "≈ " + usdFmt(receiveUsd);
+        els.sellLine.textContent = `${formatInteger(sellAmount)} ${token.ticker} → ${solFmt(receiveSol, 4)}`;
+        els.sellBtn.textContent = `Продать ${selectedSellPct}%`;
+        els.sell25.textContent = `${formatInteger(Math.round(token.amount * .25))} ${token.ticker}`;
+        els.sell50.textContent = `${formatInteger(Math.round(token.amount * .50))} ${token.ticker}`;
+        els.sell75.textContent = `${formatInteger(Math.round(token.amount * .75))} ${token.ticker}`;
+        els.sell100.textContent = `${formatInteger(token.amount)} ${token.ticker}`;
+      }
+
+      function sellSelected() {
+        const token = getSelectedToken();
+        if (!token) {
+          showToast("Токен не выбран");
+          return;
+        }
+
+        const sellAmount = Math.max(1, Math.round(token.amount * (selectedSellPct / 100)));
+        const receiveSol = token.currentPriceSol * sellAmount * 0.0329;
+        const fee = receiveSol * 0.01;
+        const net = +(receiveSol - fee).toFixed(4);
+
+        state.balanceSol = +(state.balanceSol + net).toFixed(4);
+        token.amount = Math.max(0, token.amount - sellAmount);
+        token.mcap = Math.max(0, Math.round(token.mcap * (1 - (selectedSellPct / 100) * 0.018)));
+        token.priceChange = +(token.priceChange - (selectedSellPct / 100) * 0.8).toFixed(1);
+
+        if (token.amount === 0) {
+          state.tokens = state.tokens.filter(t => t.id !== token.id);
+          state.selectedTokenId = state.tokens[0]?.id || null;
+          showToast("Токен полностью продан");
+          if (!state.selectedTokenId) {
+            setScreen("home");
+          }
+        } else {
+          showToast(`Продано ${selectedSellPct}%`);
+        }
+
+        saveState();
+        renderAll();
+      }
+
+      function renderHome() {
+        els.homeBalanceSol.textContent = solFmt(state.balanceSol, 2);
+        els.homeBalanceUsd.textContent = "≈ " + usdFmt(solToUsd(state.balanceSol));
+
+        const top3 = [...state.tokens].slice(0, 3);
+        const created = top3.map(token => `
+          <div class="token-card" data-token-id="${token.id}">
+            <div class="token-top">
+              <div class="token-ico">
+                ${token.image ? `<img src="${token.image}" alt="${escapeHtml(token.ticker)}">` : `
+                  <svg viewBox="0 0 24 24" class="paw" style="width:30px;height:30px;color:#0f0819;">
+                    <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
+                  </svg>`}
+              </div>
+              <div class="token-meta">
+                <div class="token-name">${escapeHtml(token.name)}</div>
+                <div class="token-ticker">MCAP</div>
+              </div>
+            </div>
+
+            <div class="token-stats">
+              <div>
+                <div class="label">Рыночная капитализация</div>
+                <div class="value">$${formatInteger(token.mcap)}</div>
+              </div>
+              <div>
+                <div class="label">Изменение</div>
+                <div class="change ${token.priceChange >= 0 ? "up" : "down"}">${shortPct(token.priceChange)}</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        const createNew = `
+          <div class="create-new-card" id="createNewCard">
+            <div>
+              <div class="create-new-plus">+</div>
+              <div class="create-new-text">Создать<br>новый токен</div>
+            </div>
+          </div>
+        `;
+
+        els.homeTokenGrid.innerHTML = created + createNew;
+
+        $$(".token-card", els.homeTokenGrid).forEach(card => {
+          card.addEventListener("click", () => openToken(card.dataset.tokenId));
+        });
+        $("#createNewCard")?.addEventListener("click", openModal);
+      }
+
+      function renderTrade() {
+        els.tradeBalanceSol.textContent = solFmt(state.balanceSol, 2);
+        els.tradeBalanceUsd.textContent = "≈ " + usdFmt(solToUsd(state.balanceSol));
+
+        els.tradeList.innerHTML = state.tokens.map(token => `
+          <div class="trade-row" data-token-id="${token.id}">
+            <div class="trade-left">
+              <div class="token-ico" style="width:46px;height:46px;">
+                ${token.image ? `<img src="${token.image}" alt="${escapeHtml(token.ticker)}">` : `
+                  <svg viewBox="0 0 24 24" class="paw" style="width:24px;height:24px;color:#0f0819;">
+                    <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Z"/>
+                  </svg>`}
+              </div>
+              <div class="trade-meta">
+                <div class="trade-name">${escapeHtml(token.name)}</div>
+                <div class="trade-sub">${escapeHtml(token.ticker)} · ${formatInteger(token.amount)} шт · ${solFmt(token.currentPriceSol, 5)}</div>
+              </div>
+            </div>
+            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
+              ${shortPct(token.priceChange)}
+              <span class="small">MCAP $${formatInteger(token.mcap)}</span>
+            </div>
+          </div>
+        `).join("");
+
+        $$(".trade-row", els.tradeList).forEach(row => {
+          row.addEventListener("click", () => openToken(row.dataset.tokenId));
+        });
+      }
+
+      function renderPortfolio() {
+        els.portfolioCount.textContent = `${state.tokens.length} токена`;
+        const totalMcap = state.tokens.reduce((sum, t) => sum + (t.mcap || 0), 0);
+        els.portfolioMcap.textContent = "≈ $" + formatInteger(totalMcap);
+
+        const avgChange = state.tokens.length
+          ? state.tokens.reduce((sum, t) => sum + (t.priceChange || 0), 0) / state.tokens.length
+          : 0;
+
+        const best = [...state.tokens].sort((a, b) => (b.priceChange || 0) - (a.priceChange || 0))[0];
+        els.portfolioSummary.textContent = `Активов: ${state.tokens.length}. Средний рост: ${avgChange >= 0 ? "+" : ""}${avgChange.toFixed(1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
+
+        els.portfolioList.innerHTML = state.tokens.map(token => `
+          <div class="trade-row" data-token-id="${token.id}">
+            <div class="trade-left">
+              <div class="token-ico" style="width:46px;height:46px;">
+                ${token.image ? `<img src="${token.image}" alt="${escapeHtml(token.ticker)}">` : `
+                  <svg viewBox="0 0 24 24" class="paw" style="width:24px;height:24px;color:#0f0819;">
+                    <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Z"/>
+                  </svg>`}
+              </div>
+              <div class="trade-meta">
+                <div class="trade-name">${escapeHtml(token.name)}</div>
+                <div class="trade-sub">${formatInteger(token.amount)} ${escapeHtml(token.ticker)} · ${solFmt(token.currentPriceSol, 5)} · Liquidity ${solFmt(token.liquiditySol, 2)}</div>
+              </div>
+            </div>
+            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
+              ${shortPct(token.priceChange)}
+              <span class="small">Vol ${formatInteger(token.volume24h)}</span>
+            </div>
+          </div>
+        `).join("");
+
+        $$(".trade-row", els.portfolioList).forEach(row => {
+          row.addEventListener("click", () => openToken(row.dataset.tokenId));
+        });
+      }
+
+      function renderTokenDetail() {
+        const token = getSelectedToken();
+        if (!token) return;
+
+        const currentValueSol = token.amount * token.currentPriceSol;
+        const currentValueUsd = solToUsd(currentValueSol);
+        const avgValueSol = token.amount * token.averagePriceSol;
+        const avgValueUsd = solToUsd(avgValueSol);
+        const profitSol = currentValueSol - avgValueSol;
+        const profitUsd = solToUsd(profitSol);
+        const profitPct = avgValueSol > 0 ? ((currentValueSol - avgValueSol) / avgValueSol) * 100 : 0;
+
+        els.tokenDetailName.textContent = token.name;
+        els.tokenDetailTicker.textContent = "$" + token.ticker;
+        els.detailAmount.textContent = `${formatInteger(token.amount)} ${token.ticker}`;
+        els.detailAmountUsd.textContent = "≈ " + usdFmt(currentValueUsd);
+        els.detailCurrentPrice.textContent = solFmt(token.currentPriceSol, 5);
+        els.detailCurrentPriceUsd.textContent = "≈ " + usdFmt(solToUsd(token.currentPriceSol));
+        els.detailAvgPrice.textContent = solFmt(token.averagePriceSol, 5);
+        els.detailAvgPriceUsd.textContent = "≈ " + usdFmt(solToUsd(token.averagePriceSol));
+        els.detailCurrentValue.textContent = solFmt(currentValueSol, 4);
+        els.detailCurrentValueUsd.textContent = "≈ " + usdFmt(currentValueUsd);
+        els.detailProfit.textContent = (profitSol >= 0 ? "+" : "") + solFmt(profitSol, 4);
+        els.detailProfitUsd.textContent = "≈ " + usdFmt(Math.abs(profitUsd));
+        els.profitValue.textContent = `${profitPct >= 0 ? "+" : ""}${Math.round(profitPct)}%`;
+        els.profitSub.textContent = `(${solFmt(Math.abs(profitSol), 4)})`;
+        els.availableTokens.textContent = `Доступно: ${formatInteger(token.amount)} ${token.ticker}`;
+
+        const iconHtml = token.image
+          ? `<img src="${token.image}" alt="${escapeHtml(token.ticker)}" style="width:100%;height:100%;object-fit:cover">`
+          : `<svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#d5b5ff"><path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Z"/></svg>`;
+        els.tokenDetailIcon.innerHTML = iconHtml;
+
+        updateTokenDetailActions();
+      }
+
+      function renderProfile() {
+        const imgToken = state.tokens.find(t => t.image);
+        if (imgToken) {
+          els.profileAvatar.innerHTML = `<img src="${imgToken.image}" alt="avatar">`;
+        }
+      }
+
+      function renderAll() {
+        renderHome();
+        renderTrade();
+        renderPortfolio();
+        renderProfile();
+        if (state.activeScreen === "token") renderTokenDetail();
+      }
+
+      function updateActiveScreenFromState() {
+        setScreen(state.activeScreen || "home");
+        if (state.activeScreen === "token") {
+          setScreen("token");
+        }
+      }
+
+      function randomizeMarket() {
+        state.tokens = state.tokens.map(t => {
+          const drift = (Math.random() - 0.45) * 4.4;
+          const nextChange = +(t.priceChange + drift).toFixed(1);
+          const nextPrice = +(Math.max(0.00008, t.currentPriceSol * (1 + drift / 120)).toFixed(5));
+          const nextMcap = Math.max(0, Math.round(t.mcap * (1 + drift / 220)));
+          const nextVol = Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.22)));
+          return { ...t, priceChange: nextChange, currentPriceSol: nextPrice, mcap: nextMcap, volume24h: nextVol };
+        });
+        saveState();
+        renderAll();
+        showToast("Рынок обновлён");
+      }
+
+      function resetDemo() {
+        if (!confirm("Сбросить демо-состояние?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = loadState();
+        imageDataUrl = "";
+        selectedSellPct = 100;
+        renderUploadPreview();
+        updateActiveScreenFromState();
+        renderAll();
+        showToast("Демо сброшено");
+      }
+
+      function attachEvents() {
+        els.openCreateBtn.addEventListener("click", openModal);
+        els.createFromTradeBtn.addEventListener("click", openModal);
+        els.portfolioCreateBtn.addEventListener("click", openModal);
+        els.viewAllTokensBtn.addEventListener("click", () => setScreen("portfolio"));
+        els.refreshMarketBtn.addEventListener("click", randomizeMarket);
+        els.walletBtn.addEventListener("click", () => {
+          showToast("Кошелёк открыт");
+          setScreen("profile");
+        });
+
+        els.backFromTokenBtn.addEventListener("click", backFromToken);
+        els.closeModalBtn.addEventListener("click", closeModal);
+        els.overlay.addEventListener("click", closeModal);
+        els.createTokenBtn.addEventListener("click", createToken);
+        els.sellBtn.addEventListener("click", sellSelected);
+
+        els.tokenNameInput.addEventListener("input", () => {
+          updateCounters();
+          saveDraftFromInputs();
+        });
+
+        els.tokenTickerInput.addEventListener("input", () => {
+          els.tokenTickerInput.value = els.tokenTickerInput.value.toUpperCase().replace(/[^A-Z0-9_]/g, "");
+          updateCounters();
+          saveDraftFromInputs();
+        });
+
+        els.buyAmountInput.addEventListener("input", () => {
+          const v = els.buyAmountInput.value.replace(",", ".");
+          els.buyAmountInput.value = v;
+          updateBuyEstimate();
+          saveDraftFromInputs();
+        });
+
+        els.uploadBox.addEventListener("click", () => els.tokenImageInput.click());
+        els.tokenImageInput.addEventListener("change", handleImageUpload);
+
+        els.sellChoices.addEventListener("click", (e) => {
+          const btn = e.target.closest(".choice");
+          if (!btn) return;
+          selectSellPct(Number(btn.dataset.pct));
+        });
+
+        els.favoriteBtn.addEventListener("click", () => {
+          const token = getSelectedToken();
+          if (!token) return;
+          state.favoriteTokenId = token.id;
+          saveState();
+          showToast(`${token.ticker} добавлен в избранное`);
+        });
+
+        els.moreBtn.addEventListener("click", () => {
+          const token = getSelectedToken();
+          if (!token) return;
+          showToast(`Меню ${token.ticker}`);
+        });
+
+        els.resetBtn.addEventListener("click", resetDemo);
+
+        els.navItems.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const screen = btn.dataset.screen;
+            if (screen === "token") return;
+            setScreen(screen);
+          });
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            if (els.modal.classList.contains("show")) closeModal();
+          }
+        });
+      }
+
+      function handleImageUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (!/^image\/(png|jpeg|gif)$/.test(file.type)) {
+          showToast("Разрешены JPG, PNG, GIF");
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          showToast("Файл больше 5 MB");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          imageDataUrl = String(reader.result || "");
+          renderUploadPreview();
+          saveDraftFromInputs();
+          showToast("Изображение загружено");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function init() {
+        attachEvents();
+        renderUploadPreview();
+        updateCounters();
+        updateBuyEstimate();
+        renderAll();
+        updateActiveScreenFromState();
+
+        if (!state.selectedTokenId && state.tokens[0]) {
+          state.selectedTokenId = state.tokens[0].id;
+        }
+
+        if (state.activeScreen === "token") {
+          renderTokenDetail();
+        }
+
+        setInterval(() => {
+          // subtle live-like updates to simulate market movement
+          state.tokens = state.tokens.map(t => {
+            const delta = (Math.random() - 0.5) * 0.6;
+            const price = +(Math.max(0.00008, t.currentPriceSol * (1 + delta / 100)).toFixed(5));
+            const change = +(t.priceChange + delta * 0.4).toFixed(1);
+            const mcap = Math.max(0, Math.round(t.mcap * (1 + delta / 260)));
+            return { ...t, currentPriceSol: price, priceChange: change, mcap };
+          });
+          saveState();
+          renderHome();
+          renderTrade();
+          renderPortfolio();
+          if (state.activeScreen === "token") renderTokenDetail();
+        }, 6000);
+
+        // ensure first render state is correct
+        state.selectedTokenId = state.selectedTokenId || state.tokens[0]?.id || null;
+        saveState();
+      }
+
+      init();
+      window.PanfaniApp = {
+        state,
+        openModal,
+        closeModal,
+        openToken,
+        setScreen
+      };
+    })();
+  </script>
 </body>
 </html>
