@@ -1088,7 +1088,7 @@
       <div class="big-profit">
         <div class="caption">Нереализованная прибыль <span class="info-dot">i</span></div>
         <div class="profit-value" id="profitValue">+0%</div>
-        <div class="profit-sub" id="profitSub">(0 SOL)</div>
+        <div class="profit-sub" id="profitSub">(+0.0000 SOL)</div>
       </div>
 
       <div class="panel">
@@ -1388,6 +1388,10 @@
         return `${fmt(sol, d)} SOL`;
       }
 
+      function signedSolText(sol, d=4){
+        return `${sol >= 0 ? "+" : "-"}${fmt(Math.abs(sol), d)} SOL`;
+      }
+
       function usdText(v){
         return `$${fmt(v, 2)}`;
       }
@@ -1410,6 +1414,33 @@
 
       function currentToken(){
         return state.tokens.find(t => t.id === state.selectedTokenId) || null;
+      }
+
+      function normalizeToken(token){
+        const investedSol = Number(token.investedSol ?? token.initialInvestSol ?? 0);
+        const amount = Math.max(0, Number(token.amount || 0));
+        const growthPct = Number(token.growthPct ?? token.priceChange ?? 0);
+
+        const averagePriceSol = amount > 0 ? investedSol / amount : 0;
+        const currentValueSol = Math.max(0, investedSol * (1 + growthPct / 100));
+        const currentPriceSol = amount > 0 ? currentValueSol / amount : 0;
+
+        return {
+          ...token,
+          investedSol,
+          amount,
+          growthPct,
+          priceChange: growthPct,
+          averagePriceSol,
+          currentPriceSol,
+          mcap: Number(token.mcap || 0),
+          liquiditySol: Number(token.liquiditySol || 0),
+          volume24h: Number(token.volume24h || 0)
+        };
+      }
+
+      function recalcToken(token){
+        return normalizeToken(token);
       }
 
       function openModal(){
@@ -1500,22 +1531,25 @@
           return;
         }
 
-        els.homeTokenGrid.innerHTML = tokens.map(token => `
-          <div class="token-card" data-token-id="${token.id}">
-            <div class="token-top">
-              <div class="token-ico">${tokenIcon(token)}</div>
+        els.homeTokenGrid.innerHTML = tokens.map(token => {
+          const t = recalcToken(token);
+          return `
+            <div class="token-card" data-token-id="${t.id}">
+              <div class="token-top">
+                <div class="token-ico">${tokenIcon(t)}</div>
+                <div>
+                  <div class="token-name">${escapeHtml(t.name)}</div>
+                  <div class="token-ticker">${escapeHtml(t.ticker)}</div>
+                </div>
+              </div>
               <div>
-                <div class="token-name">${escapeHtml(token.name)}</div>
-                <div class="token-ticker">${escapeHtml(token.ticker)}</div>
+                <div class="label">Рыночная капитализация</div>
+                <div class="value">$${fmtInt(t.mcap)}</div>
+                <div class="change ${t.growthPct >= 0 ? "up" : "down"}">${t.growthPct >= 0 ? "+" : ""}${fmt(t.growthPct,1)}%</div>
               </div>
             </div>
-            <div>
-              <div class="label">Рыночная капитализация</div>
-              <div class="value">$${fmtInt(token.mcap)}</div>
-              <div class="change ${token.priceChange >= 0 ? "up" : "down"}">${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%</div>
-            </div>
-          </div>
-        `).join("") + `
+          `;
+        }).join("") + `
           <div class="create-new-card" id="createNewCard">
             <div>
               <div class="create-new-plus">+</div>
@@ -1535,36 +1569,40 @@
           els.tradeList.innerHTML = `<div class="empty-state">Токенов пока нет. Создай первый токен, и он появится здесь.</div>`;
           return;
         }
-        els.tradeList.innerHTML = state.tokens.map(token => `
-          <div class="trade-row" data-token-id="${token.id}">
-            <div class="trade-left">
-              <div class="token-ico" style="width:46px;height:46px">${tokenIcon(token)}</div>
-              <div class="trade-meta">
-                <div class="trade-name">${escapeHtml(token.name)}</div>
-                <div class="trade-sub">${escapeHtml(token.ticker)} · ${fmtInt(token.amount)} шт · ${solText(token.currentPriceSol,5)}</div>
+        els.tradeList.innerHTML = state.tokens.map(token => {
+          const t = recalcToken(token);
+          return `
+            <div class="trade-row" data-token-id="${t.id}">
+              <div class="trade-left">
+                <div class="token-ico" style="width:46px;height:46px">${tokenIcon(t)}</div>
+                <div class="trade-meta">
+                  <div class="trade-name">${escapeHtml(t.name)}</div>
+                  <div class="trade-sub">${escapeHtml(t.ticker)} · ${fmtInt(t.amount)} шт · ${solText(t.currentPriceSol,5)}</div>
+                </div>
+              </div>
+              <div class="trade-badge ${t.growthPct >= 0 ? "up" : "down"}">
+                ${t.growthPct >= 0 ? "+" : ""}${fmt(t.growthPct,1)}%
+                <span class="small">MCAP $${fmtInt(t.mcap)}</span>
               </div>
             </div>
-            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
-              ${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%
-              <span class="small">MCAP $${fmtInt(token.mcap)}</span>
-            </div>
-          </div>
-        `).join("");
+          `;
+        }).join("");
         $$(".trade-row", els.tradeList).forEach(row => row.addEventListener("click", () => openToken(row.dataset.tokenId)));
       }
 
       function renderPortfolio(){
         els.portfolioCount.textContent = `${state.tokens.length} токенов`;
-        els.portfolioMcap.textContent = `≈ $${fmtInt(state.tokens.reduce((a,t)=>a + (t.mcap || 0), 0))}`;
+        els.portfolioMcap.textContent = `≈ $${fmtInt(state.tokens.reduce((a,t)=>a + (recalcToken(t).mcap || 0), 0))}`;
         if(!state.tokens.length){
           els.portfolioSummary.textContent = "Активов нет. Ты только зашёл в новый кошелёк.";
           els.portfolioList.innerHTML = `<div class="empty-state">Ваши токены пока пустые.</div>`;
           return;
         }
-        const avgChange = state.tokens.reduce((a,t)=>a + (t.priceChange || 0), 0) / state.tokens.length;
-        const best = [...state.tokens].sort((a,b)=>(b.priceChange||0)-(a.priceChange||0))[0];
-        els.portfolioSummary.textContent = `Активов: ${state.tokens.length}. Средний рост: ${avgChange >= 0 ? "+" : ""}${fmt(avgChange,1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
-        els.portfolioList.innerHTML = state.tokens.map(token => `
+        const normalized = state.tokens.map(recalcToken);
+        const avgChange = normalized.reduce((a,t)=>a + (t.growthPct || 0), 0) / normalized.length;
+        const best = [...normalized].sort((a,b)=>(b.growthPct||0)-(a.growthPct||0))[0];
+        els.portfolioSummary.textContent = `Активов: ${normalized.length}. Средний рост: ${avgChange >= 0 ? "+" : ""}${fmt(avgChange,1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
+        els.portfolioList.innerHTML = normalized.map(token => `
           <div class="trade-row" data-token-id="${token.id}">
             <div class="trade-left">
               <div class="token-ico" style="width:46px;height:46px">${tokenIcon(token)}</div>
@@ -1573,8 +1611,8 @@
                 <div class="trade-sub">${fmtInt(token.amount)} ${escapeHtml(token.ticker)} · ${solText(token.currentPriceSol,5)} · Liquidity ${solText(token.liquiditySol,2)}</div>
               </div>
             </div>
-            <div class="trade-badge ${token.priceChange >= 0 ? "up" : "down"}">
-              ${token.priceChange >= 0 ? "+" : ""}${fmt(token.priceChange,1)}%
+            <div class="trade-badge ${token.growthPct >= 0 ? "up" : "down"}">
+              ${token.growthPct >= 0 ? "+" : ""}${fmt(token.growthPct,1)}%
               <span class="small">Vol ${fmtInt(token.volume24h)}</span>
             </div>
           </div>
@@ -1600,40 +1638,39 @@
         const token = currentToken();
         if(!token) return;
 
-        const investedSol = Number(token.initialInvestSol || 0);
-        const currentValueSol = token.amount * token.currentPriceSol;
+        const t = recalcToken(token);
+        const currentValueSol = Math.max(0, t.investedSol * (1 + t.growthPct / 100));
         const currentValueUsd = usd(currentValueSol);
-        const avgValueSol = token.amount * token.averagePriceSol;
-        const profitSol = currentValueSol - avgValueSol;
+        const profitSol = currentValueSol - t.investedSol;
         const profitUsd = usd(Math.abs(profitSol));
-        const profitPct = avgValueSol > 0 ? ((currentValueSol - avgValueSol) / avgValueSol) * 100 : 0;
-        const sellAmount = Math.max(1, Math.round(token.amount * (selectedSellPct / 100)));
-        const receiveSol = +(investedSol * (selectedSellPct / 100)).toFixed(4);
+        const profitPct = t.investedSol > 0 ? (profitSol / t.investedSol) * 100 : 0;
+        const sellAmount = Math.max(1, Math.round(t.amount * (selectedSellPct / 100)));
+        const receiveSol = Math.max(0, +(profitSol * (selectedSellPct / 100)).toFixed(4));
 
-        els.tokenDetailName.textContent = token.name;
-        els.tokenDetailTicker.textContent = "$" + token.ticker;
-        els.tokenDetailIcon.innerHTML = tokenIcon(token);
-        els.detailAmount.textContent = `${fmtInt(token.amount)} ${token.ticker}`;
+        els.tokenDetailName.textContent = t.name;
+        els.tokenDetailTicker.textContent = "$" + t.ticker;
+        els.tokenDetailIcon.innerHTML = tokenIcon(t);
+        els.detailAmount.textContent = `${fmtInt(t.amount)} ${t.ticker}`;
         els.detailAmountUsd.textContent = `≈ ${usdText(currentValueUsd)}`;
-        els.detailCurrentPrice.textContent = solText(token.currentPriceSol,5);
-        els.detailCurrentPriceUsd.textContent = `≈ ${usdText(usd(token.currentPriceSol))}`;
-        els.detailAvgPrice.textContent = solText(token.averagePriceSol,5);
-        els.detailAvgPriceUsd.textContent = `≈ ${usdText(usd(token.averagePriceSol))}`;
+        els.detailCurrentPrice.textContent = solText(t.currentPriceSol,5);
+        els.detailCurrentPriceUsd.textContent = `≈ ${usdText(usd(t.currentPriceSol))}`;
+        els.detailAvgPrice.textContent = solText(t.averagePriceSol,5);
+        els.detailAvgPriceUsd.textContent = `≈ ${usdText(usd(t.averagePriceSol))}`;
         els.detailCurrentValue.textContent = solText(currentValueSol,4);
         els.detailCurrentValueUsd.textContent = `≈ ${usdText(currentValueUsd)}`;
         els.detailProfit.textContent = (profitSol >= 0 ? "+" : "") + solText(profitSol,4);
         els.detailProfitUsd.textContent = `≈ ${usdText(profitUsd)}`;
         els.profitValue.textContent = `${profitPct >= 0 ? "+" : ""}${Math.round(profitPct)}%`;
-        els.profitSub.textContent = `(${solText(Math.abs(profitSol),4)})`;
-        els.availableTokens.textContent = `Доступно: ${fmtInt(token.amount)} ${token.ticker}`;
+        els.profitSub.textContent = `(${signedSolText(profitSol,4)})`;
+        els.availableTokens.textContent = `Доступно: ${fmtInt(t.amount)} ${t.ticker}`;
         els.receiveValue.textContent = solText(receiveSol,4);
         els.receiveFiat.textContent = `≈ ${usdText(usd(receiveSol))}`;
-        els.sellLine.textContent = `${fmtInt(sellAmount)} ${token.ticker} → ${solText(receiveSol,4)}`;
+        els.sellLine.textContent = `${fmtInt(sellAmount)} ${t.ticker} → ${solText(receiveSol,4)}`;
         els.sellBtn.textContent = `Продать ${selectedSellPct}%`;
-        els.sell25.textContent = `${fmtInt(Math.max(1, Math.round(token.amount * .25)))} ${token.ticker}`;
-        els.sell50.textContent = `${fmtInt(Math.max(1, Math.round(token.amount * .50)))} ${token.ticker}`;
-        els.sell75.textContent = `${fmtInt(Math.max(1, Math.round(token.amount * .75)))} ${token.ticker}`;
-        els.sell100.textContent = `${fmtInt(token.amount)} ${token.ticker}`;
+        els.sell25.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .25)))} ${t.ticker}`;
+        els.sell50.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .50)))} ${t.ticker}`;
+        els.sell75.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .75)))} ${t.ticker}`;
+        els.sell100.textContent = `${fmtInt(t.amount)} ${t.ticker}`;
       }
 
       function openToken(id){
@@ -1663,14 +1700,16 @@
           return;
         }
 
-        const currentPrice = +(Math.max(0.0001, Math.random()*0.02 + 0.0015).toFixed(5));
-        const avgPrice = +(Math.max(0.00008, currentPrice * (0.52 + Math.random()*0.34)).toFixed(5));
+        const investedSol = +buyAmount.toFixed(4);
         const amount = Math.max(1, Math.floor((buyAmount || 0.4) * 1000 + 8200));
-        const priceChange = +(((Math.random() < 0.5 ? -1 : 1) * (25 + Math.random() * 35)).toFixed(1));
+        const initialGrowth = investedSol > 0 ? +(15 + Math.random() * 35).toFixed(1) : 0;
+        const averagePriceSol = amount > 0 ? +(investedSol / amount).toFixed(6) : 0;
+        const currentValueSol = +(Math.max(0, investedSol * (1 + initialGrowth / 100))).toFixed(4);
+        const currentPriceSol = amount > 0 ? +(currentValueSol / amount).toFixed(6) : 0;
         const id = "tok_" + Math.random().toString(36).slice(2, 10);
-        const mcap = Math.round((buyAmount || 0.45) * 15600 + Math.random()*12000 + 3000);
-        const liquiditySol = +(Math.max(0.2, (buyAmount || 0.5) * 0.7 + Math.random()*0.8).toFixed(2));
-        const volume24h = Math.round((buyAmount || 0.5) * 12000 + Math.random()*8000 + 1500);
+        const mcap = Math.round((currentValueSol || 0.45) * 15600 + Math.random()*12000 + 3000);
+        const liquiditySol = +(Math.max(0.2, (currentValueSol || 0.5) * 0.7 + Math.random()*0.8).toFixed(2));
+        const volume24h = Math.round((currentValueSol || 0.5) * 12000 + Math.random()*8000 + 1500);
 
         const token = {
           id,
@@ -1678,13 +1717,14 @@
           ticker,
           image: draftImageData || "",
           amount,
-          currentPriceSol: currentPrice,
-          averagePriceSol: avgPrice,
-          priceChange,
+          investedSol,
+          growthPct: initialGrowth,
+          priceChange: initialGrowth,
+          currentPriceSol,
+          averagePriceSol,
           mcap,
           liquiditySol,
           volume24h,
-          initialInvestSol: Number(buyAmount || 0),
           createdAt: Date.now()
         };
 
@@ -1711,22 +1751,31 @@
         if(!token){ toast("Токен не выбран"); return; }
         if(!token.amount){ toast("Продавать нечего"); return; }
 
-        const investedSol = Number(token.initialInvestSol || 0);
-        const sellAmount = Math.max(1, Math.round(token.amount * selectedSellPct / 100));
-        const receiveSol = +(investedSol * (selectedSellPct / 100)).toFixed(4);
+        const t = recalcToken(token);
+        const profitSol = Math.max(0, +(Math.max(0, t.investedSol * (1 + t.growthPct / 100)) - t.investedSol).toFixed(4));
+        const sellPct = selectedSellPct / 100;
+        const soldAmount = Math.max(1, Math.round(t.amount * sellPct));
+        const receiveSol = +(profitSol * sellPct).toFixed(4);
 
         state.balanceSol = +(state.balanceSol + receiveSol).toFixed(4);
-        token.amount = Math.max(0, token.amount - sellAmount);
-        token.initialInvestSol = +(Math.max(0, investedSol - receiveSol)).toFixed(4);
-        token.mcap = Math.max(0, Math.round(token.mcap * (1 - selectedSellPct * 0.00018)));
-        token.priceChange = +(token.priceChange - selectedSellPct * 0.03).toFixed(1);
 
-        if(token.amount === 0){
-          state.tokens = state.tokens.filter(t => t.id !== token.id);
+        if(soldAmount >= t.amount){
+          state.tokens = state.tokens.filter(x => x.id !== t.id);
           state.selectedTokenId = state.tokens[0]?.id || null;
           toast("Токен полностью продан");
           if(!state.selectedTokenId) screen("home");
         }else{
+          const remainShare = Math.max(0, (t.amount - soldAmount) / t.amount);
+          const nextAmount = Math.max(0, t.amount - soldAmount);
+          const nextInvested = +(t.investedSol * remainShare).toFixed(4);
+
+          token.amount = nextAmount;
+          token.investedSol = nextInvested;
+          token.averagePriceSol = nextAmount > 0 ? +(nextInvested / nextAmount).toFixed(6) : 0;
+          token.currentPriceSol = nextAmount > 0 ? +(Math.max(0, nextInvested * (1 + t.growthPct / 100)) / nextAmount).toFixed(6) : 0;
+          token.growthPct = t.growthPct;
+          token.priceChange = t.growthPct;
+          token.mcap = Math.max(0, Math.round(token.mcap * (1 - selectedSellPct * 0.00018)));
           toast(`Продано ${selectedSellPct}%`);
         }
 
@@ -1768,13 +1817,18 @@
           return;
         }
         state.tokens = state.tokens.map(t => {
-          const drift = (Math.random() - 0.45) * 4.4;
+          const token = recalcToken(t);
+          const drift = (Math.random() - 0.45) * 32 + (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 14);
+          const nextGrowth = Math.max(-99, Math.min(999, token.growthPct + drift));
+          const nextCurrentValue = Math.max(0, token.investedSol * (1 + nextGrowth / 100));
           return {
-            ...t,
-            currentPriceSol: +(Math.max(0.00008, t.currentPriceSol * (1 + drift / 120)).toFixed(5)),
-            priceChange: +(t.priceChange + drift).toFixed(1),
-            mcap: Math.max(0, Math.round(t.mcap * (1 + drift / 220))),
-            volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.22)))
+            ...token,
+            growthPct: +nextGrowth.toFixed(1),
+            priceChange: +nextGrowth.toFixed(1),
+            currentPriceSol: token.amount > 0 ? +(nextCurrentValue / token.amount).toFixed(6) : 0,
+            averagePriceSol: token.amount > 0 ? +(token.investedSol / token.amount).toFixed(6) : 0,
+            mcap: Math.max(0, Math.round(token.mcap * (1 + drift / 220))),
+            volume24h: Math.max(100, Math.round(token.volume24h * (1 + (Math.random() - 0.4) * 0.22)))
           };
         });
         saveState();
@@ -1788,13 +1842,18 @@
           if(!state.tokens.length) return;
 
           state.tokens = state.tokens.map(t => {
-            const strongDrift = (Math.random() - 0.5) * 18 + (Math.random() < 0.5 ? -1 : 1) * (6 + Math.random() * 10);
+            const token = recalcToken(t);
+            const strongDrift = (Math.random() - 0.5) * 40 + (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 18);
+            const nextGrowth = Math.max(-99, Math.min(999, token.growthPct + strongDrift));
+            const nextCurrentValue = Math.max(0, token.investedSol * (1 + nextGrowth / 100));
             return {
-              ...t,
-              currentPriceSol: +(Math.max(0.00008, t.currentPriceSol * (1 + strongDrift / 100)).toFixed(5)),
-              priceChange: +(Math.max(-999, Math.min(999, (t.priceChange || 0) + strongDrift))).toFixed(1),
-              mcap: Math.max(0, Math.round(t.mcap * (1 + strongDrift / 180))),
-              volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.28)))
+              ...token,
+              growthPct: +nextGrowth.toFixed(1),
+              priceChange: +nextGrowth.toFixed(1),
+              currentPriceSol: token.amount > 0 ? +(nextCurrentValue / token.amount).toFixed(6) : 0,
+              averagePriceSol: token.amount > 0 ? +(token.investedSol / token.amount).toFixed(6) : 0,
+              mcap: Math.max(0, Math.round(token.mcap * (1 + strongDrift / 180))),
+              volume24h: Math.max(100, Math.round(token.volume24h * (1 + (Math.random() - 0.4) * 0.28)))
             };
           });
 
@@ -1883,8 +1942,12 @@
         if(!Array.isArray(state.tokens)) state.tokens = [];
         if(typeof state.balanceSol !== "number") state.balanceSol = 2.5;
         if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.0" };
+
+        state.tokens = state.tokens.map(recalcToken);
+
         if(!state.selectedTokenId && state.tokens[0]) state.selectedTokenId = state.tokens[0].id;
 
+        saveState();
         renderUploadPreview();
         updateCounters();
         updateBuyEstimate();
