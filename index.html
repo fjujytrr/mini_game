@@ -858,9 +858,9 @@
         </div>
 
         <div class="balance-card">
-          <div class="balance-label">Баланс</div>
-          <div class="balance-value" id="homeBalanceSol">2.50 SOL</div>
-          <div class="balance-fiat" id="homeBalanceUsd">≈ $222.50</div>
+          <div class="balance-label">Реальный баланс</div>
+          <div class="balance-value" id="homeBalanceSol">...</div>
+          <div class="balance-fiat" id="homeBalanceUsd">...</div>
           <button class="wallet-btn" id="walletBtn" title="Кошелёк" aria-label="Кошелёк">
             <svg viewBox="0 0 24 24"><path d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-1.5h-5.5a2.5 2.5 0 0 1 0-5H21V8a3 3 0 0 0-3-3H6Zm12 7.5H16.5a.5.5 0 0 0 0 1H18V12.5Z"/></svg>
           </button>
@@ -916,9 +916,9 @@
           </div>
         </div>
         <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Баланс</div>
-          <div class="balance-value" id="tradeBalanceSol">2.50 SOL</div>
-          <div class="balance-fiat" id="tradeBalanceUsd">≈ $222.50</div>
+          <div class="balance-label">Реальный баланс</div>
+          <div class="balance-value" id="tradeBalanceSol">...</div>
+          <div class="balance-fiat" id="tradeBalanceUsd">...</div>
         </div>
       </div>
 
@@ -997,9 +997,9 @@
           </div>
         </div>
         <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Кошелёк</div>
-          <div class="balance-value">New</div>
-          <div class="balance-fiat">Address ready</div>
+          <div class="balance-label">Реальный баланс</div>
+          <div class="balance-value" id="profileTopBalanceSol">...</div>
+          <div class="balance-fiat" id="profileTopBalanceUsd">...</div>
         </div>
       </div>
 
@@ -1027,8 +1027,8 @@
       <div class="settings-grid">
         <div class="setting-item">
           <div class="left">
-            <div class="name">Баланс</div>
-            <p class="desc">Стартовый баланс: 2.5 SOL</p>
+            <div class="name">Игровой баланс</div>
+            <p class="desc">Баланс из виртуальных сделок внутри приложения</p>
           </div>
           <div class="pill" id="profileBalancePill">2.50 SOL</div>
         </div>
@@ -1252,9 +1252,14 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "panfani_app_state_v2";
+      const STORAGE_KEY = "panfani_app_state_v3";
+      const PUBLIC_WALLET_ADDRESS = "DBGgwuhwx1rwHRGZg6RNYBqhp5UoAeVdunoMWCbhoVis";
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
+      const REAL_BALANCE_RPC_ENDPOINTS = [
+        "https://api.mainnet.solana.com",
+        "https://api.mainnet-beta.solana.com"
+      ];
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -1266,6 +1271,8 @@
         homeBalanceUsd: $("#homeBalanceUsd"),
         tradeBalanceSol: $("#tradeBalanceSol"),
         tradeBalanceUsd: $("#tradeBalanceUsd"),
+        profileTopBalanceSol: $("#profileTopBalanceSol"),
+        profileTopBalanceUsd: $("#profileTopBalanceUsd"),
         portfolioCount: $("#portfolioCount"),
         portfolioMcap: $("#portfolioMcap"),
         portfolioSummary: $("#portfolioSummary"),
@@ -1328,8 +1335,10 @@
       };
 
       const DEFAULT_STATE = {
-        balanceSol: 2.5,
-        walletAddress: makeAddress(),
+        balanceSol: 2.5,             // игровой баланс
+        realBalanceSol: null,        // реальный баланс по публичному адресу
+        realBalanceUpdatedAt: null,
+        walletAddress: PUBLIC_WALLET_ADDRESS,
         selectedTokenId: null,
         activeScreen: "home",
         tokens: [],
@@ -1340,6 +1349,20 @@
       let selectedSellPct = 100;
       let draftImageData = state.draft?.image || "";
       let marketPulseTimer = null;
+      let realBalanceTimer = null;
+
+      function cloneDefault(){
+        return {
+          balanceSol: 2.5,
+          realBalanceSol: null,
+          realBalanceUpdatedAt: null,
+          walletAddress: PUBLIC_WALLET_ADDRESS,
+          selectedTokenId: null,
+          activeScreen: "home",
+          tokens: [],
+          draft: { name:"", ticker:"", image:"", buyAmount:"0.0" }
+        };
+      }
 
       function makeAddress(){
         const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -1353,18 +1376,19 @@
       function loadState(){
         try{
           const raw = localStorage.getItem(STORAGE_KEY);
-          if(!raw) return structuredClone(DEFAULT_STATE);
+          if(!raw) return cloneDefault();
           const parsed = JSON.parse(raw);
           return {
-            ...structuredClone(DEFAULT_STATE),
+            ...cloneDefault(),
             ...parsed,
+            walletAddress: parsed.walletAddress || PUBLIC_WALLET_ADDRESS,
             draft: {
-              ...structuredClone(DEFAULT_STATE.draft),
+              ...cloneDefault().draft,
               ...(parsed.draft || {})
             }
           };
         }catch(e){
-          return structuredClone(DEFAULT_STATE);
+          return cloneDefault();
         }
       }
 
@@ -1420,7 +1444,6 @@
         const investedSol = Number(token.investedSol ?? token.initialInvestSol ?? 0);
         const amount = Math.max(0, Number(token.amount || 0));
         const growthPct = Number(token.growthPct ?? token.priceChange ?? 0);
-
         const averagePriceSol = amount > 0 ? investedSol / amount : 0;
         const currentValueSol = Math.max(0, investedSol * (1 + growthPct / 100));
         const currentPriceSol = amount > 0 ? currentValueSol / amount : 0;
@@ -1441,6 +1464,23 @@
 
       function recalcToken(token){
         return normalizeToken(token);
+      }
+
+      function setRealBalanceUI(){
+        const real = state.realBalanceSol;
+        const realText = real === null ? "..." : solText(real, 2);
+        const realFiat = real === null ? "..." : `≈ ${usdText(usd(real))}`;
+
+        els.homeBalanceSol.textContent = realText;
+        els.homeBalanceUsd.textContent = realFiat;
+        els.tradeBalanceSol.textContent = realText;
+        els.tradeBalanceUsd.textContent = realFiat;
+        els.profileTopBalanceSol.textContent = realText;
+        els.profileTopBalanceUsd.textContent = realFiat;
+      }
+
+      function setVirtualBalanceUI(){
+        els.profileBalancePill.textContent = solText(state.balanceSol, 2);
       }
 
       function openModal(){
@@ -1515,8 +1555,6 @@
       }
 
       function renderHome(){
-        els.homeBalanceSol.textContent = solText(state.balanceSol, 2);
-        els.homeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
         const tokens = state.tokens.slice(0, 3);
         if(!tokens.length){
           els.homeTokenGrid.innerHTML = emptyTokenCardHtml() + `
@@ -1563,8 +1601,6 @@
       }
 
       function renderTrade(){
-        els.tradeBalanceSol.textContent = solText(state.balanceSol, 2);
-        els.tradeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
         if(!state.tokens.length){
           els.tradeList.innerHTML = `<div class="empty-state">Токенов пока нет. Создай первый токен, и он появится здесь.</div>`;
           return;
@@ -1622,7 +1658,6 @@
 
       function renderProfile(){
         els.walletAddressText.textContent = state.walletAddress;
-        els.profileBalancePill.textContent = solText(state.balanceSol, 2);
         const imgToken = state.tokens.find(t => t.image);
         if(imgToken){
           els.profileAvatar.innerHTML = `<img src="${imgToken.image}" alt="avatar">`;
@@ -1632,6 +1667,7 @@
               <path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
             </svg>`;
         }
+        setVirtualBalanceUI();
       }
 
       function renderTokenDetail(){
@@ -1645,7 +1681,7 @@
         const profitUsd = usd(Math.abs(profitSol));
         const profitPct = t.investedSol > 0 ? (profitSol / t.investedSol) * 100 : 0;
         const sellAmount = Math.max(1, Math.round(t.amount * (selectedSellPct / 100)));
-        const receiveSol = Math.max(0, +(profitSol * (selectedSellPct / 100)).toFixed(4));
+        const receiveSol = Math.max(0, +(currentValueSol * (selectedSellPct / 100)).toFixed(4));
 
         els.tokenDetailName.textContent = t.name;
         els.tokenDetailTicker.textContent = "$" + t.ticker;
@@ -1752,10 +1788,11 @@
         if(!token.amount){ toast("Продавать нечего"); return; }
 
         const t = recalcToken(token);
-        const profitSol = Math.max(0, +(Math.max(0, t.investedSol * (1 + t.growthPct / 100)) - t.investedSol).toFixed(4));
+        const currentValueSol = Math.max(0, t.investedSol * (1 + t.growthPct / 100));
         const sellPct = selectedSellPct / 100;
         const soldAmount = Math.max(1, Math.round(t.amount * sellPct));
-        const receiveSol = +(profitSol * sellPct).toFixed(4);
+        const soldRatio = Math.min(1, soldAmount / t.amount);
+        const receiveSol = +(currentValueSol * soldRatio).toFixed(4);
 
         state.balanceSol = +(state.balanceSol + receiveSol).toFixed(4);
 
@@ -1765,9 +1802,8 @@
           toast("Токен полностью продан");
           if(!state.selectedTokenId) screen("home");
         }else{
-          const remainShare = Math.max(0, (t.amount - soldAmount) / t.amount);
           const nextAmount = Math.max(0, t.amount - soldAmount);
-          const nextInvested = +(t.investedSol * remainShare).toFixed(4);
+          const nextInvested = +(t.investedSol * (1 - soldRatio)).toFixed(4);
 
           token.amount = nextAmount;
           token.investedSol = nextInvested;
@@ -1781,6 +1817,7 @@
 
         saveState();
         renderAll();
+        setVirtualBalanceUI();
       }
 
       async function copyAddress(){
@@ -1794,7 +1831,7 @@
 
       function regenerateAddress(){
         if(!confirm("Создать новый адрес? Старый адрес изменится.")) return;
-        state.walletAddress = makeAddress();
+        state.walletAddress = PUBLIC_WALLET_ADDRESS;
         saveState();
         renderProfile();
         toast("Новый адрес создан");
@@ -1808,6 +1845,7 @@
         selectedSellPct = 100;
         renderUploadPreview();
         renderAll();
+        setVirtualBalanceUI();
         toast("Демо сброшено");
       }
 
@@ -1818,7 +1856,7 @@
         }
         state.tokens = state.tokens.map(t => {
           const token = recalcToken(t);
-          const drift = (Math.random() - 0.45) * 32 + (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 14);
+          const drift = (Math.random() - 0.45) * 4.4;
           const nextGrowth = Math.max(-99, Math.min(999, token.growthPct + drift));
           const nextCurrentValue = Math.max(0, token.investedSol * (1 + nextGrowth / 100));
           return {
@@ -1862,6 +1900,46 @@
         }, 1200);
       }
 
+      async function fetchRealBalance(){
+        const address = PUBLIC_WALLET_ADDRESS;
+
+        for (const endpoint of REAL_BALANCE_RPC_ENDPOINTS){
+          try{
+            const res = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jsonrpc: "2.0",
+                id: 1,
+                method: "getBalance",
+                params: [address, { commitment: "finalized" }]
+              })
+            });
+
+            if(!res.ok) continue;
+
+            const data = await res.json();
+            const lamports = data?.result?.value;
+
+            if(typeof lamports === "number"){
+              state.realBalanceSol = lamports / 1e9;
+              state.realBalanceUpdatedAt = Date.now();
+              saveState();
+              setRealBalanceUI();
+              return;
+            }
+          }catch(e){
+            // пробуем следующий endpoint
+          }
+        }
+      }
+
+      function startRealBalanceSync(){
+        clearInterval(realBalanceTimer);
+        fetchRealBalance();
+        realBalanceTimer = setInterval(fetchRealBalance, 30000);
+      }
+
       function escapeHtml(str){
         return String(str || "")
           .replaceAll("&","&amp;")
@@ -1876,6 +1954,8 @@
         renderTrade();
         renderPortfolio();
         renderProfile();
+        setRealBalanceUI();
+        setVirtualBalanceUI();
         if(state.activeScreen === "token") renderTokenDetail();
       }
 
@@ -1938,11 +2018,10 @@
       function init(){
         bind();
 
-        if(!state.walletAddress) state.walletAddress = makeAddress();
+        if(!state.walletAddress) state.walletAddress = PUBLIC_WALLET_ADDRESS;
         if(!Array.isArray(state.tokens)) state.tokens = [];
         if(typeof state.balanceSol !== "number") state.balanceSol = 2.5;
         if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.0" };
-
         state.tokens = state.tokens.map(recalcToken);
 
         if(!state.selectedTokenId && state.tokens[0]) state.selectedTokenId = state.tokens[0].id;
@@ -1952,7 +2031,9 @@
         updateCounters();
         updateBuyEstimate();
         renderAll();
+
         startArtificialMovement();
+        startRealBalanceSync();
 
         if(state.activeScreen === "token" && state.tokens.length) {
           $("#screen-token").classList.add("active");
@@ -1962,7 +2043,7 @@
       }
 
       init();
-      window.PanfaniApp = { state, openModal, closeModal, screen };
+      window.PanfaniApp = { state, openModal, closeModal, screen, fetchRealBalance };
     })();
   </script>
 </body>
