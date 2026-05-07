@@ -462,6 +462,7 @@
     }
     .profit-value{
       font-size:72px;line-height:.92;margin:10px 0 8px;font-weight:900;letter-spacing:-.06em;color:#60ea55;
+      transition:transform .12s ease, color .12s ease;
     }
     .profit-sub{color:#6df06b;font-weight:900;font-size:22px;letter-spacing:-.02em}
 
@@ -1338,6 +1339,7 @@
       let state = loadState();
       let selectedSellPct = 100;
       let draftImageData = state.draft?.image || "";
+      let marketPulseTimer = null;
 
       function makeAddress(){
         const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -1598,6 +1600,7 @@
         const token = currentToken();
         if(!token) return;
 
+        const investedSol = Number(token.initialInvestSol || 0);
         const currentValueSol = token.amount * token.currentPriceSol;
         const currentValueUsd = usd(currentValueSol);
         const avgValueSol = token.amount * token.averagePriceSol;
@@ -1605,7 +1608,7 @@
         const profitUsd = usd(Math.abs(profitSol));
         const profitPct = avgValueSol > 0 ? ((currentValueSol - avgValueSol) / avgValueSol) * 100 : 0;
         const sellAmount = Math.max(1, Math.round(token.amount * (selectedSellPct / 100)));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
+        const receiveSol = +(investedSol * (selectedSellPct / 100)).toFixed(4);
 
         els.tokenDetailName.textContent = token.name;
         els.tokenDetailTicker.textContent = "$" + token.ticker;
@@ -1663,7 +1666,7 @@
         const currentPrice = +(Math.max(0.0001, Math.random()*0.02 + 0.0015).toFixed(5));
         const avgPrice = +(Math.max(0.00008, currentPrice * (0.52 + Math.random()*0.34)).toFixed(5));
         const amount = Math.max(1, Math.floor((buyAmount || 0.4) * 1000 + 8200));
-        const priceChange = +(Math.max(0.4, 20 + Math.random()*24).toFixed(1));
+        const priceChange = +(((Math.random() < 0.5 ? -1 : 1) * (25 + Math.random() * 35)).toFixed(1));
         const id = "tok_" + Math.random().toString(36).slice(2, 10);
         const mcap = Math.round((buyAmount || 0.45) * 15600 + Math.random()*12000 + 3000);
         const liquiditySol = +(Math.max(0.2, (buyAmount || 0.5) * 0.7 + Math.random()*0.8).toFixed(2));
@@ -1681,6 +1684,7 @@
           mcap,
           liquiditySol,
           volume24h,
+          initialInvestSol: Number(buyAmount || 0),
           createdAt: Date.now()
         };
 
@@ -1707,13 +1711,13 @@
         if(!token){ toast("Токен не выбран"); return; }
         if(!token.amount){ toast("Продавать нечего"); return; }
 
+        const investedSol = Number(token.initialInvestSol || 0);
         const sellAmount = Math.max(1, Math.round(token.amount * selectedSellPct / 100));
-        const receiveSol = +(sellAmount * token.currentPriceSol * 0.04).toFixed(4);
-        const fee = +(receiveSol * 0.01).toFixed(4);
-        const net = +(receiveSol - fee).toFixed(4);
+        const receiveSol = +(investedSol * (selectedSellPct / 100)).toFixed(4);
 
-        state.balanceSol = +(state.balanceSol + net).toFixed(4);
+        state.balanceSol = +(state.balanceSol + receiveSol).toFixed(4);
         token.amount = Math.max(0, token.amount - sellAmount);
+        token.initialInvestSol = +(Math.max(0, investedSol - receiveSol)).toFixed(4);
         token.mcap = Math.max(0, Math.round(token.mcap * (1 - selectedSellPct * 0.00018)));
         token.priceChange = +(token.priceChange - selectedSellPct * 0.03).toFixed(1);
 
@@ -1776,6 +1780,27 @@
         saveState();
         renderAll();
         toast("Рынок обновлён");
+      }
+
+      function startArtificialMovement(){
+        clearInterval(marketPulseTimer);
+        marketPulseTimer = setInterval(() => {
+          if(!state.tokens.length) return;
+
+          state.tokens = state.tokens.map(t => {
+            const strongDrift = (Math.random() - 0.5) * 18 + (Math.random() < 0.5 ? -1 : 1) * (6 + Math.random() * 10);
+            return {
+              ...t,
+              currentPriceSol: +(Math.max(0.00008, t.currentPriceSol * (1 + strongDrift / 100)).toFixed(5)),
+              priceChange: +(Math.max(-999, Math.min(999, (t.priceChange || 0) + strongDrift))).toFixed(1),
+              mcap: Math.max(0, Math.round(t.mcap * (1 + strongDrift / 180))),
+              volume24h: Math.max(100, Math.round(t.volume24h * (1 + (Math.random() - 0.4) * 0.28)))
+            };
+          });
+
+          saveState();
+          renderAll();
+        }, 1200);
       }
 
       function escapeHtml(str){
@@ -1864,6 +1889,7 @@
         updateCounters();
         updateBuyEstimate();
         renderAll();
+        startArtificialMovement();
 
         if(state.activeScreen === "token" && state.tokens.length) {
           $("#screen-token").classList.add("active");
