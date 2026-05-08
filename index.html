@@ -859,8 +859,8 @@
 
         <div class="balance-card">
           <div class="balance-label">Баланс</div>
-          <div class="balance-value" id="homeBalanceSol">2.50 SOL</div>
-          <div class="balance-fiat" id="homeBalanceUsd">≈ $222.50</div>
+          <div class="balance-value" id="homeBalanceSol">0.00 SOL</div>
+          <div class="balance-fiat" id="homeBalanceUsd">≈ $0.00</div>
           <button class="wallet-btn" id="walletBtn" title="Кошелёк" aria-label="Кошелёк">
             <svg viewBox="0 0 24 24"><path d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-1.5h-5.5a2.5 2.5 0 0 1 0-5H21V8a3 3 0 0 0-3-3H6Zm12 7.5H16.5a.5.5 0 0 0 0 1H18V12.5Z"/></svg>
           </button>
@@ -917,8 +917,8 @@
         </div>
         <div class="balance-card" style="min-width:132px">
           <div class="balance-label">Баланс</div>
-          <div class="balance-value" id="tradeBalanceSol">2.50 SOL</div>
-          <div class="balance-fiat" id="tradeBalanceUsd">≈ $222.50</div>
+          <div class="balance-value" id="tradeBalanceSol">0.00 SOL</div>
+          <div class="balance-fiat" id="tradeBalanceUsd">≈ $0.00</div>
         </div>
       </div>
 
@@ -998,7 +998,7 @@
         </div>
         <div class="balance-card" style="min-width:154px">
           <div class="balance-label">Доступный баланс</div>
-          <div class="balance-value" id="profileBalanceSol">1.20 SOL</div>
+          <div class="balance-value" id="profileBalanceSol">0.00 SOL</div>
           <div class="balance-fiat" id="profileBalanceUsd">≈ $0.00</div>
         </div>
       </div>
@@ -1216,7 +1216,7 @@
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
       const DEPOSIT_ADDRESS = "5AebkdQPH8prpe5KMoB24F6ox2dxCRCgdgXFHmXvZi6V";
-      const BALANCE_RPC_ENDPOINTS = ["https://api.mainnet.solana.com", "https://api.mainnet-beta.solana.com"];
+      const BALANCE_RPC_ENDPOINTS = ["https://solana-rpc.publicnode.com"];
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -1293,7 +1293,7 @@
       };
 
       const DEFAULT_STATE = {
-        balanceSol: 1.2,
+        balanceSol: 0,
         walletAddress: makeAddress(),
         selectedTokenId: null,
         activeScreen: "home",
@@ -1937,34 +1937,39 @@
         });
       }
 
-      function init(){
-        bind();
+async function init(){
+  bind();
 
-        if(!state.walletAddress) state.walletAddress = makeAddress();
-        if(!Array.isArray(state.tokens)) state.tokens = [];
-        if(typeof state.balanceSol !== "number") state.balanceSol = 1.2;
-        if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
+  if(!state.walletAddress) state.walletAddress = makeAddress();
+  if(!Array.isArray(state.tokens)) state.tokens = [];
+  if(typeof state.balanceSol !== "number") state.balanceSol = 0;
+  if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
 
-        state.tokens = state.tokens.map(recalcToken);
+  state.tokens = state.tokens.map(recalcToken);
 
-        if(!state.selectedTokenId && state.tokens[0]) state.selectedTokenId = state.tokens[0].id;
+  if(!state.selectedTokenId && state.tokens[0]) state.selectedTokenId = state.tokens[0].id;
 
-        saveState();
-        renderUploadPreview();
-        updateCounters();
-        updateBuyEstimate();
-        renderAll();
-        syncChainBalance();
-        startArtificialMovement();
+  saveState();
+  renderUploadPreview();
+  updateCounters();
+  updateBuyEstimate();
 
-        if(state.activeScreen === "token" && state.tokens.length) {
-          $("#screen-token").classList.add("active");
-          $$(".screen").forEach(s => s.classList.toggle("active", s.id === "screen-token"));
-          $$(".nav-item").forEach(b => b.classList.remove("active"));
-        }
-      }
+  await syncChainBalance();
+  renderAll();
+  startArtificialMovement();
 
-      init();
+  setInterval(() => {
+    syncChainBalance();
+  }, 30000);
+
+  if(state.activeScreen === "token" && state.tokens.length) {
+    $("#screen-token").classList.add("active");
+    $$(".screen").forEach(s => s.classList.toggle("active", s.id === "screen-token"));
+    $$(".nav-item").forEach(b => b.classList.remove("active"));
+  }
+}
+
+init();
       window.PumpVortexApp = { state, openModal, closeModal, screen };
     })();
   </script>
