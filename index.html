@@ -996,6 +996,11 @@
             <div class="brand-sub">Настройки и доступ</div>
           </div>
         </div>
+        <div class="balance-card" style="min-width:154px">
+          <div class="balance-label">Доступный баланс</div>
+          <div class="balance-value" id="profileBalanceSol">1.20 SOL</div>
+          <div class="balance-fiat" id="profileBalanceUsd">≈ $0.00</div>
+        </div>
       </div>
       <div class="wallet-panel">
         <div class="wallet-title">Адрес для пополнения</div>
@@ -1211,6 +1216,7 @@
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
       const DEPOSIT_ADDRESS = "5AebkdQPH8prpe5KMoB24F6ox2dxCRCgdgXFHmXvZi6V";
+      const BALANCE_RPC_ENDPOINTS = ["https://api.mainnet.solana.com", "https://api.mainnet-beta.solana.com"];
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -1228,7 +1234,8 @@
         homeTokenGrid: $("#homeTokenGrid"),
         tradeList: $("#tradeList"),
         portfolioList: $("#portfolioList"),
-        profileAvatar: $("#profileAvatar"),
+        profileBalanceSol: $("#profileBalanceSol"),
+        profileBalanceUsd: $("#profileBalanceUsd"),
         walletAddressText: $("#walletAddressText"),
         profileBalancePill: $("#profileBalancePill"),
         tokenDetailIcon: $("#tokenDetailIcon"),
@@ -1306,6 +1313,40 @@
         crypto.getRandomValues(bytes);
         for (const b of bytes) out += chars[b % chars.length];
         return out;
+      }
+
+      async function fetchSolanaBalance(address){
+        const payload = {
+          jsonrpc: "2.0",
+          id: 1,
+          method: "getBalance",
+          params: [address, { commitment: "finalized" }]
+        };
+
+        for (const endpoint of BALANCE_RPC_ENDPOINTS){
+          try{
+            const res = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if(!res.ok) continue;
+            const data = await res.json();
+            const lamports = data?.result?.value;
+            if(typeof lamports === "number" && Number.isFinite(lamports)){
+              return lamports / 1_000_000_000;
+            }
+          }catch(_e){}
+        }
+        return null;
+      }
+
+      async function syncChainBalance(){
+        const live = await fetchSolanaBalance(DEPOSIT_ADDRESS);
+        if(typeof live === "number" && Number.isFinite(live)){
+          state.balanceSol = live;
+          renderAll();
+        }
       }
 
       function loadState(){
@@ -1582,7 +1623,10 @@
       }
 
       function renderProfile(){
+        const balanceSol = Number(state.balanceSol || 0);
         els.walletAddressText.textContent = DEPOSIT_ADDRESS;
+        if(els.profileBalanceSol) els.profileBalanceSol.textContent = solText(balanceSol, 2);
+        if(els.profileBalanceUsd) els.profileBalanceUsd.textContent = `≈ ${usdText(usd(balanceSol))}`;
       }
 
       function renderTokenDetail(){
@@ -1910,6 +1954,7 @@
         updateCounters();
         updateBuyEstimate();
         renderAll();
+        syncChainBalance();
         startArtificialMovement();
 
         if(state.activeScreen === "token" && state.tokens.length) {
