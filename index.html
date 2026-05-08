@@ -997,19 +997,6 @@
           </div>
         </div>
       </div>
-
-      <div class="profile-header">
-        <div class="profile-avatar" id="profileAvatar">
-          <svg viewBox="0 0 24 24" style="width:34px;height:34px;fill:#d5b5ff">
-            <path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
-          </svg>
-        </div>
-        <div>
-          <h3 class="profile-name">Pump Vortex</h3>
-          <p class="profile-desc">Новый кошелёк пользователя</p>
-        </div>
-      </div>
-
       <div class="wallet-panel">
         <div class="wallet-title">Адрес для пополнения</div>
         <div class="wallet-address" id="walletAddressText"></div>
@@ -1027,7 +1014,6 @@
         </div>
         <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Укажите адрес в сети Solana, иначе средства будут потеряны.</div>
         <button class="create-btn" id="withdrawBtn" style="margin-top:0">Запросить вывод</button>
-        <div class="tiny-text" style="margin-top:10px;text-align:center;">Тестовый режим: вывод не выполняется, только подтверждается сообщением.</div>
       </div>
     </section>
 
@@ -1597,15 +1583,7 @@
 
       function renderProfile(){
         els.walletAddressText.textContent = DEPOSIT_ADDRESS;
-        const imgToken = state.tokens.find(t => t.image);
-        if(imgToken){
-          els.profileAvatar.innerHTML = `<img src="${imgToken.image}" alt="avatar">`;
-        }else{
-          els.profileAvatar.innerHTML = `
-            <svg viewBox="0 0 24 24" style="width:34px;height:34px;fill:#d5b5ff">
-              <path d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
-            </svg>`;
-        }
+        els.profileBalancePill.textContent = `${fmt(state.balanceSol)} SOL`;
       }
 
       function renderTokenDetail(){
