@@ -1675,7 +1675,6 @@
         const name = els.tokenNameInput.value.trim();
         const ticker = els.tokenTickerInput.value.trim().toUpperCase();
         const buyAmount = parseFloat(els.buyAmountInput.value || "0") || 0;
-        const totalCost = CREATE_FEE_SOL + buyAmount;
 
         if(!name){
           toast("Введите название токена");
@@ -1692,7 +1691,7 @@
           els.buyAmountInput.focus();
           return;
         }
-        if(state.balanceSol < totalCost){
+        if(state.balanceSol < buyAmount){
           toast("Сейчас денег нет на создание токена");
           return;
         }
@@ -1726,7 +1725,7 @@
         };
 
         state.tokens.unshift(token);
-        state.balanceSol = +(state.balanceSol - totalCost).toFixed(4);
+        state.balanceSol = +(state.balanceSol - buyAmount).toFixed(4);
         state.selectedTokenId = token.id;
         state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
         draftImageData = "";
