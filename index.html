@@ -1857,7 +1857,7 @@
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
-        els.resetBtn.addEventListener("click", resetDemo);
+        els.resetBtn?.addEventListener("click", resetDemo);
 
         els.tokenNameInput.addEventListener("input", () => { updateCounters(); saveDraft(); });
         els.tokenTickerInput.addEventListener("input", () => {
@@ -1930,4 +1930,5 @@
   </script>
 </body>
 </html>
+
 
