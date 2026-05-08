@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Panfani</title>
+  <title>Pump Vortex</title>
   <meta name="theme-color" content="#050507" />
   <style>
     :root{
@@ -852,7 +852,7 @@
             </svg>
           </div>
           <div class="brand-text">
-            <div class="brand-title">Panfani</div>
+            <div class="brand-title">Pump Vortex</div>
             <div class="brand-sub">Create. Trade. Own.</div>
           </div>
         </div>
@@ -996,11 +996,6 @@
             <div class="brand-sub">Настройки и доступ</div>
           </div>
         </div>
-        <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Кошелёк</div>
-          <div class="balance-value">New</div>
-          <div class="balance-fiat">Address ready</div>
-        </div>
       </div>
 
       <div class="profile-header">
@@ -1010,7 +1005,7 @@
           </svg>
         </div>
         <div>
-          <h3 class="profile-name">Panfani</h3>
+          <h3 class="profile-name">Pump Vortex</h3>
           <p class="profile-desc">Новый кошелёк пользователя</p>
         </div>
       </div>
@@ -1032,34 +1027,7 @@
           </div>
           <div class="pill" id="profileBalancePill">2.50 SOL</div>
         </div>
-
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Курс SOL</div>
-            <p class="desc">Фиксированный курс во всём интерфейсе</p>
-          </div>
-          <div class="pill">$89</div>
-        </div>
-
-        <div class="setting-item">
-          <div class="left">
-            <div class="name">Хранилище</div>
-            <p class="desc">Состояние сохраняется в браузере</p>
-          </div>
-          <div class="pill">LocalStorage</div>
-        </div>
-      </div>
-
-      <div class="section-card" style="margin-top:14px">
-        <div class="section-head">
-          <h2 class="section-title">Служебное</h2>
-          <button class="link-btn" id="resetBtn">Сбросить демо</button>
-        </div>
-        <div class="mini-card">
-          <div class="title">Telegram WebApp</div>
-          <p class="text">Эта версия готова для GitHub Pages и запуска внутри Telegram WebView.</p>
-        </div>
-      </div>
+</div>
     </section>
 
     <section class="screen" id="screen-token">
@@ -1174,7 +1142,7 @@
 
         <div class="form-group">
           <label class="form-label" for="tokenNameInput">1. Название токена</label>
-          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Например: Panfani Cat" />
+          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Например: Pump Vortex Cat" />
           <div class="counter"><span id="nameCount">0</span>/32</div>
         </div>
 
@@ -1252,7 +1220,7 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "panfani_app_state_v2";
+      const STORAGE_KEY = "pump_vortex_app_state_v2";
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
 
@@ -1507,10 +1475,10 @@
 
       function emptyTokenCardHtml(){
         return `
-          <div class="empty-card" id="emptyTokenCard">
+          <div class="empty-state" id="emptyTokenCard" style="min-height:175px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             <div>
-              <div class="create-new-plus">+</div>
-              <div class="create-new-text">Пока нет токенов<br>Создай первый</div>
+              <div style="font-size:18px;font-weight:900;line-height:1.2;margin-bottom:8px;">Пока нет токенов</div>
+              <div style="font-size:14px;line-height:1.5;color:rgba(255,255,255,.66);">Создай первый токен</div>
             </div>
           </div>
         `;
@@ -1529,15 +1497,8 @@
         els.homeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
         const tokens = state.tokens.slice(0, 3);
         if(!tokens.length){
-          els.homeTokenGrid.innerHTML = emptyTokenCardHtml() + `
-            <div class="create-new-card" id="createNewCard">
-              <div>
-                <div class="create-new-plus">+</div>
-                <div class="create-new-text">Создать<br>новый токен</div>
-              </div>
-            </div>`;
+          els.homeTokenGrid.innerHTML = emptyTokenCardHtml();
           $("#emptyTokenCard")?.addEventListener("click", openModal);
-          $("#createNewCard")?.addEventListener("click", openModal);
           return;
         }
 
@@ -1964,7 +1925,7 @@
       }
 
       init();
-      window.PanfaniApp = { state, openModal, closeModal, screen };
+      window.PumpVortexApp = { state, openModal, closeModal, screen };
     })();
   </script>
 </body>
