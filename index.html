@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <title>Pump Vortex</title>
   <meta name="theme-color" content="#050507" />
   <style>
@@ -842,6 +842,18 @@
   </style>
 </head>
 <body>
+  <script>
+    (function(){
+      const prevent = (e) => e.preventDefault();
+      document.addEventListener('gesturestart', prevent, { passive: false });
+      document.addEventListener('gesturechange', prevent, { passive: false });
+      document.addEventListener('gestureend', prevent, { passive: false });
+      document.addEventListener('wheel', function(e){
+        if (e.ctrlKey) e.preventDefault();
+      }, { passive: false });
+    })();
+  </script>
+
   <div class="app" id="app">
     <section class="screen active" id="screen-home">
       <div class="topbar">
@@ -861,9 +873,7 @@
           <div class="balance-label">Баланс</div>
           <div class="balance-value" id="homeBalanceSol">0.00 SOL</div>
           <div class="balance-fiat" id="homeBalanceUsd">≈ $0.00</div>
-          <button class="wallet-btn" id="walletBtn" title="Кошелёк" aria-label="Кошелёк">
-            <svg viewBox="0 0 24 24"><path d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-1.5h-5.5a2.5 2.5 0 0 1 0-5H21V8a3 3 0 0 0-3-3H6Zm12 7.5H16.5a.5.5 0 0 0 0 1H18V12.5Z"/></svg>
-          </button>
+
         </div>
       </div>
 
@@ -1268,7 +1278,6 @@
         portfolioCreateBtn: $("#portfolioCreateBtn"),
         viewAllTokensBtn: $("#viewAllTokensBtn"),
         refreshMarketBtn: $("#refreshMarketBtn"),
-        walletBtn: $("#walletBtn"),
         backFromTokenBtn: $("#backFromTokenBtn"),
         closeModalBtn: $("#closeModalBtn"),
         createTokenBtn: $("#createTokenBtn"),
@@ -1885,7 +1894,6 @@
         els.portfolioCreateBtn.addEventListener("click", openModal);
         els.viewAllTokensBtn.addEventListener("click", () => screen("portfolio"));
         els.refreshMarketBtn.addEventListener("click", randomizeMarket);
-        els.walletBtn.addEventListener("click", () => screen("profile"));
 
         els.backFromTokenBtn.addEventListener("click", () => screen("home"));
         els.closeModalBtn.addEventListener("click", closeModal);
