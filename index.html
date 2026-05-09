@@ -17607,6 +17607,30 @@
         if(state.activeScreen === "token") renderTokenDetail();
       }
 
+
+      function isTextControl(el){
+        if(!el) return false;
+        const tag = String(el.tagName || "").toLowerCase();
+        return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
+      }
+
+      function closeMobileKeyboard(e){
+        const active = document.activeElement;
+        if(!isTextControl(active)) return;
+
+        const target = e.target;
+        if(isTextControl(target) || target?.closest?.("input, textarea, select, [contenteditable='true']")) return;
+
+        active.blur();
+        document.body.focus?.();
+      }
+
+      function bindKeyboardClose(){
+        document.addEventListener("touchstart", closeMobileKeyboard, { passive: true });
+        document.addEventListener("mousedown", closeMobileKeyboard);
+        document.addEventListener("pointerdown", closeMobileKeyboard, { passive: true });
+      }
+
       function bind(){
         els.openCreateBtn.addEventListener("click", openModal);
         els.createFromTradeBtn.addEventListener("click", openModal);
@@ -17671,6 +17695,7 @@
       }
 
 async function init(){
+  bindKeyboardClose();
   bind();
 
   if(!state.walletAddress) state.walletAddress = makeAddress();
