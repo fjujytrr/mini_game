@@ -36,6 +36,7 @@
       --shadow2:0 18px 44px rgba(0,0,0,.38),0 0 28px rgba(96,165,250,.08);
       --maxw:430px;
       --safe-top: env(safe-area-inset-top, 0px);
+      --tg-top-clearance: 24px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --sol-usd: 89;
       --create-fee-sol: 0.35;
@@ -147,7 +148,7 @@
       width:100%;
       max-width:var(--maxw);
       min-height:100vh;
-      padding-top:calc(16px + var(--safe-top));
+      padding-top:calc(16px + var(--safe-top) + var(--tg-top-clearance));
       padding-bottom:calc(22px + var(--safe-bottom) + 92px);
       position:relative;
       z-index:1;
@@ -1512,10 +1513,16 @@
       display:grid;
       gap:10px;
       max-height:62vh;
-      overflow:auto;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding-right:2px;
       position:relative;
       z-index:1;
+      touch-action:pan-y;
+      overscroll-behavior:contain;
+      overscroll-behavior-y:contain;
+      -webkit-overflow-scrolling:touch;
+      scroll-behavior:smooth;
     }
 
 
@@ -17716,6 +17723,11 @@
           const dy = y - startY;
           const dx = x - startX;
           if(Math.abs(dx) > Math.abs(dy)) return;
+
+          const isActivityFeed = activeScroller?.classList?.contains("activity-feed");
+          if(isActivityFeed){
+            return;
+          }
 
           const pullingDownFromTop = dy > 0 && atTop(activeScroller);
           const pushingUpFromBottom = dy < 0 && atBottom(activeScroller);
