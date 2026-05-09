@@ -726,6 +726,9 @@
     .trade-badge .small{display:block;margin-top:4px;font-weight:600;color:rgba(255,255,255,.45);font-size:12px}
 
     .portfolio-cards{display:grid;gap:12px}
+    #screen-portfolio.active{display:flex;flex-direction:column;min-height:calc(100vh - (12px + var(--safe-top)) - (20px + var(--safe-bottom) + 82px));}
+    #screen-portfolio .section-card{flex:1;display:flex;flex-direction:column;min-height:0;}
+    #screen-portfolio .activity-feed{flex:1;min-height:0;max-height:none;}
     .activity-feed{display:grid;gap:10px;max-height:62vh;overflow:auto;padding-right:2px}
     .activity-item{
       display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
@@ -950,25 +953,10 @@
       </div>
     </section>
 
-    
     <section class="screen" id="screen-portfolio">
-      <div class="topbar" style="margin-bottom:14px">
-        <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Balance</div>
-          <div class="balance-value" id="portfolioCount">0 events</div>
-          <div class="balance-fiat" id="portfolioMcap">Demo feed</div>
-        </div>
-      </div>
-
       <div class="section-card">
         <div class="section-head">
           <h2 class="section-title">Demo Activity</h2>
-          <button class="link-btn" id="portfolioCreateBtn">Live demo</button>
-        </div>
-
-        <div class="mini-card" style="margin-bottom:12px">
-          <div class="title">Simulated activity feed</div>
-          <p class="text" id="portfolioSummary">This is a demo feed. Messages are generated automatically to illustrate live activity.</p>
         </div>
 
         <div class="activity-feed" id="portfolioList"></div>
@@ -976,7 +964,6 @@
     </section>
 
     <section class="screen" id="screen-profile">
-
       <div class="topbar" style="margin-bottom:14px">
         <div class="balance-card" style="min-width:154px">
           <div class="balance-label">Available Balance</div>
@@ -1247,6 +1234,7 @@
         modal: $("#createModal"),
         openCreateBtn: $("#openCreateBtn"),
         createFromTradeBtn: $("#createFromTradeBtn"),
+        portfolioCreateBtn: $("#portfolioCreateBtn"),
         viewAllTokensBtn: $("#viewAllTokensBtn"),
         refreshMarketBtn: $("#refreshMarketBtn"),
         backFromTokenBtn: $("#backFromTokenBtn"),
@@ -1287,7 +1275,6 @@
       let draftImageData = state.draft?.image || "";
       let marketPulseTimer = null;
       let activityTimer = null;
-      let activitySeedCounter = 0;
 
       function makeAddress(){
         const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -1380,26 +1367,24 @@
       }
 
       function randomDemoUser(){
-        const prefixes = ["Demo User", "Trader", "User", "Wallet", "Alpha", "Signal", "Whale"];
-        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-        const suffix = Math.floor(100 + Math.random() * 900);
-        return `${prefix}_${suffix}`;
+        const prefixes = ["User", "Trader", "Wallet", "Alpha", "Signal", "Whale", "DemoUser"];
+        return `${prefixes[Math.floor(Math.random() * prefixes.length)]}_${Math.floor(100 + Math.random() * 900)}`;
       }
 
       function randomDemoAction(){
         const actions = [
           "closed a trade",
           "took profit",
-          "entered a new position",
+          "opened a fresh position",
           "trimmed a winning trade",
           "locked in gains",
-          "opened a fresh trade"
+          "sold into strength"
         ];
         return actions[Math.floor(Math.random() * actions.length)];
       }
 
-      function timeAgo(ms){
-        const sec = Math.max(1, Math.round((Date.now() - ms) / 1000));
+      function timeAgo(timestamp){
+        const sec = Math.max(1, Math.round((Date.now() - Number(timestamp || 0)) / 1000));
         if(sec < 60) return `${sec} second${sec === 1 ? "" : "s"} ago`;
         const min = Math.round(sec / 60);
         if(min < 60) return `${min} minute${min === 1 ? "" : "s"} ago`;
@@ -1408,34 +1393,45 @@
       }
 
       function makeDemoActivity(overrides = {}){
-        const profit = overrides.profitPct ?? Math.floor(12 + Math.random() * 88);
-        const amount = overrides.amount ?? (Math.random() < 0.5 ? 0.5 : +(1 + Math.random() * 8).toFixed(1));
-        const user = overrides.user || randomDemoUser();
-        const action = overrides.action || randomDemoAction();
         const now = Date.now();
         return {
           id: overrides.id || `act_${now}_${Math.random().toString(16).slice(2, 8)}`,
-          user,
-          action,
-          profitPct: profit,
-          amount,
+          user: overrides.user || randomDemoUser(),
+          action: overrides.action || randomDemoAction(),
+          profitPct: overrides.profitPct ?? Math.floor(12 + Math.random() * 88),
           createdAt: overrides.createdAt || now
         };
       }
 
-      function ensureDemoActivity(){
+      function ensureDemoActivityFeed(){
         if(!Array.isArray(state.activityLog)) state.activityLog = [];
         if(state.activityLog.length) return;
         const seed = [];
-        for(let i = 0; i < 24; i++){
+        for(let i = 0; i < 30; i++){
           seed.push(makeDemoActivity({
-            createdAt: Date.now() - (i + 1) * (8_000 + Math.floor(Math.random() * 18_000)),
-            profitPct: Math.floor(10 + Math.random() * 90),
-            amount: +(0.2 + Math.random() * 6).toFixed(2)
+            createdAt: Date.now() - (i + 1) * (6_000 + Math.floor(Math.random() * 21_000)),
+            profitPct: Math.floor(10 + Math.random() * 90)
           }));
         }
         state.activityLog = seed;
         saveState();
+      }
+
+      function addDemoActivity(){
+        ensureDemoActivityFeed();
+        state.activityLog.unshift(makeDemoActivity());
+        state.activityLog = state.activityLog.slice(0, 160);
+        saveState();
+      }
+
+      function scheduleDemoActivity(){
+        clearTimeout(activityTimer);
+        const delay = 5000 + Math.random() * 25000;
+        activityTimer = setTimeout(() => {
+          addDemoActivity();
+          renderPortfolio();
+          scheduleDemoActivity();
+        }, delay);
       }
 
       function toast(msg){
@@ -1635,29 +1631,31 @@
         $$(".trade-row", els.tradeList).forEach(row => row.addEventListener("click", () => openToken(row.dataset.tokenId)));
       }
 
-
       function renderPortfolio(){
-        ensureDemoActivity();
+        ensureDemoActivityFeed();
         const log = state.activityLog.slice(0, 120);
-        els.portfolioCount.textContent = `${log.length} events`;
-        els.portfolioMcap.textContent = `Demo feed`;
-        els.portfolioSummary.textContent = "This is a demo feed. New messages are generated automatically every few seconds.";
-        els.portfolioList.innerHTML = log.map(entry => `
-          <div class="activity-item">
-            <div class="activity-left">
-              <div class="activity-avatar">${escapeHtml(String(entry.user || "D"))[0]}</div>
-              <div class="activity-meta">
-                <div class="activity-name">${escapeHtml(entry.user || "Demo User")}</div>
-                <p class="activity-text">Demo: ${escapeHtml(entry.action || "closed a trade")} with a ${fmt(entry.profitPct || 0, 0)}% profit.</p>
+        if(els.portfolioCount) els.portfolioCount.textContent = `${log.length} events`;
+        if(els.portfolioMcap) els.portfolioMcap.textContent = `Live demo`;
+        if(els.portfolioSummary) els.portfolioSummary.textContent = "This is a demo feed. New messages are generated automatically every few seconds.";
+        els.portfolioList.innerHTML = log.map(entry => {
+          const label = String(entry.user || "D");
+          const avatar = escapeHtml(label).replace(/&amp;/g, "&").charAt(0).toUpperCase();
+          return `
+            <div class="activity-item">
+              <div class="activity-left">
+                <div class="activity-avatar">${avatar}</div>
+                <div class="activity-meta">
+                  <div class="activity-name">${escapeHtml(entry.user || "Demo User")}</div>
+                  <p class="activity-text">Demo: ${escapeHtml(entry.action || "closed a trade")} with a ${fmt(entry.profitPct || 0, 0)}% profit.</p>
+                </div>
               </div>
+              <div class="activity-time">${timeAgo(entry.createdAt || Date.now())}</div>
             </div>
-            <div class="activity-time">${timeAgo(entry.createdAt || Date.now())}</div>
-          </div>
-        `).join("");
+          `;
+        }).join("");
       }
 
       function renderProfile(){
-{
         const balanceSol = Number(state.balanceSol || 0);
         els.walletAddressText.textContent = DEPOSIT_ADDRESS;
         if(els.profileBalanceSol) els.profileBalanceSol.textContent = solText(balanceSol, 2);
@@ -1836,16 +1834,40 @@
       }
 
       function resetDemo(){
-        state = structuredClone(DEFAULT_STATE);
-        state.walletAddress = makeAddress();
+        if(!confirm("Reset everything to zero?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = loadState();
         state.activityLog = [];
         draftImageData = "";
         selectedSellPct = 100;
-        saveState();
-        toast("Demo reset");
-        closeModal();
+        renderUploadPreview();
         renderAll();
-        seedDemoActivityFeed();
+        toast("Demo reset");
+      }
+
+      function randomizeMarket(){
+        if(!state.tokens.length){
+          toast("Nothing to refresh yet");
+          return;
+        }
+        state.tokens = state.tokens.map(t => {
+          const token = recalcToken(t);
+          const drift = (Math.random() - 0.45) * 32 + (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 14);
+          const nextGrowth = Math.max(-99, Math.min(999, token.growthPct + drift));
+          const nextCurrentValue = Math.max(0, token.investedSol * (1 + nextGrowth / 100));
+          return {
+            ...token,
+            growthPct: +nextGrowth.toFixed(1),
+            priceChange: +nextGrowth.toFixed(1),
+            currentPriceSol: token.amount > 0 ? +(nextCurrentValue / token.amount).toFixed(6) : 0,
+            averagePriceSol: token.amount > 0 ? +(token.investedSol / token.amount).toFixed(6) : 0,
+            mcap: Math.max(0, Math.round(token.mcap * (1 + drift / 220))),
+            volume24h: Math.max(100, Math.round(token.volume24h * (1 + (Math.random() - 0.4) * 0.22)))
+          };
+        });
+        saveState();
+        renderAll();
+        toast("Market refreshed");
       }
 
       function startArtificialMovement(){
@@ -1894,6 +1916,13 @@
       function bind(){
         els.openCreateBtn.addEventListener("click", openModal);
         els.createFromTradeBtn.addEventListener("click", openModal);
+        if(els.portfolioCreateBtn){
+          els.portfolioCreateBtn.addEventListener("click", () => {
+            addDemoActivity();
+            renderPortfolio();
+            toast("Demo event added");
+          });
+        }
         els.viewAllTokensBtn.addEventListener("click", () => screen("portfolio"));
         els.refreshMarketBtn.addEventListener("click", randomizeMarket);
 
@@ -1964,8 +1993,15 @@ async function init(){
   updateBuyEstimate();
 
   await syncChainBalance();
+  ensureDemoActivityFeed();
   renderAll();
   startArtificialMovement();
+  scheduleDemoActivity();
+
+  setInterval(() => {
+    syncChainBalance();
+    renderPortfolio();
+  }, 1000);
 
   setInterval(() => {
     syncChainBalance();
