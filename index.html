@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <title>Pump Vortex</title>
   <meta name="theme-color" content="#050507" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
   <style>
     :root{
@@ -105,6 +106,43 @@
       user-select:none;
     }
 
+
+
+    html{
+      height:100%;
+      overflow:hidden;
+      overscroll-behavior:none;
+      overscroll-behavior-y:none;
+      -webkit-overflow-scrolling:auto;
+    }
+
+    body{
+      height:100%;
+      max-height:100%;
+      overflow:hidden;
+      overscroll-behavior:none;
+      overscroll-behavior-y:none;
+      touch-action:pan-y;
+      -webkit-overflow-scrolling:auto;
+    }
+
+    .app{
+      height:100vh;
+      height:100dvh;
+      overflow-y:auto;
+      overflow-x:hidden;
+      overscroll-behavior:contain;
+      overscroll-behavior-y:contain;
+      -webkit-overflow-scrolling:touch;
+      touch-action:pan-y;
+    }
+
+    .screen,
+    .modal-body,
+    .activity-feed{
+      overscroll-behavior:contain;
+      overscroll-behavior-y:contain;
+    }
     .app{
       width:100%;
       max-width:var(--maxw);
@@ -17618,6 +17656,80 @@
       }
 
 
+
+      function lockTelegramSwipeCollapse(){
+        const tg = window.Telegram && window.Telegram.WebApp;
+
+        try{
+          if(tg){
+            tg.ready?.();
+            tg.expand?.();
+            if(tg.isVersionAtLeast?.("7.7") && typeof tg.disableVerticalSwipes === "function"){
+              tg.disableVerticalSwipes();
+            }else if(typeof tg.disableVerticalSwipes === "function"){
+              tg.disableVerticalSwipes();
+            }
+            if(tg.isVersionAtLeast?.("8.0") && typeof tg.requestFullscreen === "function"){
+              tg.requestFullscreen();
+            }
+          }
+        }catch(_e){}
+
+        try{
+          const payload = JSON.stringify({ allow_vertical_swipe:false });
+          if(window.TelegramWebviewProxy?.postEvent){
+            window.TelegramWebviewProxy.postEvent("web_app_setup_swipe_behavior", payload);
+          }
+          if(window.parent && window.parent !== window){
+            window.parent.postMessage(JSON.stringify({
+              eventType:"web_app_setup_swipe_behavior",
+              eventData:{ allow_vertical_swipe:false }
+            }), "*");
+          }
+        }catch(_e){}
+
+        let startY = 0;
+        let startX = 0;
+        let activeScroller = null;
+        const scrollableSelector = ".app, .modal-body, .activity-feed";
+
+        const findScroller = (target) => {
+          const node = target?.closest?.(scrollableSelector) || document.querySelector(".app");
+          return node || document.documentElement;
+        };
+
+        const atTop = (el) => (el.scrollTop || 0) <= 0;
+        const atBottom = (el) => Math.ceil((el.scrollTop || 0) + el.clientHeight) >= el.scrollHeight;
+
+        document.addEventListener("touchstart", (e) => {
+          if(!e.touches || e.touches.length !== 1) return;
+          startY = e.touches[0].clientY;
+          startX = e.touches[0].clientX;
+          activeScroller = findScroller(e.target);
+        }, { passive:true });
+
+        document.addEventListener("touchmove", (e) => {
+          if(!e.touches || e.touches.length !== 1 || !activeScroller) return;
+
+          const y = e.touches[0].clientY;
+          const x = e.touches[0].clientX;
+          const dy = y - startY;
+          const dx = x - startX;
+          if(Math.abs(dx) > Math.abs(dy)) return;
+
+          const pullingDownFromTop = dy > 0 && atTop(activeScroller);
+          const pushingUpFromBottom = dy < 0 && atBottom(activeScroller);
+
+          if(pullingDownFromTop || pushingUpFromBottom){
+            e.preventDefault();
+          }
+        }, { passive:false });
+
+        window.addEventListener("resize", () => {
+          try{ tg?.expand?.(); }catch(_e){}
+        });
+      }
+
       function isTextControl(el){
         if(!el) return false;
         const tag = String(el.tagName || "").toLowerCase();
@@ -17744,6 +17856,7 @@
       }
 
 async function init(){
+  lockTelegramSwipeCollapse();
   bindKeyboardClose();
   bind();
 
