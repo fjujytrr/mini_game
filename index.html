@@ -16751,6 +16751,9 @@
 
       const DEFAULT_STATE = {
         balanceSol: 0,
+        chainBalanceSol: 0,
+        balanceAdjustSol: 0,
+        realizedProfitSol: 0,
         walletAddress: makeAddress(),
         selectedTokenId: null,
         activeScreen: "home",
@@ -16800,10 +16803,19 @@
         return null;
       }
 
+      function recalcDisplayedBalance(){
+        const chain = Number(state.chainBalanceSol || 0);
+        const adjust = Number(state.balanceAdjustSol || 0);
+        state.balanceSol = +(chain + adjust).toFixed(4);
+        return state.balanceSol;
+      }
+
       async function syncChainBalance(){
         const live = await fetchSolanaBalance(DEPOSIT_ADDRESS);
         if(typeof live === "number" && Number.isFinite(live)){
-          state.balanceSol = live;
+          state.chainBalanceSol = +live.toFixed(4);
+          recalcDisplayedBalance();
+          saveState();
           renderAll();
         }
       }
@@ -17239,7 +17251,8 @@
         };
 
         state.tokens.unshift(token);
-        state.balanceSol = +(state.balanceSol - buyAmount).toFixed(4);
+        state.balanceAdjustSol = +(Number(state.balanceAdjustSol || 0) - buyAmount).toFixed(4);
+        recalcDisplayedBalance();
         state.selectedTokenId = token.id;
         state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
         draftImageData = "";
@@ -17263,12 +17276,15 @@
 
         const { t, currentValueSol, soldAmount, actualShare, receiveSol } = getSellQuote(token, selectedSellPct);
 
-        state.balanceSol = +(state.balanceSol + receiveSol).toFixed(4);
+        const realizedProfitSol = +(receiveSol - (t.investedSol * actualShare)).toFixed(4);
+        state.realizedProfitSol = +(Number(state.realizedProfitSol || 0) + realizedProfitSol).toFixed(4);
+        state.balanceAdjustSol = +(Number(state.balanceAdjustSol || 0) + receiveSol).toFixed(4);
+        recalcDisplayedBalance();
 
         if(soldAmount >= t.amount){
           state.tokens = state.tokens.filter(x => x.id !== t.id);
           state.selectedTokenId = state.tokens[0]?.id || null;
-          toast("Token sold completely");
+          toast(`Token sold completely. Balance +${solText(receiveSol,4)}`);
           if(!state.selectedTokenId) screen("home");
         }else{
           const remainingShare = Math.max(0, 1 - actualShare);
@@ -17282,7 +17298,7 @@
           token.growthPct = t.growthPct;
           token.priceChange = t.growthPct;
           token.mcap = Math.max(0, Math.round(token.mcap * (1 - actualShare * 0.18)));
-          toast(`Sold ${selectedSellPct}%`);
+          toast(`Sold ${selectedSellPct}%. Balance +${solText(receiveSol,4)}`);
         }
 
         saveState();
@@ -17462,6 +17478,10 @@ async function init(){
   if(!state.walletAddress) state.walletAddress = makeAddress();
   if(!Array.isArray(state.tokens)) state.tokens = [];
   if(typeof state.balanceSol !== "number") state.balanceSol = 0;
+  if(typeof state.chainBalanceSol !== "number") state.chainBalanceSol = 0;
+  if(typeof state.balanceAdjustSol !== "number") state.balanceAdjustSol = Number(state.balanceSol || 0);
+  if(typeof state.realizedProfitSol !== "number") state.realizedProfitSol = 0;
+  recalcDisplayedBalance();
   if(!state.draft) state.draft = { name:"", ticker:"", image:"", buyAmount:"0.5" };
 
   state.tokens = state.tokens.map(recalcToken);
@@ -17501,5 +17521,4 @@ init();
   </script>
 </body>
 </html>
-
 
