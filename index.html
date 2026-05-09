@@ -1470,6 +1470,46 @@
       z-index:1;
     }
 
+
+    .activity-footer{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      text-align:center;
+      color:rgba(226,238,255,.54);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.01em;
+      background:rgba(103,232,249,.06);
+      border:1px solid rgba(103,232,249,.13);
+    }
+
+    .simple-activity-item{
+      align-items:center;
+    }
+
+    .activity-side{
+      text-align:right;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .activity-side .muted{
+      margin-top:5px;
+      font-size:12px;
+      color:rgba(226,238,255,.50);
+      font-weight:800;
+    }
+
+    .pos{
+      color:#34d399;
+    }
+
+    .neg{
+      color:#f87171;
+    }
+
+
     .activity-feed::-webkit-scrollbar,
     .modal-body::-webkit-scrollbar{
       width:6px;
@@ -16675,6 +16715,7 @@
       const CREATE_FEE_SOL = 0.35;
       const DEPOSIT_ADDRESS = "5AebkdQPH8prpe5KMoB24F6ox2dxCRCgdgXFHmXvZi6V";
       const BALANCE_RPC_ENDPOINTS = ["https://solana-rpc.publicnode.com"];
+      const ACTIVITY_HISTORY_MS = 10 * 60 * 1000;
 
       const $ = (s, r=document) => r.querySelector(s);
       const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -16867,13 +16908,38 @@
         return `$${fmt(v, 2)}`;
       }
 
+      function shortWallet(address){
+        const a = String(address || "");
+        return a.length > 10 ? `${a.slice(0,4)}...${a.slice(-4)}` : a;
+      }
+
+      function randomWallet(){
+        const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+        const len = 43 + Math.floor(Math.random() * 2);
+        let out = "";
+        const bytes = new Uint8Array(len);
+        crypto.getRandomValues(bytes);
+        for(const b of bytes) out += chars[b % chars.length];
+        return out;
+      }
+
       function randomDemoUser(){
-        const prefixes = ["User", "Trader", "Wallet", "Alpha", "Signal", "Whale"];
-        return `${prefixes[Math.floor(Math.random() * prefixes.length)]}_${Math.floor(100 + Math.random() * 900)}`;
+        return shortWallet(randomWallet());
+      }
+
+      function randomDemoToken(){
+        const pool = [
+          ["Vortex Cat", "VCAT"], ["Sol Frog", "SFROG"], ["Moon Pug", "MPUG"],
+          ["Pixel Pepe", "PXPE"], ["Turbo Doge", "TDOGE"], ["Neon Rat", "NRAT"],
+          ["Pump Duck", "PDUCK"], ["Rocket Hamster", "RHAM"], ["Wif Banana", "WBAN"],
+          ["Based Panda", "BPANDA"], ["Degen Fish", "DFISH"], ["Purple Goat", "PGOAT"]
+        ];
+        const item = pool[Math.floor(Math.random() * pool.length)];
+        return { name:item[0], ticker:item[1] };
       }
 
       function randomDemoAction(){
-        return "locked in gains";
+        return Math.random() < 0.985 ? "take_profit" : "stop_loss";
       }
 
       function timeAgo(timestamp){
@@ -16887,39 +16953,102 @@
 
       function makeDemoActivity(overrides = {}){
         const now = Date.now();
+        const token = overrides.token || randomDemoToken();
+        const action = overrides.action || randomDemoAction();
+        const amountSol = overrides.amountSol ?? +(0.04 + Math.random() * 4.8).toFixed(3);
+        const isLoss = action === "stop_loss" || Math.random() < 0.015;
+        const profitPct = overrides.profitPct ?? +(isLoss ? -(0.2 + Math.random() * 2.4) : (2 + Math.random() * 72)).toFixed(1);
+        const pnlSol = overrides.pnlSol ?? +(amountSol * (profitPct / 100)).toFixed(3);
+        const priceSol = overrides.priceSol ?? +(0.000002 + Math.random() * 0.00039).toFixed(6);
+        const amountTokens = overrides.amountTokens ?? Math.max(100, Math.round(amountSol / Math.max(priceSol, 0.000001)));
+        const wallet = overrides.wallet || randomWallet();
         return {
           id: overrides.id || `act_${now}_${Math.random().toString(16).slice(2, 8)}`,
-          user: overrides.user || randomDemoUser(),
-          action: overrides.action || randomDemoAction(),
-          profitPct: overrides.profitPct ?? Math.floor(12 + Math.random() * 88),
+          user: shortWallet(wallet),
+          wallet,
+          action: isLoss ? "stop_loss" : "take_profit",
+          tokenName: overrides.tokenName || token.name,
+          tokenTicker: overrides.tokenTicker || token.ticker,
+          amountSol,
+          amountTokens,
+          priceSol,
+          profitPct,
+          pnlSol,
+          tx: overrides.tx || Math.random().toString(36).slice(2, 8).toUpperCase(),
           createdAt: overrides.createdAt || now
         };
       }
 
+      function activitySentence(entry){
+        const ticker = `$${escapeHtml(entry.tokenTicker || "TOK")}`;
+        const sol = solText(entry.amountSol || 0, 3);
+        const tokens = fmtInt(entry.amountTokens || 0);
+        const price = `${fmt(entry.priceSol || 0, 6)} SOL`;
+        const pnl = `${Number(entry.pnlSol || 0) >= 0 ? "+" : ""}${solText(entry.pnlSol || 0, 3)}`;
+        const pct = `${Number(entry.profitPct || 0) >= 0 ? "+" : ""}${fmt(entry.profitPct || 0, 1)}%`;
+
+        switch(entry.action){
+          case "buy":
+            return `bought ${tokens} ${ticker} for ${sol} at ${price}.`;
+          case "sell":
+            return `sold ${tokens} ${ticker} and realized ${pnl} (${pct}).`;
+          case "take_profit":
+            return `took profit on ${ticker}: ${pnl} closed at ${pct}.`;
+          case "stop_loss":
+            return `cut a ${ticker} position: ${pnl} closed at ${pct}.`;
+          case "new_holder":
+            return `opened a new ${ticker} position with ${sol}.`;
+          case "liquidity":
+            return `added liquidity around ${ticker}; size ${sol}.`;
+          default:
+            return `traded ${ticker} for ${sol}.`;
+        }
+      }
+
+      function activityBadge(entry){
+        if(entry.action === "buy" || entry.action === "new_holder") return ["BUY", "buy"];
+        if(entry.action === "stop_loss") return ["LOSS", "loss"];
+        if(entry.action === "sell" || entry.action === "take_profit") return ["SELL", "sell"];
+        return ["LIVE", ""];
+      }
+
+
+      function pruneActivityHistory(){
+        if(!Array.isArray(state.activityLog)) state.activityLog = [];
+        const cutoff = Date.now() - ACTIVITY_HISTORY_MS;
+        state.activityLog = state.activityLog.filter(entry => Number(entry.createdAt || 0) >= cutoff);
+      }
+
       function ensureDemoActivityFeed(){
         if(!Array.isArray(state.activityLog)) state.activityLog = [];
+        pruneActivityHistory();
         if(state.activityLog.length) return;
         const seed = [];
-        for(let i = 0; i < 30; i++){
+        const now = Date.now();
+        for(let i = 0; i < 42; i++){
+          const isLoss = Math.random() < 0.015;
+          const createdAt = now - Math.floor(Math.random() * ACTIVITY_HISTORY_MS);
           seed.push(makeDemoActivity({
-            createdAt: Date.now() - (i + 1) * (6_000 + Math.floor(Math.random() * 21_000)),
-            profitPct: Math.floor(10 + Math.random() * 90)
+            action: isLoss ? "stop_loss" : "take_profit",
+            createdAt,
+            profitPct: isLoss ? -(0.1 + Math.random() * 1.2) : +(2 + Math.random() * 72).toFixed(1)
           }));
         }
-        state.activityLog = seed;
+        state.activityLog = seed.sort((a, b) => b.createdAt - a.createdAt);
         saveState();
       }
 
       function addDemoActivity(){
         ensureDemoActivityFeed();
         state.activityLog.unshift(makeDemoActivity());
+        pruneActivityHistory();
         state.activityLog = state.activityLog.slice(0, 160);
         saveState();
       }
 
       function scheduleDemoActivity(){
         clearTimeout(activityTimer);
-        const delay = 5000 + Math.random() * 25000;
+        const delay = 5000 + Math.random() * 15000;
         activityTimer = setTimeout(() => {
           addDemoActivity();
           renderPortfolio();
@@ -17126,26 +17255,30 @@
 
       function renderPortfolio(){
         ensureDemoActivityFeed();
+        pruneActivityHistory();
+        state.activityLog.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
         const log = state.activityLog.slice(0, 120);
-        if(els.portfolioCount) els.portfolioCount.textContent = `${log.length} events`;
+        if(els.portfolioCount) els.portfolioCount.textContent = `${log.length} wallets`;
         if(els.portfolioMcap) els.portfolioMcap.textContent = `Live`;
-        if(els.portfolioSummary) els.portfolioSummary.textContent = "New messages are generated automatically every few seconds.";
+        if(els.portfolioSummary) els.portfolioSummary.textContent = "Live realized profit feed.";
         els.portfolioList.innerHTML = log.map(entry => {
-          const label = String(entry.user || "D");
-          const avatar = escapeHtml(label).replace(/&amp;/g, "&").charAt(0).toUpperCase();
+          const pnl = Number(entry.pnlSol || 0);
+          const pnlClass = pnl < 0 ? "neg" : "pos";
+          const wallet = shortWallet(entry.wallet || entry.user || "wallet");
           return `
-            <div class="activity-item">
+            <div class="activity-item simple-activity-item">
               <div class="activity-left">
-                <div class="activity-avatar">${avatar}</div>
                 <div class="activity-meta">
-                  <div class="activity-name">${escapeHtml(entry.user || "User")}</div>
-                  <p class="activity-text">locked in gains with a ${fmt(entry.profitPct || 0, 0)}% profit.</p>
+                  <div class="activity-name">${escapeHtml(wallet)}</div>
                 </div>
               </div>
-              <div class="activity-time">${timeAgo(entry.createdAt || Date.now())}</div>
+              <div class="activity-side">
+                <div class="${pnlClass}">${pnl >= 0 ? "+" : ""}${solText(pnl, 3)}</div>
+                <div class="muted">${timeAgo(entry.createdAt || Date.now())}</div>
+              </div>
             </div>
           `;
-        }).join("");
+        }).join("") + `<div class="activity-footer">Maximum history: 10 minutes</div>`;
       }
 
       function renderProfile(){
@@ -17251,6 +17384,21 @@
         };
 
         state.tokens.unshift(token);
+        state.activityLog.unshift(makeDemoActivity({
+          action: "buy",
+          tokenName: token.name,
+          tokenTicker: token.ticker,
+          amountSol: investedSol,
+          amountTokens: amount,
+          priceSol: averagePriceSol,
+          profitPct: 0,
+          pnlSol: 0,
+          user: "You",
+          wallet: DEPOSIT_ADDRESS,
+          createdAt: Date.now()
+        }));
+        pruneActivityHistory();
+        state.activityLog = state.activityLog.slice(0, 160);
         state.balanceAdjustSol = +(Number(state.balanceAdjustSol || 0) - buyAmount).toFixed(4);
         recalcDisplayedBalance();
         state.selectedTokenId = token.id;
@@ -17280,6 +17428,21 @@
         state.realizedProfitSol = +(Number(state.realizedProfitSol || 0) + realizedProfitSol).toFixed(4);
         state.balanceAdjustSol = +(Number(state.balanceAdjustSol || 0) + receiveSol).toFixed(4);
         recalcDisplayedBalance();
+        state.activityLog.unshift(makeDemoActivity({
+          action: realizedProfitSol < 0 ? "stop_loss" : "sell",
+          tokenName: t.name,
+          tokenTicker: t.ticker,
+          amountSol: receiveSol,
+          amountTokens: soldAmount,
+          priceSol: t.currentPriceSol,
+          profitPct: t.investedSol > 0 ? +((realizedProfitSol / (t.investedSol * actualShare)) * 100).toFixed(1) : 0,
+          pnlSol: realizedProfitSol,
+          user: "You",
+          wallet: DEPOSIT_ADDRESS,
+          createdAt: Date.now()
+        }));
+        pruneActivityHistory();
+        state.activityLog = state.activityLog.slice(0, 160);
 
         if(soldAmount >= t.amount){
           state.tokens = state.tokens.filter(x => x.id !== t.id);
@@ -17521,4 +17684,3 @@ init();
   </script>
 </body>
 </html>
-
