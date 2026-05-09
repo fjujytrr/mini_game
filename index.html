@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
@@ -726,6 +726,26 @@
     .trade-badge .small{display:block;margin-top:4px;font-weight:600;color:rgba(255,255,255,.45);font-size:12px}
 
     .portfolio-cards{display:grid;gap:12px}
+    .activity-feed{display:grid;gap:10px;max-height:62vh;overflow:auto;padding-right:2px}
+    .activity-item{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      border-radius:16px;padding:14px;
+      background:linear-gradient(180deg, rgba(18,18,26,.96), rgba(11,11,15,.96));
+      border:1px solid rgba(255,255,255,.05);
+      box-shadow:0 10px 20px rgba(0,0,0,.16);
+    }
+    .activity-left{display:flex;align-items:flex-start;gap:12px;min-width:0;flex:1}
+    .activity-avatar{
+      width:42px;height:42px;border-radius:14px;flex:0 0 auto;
+      background:linear-gradient(180deg, rgba(138,44,255,.26), rgba(90,24,203,.16));
+      border:1px solid rgba(171,84,255,.18);
+      display:grid;place-items:center;color:#d6b5ff;font-weight:900;font-size:14px;
+    }
+    .activity-meta{min-width:0}
+    .activity-name{font-size:15px;font-weight:900;margin:0 0 4px;line-height:1.2}
+    .activity-text{font-size:13px;color:rgba(255,255,255,.68);line-height:1.45;margin:0}
+    .activity-time{font-size:12px;color:rgba(255,255,255,.48);font-weight:700;white-space:nowrap}
+    .demo-pill{padding:7px 10px;border-radius:999px;background:rgba(138,44,255,.14);border:1px solid rgba(138,44,255,.22);color:#d5b5ff;font-size:11px;font-weight:900;white-space:nowrap}
     .mini-card{
       border-radius:18px;
       padding:16px;
@@ -857,33 +877,20 @@
   <div class="app" id="app">
     <section class="screen active" id="screen-home">
       <div class="topbar">
-        <div class="brand">
-          <div class="avatar">
-            <svg viewBox="0 0 24 24" class="paw" style="width:32px;height:32px;color:#0f0819;position:relative;z-index:1">
-              <path fill="currentColor" d="M12 14.6c-1.8 0-3.4 1.7-3.4 3.6 0 1.4 1.1 2.6 2.6 2.6.8 0 1.2-.4 1.6-.8.4.4.8.8 1.6.8 1.5 0 2.6-1.2 2.6-2.6 0-1.9-1.6-3.6-3.4-3.6Zm-5.2-1.4c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Zm10.4 0c-1.4 0-2.4-1.1-2.4-2.6 0-1.9 1.5-3.6 3.2-3.6 1.8 0 3.2 1.6 3.2 3.5 0 1.5-1.1 2.7-2.4 2.7h-.2c-.4 0-.9 0-1.4-.0Z"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <div class="brand-title">Pump Vortex</div>
-            <div class="brand-sub">Create. Trade. Own.</div>
-          </div>
-        </div>
-
         <div class="balance-card">
-          <div class="balance-label">Баланс</div>
+          <div class="balance-label">Balance</div>
           <div class="balance-value" id="homeBalanceSol">0.00 SOL</div>
           <div class="balance-fiat" id="homeBalanceUsd">≈ $0.00</div>
-
         </div>
       </div>
 
       <div class="hero">
         <div class="hero-content">
           <div class="hero-copy">
-            <h1 class="hero-title">Твой токен.<br>Твои правила.<br><span class="accent">Твой успех.</span></h1>
-            <p class="hero-desc">Создавай токены, управляй ими и продавай долю прямо из одного экрана.</p>
+            <h1 class="hero-title">Your token.<br>Your rules.<br><span class="accent">Your success.</span></h1>
+            <p class="hero-desc">Create tokens, manage them, and sell your stake from a single screen.</p>
             <div style="margin-top:18px">
-              <button class="create-primary" id="openCreateBtn">Создать токен <span class="plus">+</span></button>
+              <button class="create-primary" id="openCreateBtn">Create token <span class="plus">+</span></button>
             </div>
           </div>
 
@@ -904,8 +911,8 @@
       <div class="section">
         <div class="section-card">
           <div class="section-head">
-            <h2 class="section-title">Мои токены</h2>
-            <button class="link-btn" id="viewAllTokensBtn">Смотреть все</button>
+            <h2 class="section-title">My Tokens</h2>
+            <button class="link-btn" id="viewAllTokensBtn">View All</button>
           </div>
           <div class="token-grid" id="homeTokenGrid"></div>
         </div>
@@ -914,19 +921,8 @@
 
     <section class="screen" id="screen-trade">
       <div class="topbar" style="margin-bottom:14px">
-        <div class="brand">
-          <div class="avatar" style="width:56px;height:56px">
-            <svg viewBox="0 0 24 24" class="paw" style="width:30px;height:30px;color:#0f0819;position:relative;z-index:1">
-              <path fill="currentColor" d="M4 20V8l8-5 8 5v12h-6v-7H10v7H4Z"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <div class="brand-title" style="font-size:20px">Торговля</div>
-            <div class="brand-sub">Купить / продать мгновенно</div>
-          </div>
-        </div>
         <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Баланс</div>
+          <div class="balance-label">Balance</div>
           <div class="balance-value" id="tradeBalanceSol">0.00 SOL</div>
           <div class="balance-fiat" id="tradeBalanceUsd">≈ $0.00</div>
         </div>
@@ -934,8 +930,8 @@
 
       <div class="section-card">
         <div class="section-head">
-          <h2 class="section-title">Активные токены</h2>
-          <button class="link-btn" id="createFromTradeBtn">Создать</button>
+          <h2 class="section-title">Active Tokens</h2>
+          <button class="link-btn" id="createFromTradeBtn">Create</button>
         </div>
         <div class="trade-list" id="tradeList"></div>
       </div>
@@ -944,97 +940,73 @@
 
       <div class="section-card">
         <div class="section-head">
-          <h2 class="section-title">Рынок</h2>
-          <button class="link-btn" id="refreshMarketBtn">Обновить</button>
+          <h2 class="section-title">Market</h2>
+          <button class="link-btn" id="refreshMarketBtn">Refresh</button>
         </div>
         <div class="mini-card">
-          <div class="title">Лента движения</div>
-          <p class="text">Здесь показываются твои токены и их состояние. Пока портфель пустой — никаких активов нет.</p>
+          <div class="title">Activity Feed</div>
+          <p class="text">Your tokens and their status appear here. Your portfolio is empty for now — there are no assets yet.</p>
         </div>
       </div>
     </section>
 
+    
     <section class="screen" id="screen-portfolio">
       <div class="topbar" style="margin-bottom:14px">
-        <div class="brand">
-          <div class="avatar" style="width:56px;height:56px">
-            <svg viewBox="0 0 24 24" class="paw" style="width:30px;height:30px;color:#0f0819;position:relative;z-index:1">
-              <path fill="currentColor" d="M10 4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1h5a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2h5V4Zm11 7H3v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7Z"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <div class="brand-title" style="font-size:20px">Портфель</div>
-            <div class="brand-sub">Управление активами</div>
-          </div>
-        </div>
         <div class="balance-card" style="min-width:132px">
-          <div class="balance-label">Активов</div>
-          <div class="balance-value" id="portfolioCount">0 токенов</div>
-          <div class="balance-fiat" id="portfolioMcap">≈ $0</div>
+          <div class="balance-label">Balance</div>
+          <div class="balance-value" id="portfolioCount">0 events</div>
+          <div class="balance-fiat" id="portfolioMcap">Demo feed</div>
         </div>
       </div>
 
-      <div class="portfolio-cards">
-        <div class="mini-card">
-          <div class="title">Сводка</div>
-          <p class="text" id="portfolioSummary">Активов нет. Ты только зашёл в новый кошелёк.</p>
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Demo Activity</h2>
+          <button class="link-btn" id="portfolioCreateBtn">Live demo</button>
         </div>
-        <div class="mini-card">
-          <div class="title">Действия</div>
-          <p class="text">Создай первый токен — он появится в этом списке и на главной странице.</p>
+
+        <div class="mini-card" style="margin-bottom:12px">
+          <div class="title">Simulated activity feed</div>
+          <p class="text" id="portfolioSummary">This is a demo feed. Messages are generated automatically to illustrate live activity.</p>
         </div>
-        <div class="section-card">
-          <div class="section-head">
-            <h2 class="section-title">Ваши токены</h2>
-            <button class="link-btn" id="portfolioCreateBtn">Новый токен</button>
-          </div>
-          <div class="trade-list" id="portfolioList"></div>
-        </div>
+
+        <div class="activity-feed" id="portfolioList"></div>
       </div>
     </section>
 
     <section class="screen" id="screen-profile">
+
       <div class="topbar" style="margin-bottom:14px">
-        <div class="brand">
-          <div class="avatar" style="width:56px;height:56px">
-            <svg viewBox="0 0 24 24" class="paw" style="width:30px;height:30px;color:#0f0819;position:relative;z-index:1">
-              <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2c-4.42 0-8 2.46-8 5.5V22h16v-2.5c0-3.04-3.58-5.5-8-5.5Z"/>
-            </svg>
-          </div>
-          <div class="brand-text">
-            <div class="brand-title" style="font-size:20px">Профиль</div>
-            <div class="brand-sub">Настройки и доступ</div>
-          </div>
-        </div>
         <div class="balance-card" style="min-width:154px">
-          <div class="balance-label">Доступный баланс</div>
+          <div class="balance-label">Available Balance</div>
           <div class="balance-value" id="profileBalanceSol">0.00 SOL</div>
           <div class="balance-fiat" id="profileBalanceUsd">≈ $0.00</div>
         </div>
       </div>
       <div class="wallet-panel">
-        <div class="wallet-title">Адрес для пополнения</div>
+        <div class="wallet-title">Deposit Address</div>
         <div class="wallet-address" id="walletAddressText"></div>
         <div class="copy-row">
-          <button class="copy-btn" id="copyAddressBtn">Скопировать адрес</button>
-          <button class="copy-btn secondary" id="newAddressBtn">Новый адрес</button>
+          <button class="copy-btn" id="copyAddressBtn">Copy Address</button>
+          <button class="copy-btn secondary" id="newAddressBtn">New Address</button>
         </div>
       </div>
 
       <div class="wallet-panel">
-        <div class="wallet-title">Вывод</div>
+        <div class="wallet-title">Withdraw</div>
         <div class="form-group" style="margin-bottom:12px">
-          <label class="form-label" for="withdrawAddressInput">Адрес вашего кошелька</label>
-          <input class="input" id="withdrawAddressInput" placeholder="Укажите адрес в сети Solana" />
+          <label class="form-label" for="withdrawAddressInput">Your Wallet Address</label>
+          <input class="input" id="withdrawAddressInput" placeholder="Enter a Solana address" />
         </div>
-        <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Укажите адрес в сети Solana, иначе средства будут потеряны.</div>
-        <button class="create-btn" id="withdrawBtn" style="margin-top:0">Запросить вывод</button>
+        <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Enter a Solana address, or the funds will be lost.</div>
+        <button class="create-btn" id="withdrawBtn" style="margin-top:0">Request Withdrawal</button>
       </div>
     </section>
 
     <section class="screen" id="screen-token">
       <div class="token-view-header">
-        <button class="back-btn" id="backFromTokenBtn" aria-label="Назад">
+        <button class="back-btn" id="backFromTokenBtn" aria-label="Back">
           <svg viewBox="0 0 24 24"><path d="M14.7 5.3a1 1 0 0 1 0 1.4L10.4 11H19a1 1 0 1 1 0 2h-8.6l4.3 4.3a1 1 0 1 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0Z"/></svg>
         </button>
 
@@ -1050,13 +1022,13 @@
           </div>
         </div>
 
-        <button class="icon-btn" id="moreBtn" aria-label="Меню">
+        <button class="icon-btn" id="moreBtn" aria-label="Menu">
           <svg viewBox="0 0 24 24"><path d="M5.5 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/></svg>
         </button>
       </div>
 
       <div class="big-profit">
-        <div class="caption">Нереализованная прибыль <span class="info-dot">i</span></div>
+        <div class="caption">Unrealized Profit <span class="info-dot">i</span></div>
         <div class="profit-value" id="profitValue">+0%</div>
         <div class="profit-sub" id="profitSub">(+0.0000 SOL)</div>
       </div>
@@ -1064,28 +1036,28 @@
       <div class="panel">
         <div class="stats-grid">
           <div class="stat-box">
-            <div class="small-label">Мои токены</div>
+            <div class="small-label">My Tokens</div>
             <div class="small-value" id="detailAmount">0 TOK</div>
             <div class="stat-sub" id="detailAmountUsd">≈ $0.00</div>
           </div>
           <div class="stat-box">
-            <div class="small-label">Текущая цена</div>
+            <div class="small-label">Current Price</div>
             <div class="small-value" id="detailCurrentPrice">0 SOL</div>
             <div class="stat-sub" id="detailCurrentPriceUsd">≈ $0.00</div>
           </div>
           <div class="stat-box">
-            <div class="small-label">Средняя цена</div>
+            <div class="small-label">Average Price</div>
             <div class="small-value" id="detailAvgPrice">0 SOL</div>
             <div class="stat-sub" id="detailAvgPriceUsd">≈ $0.00</div>
           </div>
           <div class="stat-box wide">
             <div>
-              <div class="small-label">Текущая стоимость</div>
+              <div class="small-label">Current Value</div>
               <div class="small-value" id="detailCurrentValue">0 SOL</div>
               <div class="stat-sub" id="detailCurrentValueUsd">≈ $0.00</div>
             </div>
             <div>
-              <div class="small-label">Прибыль</div>
+              <div class="small-label">Profit</div>
               <div class="small-value up" id="detailProfit">+0 SOL</div>
               <div class="stat-sub" id="detailProfitUsd">≈ $0.00</div>
             </div>
@@ -1093,8 +1065,8 @@
         </div>
 
         <div class="actions-title">
-          <div>Продать</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:700" id="availableTokens">Доступно: 0 TOK</div>
+          <div>Sell</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.55);font-weight:700" id="availableTokens">Available: 0 TOK</div>
         </div>
 
         <div class="sell-choices" id="sellChoices">
@@ -1106,7 +1078,7 @@
 
         <div class="buy-sell-line">
           <div>
-            <div class="label">Вы получите</div>
+            <div class="label">You will receive</div>
             <div class="receive-value" id="receiveValue">0 SOL</div>
             <div class="receive-fiat" id="receiveFiat">≈ $0.00</div>
           </div>
@@ -1119,13 +1091,13 @@
           </button>
         </div>
 
-        <button class="primary-sell" id="sellBtn">Продать 100%</button>
+        <button class="primary-sell" id="sellBtn">Sell 100%</button>
         <div class="tiny-text" id="sellLine" style="margin-top:8px;text-align:center;">0 TOK → 0 SOL</div>
       </div>
 
       <div class="secondary-card">
-        <div class="title">Безопасная сделка</div>
-        <p class="desc">Пока токены отсутствуют, продавать нечего. Когда создашь первый токен, здесь появятся реальные действия.</p>
+        <div class="title">Safe Trade</div>
+        <p class="desc">There are no tokens yet, so there is nothing to sell. Once you create your first token, real actions will appear here.</p>
       </div>
     </section>
 
@@ -1134,8 +1106,8 @@
       <div class="modal-handle"></div>
       <div class="modal-body">
         <div class="modal-head">
-          <h2 class="modal-title">Создать токен</h2>
-          <button class="close-btn" id="closeModalBtn" aria-label="Закрыть">
+          <h2 class="modal-title">Create Token</h2>
+          <button class="close-btn" id="closeModalBtn" aria-label="Close">
             <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor">
               <path d="M6.3 5.3a1 1 0 0 1 1.4 0L12 9.6l4.3-4.3a1 1 0 1 1 1.4 1.4L13.4 11l4.3 4.3a1 1 0 1 1-1.4 1.4L12 12.4l-4.3 4.3a1 1 0 0 1-1.4-1.4l4.3-4.3-4.3-4.3a1 1 0 0 1 0-1.4Z"/>
             </svg>
@@ -1143,19 +1115,19 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="tokenNameInput">1. Название токена</label>
-          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Например: Pump Vortex Cat" />
+          <label class="form-label" for="tokenNameInput">1. Token Name</label>
+          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Example: Pump Vortex Cat" />
           <div class="counter"><span id="nameCount">0</span>/32</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="tokenTickerInput">2. $ТЕГ</label>
-          <input class="input" id="tokenTickerInput" maxlength="10" placeholder="Например: CAT" />
+          <label class="form-label" for="tokenTickerInput">2. $TICKER</label>
+          <input class="input" id="tokenTickerInput" maxlength="10" placeholder="Example: CAT" />
           <div class="counter"><span id="tickerCount">0</span>/10</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">3. Изображение</label>
+          <label class="form-label">3. Image</label>
           <input id="tokenImageInput" type="file" accept="image/png,image/jpeg,image/gif" class="hidden" />
           <div class="upload-box" id="uploadBox">
             <div class="upload-preview" id="uploadPreview">
@@ -1163,14 +1135,14 @@
                 <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 12h14V7H5v10Zm3-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm-1.5 4.2h11l-3.8-4.8-2.7 3.4-1.7-2L6.5 15Z"/>
               </svg>
             </div>
-            <div class="upload-title">Загрузить изображение</div>
-            <div class="upload-sub">JPG, PNG, GIF. Макс. 5MB</div>
+            <div class="upload-title">Upload Image</div>
+            <div class="upload-sub">JPG, PNG, GIF. Max. 5 MB</div>
           </div>
-          <div class="recommend">Рекомендуемый размер: 512×512px</div>
+          <div class="recommend">Recommended size: 512×512 px</div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="buyAmountInput">4. Стартовая покупка</label>
+          <label class="form-label" for="buyAmountInput">4. Initial Buy</label>
           <div class="input-row">
             <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px">
               <option value="SOL">SOL</option>
@@ -1185,37 +1157,37 @@
             <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 15h-2v-6h2Zm0-8h-2V7h2Z"/></svg>
           </div>
           <div>
-            <div class="info-title">Что такое стартовая покупка?</div>
-            <p class="info-text">Стартовая покупка создаёт основу для токена. Минимум для создания — 0.5 SOL.</p>
+            <div class="info-title">What is an initial buy?</div>
+            <p class="info-text">The initial buy creates the base for the token. The minimum to create is 0.5 SOL.</p>
           </div>
         </div>
 
-        <button class="create-btn" id="createTokenBtn">Создать токен</button>
-        <div class="tiny-text" style="margin-top:10px;text-align:center;">Если на создание не хватает денег, появится сообщение.</div>
+        <button class="create-btn" id="createTokenBtn">Create Token</button>
+        <div class="tiny-text" style="margin-top:10px;text-align:center;">If you do not have enough funds to create, a message will appear.</div>
       </div>
     </div>
 
     <div class="toast" id="toast">
       <div class="dot"></div>
-      <div class="msg" id="toastMsg">Готово</div>
+      <div class="msg" id="toastMsg">Done</div>
     </div>
 
-    <nav class="bottom-nav" aria-label="Навигация">
+    <nav class="bottom-nav" aria-label="Navigation">
       <button class="nav-item active" data-screen="home">
         <svg viewBox="0 0 24 24"><path d="M12 3.1a1 1 0 0 1 .66.25l8 7A1 1 0 0 1 21 11v9a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5H10v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 .34-.75l8-7A1 1 0 0 1 12 3.1Z"/></svg>
-        <span>Главная</span>
+        <span>Home</span>
       </button>
       <button class="nav-item" data-screen="trade">
         <svg viewBox="0 0 24 24"><path d="M4 17a1 1 0 0 1 1-1h3.1l2.2-4.8a1 1 0 0 1 1.82.04l1.56 3.34L16 8.5a1 1 0 0 1 1.77-.1L20 12H23a1 1 0 1 1 0 2h-3.6a1 1 0 0 1-.84-.46l-1.4-2.1-2.96 7.1a1 1 0 0 1-1.84.05l-1.65-3.53-1.57 3.43A1 1 0 0 1 9.2 19H5a1 1 0 0 1-1-1Z"/></svg>
-        <span>Торговля</span>
+        <span>Trade</span>
       </button>
       <button class="nav-item" data-screen="portfolio">
         <svg viewBox="0 0 24 24"><path d="M10 4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1h5a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2h5V4Zm11 7H3v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7Z"/></svg>
-        <span>Портфель</span>
+        <span>Activity</span>
       </button>
       <button class="nav-item" data-screen="profile">
         <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2c-4.42 0-8 2.46-8 5.5V22h16v-2.5c0-3.04-3.58-5.5-8-5.5Z"/></svg>
-        <span>Профиль</span>
+        <span>Profile</span>
       </button>
     </nav>
   </div>
@@ -1275,7 +1247,6 @@
         modal: $("#createModal"),
         openCreateBtn: $("#openCreateBtn"),
         createFromTradeBtn: $("#createFromTradeBtn"),
-        portfolioCreateBtn: $("#portfolioCreateBtn"),
         viewAllTokensBtn: $("#viewAllTokensBtn"),
         refreshMarketBtn: $("#refreshMarketBtn"),
         backFromTokenBtn: $("#backFromTokenBtn"),
@@ -1307,6 +1278,7 @@
         selectedTokenId: null,
         activeScreen: "home",
         tokens: [],
+        activityLog: [],
         draft: { name:"", ticker:"", image:"", buyAmount:"0.5" }
       };
 
@@ -1314,6 +1286,8 @@
       let selectedSellPct = 100;
       let draftImageData = state.draft?.image || "";
       let marketPulseTimer = null;
+      let activityTimer = null;
+      let activitySeedCounter = 0;
 
       function makeAddress(){
         const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -1366,6 +1340,7 @@
           return {
             ...structuredClone(DEFAULT_STATE),
             ...parsed,
+            activityLog: Array.isArray(parsed.activityLog) ? parsed.activityLog : [],
             draft: {
               ...structuredClone(DEFAULT_STATE.draft),
               ...(parsed.draft || {})
@@ -1402,6 +1377,65 @@
 
       function usdText(v){
         return `$${fmt(v, 2)}`;
+      }
+
+      function randomDemoUser(){
+        const prefixes = ["Demo User", "Trader", "User", "Wallet", "Alpha", "Signal", "Whale"];
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const suffix = Math.floor(100 + Math.random() * 900);
+        return `${prefix}_${suffix}`;
+      }
+
+      function randomDemoAction(){
+        const actions = [
+          "closed a trade",
+          "took profit",
+          "entered a new position",
+          "trimmed a winning trade",
+          "locked in gains",
+          "opened a fresh trade"
+        ];
+        return actions[Math.floor(Math.random() * actions.length)];
+      }
+
+      function timeAgo(ms){
+        const sec = Math.max(1, Math.round((Date.now() - ms) / 1000));
+        if(sec < 60) return `${sec} second${sec === 1 ? "" : "s"} ago`;
+        const min = Math.round(sec / 60);
+        if(min < 60) return `${min} minute${min === 1 ? "" : "s"} ago`;
+        const hr = Math.round(min / 60);
+        return `${hr} hour${hr === 1 ? "" : "s"} ago`;
+      }
+
+      function makeDemoActivity(overrides = {}){
+        const profit = overrides.profitPct ?? Math.floor(12 + Math.random() * 88);
+        const amount = overrides.amount ?? (Math.random() < 0.5 ? 0.5 : +(1 + Math.random() * 8).toFixed(1));
+        const user = overrides.user || randomDemoUser();
+        const action = overrides.action || randomDemoAction();
+        const now = Date.now();
+        return {
+          id: overrides.id || `act_${now}_${Math.random().toString(16).slice(2, 8)}`,
+          user,
+          action,
+          profitPct: profit,
+          amount,
+          createdAt: overrides.createdAt || now
+        };
+      }
+
+      function ensureDemoActivity(){
+        if(!Array.isArray(state.activityLog)) state.activityLog = [];
+        if(state.activityLog.length) return;
+        const seed = [];
+        for(let i = 0; i < 24; i++){
+          seed.push(makeDemoActivity({
+            createdAt: Date.now() - (i + 1) * (8_000 + Math.floor(Math.random() * 18_000)),
+            profitPct: Math.floor(10 + Math.random() * 90),
+            amount: +(0.2 + Math.random() * 6).toFixed(2)
+          }));
+        }
+        state.activityLog = seed;
+        saveState();
       }
 
       function toast(msg){
@@ -1517,8 +1551,8 @@
         return `
           <div class="empty-state" id="emptyTokenCard" style="min-height:175px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             <div>
-              <div style="font-size:18px;font-weight:900;line-height:1.2;margin-bottom:8px;">Пока нет токенов</div>
-              <div style="font-size:14px;line-height:1.5;color:rgba(255,255,255,.66);">Создай первый токен</div>
+              <div style="font-size:18px;font-weight:900;line-height:1.2;margin-bottom:8px;">No tokens yet</div>
+              <div style="font-size:14px;line-height:1.5;color:rgba(255,255,255,.66);">Create your first token</div>
             </div>
           </div>
         `;
@@ -1554,7 +1588,7 @@
                 </div>
               </div>
               <div>
-                <div class="label">Рыночная капитализация</div>
+                <div class="label">Market Cap</div>
                 <div class="value">$${fmtInt(t.mcap)}</div>
                 <div class="change ${t.growthPct >= 0 ? "up" : "down"}">${t.growthPct >= 0 ? "+" : ""}${fmt(t.growthPct,1)}%</div>
               </div>
@@ -1564,7 +1598,7 @@
           <div class="create-new-card" id="createNewCard">
             <div>
               <div class="create-new-plus">+</div>
-              <div class="create-new-text">Создать<br>новый токен</div>
+              <div class="create-new-text">Create<br>new token</div>
             </div>
           </div>
         `;
@@ -1577,7 +1611,7 @@
         els.tradeBalanceSol.textContent = solText(state.balanceSol, 2);
         els.tradeBalanceUsd.textContent = `≈ ${usdText(usd(state.balanceSol))}`;
         if(!state.tokens.length){
-          els.tradeList.innerHTML = `<div class="empty-state">Токенов пока нет. Создай первый токен, и он появится здесь.</div>`;
+          els.tradeList.innerHTML = `<div class="empty-state">There are no tokens yet. Create your first token and it will appear here.</div>`;
           return;
         }
         els.tradeList.innerHTML = state.tokens.map(token => {
@@ -1588,7 +1622,7 @@
                 <div class="token-ico" style="width:46px;height:46px">${tokenIcon(t)}</div>
                 <div class="trade-meta">
                   <div class="trade-name">${escapeHtml(t.name)}</div>
-                  <div class="trade-sub">${escapeHtml(t.ticker)} · ${fmtInt(t.amount)} шт · ${solText(t.currentPriceSol,5)}</div>
+                  <div class="trade-sub">${escapeHtml(t.ticker)} · ${fmtInt(t.amount)} pcs · ${solText(t.currentPriceSol,5)}</div>
                 </div>
               </div>
               <div class="trade-badge ${t.growthPct >= 0 ? "up" : "down"}">
@@ -1601,37 +1635,29 @@
         $$(".trade-row", els.tradeList).forEach(row => row.addEventListener("click", () => openToken(row.dataset.tokenId)));
       }
 
+
       function renderPortfolio(){
-        els.portfolioCount.textContent = `${state.tokens.length} токенов`;
-        els.portfolioMcap.textContent = `≈ $${fmtInt(state.tokens.reduce((a,t)=>a + (recalcToken(t).mcap || 0), 0))}`;
-        if(!state.tokens.length){
-          els.portfolioSummary.textContent = "Активов нет. Ты только зашёл в новый кошелёк.";
-          els.portfolioList.innerHTML = `<div class="empty-state">Ваши токены пока пустые.</div>`;
-          return;
-        }
-        const normalized = state.tokens.map(recalcToken);
-        const avgChange = normalized.reduce((a,t)=>a + (t.growthPct || 0), 0) / normalized.length;
-        const best = [...normalized].sort((a,b)=>(b.growthPct||0)-(a.growthPct||0))[0];
-        els.portfolioSummary.textContent = `Активов: ${normalized.length}. Средний рост: ${avgChange >= 0 ? "+" : ""}${fmt(avgChange,1)}%. Самый прибыльный токен: ${best ? best.name : "—"}.`;
-        els.portfolioList.innerHTML = normalized.map(token => `
-          <div class="trade-row" data-token-id="${token.id}">
-            <div class="trade-left">
-              <div class="token-ico" style="width:46px;height:46px">${tokenIcon(token)}</div>
-              <div class="trade-meta">
-                <div class="trade-name">${escapeHtml(token.name)}</div>
-                <div class="trade-sub">${fmtInt(token.amount)} ${escapeHtml(token.ticker)} · ${solText(token.currentPriceSol,5)} · Liquidity ${solText(token.liquiditySol,2)}</div>
+        ensureDemoActivity();
+        const log = state.activityLog.slice(0, 120);
+        els.portfolioCount.textContent = `${log.length} events`;
+        els.portfolioMcap.textContent = `Demo feed`;
+        els.portfolioSummary.textContent = "This is a demo feed. New messages are generated automatically every few seconds.";
+        els.portfolioList.innerHTML = log.map(entry => `
+          <div class="activity-item">
+            <div class="activity-left">
+              <div class="activity-avatar">${escapeHtml(String(entry.user || "D"))[0]}</div>
+              <div class="activity-meta">
+                <div class="activity-name">${escapeHtml(entry.user || "Demo User")}</div>
+                <p class="activity-text">Demo: ${escapeHtml(entry.action || "closed a trade")} with a ${fmt(entry.profitPct || 0, 0)}% profit.</p>
               </div>
             </div>
-            <div class="trade-badge ${token.growthPct >= 0 ? "up" : "down"}">
-              ${token.growthPct >= 0 ? "+" : ""}${fmt(token.growthPct,1)}%
-              <span class="small">Vol ${fmtInt(token.volume24h)}</span>
-            </div>
+            <div class="activity-time">${timeAgo(entry.createdAt || Date.now())}</div>
           </div>
         `).join("");
-        $$(".trade-row", els.portfolioList).forEach(row => row.addEventListener("click", () => openToken(row.dataset.tokenId)));
       }
 
       function renderProfile(){
+{
         const balanceSol = Number(state.balanceSol || 0);
         els.walletAddressText.textContent = DEPOSIT_ADDRESS;
         if(els.profileBalanceSol) els.profileBalanceSol.textContent = solText(balanceSol, 2);
@@ -1663,11 +1689,11 @@
         els.detailProfitUsd.textContent = `≈ ${usdText(profitUsd)}`;
         els.profitValue.textContent = `${profitPct >= 0 ? "+" : ""}${Math.round(profitPct)}%`;
         els.profitSub.textContent = `(${signedSolText(profitSol,4)})`;
-        els.availableTokens.textContent = `Доступно: ${fmtInt(t.amount)} ${t.ticker}`;
+        els.availableTokens.textContent = `Available: ${fmtInt(t.amount)} ${t.ticker}`;
         els.receiveValue.textContent = solText(receiveSol,4);
         els.receiveFiat.textContent = `≈ ${usdText(usd(receiveSol))}`;
         els.sellLine.textContent = `${soldAmount} ${t.ticker} → ${solText(receiveSol,4)}`;
-        els.sellBtn.textContent = `Продать ${selectedSellPct}%`;
+        els.sellBtn.textContent = `Sell ${selectedSellPct}%`;
         els.sell25.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .25)))} ${t.ticker}`;
         els.sell50.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .50)))} ${t.ticker}`;
         els.sell75.textContent = `${fmtInt(Math.max(1, Math.round(t.amount * .75)))} ${t.ticker}`;
@@ -1686,22 +1712,22 @@
         const buyAmount = parseFloat(els.buyAmountInput.value || "0") || 0;
 
         if(!name){
-          toast("Введите название токена");
+          toast("Enter a token name");
           els.tokenNameInput.focus();
           return;
         }
         if(!ticker){
-          toast("Введите тикер");
+          toast("Enter a ticker");
           els.tokenTickerInput.focus();
           return;
         }
         if(buyAmount < 0.5){
-          toast("Минимальная сумма для создания токена — 0.5 SOL");
+          toast("The minimum amount to create a token is 0.5 SOL");
           els.buyAmountInput.focus();
           return;
         }
         if(state.balanceSol < buyAmount){
-          toast("Сейчас денег нет на создание токена");
+          toast("There are not enough funds to create a token right now");
           return;
         }
 
@@ -1742,7 +1768,7 @@
         closeModal();
         renderAll();
         openToken(token.id);
-        toast("Токен создан");
+        toast("Token created");
       }
 
       function selectSell(pct){
@@ -1753,8 +1779,8 @@
 
       function sellSelected(){
         const token = currentToken();
-        if(!token){ toast("Токен не выбран"); return; }
-        if(!token.amount){ toast("Продавать нечего"); return; }
+        if(!token){ toast("No token selected"); return; }
+        if(!token.amount){ toast("Nothing to sell"); return; }
 
         const { t, currentValueSol, soldAmount, actualShare, receiveSol } = getSellQuote(token, selectedSellPct);
 
@@ -1763,7 +1789,7 @@
         if(soldAmount >= t.amount){
           state.tokens = state.tokens.filter(x => x.id !== t.id);
           state.selectedTokenId = state.tokens[0]?.id || null;
-          toast("Токен полностью продан");
+          toast("Token sold completely");
           if(!state.selectedTokenId) screen("home");
         }else{
           const remainingShare = Math.max(0, 1 - actualShare);
@@ -1777,7 +1803,7 @@
           token.growthPct = t.growthPct;
           token.priceChange = t.growthPct;
           token.mcap = Math.max(0, Math.round(token.mcap * (1 - actualShare * 0.18)));
-          toast(`Продано ${selectedSellPct}%`);
+          toast(`Sold ${selectedSellPct}%`);
         }
 
         saveState();
@@ -1787,62 +1813,39 @@
       async function copyAddress(){
         try{
           await navigator.clipboard.writeText(DEPOSIT_ADDRESS);
-          toast("Адрес скопирован");
+          toast("Address copied");
         }catch(e){
-          toast("Не удалось скопировать");
+          toast("Could not copy");
         }
       }
 
       function regenerateAddress(){
         state.walletAddress = makeAddress();
         saveState();
-        toast("Новый адрес создан");
+        toast("New address created");
       }
 
       function requestWithdrawal(){
         const addr = els.withdrawAddressInput.value.trim();
         if(!addr){
-          toast("Введите адрес кошелька в сети Solana");
+          toast("Enter a Solana wallet address");
           els.withdrawAddressInput.focus();
           return;
         }
-        toast("Вывод подтвержден");
+        toast("Withdrawal confirmed");
       }
 
       function resetDemo(){
-        if(!confirm("Сбросить всё в ноль?")) return;
-        localStorage.removeItem(STORAGE_KEY);
-        state = loadState();
+        state = structuredClone(DEFAULT_STATE);
+        state.walletAddress = makeAddress();
+        state.activityLog = [];
         draftImageData = "";
         selectedSellPct = 100;
-        renderUploadPreview();
-        renderAll();
-        toast("Демо сброшено");
-      }
-
-      function randomizeMarket(){
-        if(!state.tokens.length){
-          toast("Пока нечего обновлять");
-          return;
-        }
-        state.tokens = state.tokens.map(t => {
-          const token = recalcToken(t);
-          const drift = (Math.random() - 0.45) * 32 + (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 14);
-          const nextGrowth = Math.max(-99, Math.min(999, token.growthPct + drift));
-          const nextCurrentValue = Math.max(0, token.investedSol * (1 + nextGrowth / 100));
-          return {
-            ...token,
-            growthPct: +nextGrowth.toFixed(1),
-            priceChange: +nextGrowth.toFixed(1),
-            currentPriceSol: token.amount > 0 ? +(nextCurrentValue / token.amount).toFixed(6) : 0,
-            averagePriceSol: token.amount > 0 ? +(token.investedSol / token.amount).toFixed(6) : 0,
-            mcap: Math.max(0, Math.round(token.mcap * (1 + drift / 220))),
-            volume24h: Math.max(100, Math.round(token.volume24h * (1 + (Math.random() - 0.4) * 0.22)))
-          };
-        });
         saveState();
+        toast("Demo reset");
+        closeModal();
         renderAll();
-        toast("Рынок обновлён");
+        seedDemoActivityFeed();
       }
 
       function startArtificialMovement(){
@@ -1891,7 +1894,6 @@
       function bind(){
         els.openCreateBtn.addEventListener("click", openModal);
         els.createFromTradeBtn.addEventListener("click", openModal);
-        els.portfolioCreateBtn.addEventListener("click", openModal);
         els.viewAllTokensBtn.addEventListener("click", () => screen("portfolio"));
         els.refreshMarketBtn.addEventListener("click", randomizeMarket);
 
@@ -1919,14 +1921,14 @@
         els.tokenImageInput.addEventListener("change", (e) => {
           const file = e.target.files?.[0];
           if(!file) return;
-          if(!/^image\/(png|jpeg|gif)$/.test(file.type)){ toast("Разрешены JPG, PNG, GIF"); return; }
-          if(file.size > 5 * 1024 * 1024){ toast("Файл больше 5 MB"); return; }
+          if(!/^image\/(png|jpeg|gif)$/.test(file.type)){ toast("JPG, PNG, GIF allowed"); return; }
+          if(file.size > 5 * 1024 * 1024){ toast("File is larger than 5 MB"); return; }
           const reader = new FileReader();
           reader.onload = () => {
             draftImageData = String(reader.result || "");
             renderUploadPreview();
             saveDraft();
-            toast("Изображение загружено");
+            toast("Image uploaded");
           };
           reader.readAsDataURL(file);
         });
