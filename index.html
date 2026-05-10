@@ -1263,21 +1263,6 @@
       bottom:auto;
     }
 
-    /* The first Create Token step is only slightly taller, while still touching the floor. */
-    #createModal.details-step{
-      top:auto;
-      bottom:0;
-      height:94dvh;
-      max-height:94dvh;
-    }
-
-    #createModal.details-step.static-create-modal{
-      top:auto;
-      bottom:0;
-      height:94dvh;
-      max-height:94dvh;
-    }
-
     /* On the first Create Token step, lift only the header and the three upper fields.
        The lower Create Token button keeps its original layout position. */
     #createModal.details-step .modal-head,
@@ -2722,8 +2707,10 @@
       }
 
       function lockCreateModalPosition(){
-        // Keep Create Token fixed and stretched to the top even while the mobile keyboard opens/closes.
-        els.modal.style.setProperty("--create-modal-static-top", "0px");
+        // Keep Create Token at one fixed screen position even while the mobile keyboard opens/closes.
+        const modalHeight = els.modal.getBoundingClientRect().height || els.modal.offsetHeight || 0;
+        const staticTop = Math.max(0, Math.round(window.innerHeight - modalHeight));
+        els.modal.style.setProperty("--create-modal-static-top", `${staticTop}px`);
         els.modal.classList.add("static-create-modal");
       }
 
@@ -2997,16 +2984,6 @@
         els.createStepDetails.classList.toggle("hidden", !details);
         els.createStepBuy.classList.toggle("hidden", details);
         els.modal.classList.toggle("details-step", details);
-
-        // The first Create Token step stays fixed for keyboard stability.
-        // The Initial Buy step has no text inputs, so it returns to the floor as before.
-        if(details){
-          lockCreateModalPosition();
-        }else{
-          els.modal.classList.remove("static-create-modal");
-          els.modal.style.removeProperty("--create-modal-static-top");
-        }
-
         const title = els.modal.querySelector(".modal-title");
         if(title) title.textContent = details ? "Create Token" : "Initial Buy";
       }
