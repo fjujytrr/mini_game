@@ -3233,17 +3233,39 @@
         toast("New address created");
       }
 
+      function applyPastedWithdrawAddress(rawValue){
+        const value = String(rawValue || "").trim();
+        if(!value){
+          toast("Clipboard is empty");
+          return;
+        }
+        els.withdrawAddressInput.value = value;
+        toast("Address pasted");
+      }
+
       async function pasteWithdrawAddress(){
-        try{
-          const value = (await navigator.clipboard.readText()).trim();
-          if(!value){
-            toast("Clipboard is empty");
+        const tg = window.Telegram?.WebApp;
+
+        // Telegram Mini Apps on mobile should use the native clipboard API.
+        if(tg && typeof tg.readTextFromClipboard === "function"){
+          try{
+            tg.readTextFromClipboard((value) => {
+              if(value === null){
+                toast("Clipboard access unavailable");
+                return;
+              }
+              applyPastedWithdrawAddress(value);
+            });
             return;
-          }
-          els.withdrawAddressInput.value = value;
-          toast("Address pasted");
+          }catch(_e){}
+        }
+
+        // Browser fallback for non-Telegram environments.
+        try{
+          const value = await navigator.clipboard.readText();
+          applyPastedWithdrawAddress(value);
         }catch(_e){
-          toast("Allow clipboard access and try again");
+          toast("Clipboard access unavailable");
         }
       }
 
