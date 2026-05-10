@@ -1426,7 +1426,9 @@
     }
 
     .withdraw-address-input{
-      cursor:default;
+      cursor:text;
+      -webkit-user-select:text;
+      user-select:text;
     }
 
     .paste-btn{
@@ -2105,7 +2107,7 @@
         <div class="form-group" style="margin-bottom:12px">
           <label class="form-label" for="withdrawAddressInput">Your Wallet Address</label>
           <div class="withdraw-address-row">
-            <input class="input withdraw-address-input" id="withdrawAddressInput" placeholder="Paste Solana address" readonly />
+            <input class="input withdraw-address-input" id="withdrawAddressInput" placeholder="Paste Solana address" inputmode="none" virtualkeyboardpolicy="manual" autocomplete="off" autocapitalize="none" spellcheck="false" />
             <button class="paste-btn" id="pasteWithdrawAddressBtn" type="button">Paste</button>
           </div>
         </div>
@@ -3560,6 +3562,15 @@
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
         els.pasteWithdrawAddressBtn?.addEventListener("click", pasteWithdrawAddress);
+        if(els.withdrawAddressInput){
+          els.withdrawAddressInput.addEventListener("focus", () => {
+            try{
+              if(navigator.virtualKeyboard && "overlaysContent" in navigator.virtualKeyboard){
+                navigator.virtualKeyboard.overlaysContent = true;
+              }
+            }catch(_e){}
+          });
+        }
         els.withdrawPresetGrid?.addEventListener("click", (e) => {
           const btn = e.target.closest(".buy-preset");
           if(!btn) return;
