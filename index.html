@@ -1258,8 +1258,14 @@
       transform:translateX(-50%) translateY(0);
     }
 
-    body.keyboard-open #createModal.show{
-      bottom:calc(var(--keyboard-inset, 0px) * -1);
+    #createModal.static-create-modal{
+      top:var(--create-modal-static-top, auto);
+      bottom:auto;
+    }
+
+    /* Keep the first-step inputs visually a little higher while the button stays in its original place. */
+    #createStepDetails .form-group{
+      transform:translateY(-10px);
     }
 
     .buy-preset-grid{
@@ -1349,6 +1355,7 @@
     .modal-body{
       padding:18px 18px 20px;
       overflow:auto;
+      overscroll-behavior:contain;
     }
 
     .modal-head{
@@ -2697,7 +2704,16 @@
         return { t, currentValueSol, soldAmount, actualShare, receiveSol };
       }
 
+      function lockCreateModalPosition(){
+        // Keep Create Token at one fixed screen position even while the mobile keyboard opens/closes.
+        const modalHeight = els.modal.getBoundingClientRect().height || els.modal.offsetHeight || 0;
+        const staticTop = Math.max(0, Math.round(window.innerHeight - modalHeight));
+        els.modal.style.setProperty("--create-modal-static-top", `${staticTop}px`);
+        els.modal.classList.add("static-create-modal");
+      }
+
       function openModal(){
+        lockCreateModalPosition();
         els.overlay.classList.add("show");
         els.modal.classList.add("show");
         els.modal.setAttribute("aria-hidden","false");
@@ -2716,6 +2732,8 @@
         els.modal.classList.remove("show");
         els.modal.setAttribute("aria-hidden","true");
         document.body.style.overflow = "";
+        els.modal.classList.remove("static-create-modal");
+        els.modal.style.removeProperty("--create-modal-static-top");
         showCreateStep("details");
         saveDraft();
       }
@@ -3386,6 +3404,13 @@
 
       function bindKeyboardClose(){
         document.addEventListener("pointerdown", closeMobileKeyboard, { passive: true });
+
+        // Do not auto-align Create Token fields when keyboard appears.
+        document.addEventListener("focusin", (e) => {
+          if(els.modal.classList.contains("show") && els.modal.contains(e.target)){
+            requestAnimationFrame(() => window.scrollTo(0, 0));
+          }
+        });
 
         document.addEventListener("focusin", (e) => {
           if(!isTextControl(e.target)) return;
