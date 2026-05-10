@@ -1263,6 +1263,21 @@
       bottom:auto;
     }
 
+    /* The first Create Token step is stretched from the floor to the top of the screen. */
+    #createModal.details-step{
+      top:0;
+      bottom:0;
+      height:100dvh;
+      max-height:none;
+    }
+
+    #createModal.details-step.static-create-modal{
+      top:0;
+      bottom:0;
+      height:100dvh;
+      max-height:none;
+    }
+
     /* On the first Create Token step, lift only the header and the three upper fields.
        The lower Create Token button keeps its original layout position. */
     #createModal.details-step .modal-head,
@@ -2707,10 +2722,8 @@
       }
 
       function lockCreateModalPosition(){
-        // Keep Create Token at one fixed screen position even while the mobile keyboard opens/closes.
-        const modalHeight = els.modal.getBoundingClientRect().height || els.modal.offsetHeight || 0;
-        const staticTop = Math.max(0, Math.round(window.innerHeight - modalHeight));
-        els.modal.style.setProperty("--create-modal-static-top", `${staticTop}px`);
+        // Keep Create Token fixed and stretched to the top even while the mobile keyboard opens/closes.
+        els.modal.style.setProperty("--create-modal-static-top", "0px");
         els.modal.classList.add("static-create-modal");
       }
 
