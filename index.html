@@ -790,6 +790,26 @@
       font-weight:850;
     }
 
+    :root{
+      --keyboard-inset:0px;
+      --viewport-height:100dvh;
+    }
+
+    html,body{
+      height:100%;
+    }
+
+    body{
+      min-height:var(--viewport-height);
+    }
+
+    .app{
+      min-height:var(--viewport-height);
+      padding-bottom:calc(20px + var(--safe-bottom) + 82px + var(--keyboard-inset));
+      scroll-padding-bottom:calc(110px + var(--keyboard-inset));
+      transition:padding-bottom .28s cubic-bezier(.22,.8,.2,1);
+    }
+
     .bottom-nav{
       position:fixed;
       left:50%;
@@ -806,7 +826,7 @@
       display:flex;
       padding:10px 8px 8px;
       z-index:40;
-      transition:transform .22s ease, opacity .18s ease, visibility .18s ease;
+      transition:transform .28s cubic-bezier(.22,.8,.2,1), opacity .22s ease, visibility .22s ease;
       will-change:transform, opacity;
     }
 
@@ -3170,49 +3190,81 @@
         document.body.focus?.();
       }
 
+      let keyboardCloseTimer = null;
+      let keyboardScrollTimer = null;
+      let viewportRaf = 0;
+      let keyboardWasOpen = false;
+
       function setKeyboardMode(isOpen){
-        document.body.classList.toggle("keyboard-open", !!isOpen);
-        els?.navItems?.[0]?.closest?.(".app")?.classList?.toggle("keyboard-open", !!isOpen);
+        clearTimeout(keyboardCloseTimer);
+        if(isOpen){
+          document.body.classList.add("keyboard-open");
+          els?.navItems?.[0]?.closest?.(".app")?.classList?.add("keyboard-open");
+        }else{
+          keyboardCloseTimer = setTimeout(() => {
+            document.body.classList.remove("keyboard-open");
+            els?.navItems?.[0]?.closest?.(".app")?.classList?.remove("keyboard-open");
+          }, 140);
+        }
       }
 
-      function keepFocusedFieldVisible(){
-        const active = document.activeElement;
-        if(!isTextControl(active)) return;
-        setTimeout(() => {
+      function keepFocusedFieldVisible(delay = 240){
+        clearTimeout(keyboardScrollTimer);
+        keyboardScrollTimer = setTimeout(() => {
+          const active = document.activeElement;
+          if(!isTextControl(active)) return;
           try{
             active.scrollIntoView({ block:"center", inline:"nearest", behavior:"smooth" });
           }catch(_e){
             active.scrollIntoView(false);
           }
-        }, 120);
+        }, delay);
+      }
+
+      function updateKeyboardViewport(){
+        viewportRaf = 0;
+        const vv = window.visualViewport;
+        const viewportHeight = Math.round(vv?.height || window.innerHeight);
+        const viewportTop = Math.round(vv?.offsetTop || 0);
+        const fullHeight = Math.round(window.innerHeight);
+        const rawInset = Math.max(0, fullHeight - viewportHeight - viewportTop);
+        const keyboardOpen = rawInset > 120 && isTextControl(document.activeElement);
+        const inset = keyboardOpen ? rawInset : 0;
+
+        document.documentElement.style.setProperty("--viewport-height", `${viewportHeight}px`);
+        document.documentElement.style.setProperty("--keyboard-inset", `${inset}px`);
+        setKeyboardMode(keyboardOpen);
+
+        if(keyboardOpen && !keyboardWasOpen){
+          keepFocusedFieldVisible(260);
+        }
+        keyboardWasOpen = keyboardOpen;
+      }
+
+      function scheduleKeyboardViewportUpdate(){
+        if(viewportRaf) return;
+        viewportRaf = requestAnimationFrame(updateKeyboardViewport);
       }
 
       function bindKeyboardClose(){
-        document.addEventListener("touchstart", closeMobileKeyboard, { passive: true });
-        document.addEventListener("mousedown", closeMobileKeyboard);
         document.addEventListener("pointerdown", closeMobileKeyboard, { passive: true });
 
         document.addEventListener("focusin", (e) => {
           if(!isTextControl(e.target)) return;
-          setKeyboardMode(true);
-          keepFocusedFieldVisible();
+          scheduleKeyboardViewportUpdate();
         });
 
         document.addEventListener("focusout", () => {
-          setTimeout(() => {
-            if(!isTextControl(document.activeElement)) setKeyboardMode(false);
-          }, 80);
+          setTimeout(scheduleKeyboardViewportUpdate, 90);
         });
 
         if(window.visualViewport){
-          const updateByViewport = () => {
-            const keyboardLikelyOpen = window.visualViewport.height < window.innerHeight - 120;
-            setKeyboardMode(keyboardLikelyOpen && isTextControl(document.activeElement));
-            if(keyboardLikelyOpen) keepFocusedFieldVisible();
-          };
-          window.visualViewport.addEventListener("resize", updateByViewport);
-          window.visualViewport.addEventListener("scroll", updateByViewport);
+          window.visualViewport.addEventListener("resize", scheduleKeyboardViewportUpdate);
+          window.visualViewport.addEventListener("scroll", scheduleKeyboardViewportUpdate);
         }
+
+        window.addEventListener("resize", scheduleKeyboardViewportUpdate);
+        scheduleKeyboardViewportUpdate();
       }
 
       function bind(){
