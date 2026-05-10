@@ -2107,56 +2107,66 @@
           </button>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="tokenNameInput">1. Token Name</label>
-          <input class="input" id="tokenNameInput" maxlength="32" placeholder="Example: Pump Vortex Cat" />
-          <div class="counter"><span id="nameCount">0</span>/32</div>
-        </div>
+        <div class="create-step" id="createStepDetails">
+          <div class="form-group">
+            <label class="form-label" for="tokenNameInput">1. Token Name</label>
+            <input class="input" id="tokenNameInput" maxlength="32" placeholder="Example: Pump Vortex Cat" />
+            <div class="counter"><span id="nameCount">0</span>/32</div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label" for="tokenTickerInput">2. $TICKER</label>
-          <input class="input" id="tokenTickerInput" maxlength="10" placeholder="Example: CAT" />
-          <div class="counter"><span id="tickerCount">0</span>/10</div>
-        </div>
+          <div class="form-group">
+            <label class="form-label" for="tokenTickerInput">2. $TICKER</label>
+            <input class="input" id="tokenTickerInput" maxlength="10" placeholder="Example: CAT" />
+            <div class="counter"><span id="tickerCount">0</span>/10</div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">3. Image</label>
-          <input id="tokenImageInput" type="file" accept="image/png,image/jpeg,image/gif" class="hidden" />
-          <div class="upload-box" id="uploadBox">
-            <div class="upload-preview" id="uploadPreview">
-              <svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:currentColor">
-                <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 12h14V7H5v10Zm3-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm-1.5 4.2h11l-3.8-4.8-2.7 3.4-1.7-2L6.5 15Z"/>
-              </svg>
+          <div class="form-group">
+            <label class="form-label">3. Image</label>
+            <input id="tokenImageInput" type="file" accept="image/png,image/jpeg,image/gif" class="hidden" />
+            <div class="upload-box" id="uploadBox">
+              <div class="upload-preview" id="uploadPreview">
+                <svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:currentColor">
+                  <path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 12h14V7H5v10Zm3-6.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm-1.5 4.2h11l-3.8-4.8-2.7 3.4-1.7-2L6.5 15Z"/>
+                </svg>
+              </div>
+              <div class="upload-title">Upload Image</div>
+              <div class="upload-sub">JPG, PNG, GIF. Max. 5 MB</div>
             </div>
-            <div class="upload-title">Upload Image</div>
-            <div class="upload-sub">JPG, PNG, GIF. Max. 5 MB</div>
+            <div class="recommend">Recommended size: 512×512 px</div>
           </div>
-          <div class="recommend">Recommended size: 512×512 px</div>
+
+          <button class="create-btn" id="createTokenBtn">Create Token</button>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="buyAmountInput">4. Initial Buy</label>
-          <div class="input-row">
-            <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px">
-              <option value="SOL">SOL</option>
-            </select>
-            <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.5" value="0.5" />
-            <div style="min-width:72px;text-align:right;color:rgba(255,255,255,.68);font-weight:700" id="buyEstimate">≈ $0.00</div>
+        <div class="create-step hidden" id="createStepBuy">
+          <div class="form-group">
+            <label class="form-label" for="buyAmountInput">Initial Buy</label>
+            <div class="input-row">
+              <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px">
+                <option value="SOL">SOL</option>
+              </select>
+              <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.5" value="0.5" />
+              <div style="min-width:72px;text-align:right;color:rgba(255,255,255,.68);font-weight:700" id="buyEstimate">≈ $0.00</div>
+            </div>
           </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 15h-2v-6h2Zm0-8h-2V7h2Z"/></svg>
+            </div>
+            <div>
+              <div class="info-title">What is an initial buy?</div>
+              <p class="info-text">The initial buy creates the base for the token. The minimum to create is 0.5 SOL.</p>
+            </div>
+          </div>
+
+          <div class="copy-row" style="margin-top:16px">
+            <button class="copy-btn secondary" id="backToDetailsBtn">Back</button>
+            <button class="copy-btn" id="confirmCreateTokenBtn">Create Token</button>
+          </div>
+          <div class="tiny-text" style="margin-top:10px;text-align:center;">If you do not have enough funds to create, a message will appear.</div>
         </div>
 
-        <div class="info-card">
-          <div class="info-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 15h-2v-6h2Zm0-8h-2V7h2Z"/></svg>
-          </div>
-          <div>
-            <div class="info-title">What is an initial buy?</div>
-            <p class="info-text">The initial buy creates the base for the token. The minimum to create is 0.5 SOL.</p>
-          </div>
-        </div>
-
-        <button class="create-btn" id="createTokenBtn">Create Token</button>
-        <div class="tiny-text" style="margin-top:10px;text-align:center;">If you do not have enough funds to create, a message will appear.</div>
       </div>
     </div>
 
@@ -2248,6 +2258,10 @@
         backFromTokenBtn: $("#backFromTokenBtn"),
         closeModalBtn: $("#closeModalBtn"),
         createTokenBtn: $("#createTokenBtn"),
+        createStepDetails: $("#createStepDetails"),
+        createStepBuy: $("#createStepBuy"),
+        backToDetailsBtn: $("#backToDetailsBtn"),
+        confirmCreateTokenBtn: $("#confirmCreateTokenBtn"),
         tokenNameInput: $("#tokenNameInput"),
         tokenTickerInput: $("#tokenTickerInput"),
         tokenImageInput: $("#tokenImageInput"),
@@ -2600,6 +2614,7 @@
         els.tokenNameInput.value = state.draft.name || "";
         els.tokenTickerInput.value = state.draft.ticker || "";
         els.buyAmountInput.value = state.draft.buyAmount ?? "0.5";
+        showCreateStep("details");
         renderUploadPreview();
         updateCounters();
         updateBuyEstimate();
@@ -2610,6 +2625,7 @@
         els.modal.classList.remove("show");
         els.modal.setAttribute("aria-hidden","true");
         document.body.style.overflow = "";
+        showCreateStep("details");
         saveDraft();
       }
 
@@ -2828,6 +2844,32 @@
         screen("token");
       }
 
+      function showCreateStep(step){
+        const details = step === "details";
+        els.createStepDetails.classList.toggle("hidden", !details);
+        els.createStepBuy.classList.toggle("hidden", details);
+        const title = els.modal.querySelector(".modal-title");
+        if(title) title.textContent = details ? "Create Token" : "Initial Buy";
+      }
+
+      function goToInitialBuy(){
+        const name = els.tokenNameInput.value.trim();
+        const ticker = els.tokenTickerInput.value.trim().toUpperCase();
+
+        if(!name){
+          toast("Enter a token name");
+          return;
+        }
+        if(!ticker){
+          toast("Enter a ticker");
+          return;
+        }
+
+        saveDraft();
+        if(isTextControl(document.activeElement)) document.activeElement.blur();
+        showCreateStep("buy");
+      }
+
       function createToken(){
         const name = els.tokenNameInput.value.trim();
         const ticker = els.tokenTickerInput.value.trim().toUpperCase();
@@ -2835,12 +2877,10 @@
 
         if(!name){
           toast("Enter a token name");
-          els.tokenNameInput.focus();
           return;
         }
         if(!ticker){
           toast("Enter a ticker");
-          els.tokenTickerInput.focus();
           return;
         }
         if(buyAmount < 0.5){
@@ -3191,7 +3231,6 @@
       }
 
       let keyboardCloseTimer = null;
-      let keyboardScrollTimer = null;
       let viewportRaf = 0;
       let keyboardWasOpen = false;
 
@@ -3208,19 +3247,6 @@
         }
       }
 
-      function keepFocusedFieldVisible(delay = 240){
-        clearTimeout(keyboardScrollTimer);
-        keyboardScrollTimer = setTimeout(() => {
-          const active = document.activeElement;
-          if(!isTextControl(active)) return;
-          try{
-            active.scrollIntoView({ block:"center", inline:"nearest", behavior:"smooth" });
-          }catch(_e){
-            active.scrollIntoView(false);
-          }
-        }, delay);
-      }
-
       function updateKeyboardViewport(){
         viewportRaf = 0;
         const vv = window.visualViewport;
@@ -3235,9 +3261,6 @@
         document.documentElement.style.setProperty("--keyboard-inset", `${inset}px`);
         setKeyboardMode(keyboardOpen);
 
-        if(keyboardOpen && !keyboardWasOpen){
-          keepFocusedFieldVisible(260);
-        }
         keyboardWasOpen = keyboardOpen;
       }
 
@@ -3283,7 +3306,9 @@
         els.backFromTokenBtn.addEventListener("click", () => screen("home"));
         els.closeModalBtn.addEventListener("click", closeModal);
         els.overlay.addEventListener("click", closeModal);
-        els.createTokenBtn.addEventListener("click", createToken);
+        els.createTokenBtn.addEventListener("click", goToInitialBuy);
+        els.confirmCreateTokenBtn.addEventListener("click", createToken);
+        els.backToDetailsBtn.addEventListener("click", () => showCreateStep("details"));
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
