@@ -1258,6 +1258,85 @@
       transform:translateX(-50%) translateY(0);
     }
 
+    body.keyboard-open #createModal.show{
+      bottom:calc(var(--keyboard-inset, 0px) * -1);
+    }
+
+    .buy-preset-grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .buy-preset{
+      min-height:62px;
+      border-radius:18px;
+      border:1px solid rgba(103,232,249,.22);
+      background:linear-gradient(180deg, rgba(8,18,34,.98), rgba(2,8,18,.98));
+      color:#fff;
+      font-weight:950;
+      font-size:16px;
+      cursor:pointer;
+      transition:border-color .16s ease, transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .buy-preset.active{
+      border-color:rgba(103,232,249,.68);
+      background:linear-gradient(180deg, rgba(34,211,238,.24), rgba(96,165,250,.14));
+      box-shadow:0 12px 24px rgba(34,211,238,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+
+    .buy-adjuster{
+      display:grid;
+      grid-template-columns:58px minmax(0,1fr) 58px;
+      gap:10px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .buy-stepper-btn{
+      min-height:58px;
+      border-radius:18px;
+      border:1px solid rgba(103,232,249,.22);
+      background:linear-gradient(180deg, rgba(8,18,34,.98), rgba(2,8,18,.98));
+      color:#67e8f9;
+      font-size:28px;
+      line-height:1;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .buy-amount-display{
+      min-height:58px;
+      border-radius:18px;
+      border:1px solid rgba(103,232,249,.30);
+      background:linear-gradient(180deg, rgba(8,18,34,.96), rgba(2,8,18,.98));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:22px;
+      font-weight:950;
+      letter-spacing:-.03em;
+    }
+
+    .buy-amount-display span:last-child{
+      color:rgba(255,255,255,.62);
+      font-size:14px;
+      font-weight:850;
+    }
+
+    .buy-estimate-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:4px;
+      color:rgba(255,255,255,.68);
+      font-weight:800;
+      font-size:14px;
+    }
+
     .modal-handle{
       width:78px;
       height:6px;
@@ -2140,14 +2219,22 @@
 
         <div class="create-step hidden" id="createStepBuy">
           <div class="form-group">
-            <label class="form-label" for="buyAmountInput">Initial Buy</label>
-            <div class="input-row">
-              <select class="input" id="buyAssetSelect" style="max-width:110px;flex:0 0 110px">
-                <option value="SOL">SOL</option>
-              </select>
-              <input class="input" id="buyAmountInput" inputmode="decimal" placeholder="0.5" value="0.5" />
-              <div style="min-width:72px;text-align:right;color:rgba(255,255,255,.68);font-weight:700" id="buyEstimate">≈ $0.00</div>
+            <label class="form-label">Initial Buy</label>
+            <div class="buy-preset-grid" id="buyPresetGrid">
+              <button class="buy-preset active" type="button" data-amount="0.5">0.5</button>
+              <button class="buy-preset" type="button" data-amount="0.75">0.75</button>
+              <button class="buy-preset" type="button" data-amount="1">1</button>
+              <button class="buy-preset" type="button" data-amount="2">2</button>
             </div>
+            <div class="buy-adjuster">
+              <button class="buy-stepper-btn" id="buyAmountDownBtn" type="button" aria-label="Decrease amount">−</button>
+              <div class="buy-amount-display" aria-live="polite">
+                <span id="buyAmountValue">0.5</span><span>SOL</span>
+              </div>
+              <button class="buy-stepper-btn" id="buyAmountUpBtn" type="button" aria-label="Increase amount">+</button>
+            </div>
+            <input class="hidden" id="buyAmountInput" value="0.5" readonly />
+            <div class="buy-estimate-row" id="buyEstimate">≈ $0.00</div>
           </div>
 
           <div class="info-card">
@@ -2268,6 +2355,10 @@
         uploadBox: $("#uploadBox"),
         uploadPreview: $("#uploadPreview"),
         buyAmountInput: $("#buyAmountInput"),
+        buyAmountValue: $("#buyAmountValue"),
+        buyPresetGrid: $("#buyPresetGrid"),
+        buyAmountDownBtn: $("#buyAmountDownBtn"),
+        buyAmountUpBtn: $("#buyAmountUpBtn"),
         buyEstimate: $("#buyEstimate"),
         nameCount: $("#nameCount"),
         tickerCount: $("#tickerCount"),
@@ -2613,7 +2704,7 @@
         document.body.style.overflow = "hidden";
         els.tokenNameInput.value = state.draft.name || "";
         els.tokenTickerInput.value = state.draft.ticker || "";
-        els.buyAmountInput.value = state.draft.buyAmount ?? "0.5";
+        setBuyAmount(state.draft.buyAmount ?? "0.5");
         showCreateStep("details");
         renderUploadPreview();
         updateCounters();
@@ -2653,6 +2744,30 @@
       function updateCounters(){
         els.nameCount.textContent = els.tokenNameInput.value.length;
         els.tickerCount.textContent = els.tokenTickerInput.value.length;
+      }
+
+      function formatBuyAmount(value){
+        const rounded = Math.round(Number(value || 0) * 100) / 100;
+        return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+      }
+
+      function setBuyAmount(value){
+        const safe = Math.max(0.5, Math.round(Number(value || 0.5) * 100) / 100);
+        const formatted = formatBuyAmount(safe);
+        els.buyAmountInput.value = formatted;
+        if(els.buyAmountValue) els.buyAmountValue.textContent = formatted;
+        if(els.buyPresetGrid){
+          $$(".buy-preset", els.buyPresetGrid).forEach(btn => {
+            btn.classList.toggle("active", Number(btn.dataset.amount) === safe);
+          });
+        }
+        updateBuyEstimate();
+        saveDraft();
+      }
+
+      function adjustBuyAmount(delta){
+        const current = parseFloat(els.buyAmountInput.value || "0.5") || 0.5;
+        setBuyAmount(current + delta);
       }
 
       function updateBuyEstimate(){
@@ -3321,10 +3436,13 @@
           els.tokenTickerInput.value = els.tokenTickerInput.value.toUpperCase().replace(/[^A-Z0-9_]/g, "");
           updateCounters(); saveDraft();
         });
-        els.buyAmountInput.addEventListener("input", () => {
-          els.buyAmountInput.value = els.buyAmountInput.value.replace(",", ".");
-          updateBuyEstimate(); saveDraft();
+        els.buyPresetGrid?.addEventListener("click", (e) => {
+          const btn = e.target.closest(".buy-preset");
+          if(!btn) return;
+          setBuyAmount(Number(btn.dataset.amount));
         });
+        els.buyAmountDownBtn?.addEventListener("click", () => adjustBuyAmount(-0.05));
+        els.buyAmountUpBtn?.addEventListener("click", () => adjustBuyAmount(0.05));
 
         els.uploadBox.addEventListener("click", () => els.tokenImageInput.click());
         els.tokenImageInput.addEventListener("change", (e) => {
