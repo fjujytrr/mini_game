@@ -1259,8 +1259,9 @@
     }
 
     #createModal.static-create-modal{
-      top:var(--create-modal-static-top, auto);
-      bottom:auto;
+      /* Lift both Create Token and Initial Buy just a little, while the bottom stays fixed to the floor. */
+      top:max(0px, calc(var(--create-modal-static-top, 0px) - 10px));
+      bottom:0;
     }
 
     /* On the first Create Token step, lift only the header and the three upper fields.
