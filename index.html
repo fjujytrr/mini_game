@@ -1263,9 +1263,11 @@
       bottom:auto;
     }
 
-    /* Keep the first-step inputs visually a little higher while the button stays in its original place. */
-    #createStepDetails .form-group{
-      transform:translateY(-10px);
+    /* On the first Create Token step, lift only the header and the three upper fields.
+       The lower Create Token button keeps its original layout position. */
+    #createModal.details-step .modal-head,
+    #createModal.details-step #createStepDetails .form-group{
+      transform:translateY(-12px);
     }
 
     .buy-preset-grid{
@@ -2181,7 +2183,7 @@
     </section>
 
     <div class="form-overlay" id="overlay"></div>
-    <div class="modal" id="createModal" aria-hidden="true">
+    <div class="modal details-step" id="createModal" aria-hidden="true">
       <div class="modal-handle"></div>
       <div class="modal-body">
         <div class="modal-head">
@@ -2981,6 +2983,17 @@
         const details = step === "details";
         els.createStepDetails.classList.toggle("hidden", !details);
         els.createStepBuy.classList.toggle("hidden", details);
+        els.modal.classList.toggle("details-step", details);
+
+        // The first Create Token step stays fixed for keyboard stability.
+        // The Initial Buy step has no text inputs, so it returns to the floor as before.
+        if(details){
+          lockCreateModalPosition();
+        }else{
+          els.modal.classList.remove("static-create-modal");
+          els.modal.style.removeProperty("--create-modal-static-top");
+        }
+
         const title = els.modal.querySelector(".modal-title");
         if(title) title.textContent = details ? "Create Token" : "Initial Buy";
       }
