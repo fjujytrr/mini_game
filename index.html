@@ -818,11 +818,6 @@
       pointer-events:none;
     }
 
-    body.keyboard-open .bottom-nav,
-    .app.keyboard-open .bottom-nav{
-      transition:opacity .12s ease, visibility .12s ease;
-    }
-
     .nav-item{
       flex:1;
       border:none;
@@ -2829,7 +2824,6 @@
           return;
         }
         if(buyAmount < 0.5){
-          closeActiveKeyboard();
           toast("The minimum amount to create a token is 0.5 SOL");
           return;
         }
@@ -3165,12 +3159,6 @@
         return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
       }
 
-      function closeActiveKeyboard(){
-        const active = document.activeElement;
-        if(!isTextControl(active)) return;
-        active.blur();
-      }
-
       function closeMobileKeyboard(e){
         const active = document.activeElement;
         if(!isTextControl(active)) return;
@@ -3178,50 +3166,53 @@
         const target = e.target;
         if(isTextControl(target) || target?.closest?.("input, textarea, select, [contenteditable='true']")) return;
 
-        closeActiveKeyboard();
+        active.blur();
+        document.body.focus?.();
       }
 
-      let keyboardOpen = false;
-      let keyboardCloseTimer = null;
-      let keyboardScrollTimer = null;
-
       function setKeyboardMode(isOpen){
-        const next = !!isOpen;
-        if(keyboardOpen === next) return;
-        keyboardOpen = next;
-        document.body.classList.toggle("keyboard-open", next);
-        els?.navItems?.[0]?.closest?.(".app")?.classList?.toggle("keyboard-open", next);
+        document.body.classList.toggle("keyboard-open", !!isOpen);
+        els?.navItems?.[0]?.closest?.(".app")?.classList?.toggle("keyboard-open", !!isOpen);
       }
 
       function keepFocusedFieldVisible(){
-        clearTimeout(keyboardScrollTimer);
-        keyboardScrollTimer = setTimeout(() => {
-          const active = document.activeElement;
-          if(!isTextControl(active)) return;
+        const active = document.activeElement;
+        if(!isTextControl(active)) return;
+        setTimeout(() => {
           try{
-            active.scrollIntoView({ block:"nearest", inline:"nearest", behavior:"auto" });
+            active.scrollIntoView({ block:"center", inline:"nearest", behavior:"smooth" });
           }catch(_e){
             active.scrollIntoView(false);
           }
-        }, 260);
+        }, 120);
       }
 
       function bindKeyboardClose(){
+        document.addEventListener("touchstart", closeMobileKeyboard, { passive: true });
+        document.addEventListener("mousedown", closeMobileKeyboard);
         document.addEventListener("pointerdown", closeMobileKeyboard, { passive: true });
 
         document.addEventListener("focusin", (e) => {
           if(!isTextControl(e.target)) return;
-          clearTimeout(keyboardCloseTimer);
           setKeyboardMode(true);
           keepFocusedFieldVisible();
         });
 
         document.addEventListener("focusout", () => {
-          clearTimeout(keyboardCloseTimer);
-          keyboardCloseTimer = setTimeout(() => {
+          setTimeout(() => {
             if(!isTextControl(document.activeElement)) setKeyboardMode(false);
-          }, 220);
+          }, 80);
         });
+
+        if(window.visualViewport){
+          const updateByViewport = () => {
+            const keyboardLikelyOpen = window.visualViewport.height < window.innerHeight - 120;
+            setKeyboardMode(keyboardLikelyOpen && isTextControl(document.activeElement));
+            if(keyboardLikelyOpen) keepFocusedFieldVisible();
+          };
+          window.visualViewport.addEventListener("resize", updateByViewport);
+          window.visualViewport.addEventListener("scroll", updateByViewport);
+        }
       }
 
       function bind(){
