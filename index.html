@@ -2984,6 +2984,16 @@
         els.createStepDetails.classList.toggle("hidden", !details);
         els.createStepBuy.classList.toggle("hidden", details);
         els.modal.classList.toggle("details-step", details);
+
+        // The first Create Token step stays fixed for keyboard stability.
+        // The Initial Buy step has no text inputs, so it returns to the floor as before.
+        if(details){
+          lockCreateModalPosition();
+        }else{
+          els.modal.classList.remove("static-create-modal");
+          els.modal.style.removeProperty("--create-modal-static-top");
+        }
+
         const title = els.modal.querySelector(".modal-title");
         if(title) title.textContent = details ? "Create Token" : "Initial Buy";
       }
