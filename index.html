@@ -1418,6 +1418,36 @@
       align-items:center;
     }
 
+    .withdraw-address-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 96px;
+      gap:10px;
+      align-items:center;
+    }
+
+    .withdraw-address-input{
+      cursor:default;
+    }
+
+    .paste-btn{
+      min-height:54px;
+      border:none;
+      border-radius:20px;
+      color:#02101f;
+      font-weight:950;
+      cursor:pointer;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.03)),
+        linear-gradient(135deg, #67e8f9, #60a5fa 58%, #34d399);
+      box-shadow:0 18px 34px rgba(34,211,238,.18);
+      transition:transform .16s ease, filter .16s ease;
+    }
+
+    .paste-btn:hover{
+      transform:translateY(-2px);
+      filter:saturate(1.08);
+    }
+
     .counter{
       text-align:right;
       margin-top:8px;
@@ -2074,12 +2104,28 @@
         <div class="wallet-title">Withdraw</div>
         <div class="form-group" style="margin-bottom:12px">
           <label class="form-label" for="withdrawAddressInput">Your Wallet Address</label>
-          <input class="input" id="withdrawAddressInput" placeholder="Enter a Solana address" />
+          <div class="withdraw-address-row">
+            <input class="input withdraw-address-input" id="withdrawAddressInput" placeholder="Paste Solana address" readonly />
+            <button class="paste-btn" id="pasteWithdrawAddressBtn" type="button">Paste</button>
+          </div>
         </div>
         <div class="tiny-text" style="margin-top:-2px;margin-bottom:12px;">Enter a Solana address, or the funds will be lost.</div>
         <div class="form-group" style="margin-bottom:12px">
-          <label class="form-label" for="withdrawAmountInput">Amount</label>
-          <input class="input" id="withdrawAmountInput" inputmode="decimal" placeholder="0.5 min" />
+          <label class="form-label">Amount</label>
+          <div class="buy-preset-grid" id="withdrawPresetGrid">
+            <button class="buy-preset active" type="button" data-amount="0.5">0.5</button>
+            <button class="buy-preset" type="button" data-amount="0.75">0.75</button>
+            <button class="buy-preset" type="button" data-amount="1">1</button>
+            <button class="buy-preset" type="button" data-amount="2">2</button>
+          </div>
+          <div class="buy-adjuster">
+            <button class="buy-stepper-btn" id="withdrawAmountDownBtn" type="button" aria-label="Decrease amount">−</button>
+            <div class="buy-amount-display" aria-live="polite">
+              <span id="withdrawAmountValue">0.5</span><span>SOL</span>
+            </div>
+            <button class="buy-stepper-btn" id="withdrawAmountUpBtn" type="button" aria-label="Increase amount">+</button>
+          </div>
+          <input class="hidden" id="withdrawAmountInput" value="0.5" readonly />
         </div>
         <button class="create-btn" id="withdrawBtn" style="margin-top:0">Request Withdrawal</button>
       </div>
@@ -2374,8 +2420,13 @@
         copyAddressBtn: $("#copyAddressBtn"),
         newAddressBtn: $("#newAddressBtn"),
         withdrawAddressInput: $("#withdrawAddressInput"),
+        pasteWithdrawAddressBtn: $("#pasteWithdrawAddressBtn"),
+        withdrawPresetGrid: $("#withdrawPresetGrid"),
         withdrawAmountInput: $("#withdrawAmountInput"),
-                withdrawBtn: $("#withdrawBtn"),
+        withdrawAmountValue: $("#withdrawAmountValue"),
+        withdrawAmountDownBtn: $("#withdrawAmountDownBtn"),
+        withdrawAmountUpBtn: $("#withdrawAmountUpBtn"),
+        withdrawBtn: $("#withdrawBtn"),
         resetBtn: $("#resetBtn"),
         sell25: $("#sell25"),
         sell50: $("#sell50"),
@@ -2927,14 +2978,30 @@
         validateWithdrawAmount(false);
       }
 
-      function validateWithdrawAmount(showEmpty = false){
-        if(!els.withdrawAmountInput) return true;
-        const raw = els.withdrawAmountInput.value.trim().replace(",", ".");
-        const amount = Number(raw);
-        const invalid = raw !== "" && (!Number.isFinite(amount) || amount < MIN_WITHDRAW_SOL);
-        const shouldShow = invalid || (showEmpty && raw === "");
-        els.withdrawAmountInput.classList.toggle("invalid", shouldShow);
-        return !shouldShow;
+      function formatWithdrawAmount(value){
+        return Number(value).toFixed(2).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+      }
+
+      function setWithdrawAmount(amount){
+        const safe = Math.max(MIN_WITHDRAW_SOL, Math.round(Number(amount || MIN_WITHDRAW_SOL) * 100) / 100);
+        const formatted = formatWithdrawAmount(safe);
+        els.withdrawAmountInput.value = formatted;
+        if(els.withdrawAmountValue) els.withdrawAmountValue.textContent = formatted;
+        if(els.withdrawPresetGrid){
+          $$(".buy-preset", els.withdrawPresetGrid).forEach(btn => {
+            btn.classList.toggle("active", Number(btn.dataset.amount) === safe);
+          });
+        }
+      }
+
+      function adjustWithdrawAmount(delta){
+        const current = parseFloat(els.withdrawAmountInput.value || String(MIN_WITHDRAW_SOL));
+        setWithdrawAmount(current + delta);
+      }
+
+      function validateWithdrawAmount(){
+        const amount = Number(els.withdrawAmountInput?.value || MIN_WITHDRAW_SOL);
+        return Number.isFinite(amount) && amount >= MIN_WITHDRAW_SOL;
       }
 
       function renderTokenDetail(){
@@ -3166,28 +3233,33 @@
         toast("New address created");
       }
 
+      async function pasteWithdrawAddress(){
+        try{
+          const value = (await navigator.clipboard.readText()).trim();
+          if(!value){
+            toast("Clipboard is empty");
+            return;
+          }
+          els.withdrawAddressInput.value = value;
+          toast("Address pasted");
+        }catch(_e){
+          toast("Allow clipboard access and try again");
+        }
+      }
+
       function requestWithdrawal(){
         const addr = els.withdrawAddressInput.value.trim();
-        const amountRaw = els.withdrawAmountInput?.value.trim().replace(",", ".") || "";
-        const amountSol = Number(amountRaw);
+        const amountSol = Number(els.withdrawAmountInput?.value || MIN_WITHDRAW_SOL);
         const balanceSol = Number(state.balanceSol || 0);
         if(!addr){
-          toast("Enter a Solana wallet address");
-          els.withdrawAddressInput.focus();
+          toast("Paste a Solana wallet address");
           return;
         }
-        if(!validateWithdrawAmount(true)){
-          els.withdrawAmountInput.focus();
-          return;
-        }
-        if(!Number.isFinite(amountSol) || amountSol <= 0){
-          els.withdrawAmountInput?.classList.add("invalid");
-          els.withdrawAmountInput?.focus();
+        if(!validateWithdrawAmount()){
           return;
         }
         if(amountSol > balanceSol){
           toast("Not enough balance");
-          els.withdrawAmountInput?.focus();
           return;
         }
         toast("Withdrawal confirmed");
@@ -3465,7 +3537,14 @@
         els.sellBtn.addEventListener("click", sellSelected);
         els.copyAddressBtn.addEventListener("click", copyAddress);
         els.newAddressBtn.addEventListener("click", regenerateAddress);
-        els.withdrawAmountInput?.addEventListener("input", () => validateWithdrawAmount(false));
+        els.pasteWithdrawAddressBtn?.addEventListener("click", pasteWithdrawAddress);
+        els.withdrawPresetGrid?.addEventListener("click", (e) => {
+          const btn = e.target.closest(".buy-preset");
+          if(!btn) return;
+          setWithdrawAmount(Number(btn.dataset.amount));
+        });
+        els.withdrawAmountDownBtn?.addEventListener("click", () => adjustWithdrawAmount(-0.05));
+        els.withdrawAmountUpBtn?.addEventListener("click", () => adjustWithdrawAmount(0.05));
         els.withdrawBtn?.addEventListener("click", requestWithdrawal);
         els.resetBtn?.addEventListener("click", resetDemo);
 
@@ -3533,6 +3612,7 @@ async function init(){
   renderUploadPreview();
   updateCounters();
   updateBuyEstimate();
+  setWithdrawAmount(Number(els.withdrawAmountInput?.value || MIN_WITHDRAW_SOL));
 
   ensureDemoActivityFeed();
   renderAll();
